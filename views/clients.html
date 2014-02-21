@@ -1,0 +1,54 @@
+<% include partials/header.html %>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1>Clients</h1>
+      <ol class="breadcrumb">
+        <a href="/"><li><i class="fa fa-tachometer"></i> Dashboard</a> </li><li class="active"><i class="fa fa-hdd-o"></i> Clients</li>
+      </ol>
+    </div>
+      
+    <div class="col-lg-9">
+      <!-- Nav -->
+      <div id="menu-buttons" class="menu-buttons">
+        <a href="#" class="btn btn-circle btn-green" onclick="filter.allClients(false)"><i class="fa fa-reply"></i></a>
+        <a href="#" class="btn btn-circle btn-red" onclick="filter.allClients(true)"><i class="fa fa-exclamation"></i></a>
+        <span class="pull-right last-update"></span>
+      </div>
+      <!-- Content -->
+      <div class="tab-content">
+        <div class="tab-pane fade in active" id="home">
+          <div id="clients-list" class="list-group"></div>
+        </div>
+      </div>
+    </div>
+    <!-- /.col-lg-8 -->
+     <div class="col-lg-3">
+
+    </div>
+    <!-- /.col-lg-4-->
+
+      <!-- Modal -->
+      <div id="client-details" class="modal modal-wide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body" ng-repeat="client in clients | filter:client">
+              <h4><i class="fa fa-hdd-o"></i> <span id="name"></span></h4>
+              <div class="row">
+                <div class="col-xs-8">
+                  <div class="tab-pane fade in active" id="home">
+                    <div id="checks" class="list-group"></div>
+                  </div>
+                </div>
+                <div class="col-xs-4">
+                  
+                  <div class="sparkline-graph"></div>
+                </div>
+              </div><!-- /.row -->
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+  </div><!-- /.row -->
+</div><!-- /.container -->
+<% include partials/footer.html %>

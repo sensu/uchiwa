@@ -1,0 +1,100 @@
+body { 
+  padding-top: 70px; 
+}
+
+.navbar {
+  background-color: #000;
+}
+
+.navbar-nav > .selected,
+.navbar-nav > .selected a {
+  color: #000;
+  background-color: #fff;
+}
+
+.navbar-default .navbar-nav> .selected > a {
+color: #000;
+}
+
+.breadcrumb {
+  background-color: #000;
+}
+
+.breadcrumb .active {
+  color: #fff;
+}
+
+.breadcrumb a {
+  color: #fff;
+}
+
+.modal.modal-wide .modal-dialog {
+  width: 95%;
+
+}
+
+.modal-wide .modal-body {
+  overflow-y: auto;
+  max-height: 800px;
+}
+
+.modal-wide .modal-body .tab-content { 
+  margin-bottom: 200px;
+}
+
+.not-found {
+  text-align: center;
+}
+
+.not-found .fa {
+  font-size: 150px;
+}
+
+/* Spans */
+.tab-pane .list-group-item { border:0;}
+.tab-pane .list-group-item:first-child {border-top-right-radius: 0px;border-top-left-radius: 0px;}
+.tab-pane .list-group-item:last-child {border-bottom-right-radius: 0px;border-bottom-left-radius: 0px;}
+.tab-pane .list-group .checkbox { display: inline-block;margin: 0px; }
+.tab-pane .list-group input[type="checkbox"]{ margin-top: 2px; }
+.tab-pane .list-group .fa { margin-right:5px; }
+.tab-pane .success { border-left: 6px solid #43ac6a; }
+.tab-pane .warning { border-left: 6px solid #e99002; }
+.tab-pane .danger { border-left: 6px solid #F04124; }
+a.list-group-item.read { color: #222; background-color: #F3F3F3; }
+a.list-group-item:hover { color: #000; background-color: rgb(255, 255, 204); }
+hr { margin-top: 5px;margin-bottom: 10px; }
+.nav-pills>li>a {padding: 5px 10px;}
+
+/* Navigation buttons */
+.btn-circle {
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  padding: 0 0 0 0;
+  font-size: 15px;
+  background-color: #fff;
+  border-top-right-radius: 50%;
+  border-top-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  border-bottom-left-radius: 50%;
+  border-width: 2px;
+  outline:none!important;
+  margin-right: 7px;
+}
+
+.btn-red {
+  color: #DA3610;
+  border-color: #DA3610;
+}
+.btn-green {
+  color: #43ac6a;
+  border-color: #43ac6a;
+}
+
+.btn-circle:hover {
+  color: #000
+}
+
+.menu-buttons {
+  padding-bottom: 25px;
+}
