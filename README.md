@@ -9,6 +9,6 @@ A dashboard for Sensu.
 
 ## Getting Started
 
-* Modify **config.js** - enter your Sensu API hostname
+* Copy **config.js.example** to **config.js** - modify your Sensu API hostname
 * Start the dashboard: `node app.js`
 * Browse your browser: `http://localhost:3000/`
