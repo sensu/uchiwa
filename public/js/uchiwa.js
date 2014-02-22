@@ -5,7 +5,7 @@ $(document).ready(function () {
   // Clients
   socket.on('clients', function(data) {
 
-    var clients = JSON.parse(data.content);
+    clients = JSON.parse(data.content);
     var spans = "";
     var clientsList = $("#clients-list");
 
@@ -164,7 +164,7 @@ $(document).ready(function () {
       async.series([
         // Get status of the check
         function(callback){
-          eventStatus(check.last_status, function(result){
+          getStyle(check.last_status, function(result){
             status = result;
             callback();
           });
@@ -190,7 +190,7 @@ $(document).ready(function () {
         }
       ], function(err){
         if (err) return console.error("Error while fetching checks list: " + err);
-        spans += "<a href='#' class='list-group-item "+ status +"' data-toggle='collapse' data-target='#"+ check.check + "'><span class='name' style='min-width: 160px; display: inline-block;'><strong>"+ check.check +"</strong></span><span class=''></span>"+ output +"<span class='text-muted' style='font-size: 12px;'> "+ occurrences +"</span><span class='badge'>"+ check.lastCheck +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
+        spans += "<a href='#' class='list-group-item "+ status +"' data-toggle='collapse' data-target='#"+ check.check + "'><span class='name' style='min-width: 180px; display: inline-block;'><strong>"+ check.check +"</strong></span><span class=''></span>"+ output +"<span class='text-muted' style='font-size: 12px;'> "+ occurrences +"</span><span class='badge'>"+ check.lastCheck +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
         //spans += "<span id='"+ check['check'] + "' class='collapse'>...</span>";
         nextCheck();
       });
@@ -287,10 +287,9 @@ var getClient = function(id){
 
   // Fetch client while modal is shown
   var timer = setInterval(function(){
-    console.log('loop');
     if($("#client-details").data('bs.modal').isShown){
       console.log('MODAL IS OPEN FOR ' + id);
       socket.emit('get_client', {name: id});
     }
-  },  5000);
+  },  10000);
 };

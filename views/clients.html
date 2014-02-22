@@ -11,7 +11,7 @@
     <div class="col-lg-9">
       <!-- Nav -->
       <div id="menu-buttons" class="menu-buttons">
-        <a href="#" class="btn btn-circle btn-green" onclick="filter.allClients(false)"><i class="fa fa-reply"></i></a>
+        <a href="#" class="btn btn-circle btn-green" onclick="filter.allClients(false)"><i class="fa fa-check"></i></a>
         <a href="#" class="btn btn-circle btn-red" onclick="filter.allClients(true)"><i class="fa fa-exclamation"></i></a>
         <span class="pull-right last-update"></span>
       </div>
@@ -32,7 +32,7 @@
       <div id="client-details" class="modal modal-wide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
-            <div class="modal-body" ng-repeat="client in clients | filter:client">
+            <div class="modal-body">
               <h4><i class="fa fa-hdd-o"></i> <span id="name"></span></h4>
               <div class="row">
                 <div class="col-xs-8">

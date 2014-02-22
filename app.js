@@ -69,10 +69,15 @@ var pull = function(){
       });
     },
     function(callback){
-      sensu.sortClients(sensu.clients, sensu.events, function(err){
+      sensu.sortEvents(sensu.events, 'status', function(err){
         callback();
       });
     },
+    function(callback){
+      sensu.sortClients(sensu.clients, sensu.events, function(err){
+        callback();
+      });
+    }
   ], function(err){
     if (err) return console.error("Fatal error! " + err);
     console.log("refreshed!");
@@ -85,6 +90,33 @@ var pull = function(){
 pull();
 setInterval(pull, config.uchiwa.refresh);
 
+// Listen for events
+io.sockets.on('connection', function (socket) {
+  socket.on('get_client', function (data){
+    async.series([
+      function(callback){
+        sensu.getClient(data.name, function(err, result){
+          sensu.client = result;
+          callback();
+        });
+      },
+      function(callback){
+        sensu.sortEvents(sensu.client, "last_status", function(err){
+          callback();
+        });
+      },
+      function(callback){
+        sensu.getTimestamp(sensu.client, "last_execution", function(err){
+          callback();
+        });
+      }
+    ], function(err){
+      if (err) return console.error("Fatal error! " + err);
+      console.log("refreshed!");
+      io.sockets.emit('client', {content: JSON.stringify(sensu.client)});
+    });
+  });
+});
 
 /**
  * Routing
