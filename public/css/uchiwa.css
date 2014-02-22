@@ -30,7 +30,7 @@ color: #000;
 
 .modal.modal-wide .modal-dialog {
   width: 95%;
-
+  padding: 10px 0px;
 }
 
 .modal-wide .modal-body {
