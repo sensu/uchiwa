@@ -24,9 +24,8 @@ $(document).ready(function () {
             callback();
           });
         },
-        // Get all events for client
         function(callback){
-          clientEvents(client.events, function(result){
+          countEvents(client.events, function(result){
             checks = result;
             callback();
           });
@@ -157,19 +156,17 @@ $(document).ready(function () {
 
     // Set name
     $("#client-details #name").html(currentClient);
-
+ 
     var parseCheck = function(check, nextCheck) {
       var output = "";
       var occurrences = "";
       async.series([
-        // Get status of the check
         function(callback){
           getStyle(check.last_status, function(result){
             status = result;
             callback();
           });
         },
-        // Get associated event with the check
         function(callback){
           if(check.last_status != 0 ) {
             findEvent(check.check, currentClient, function(result){
@@ -179,7 +176,6 @@ $(document).ready(function () {
           }
           callback();
         },
-        // Format the output
         function(callback){
           var maxLength = 65;
           if(output.length > maxLength){
@@ -187,11 +183,31 @@ $(document).ready(function () {
             output += "...";            
           }
           callback();
+        },
+        function(callback){
+          if($("#checks #"+check['check']).hasClass('in')){
+            detailsClass = "in";
+          }
+          else {
+            detailsClass = "collapse";
+          }
+          callback();
         }
       ], function(err){
         if (err) return console.error("Error while fetching checks list: " + err);
         spans += "<a href='#' class='list-group-item "+ status +"' data-toggle='collapse' data-target='#"+ check.check + "'><span class='name' style='min-width: 180px; display: inline-block;'><strong>"+ check.check +"</strong></span><span class=''></span>"+ output +"<span class='text-muted' style='font-size: 12px;'> "+ occurrences +"</span><span class='badge'>"+ check.lastCheck +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
-        //spans += "<span id='"+ check['check'] + "' class='collapse'>...</span>";
+        spans += "<span id='"+ check['check'] + "' class='"+ detailsClass + "'>"
+          + "<div class='row'>"
+            + "<div class='col-xs-6'>"
+              + "<ul class='list-group'>"
+                + "<li class='list-group-item'><strong>Full output</strong><span class='pull-right'><em>"+ check.output +"</em></span></li>"
+                + "<li class='list-group-item'><strong>Last results</strong><span class='pull-right'><em>"+ check.history +"</em></span></li>"
+              + "</ul>"
+            + "</div>"
+            + "<div class='col-xs-6'>"
+            + "</div>"
+          + "</div>"
+          + "</span>";
         nextCheck();
       });
       
@@ -235,7 +251,7 @@ var filter =  {
   }
 };
 
-var clientEvents = function(events, callback) {
+var countEvents = function(events, callback) {
   if (typeof events === 'undefined'){
     callback("");
   }
@@ -249,12 +265,10 @@ var clientEvents = function(events, callback) {
   }
 }
 
-
 var findEvent = function(check, client, callback){
   var eventDetails = events.filter(function (e) { return e.client == client && e.check == check });
   callback(eventDetails);
 };
-
 
 var getStyle = function(status, callback){
   if (status == 2){
@@ -275,20 +289,15 @@ var getStyle = function(status, callback){
 var getClient = function(id){
   clearInterval(timer);
   currentClient = id;
-  
   socket.emit('get_client', {name: id});
-      console.log('MODAL OPENED FOR ' + id);
   // Listen to hide event of modal
   $('#client-details').on('hide.bs.modal', function () {
-    console.log('MODAL CLOSED');
     $(this).off('hide.bs.modal');
     clearInterval(timer);
   })
-
   // Fetch client while modal is shown
   var timer = setInterval(function(){
     if($("#client-details").data('bs.modal').isShown){
-      console.log('MODAL IS OPEN FOR ' + id);
       socket.emit('get_client', {name: id});
     }
   },  10000);

@@ -51,15 +51,15 @@ color: #000;
 }
 
 /* Spans */
-.tab-pane .list-group-item { border:0;}
-.tab-pane .list-group-item:first-child {border-top-right-radius: 0px;border-top-left-radius: 0px;}
-.tab-pane .list-group-item:last-child {border-bottom-right-radius: 0px;border-bottom-left-radius: 0px;}
-.tab-pane .list-group .checkbox { display: inline-block;margin: 0px; }
-.tab-pane .list-group input[type="checkbox"]{ margin-top: 2px; }
-.tab-pane .list-group .fa { margin-right:5px; }
-.tab-pane .success { border-left: 6px solid #43ac6a; }
-.tab-pane .warning { border-left: 6px solid #e99002; }
-.tab-pane .danger { border-left: 6px solid #F04124; }
+.tab-panel .list-group-item { border:0;}
+.tab-panel .list-group-item:first-child {border-top-right-radius: 0px;border-top-left-radius: 0px;}
+.tab-panel .list-group-item:last-child {border-bottom-right-radius: 0px;border-bottom-left-radius: 0px;}
+.tab-panel .list-group .checkbox { display: inline-block;margin: 0px; }
+.tab-panel .list-group input[type="checkbox"]{ margin-top: 2px; }
+.tab-panel .list-group .fa { margin-right:5px; }
+.tab-panel .success { border-left: 6px solid #43ac6a; }
+.tab-panel .warning { border-left: 6px solid #e99002; }
+.tab-panel .danger { border-left: 6px solid #F04124; }
 a.list-group-item.read { color: #222; background-color: #F3F3F3; }
 a.list-group-item:hover { color: #000; background-color: rgb(255, 255, 204); }
 hr { margin-top: 5px;margin-bottom: 10px; }
