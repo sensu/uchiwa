@@ -30,16 +30,9 @@ $(document).ready(function () {
             callback();
           });
         },
-        // Is page filtered?
-        function(callback){
-          if(filter.clients && status == 'success'){
-            style = "none";
-          }
-          callback();
-        }
       ], function(err){
         if (err) return console.error("Error while fetching clients list: " + err);
-        spans += "<a href='#' id='"+ client['name'] +"' class='list-group-item "+ status +"'  style='display: "+ style +";' data-toggle='modal' data-target='#client-details'><span class='name' style='min-width: 160px; display: inline-block;'><strong>"+ client['name'] +"</strong></span><span class=''>"+ checks +"</span><span class='text-muted' style='font-size: 12px;'></span><span class='badge'>"+ client['lastCheck'] +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
+        spans += "<a href='#' id='"+ client['name'] +"' class='list-group-item "+ status +"' data-toggle='modal' data-target='#client-details'><span class='name' style='min-width: 160px; display: inline-block;'><strong>"+ client['name'] +"</strong></span><span class=''>"+ checks +"</span><span class='text-muted' style='font-size: 12px;'></span><span class='badge'>"+ client['lastCheck'] +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
         nextClient();
       });          
     };
@@ -60,12 +53,6 @@ $(document).ready(function () {
               status = (filter.clients) ? "block" : "none";
               spans += "<span class='not-found' style='display: "+ status +";'><i class='fa fa-thumbs-o-up'></i> <h3>No alerts... for now!</h3></span>";
             }
-            callback();
-          },
-          // Display last update message
-          function(callback){
-            var today = new Date();
-            $('.last-update').html("<i class='fa fa-refresh fa-spin'></i> <small>" + today.toLocaleString() + "</small>");
             callback();
           }
         ], function(err){
@@ -119,23 +106,14 @@ $(document).ready(function () {
         parseEvent(event, callback);
       },
       function(err){
-        // Once we parsed each events
         async.series([
-          // Display message if no events found
           function(callback){
             var style;
             console.log(spans.length);
-            //var currentEvents = clientsList.find(".danger, .warning");
-            if(events.length == 0) { // Do we have at least one alert?
+            if(events.length == 0) {
               status = (filter.clients) ? "block" : "none";
               spans += "<span class='not-found' style='display: "+ status +";'><i class='fa fa-thumbs-o-up'></i> <h3>No events... for now!</h3></span>";
             }
-            callback();
-          },
-          // Display last update message
-          function(callback){
-            var today = new Date();
-            $('.last-update').html("<i class='fa fa-refresh fa-spin'></i> <small>" + today.toLocaleString() + "</small>");
             callback();
           }
         ], function(err){
@@ -232,24 +210,6 @@ $(document).ready(function () {
   });
 
 });
-
-var filter =  {
-  clients: true,
-  allClients: function(action){
-    console.log(action);
-    if (this.clients != action){
-      this.clients = !this.clients;
-      if(action) {
-        $('.success').css("display", "none");
-        $('.not-found').css("display", "block");
-      }
-      else {
-        $('.success').css("display", "block");
-        $('.not-found').css("display", "none");
-      }
-    }
-  }
-};
 
 var countEvents = function(events, callback) {
   if (typeof events === 'undefined'){
