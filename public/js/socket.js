@@ -2,7 +2,10 @@ $(document).ready(function () {
   socket = io.connect();
   socket.emit('get_clients');
 
+  //
   // Clients
+  //
+
   socket.on('clients', function(data) {
 
     clients = JSON.parse(data.content);
@@ -10,12 +13,10 @@ $(document).ready(function () {
     var clientsList = $("#clients-list");
 
     var parseClient = function(client, nextClient){
-
       var style = "block";
       var checks;
       var status;
       var subscriptions = "";
-
       async.series([
         // Get span color
         function(callback){
@@ -63,7 +64,10 @@ $(document).ready(function () {
     }
   });
 
+  //
   // Events
+  //
+
   socket.on('events', function(data) {
     events = JSON.parse(data.content);
     var spans = "";
@@ -97,10 +101,6 @@ $(document).ready(function () {
       });
     };
 
-    var displayEvents = function(){
-      eventsList.html(spans);
-    };
-
     if(!$('#event-details').hasClass('in') && eventsList.length){
       async.each(events, function(event, callback){
         parseEvent(event, callback);
@@ -125,7 +125,10 @@ $(document).ready(function () {
 
   });
 
+  //
   // Client
+  //
+
   socket.on('client', function(data) {
   
     var checks = JSON.parse(data.content);
@@ -191,16 +194,12 @@ $(document).ready(function () {
       
     }
 
-    var displayChecks = function(){
-      $("#client-details #checks").html(spans);
-    };
-
     async.each(checks, function(check, callback){
       parseCheck(check, callback);
     },
     function(err){
       if (err) return console.error("Error while processing checks data: " + err);
-      displayChecks();
+      $("#client-details #checks").html(spans);
     });
 
   });
