@@ -1,18 +1,3 @@
-$(document).ready(function(){
-  url = window.location.pathname;
-  urlRegExp = new RegExp(url.replace(/\/$/,'') + "$");
-  if (url === '/'){
-    $(".navbar-nav #dashboard").addClass("selected");
-  }
-  else{
-    $(".navbar-nav li").each(function(){
-      if(urlRegExp.test($(this).find('a').attr('href'))){
-        $(this).addClass('selected');
-      }
-    });
-  }
-});
-
 var countEvents = function(events, callback) {
   if (typeof events === 'undefined'){
     callback("");
@@ -27,9 +12,15 @@ var countEvents = function(events, callback) {
   }
 }
 
-var findEvent = function(check, client, callback){
-  var eventDetails = events.filter(function (e) { return e.client == client && e.check == check });
-  callback(eventDetails);
+var findEvent = function(events_list, check, client, callback){
+  var eventDetails = events_list.filter(function (e) { return e.client == client && e.check == check });
+  if (eventDetails.length != 0){
+    callback(null, eventDetails);
+  }
+  else {
+    callback(true, "");
+  }
+  
 };
 
 var getStyle = function(status, callback){
@@ -50,7 +41,7 @@ var getStyle = function(status, callback){
 */
 var getClient = function(id){
   clearInterval(timer);
-  currentClient = id;
+  client = new Client(id);
   socket.emit('get_client', {name: id});
   // Listen to hide event of modal
   $('#client-details').on('hide.bs.modal', function () {
@@ -64,3 +55,18 @@ var getClient = function(id){
     }
   },  10000);
 };
+
+$(document).ready(function(){
+  url = window.location.pathname;
+  urlRegExp = new RegExp(url.replace(/\/$/,'') + "$");
+  if (url === '/'){
+    $(".navbar-nav #dashboard").addClass("selected");
+  }
+  else{
+    $(".navbar-nav li").each(function(){
+      if(urlRegExp.test($(this).find('a').attr('href'))){
+        $(this).addClass('selected');
+      }
+    });
+  }
+});

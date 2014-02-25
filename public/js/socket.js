@@ -9,8 +9,9 @@ $(document).ready(function () {
   socket.on('clients', function(data) {
 
     clients = JSON.parse(data.content);
-    var spans = "";
+    var spans = "<div class='row'>";
     var clientsList = $("#clients-list");
+    var i = 0;
 
     var parseClient = function(client, nextClient){
       var style = "block";
@@ -32,8 +33,24 @@ $(document).ready(function () {
           });
         },
       ], function(err){
-        if (err) return console.error("Error while fetching clients list: " + err);
-        spans += "<a href='#' id='"+ client['name'] +"' class='list-group-item "+ status +"' data-toggle='modal' data-target='#client-details'><span class='name' style='min-width: 160px; display: inline-block;'><strong>"+ client['name'] +"</strong></span><span class=''>"+ checks +"</span><span class='text-muted' style='font-size: 12px;'></span><span class='badge'>"+ client['lastCheck'] +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
+        if (!err){
+          if(i % 4 === 0){
+            spans += "</div>";
+            spans += "<div class='row'>";          }
+          spans += ""
+          + "<div class='col-md-3 client'>"
+            + "<a href='#' id='"+ client['name'] +"' data-toggle='modal' data-target='#client-details'>"
+            + "<div class='well "+ status +"'>"
+              + "<span class='lead'>"+ client['name'] +"</span>"
+              + "<span><strong>"+ checks +"</strong></span>"
+              + "<span class='small'><i class='fa fa-clock-o'></i> "+ client['last_check'] +"</span>"
+              + "</a>"
+            + "</div>"
+          + "</div>";
+         i++;
+        }
+        //spans += "<a href='#' id='"+ client['name'] +"' class='list-group-item "+ status +"' data-toggle='modal' data-target='#client-details'><span class='name' style='min-width: 160px; display: inline-block;'><strong>"+ client['name'] +"</strong></span><span class=''>"+ checks +"</span><span class='text-muted' style='font-size: 12px;'></span><span class='badge'>"+ client['last_check'] +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
+        
         nextClient();
       });          
     };
@@ -96,7 +113,7 @@ $(document).ready(function () {
         }
       ], function(err){
         if (err) return console.error("Error while fetching events list: " + err);
-        spans += "<a href='#' class='list-group-item "+ status +"'><span class='name' style='min-width: 160px; display: inline-block;'><strong>"+ event['client'] +"</strong></span><span class=''>"+ event['check'] +"</span><span class='text-muted' style='font-size: 12px;'> - "+ output +"</span><span class='badge'>"+ event['lastCheck'] +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
+        spans += "<a href='#' class='list-group-item "+ status +"'><span class='name' style='min-width: 160px; display: inline-block;'><strong>"+ event['client'] +"</strong></span><span class=''>"+ event['check'] +"</span><span class='text-muted' style='font-size: 12px;'> - "+ output +"</span><span class='badge'>"+ event['last_check'] +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
         nextEvent();
       });
     };
@@ -109,7 +126,6 @@ $(document).ready(function () {
         async.series([
           function(callback){
             var style;
-            console.log(spans.length);
             if(events.length == 0) {
               status = (filter.clients) ? "block" : "none";
               spans += "<span class='not-found' style='display: "+ status +";'><i class='fa fa-thumbs-o-up'></i> <h3>No events... for now!</h3></span>";
@@ -131,42 +147,52 @@ $(document).ready(function () {
 
   socket.on('client', function(data) {
   
-    var checks = JSON.parse(data.content);
+    client.history = JSON.parse(data.content);
     var spans = "";
-    var clientDetails =  $("#client-details");
+    var clientDetails = $("#client-details");
 
-    // Set name
-    $("#client-details #name").html(currentClient);
+    $("#client-details #name").html(client.name);
  
-    var parseCheck = function(check, nextCheck) {
+    var parseCheck = function(data, nextCheck) {
+      history = new History(data);
       var output = "";
-      var occurrences = "";
+      var eventDetails = "";
       async.series([
         function(callback){
-          getStyle(check.last_status, function(result){
+          history.getStyle(function(result){
             status = result;
             callback();
           });
         },
         function(callback){
-          if(check.last_status != 0 ) {
-            findEvent(check.check, currentClient, function(result){
-              output = result[0].output;
-              occurrences = "- " + result[0].occurrences + " occurrence(s)";
+          history.getEvent(client.getEvents(), client.name, function(err, result){
+            if(err) console.log("Could not find active events for " + client.name);
+            event = result;
+            callback(err);
+          });
+        },
+        function(callback){
+          history.getCheck(function(err, result){
+            if(err) console.log("Could not find the check " + history.check + " for client " + client.name);
+            check = result;
+            callback(err);
+          });
+        },
+        function(callback){
+          if(typeof check.subscribers === undefined) {
+            console.log("undefined");
+            client.getSubscription(function(err, result){
+              if(err) check.subscribers = "";
+              check.subscribers = result;
+              callback();
             });
           }
-          callback();
-        },
-        function(callback){
-          var maxLength = 65;
-          if(output.length > maxLength){
-            output = output.substring(0,maxLength);
-            output += "...";            
+          else {
+            callback();
           }
-          callback();
         },
         function(callback){
-          if($("#checks #"+check['check']).hasClass('in')){
+          if($("#checks #"+history['check']).hasClass('in')){
             detailsClass = "in";
           }
           else {
@@ -175,34 +201,55 @@ $(document).ready(function () {
           callback();
         }
       ], function(err){
-        if (err) return console.error("Error while fetching checks list: " + err);
-        spans += "<a href='#' class='list-group-item "+ status +"' data-toggle='collapse' data-target='#"+ check.check + "'><span class='name' style='min-width: 180px; display: inline-block;'><strong>"+ check.check +"</strong></span><span class=''></span>"+ output +"<span class='text-muted' style='font-size: 12px;'> "+ occurrences +"</span><span class='badge'>"+ check.lastCheck +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
-        spans += "<span id='"+ check['check'] + "' class='"+ detailsClass + "'>"
-          + "<div class='row'>"
-            + "<div class='col-xs-6'>"
-              + "<ul class='list-group'>"
-                + "<li class='list-group-item'><strong>Full output</strong><span class='pull-right'><em>"+ check.output +"</em></span></li>"
-                + "<li class='list-group-item'><strong>Last results</strong><span class='pull-right'><em>"+ check.history +"</em></span></li>"
-              + "</ul>"
+        if (!err){
+          if(event) output = "<span class='output'>"+ event.output +"</span><span class='text-muted' style='font-size: 12px;'> - " + event.occurrences + " occurrences</span>";
+          spans += "<a href='#' class='list-group-item "+ status +"' data-toggle='collapse' data-target='#"+ history.check + "'>"
+            + "<span class='name' style='min-width: 180px; display: inline-block;'><strong>"+ history.check +"</strong></span>"
+            + output
+            + "<span class='badge'>"+ history.last_check +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
+
+          if(event) eventDetails = "<li class='list-group-item'><strong>Full output</strong><span class='pull-right'><em>"+ event.output +"</em></span></li>"
+            + "<li class='list-group-item'><strong>Flapping</strong><span class='pull-right'><em>"+ event.flapping +"</em></span></li>"
+            + "<li class='list-group-item'><strong>Event handlers</strong><span class='pull-right'><em>"+ event.handlers +"</em></span></li>";
+
+          spans += "<span id='"+ history['check'] + "' class='"+ detailsClass + "'>"
+            + "<div class='row'>"
+              + "<div class='col-xs-12'>"
+                + "<ul class='list-group'>"
+                  + eventDetails
+                  + "<li class='list-group-item'><strong>Last results</strong><span class='pull-right'><em>"+ history.history +"</em></span></li>"
+                  + "<li class='list-group-item'><strong>Command</strong><span class='pull-right'><em>"+ check.command +"</em></span></li>"
+                  + "<li class='list-group-item'><strong>Subscribers</strong><span class='pull-right'><em>"+ check.subscribers +"</em></span></li>"
+                + "</ul>"
+              + "</div>"
             + "</div>"
-            + "<div class='col-xs-6'>"
-            + "</div>"
-          + "</div>"
-          + "</span>";
+            + "</span>";
+        }
         nextCheck();
       });
       
     }
 
-    async.each(checks, function(check, callback){
+    async.each(client.history, function(check, callback){
       parseCheck(check, callback);
     },
     function(err){
       if (err) return console.error("Error while processing checks data: " + err);
       $("#client-details #checks").html(spans);
+      
+      
     });
 
   });
+
+  //
+  // Checks
+  //
+
+  socket.on('checks', function(data) {
+    checks = JSON.parse(data.content);
+  });
+
 
   $("#clients-list").on('click', 'a', function(e) {
     getClient(this.id);

@@ -10,6 +10,7 @@ var express = require('express'),
 
 server = http.createServer(app);
 io = require('socket.io').listen(server);
+io.set('log level', 1);
 
 var config = require('./config.js')
 var Sensu = require('./lib/sensu.js').Sensu;
@@ -36,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   console.log('Debugging enabled.')
   app.use(express.errorHandler({showStack: true, dumpExceptions: true}));
+  io.set('log level', 3);
 }
 app.use(function(err, req, res, next) {
   console.log(err);
@@ -49,7 +51,7 @@ var pull = function(){
     function(callback){
       sensu.getClients(function(err, result){
         sensu.clients = result;
-        callback();
+        callback(err);
       });
     },
     function(callback){
@@ -60,7 +62,7 @@ var pull = function(){
     function(callback){
       sensu.getEvents(function(err, result){
         sensu.events = result;
-        callback();
+        callback(err);
       });
     },
     function(callback){
@@ -77,12 +79,20 @@ var pull = function(){
       sensu.sortClients(sensu.clients, sensu.events, function(err){
         callback();
       });
+    },
+    function(callback){
+      sensu.getChecks(function(err, result){
+        sensu.checks = result;
+        callback(err);
+      });
     }
   ], function(err){
-    if (err) return console.error("Fatal error! " + err);
-    console.log("refreshed!");
-    io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
-    io.sockets.emit('clients', {content: JSON.stringify(sensu.clients)});
+    if (!err){
+      console.log("refreshed!");
+      io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
+      io.sockets.emit('clients', {content: JSON.stringify(sensu.clients)});
+      io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});
+    }
   });
 };
 
@@ -97,7 +107,7 @@ io.sockets.on('connection', function (socket) {
       function(callback){
         sensu.getClient(data.name, function(err, result){
           sensu.client = result;
-          callback();
+          callback(err);
         });
       },
       function(callback){
@@ -129,6 +139,7 @@ app.get('/clients', function(req,res) {
   io.sockets.on('connection', function (socket) {
     io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
     io.sockets.emit('clients', {content: JSON.stringify(sensu.clients)});
+    io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});
   });
 });
 app.get('/events',function(req,res) {
