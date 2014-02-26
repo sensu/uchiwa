@@ -13,7 +13,8 @@ $(document).ready(function () {
     var clientsList = $("#clients-list");
     var i = 0;
 
-    var parseClient = function(client, nextClient){
+    var parseClient = function(data, nextClient){
+      client = new Client(data);
       var style = "block";
       var checks;
       var status;
@@ -25,13 +26,7 @@ $(document).ready(function () {
             status = result;
             callback();
           });
-        },
-        function(callback){
-          countEvents(client.events, function(result){
-            checks = result;
-            callback();
-          });
-        },
+        }
       ], function(err){
         if (!err){
           if(i % 4 === 0){
@@ -39,11 +34,11 @@ $(document).ready(function () {
             spans += "<div class='row'>";          }
           spans += ""
           + "<div class='col-md-3 client'>"
-            + "<a href='#' id='"+ client['name'] +"' data-toggle='modal' data-target='#client-details'>"
+            + "<a href='#' id='"+ client.name +"' data-toggle='modal' data-target='#client-details'>"
             + "<div class='well "+ status +"'>"
-              + "<span class='lead'>"+ client['name'] +"</span>"
-              + "<span><strong>"+ checks +"</strong></span>"
-              + "<span class='small'><i class='fa fa-clock-o'></i> "+ client['last_check'] +"</span>"
+              + "<span class='lead'>"+ client.name +"</span>"
+              + "<span><strong>"+ client.eventsCount() +"</strong></span>"
+              + "<span class='small'><i class='fa fa-clock-o'></i> "+ client.last_check +"</span>"
               + "</a>"
             + "</div>"
           + "</div>";
@@ -157,6 +152,7 @@ $(document).ready(function () {
       history = new History(data);
       var output = "";
       var eventDetails = "";
+      var events = "";
       async.series([
         function(callback){
           history.getStyle(function(result){
@@ -165,7 +161,13 @@ $(document).ready(function () {
           });
         },
         function(callback){
-          history.getEvent(client.getEvents(), client.name, function(err, result){
+          client.getEvents(function(err, result){
+            clientEvents = result;
+            callback();
+          });
+        },
+        function(callback){
+          history.getEvent(clientEvents, client.name, function(err, result){
             if(err) console.log("Could not find active events for " + client.name);
             event = result;
             callback(err);
@@ -236,10 +238,7 @@ $(document).ready(function () {
     function(err){
       if (err) return console.error("Error while processing checks data: " + err);
       $("#client-details #checks").html(spans);
-      
-      
     });
-
   });
 
   //
@@ -249,7 +248,6 @@ $(document).ready(function () {
   socket.on('checks', function(data) {
     checks = JSON.parse(data.content);
   });
-
 
   $("#clients-list").on('click', 'a', function(e) {
     getClient(this.id);

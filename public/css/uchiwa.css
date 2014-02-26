@@ -157,3 +157,6 @@ hr {
 .well span {
   display: block;
 }
+.well:hover {
+  background-color: rgb(255, 255, 204);
+}

@@ -35,25 +35,42 @@ var getStyle = function(status, callback){
   }
 };
 
+var findClient = function(id, callback){
+  var client = clients.filter(function (e) { return e.name == id });
+  if(client.length > 0){
+    callback(null, new Client(client[0]));
+  }
+  else {
+    callback(true);
+  }
+}
+
 /**
 * getClient: Request to socket the client detail while modal window is shown
 * @param id {string} Name of the client
 */
 var getClient = function(id){
+  var timer;
   clearInterval(timer);
-  client = new Client(id);
-  socket.emit('get_client', {name: id});
-  // Listen to hide event of modal
-  $('#client-details').on('hide.bs.modal', function () {
-    $(this).off('hide.bs.modal');
-    clearInterval(timer);
-  })
-  // Fetch client while modal is shown
-  var timer = setInterval(function(){
-    if($("#client-details").data('bs.modal').isShown){
-      socket.emit('get_client', {name: id});
+  findClient(id, function(err, result){
+    if (!err){
+      client = result;
+      socket.emit('get_client', {name: client.name});
+      $('#client-details').on('hide.bs.modal', function () {
+        $(this).off('hide.bs.modal');
+        $("#client-details #checks").html("<span class='not-found'><i class='fa fa-spinner fa-spin'></i></span>");
+        clearInterval(timer);
+      })
+      var timer = setInterval(function(){
+        if($("#client-details").data('bs.modal').isShown){
+          socket.emit('get_client', {name: client.name});
+        }
+      },  10000);
     }
-  },  10000);
+    else {
+      console.log("Client '" + id + "' was not found.")
+    }
+  });
 };
 
 $(document).ready(function(){
