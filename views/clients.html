@@ -9,30 +9,44 @@
     </div>
   </div>
   
-  <div id="clients-list" class='row-fluid'>
+  <div id="clients-list" class='row-fluid'></div>
 
-  </div>
-      <!-- Modal -->
-      <div id="client-details" class="modal modal-wide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body">
-              <h4><i class="fa fa-hdd-o"></i> <span id="name"></span></h4>
-              <div class="row-fluid">
-                <div class="col-xs-8">
-                  <div class="tab-panel fade in active" id="home">
-                    <div id="checks" class="list-group">
-                      <span class='not-found'><i class='fa fa-spinner fa-spin'></i></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-xs-4">
-                  <div class="sparkline-graph"></div>
-                </div>
-              </div><!-- /.row -->
-            </div><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+  <!-- Modal -->
+  <div id="client-details" class="modal modal-wide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="page-header">
+            <h3><i class="fa fa-hdd-o"></i> <span id="name"></span></h3>
+          </div>
+          <span class="divider"></span>
+          <div class="row-fluid">
+            <div class="col-xs-8">
+              <div class="tab-panel fade in active" id="home">
+                <table class="table table-hover table-condensed" id="historyList">
+                  <thead>
+                    <tr>
+                      <th>Status</th>
+                      <th>Check name</th>
+                      <th>History</th>
+                      <th>Last execution</th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-xs-4">
+              <div class="sparkline-graph"></div>
+            </div>
+          </div><!-- /.row -->
+        </div><!-- /.modal-body -->
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
   </div><!-- /.row -->
 </div><!-- /.container -->

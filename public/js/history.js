@@ -1,7 +1,7 @@
 function History(data) {
   this.check = data.check;
   this.history = data.history;
-  this.execution = data.execution;
+  this.last_execution = data.last_execution;
   this.last_status = data.last_status;
   this.last_check = data.last_check;
 }

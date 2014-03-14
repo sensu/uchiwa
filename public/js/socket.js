@@ -31,7 +31,8 @@ $(document).ready(function () {
         if (!err){
           if(i % 4 === 0){
             spans += "</div>";
-            spans += "<div class='row'>";          }
+            spans += "<div class='row'>";          
+          }
           spans += ""
           + "<div class='col-md-3 client'>"
             + "<a href='#' id='"+ client.name +"' data-toggle='modal' data-target='#client-details'>"
@@ -43,9 +44,7 @@ $(document).ready(function () {
             + "</div>"
           + "</div>";
          i++;
-        }
-        //spans += "<a href='#' id='"+ client['name'] +"' class='list-group-item "+ status +"' data-toggle='modal' data-target='#client-details'><span class='name' style='min-width: 160px; display: inline-block;'><strong>"+ client['name'] +"</strong></span><span class=''>"+ checks +"</span><span class='text-muted' style='font-size: 12px;'></span><span class='badge'>"+ client['last_check'] +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
-        
+        }        
         nextClient();
       });          
     };
@@ -144,7 +143,6 @@ $(document).ready(function () {
   
     client.history = JSON.parse(data.content);
     var spans = "";
-    var clientDetails = $("#client-details");
 
     $("#client-details #name").html(client.name);
  
@@ -204,32 +202,40 @@ $(document).ready(function () {
         }
       ], function(err){
         if (!err){
-          if(event) output = "<span class='output'>"+ event.output +"</span><span class='text-muted' style='font-size: 12px;'> - " + event.occurrences + " occurrences</span>";
-          spans += "<a href='#' class='list-group-item "+ status +"' data-toggle='collapse' data-target='#"+ history.check + "'>"
-            + "<span class='name' style='min-width: 180px; display: inline-block;'><strong>"+ history.check +"</strong></span>"
-            + output
-            + "<span class='badge'>"+ history.last_check +" ago</span><span class='pull-right'><i class='fa fa-clock-o'></i></span></a>";
+          spans += "<tr data-toggle='collapse' data-target='#"+ history.check +"' class='accordion-toggle'>";
 
-          if(event) eventDetails = "<li class='list-group-item'><strong>Full output</strong><span class='pull-right'><em>"+ event.output +"</em></span></li>"
-            + "<li class='list-group-item'><strong>Flapping</strong><span class='pull-right'><em>"+ event.flapping +"</em></span></li>"
-            + "<li class='list-group-item'><strong>Event handlers</strong><span class='pull-right'><em>"+ event.handlers +"</em></span></li>";
+          if (history.last_status == 0){
+            if(history.last_execution == 0){
+              spans += "<td><span class='label label-warning'>Inactive</span></td>";
+            }
+            else {
+              spans += "<td><span class='label label-success'>Active</span></td>";
+            }
+          }
+          else if(history.last_status == 1){
+            spans += "<td><span class='label label-warning'>Warning</span></td>";
+          }
+          else if(history.last_status == 2){
+            spans += "<td><span class='label label-danger'>Critical</span></td>";
+          }
+          else {
+            spans += "<td><span class='label label-default'>Unknown</span></td>";
+          }
 
-          spans += "<span id='"+ history['check'] + "' class='"+ detailsClass + "'>"
-            + "<div class='row'>"
-              + "<div class='col-xs-12'>"
-                + "<ul class='list-group'>"
-                  + eventDetails
-                  + "<li class='list-group-item'><strong>Last results</strong><span class='pull-right'><em>"+ history.history +"</em></span></li>"
-                  + "<li class='list-group-item'><strong>Command</strong><span class='pull-right'><em>"+ check.command +"</em></span></li>"
-                  + "<li class='list-group-item'><strong>Subscribers</strong><span class='pull-right'><em>"+ check.subscribers +"</em></span></li>"
-                + "</ul>"
-              + "</div>"
-            + "</div>"
-            + "</span>";
+          spans += "<td>"+ history.check +"</td>"
+                  + "<td>"+ history.history +"</td>"
+                  + "<td><i class='fa fa-clock-o'></i> "+ history.last_check +"</td>"
+                  + "<td class='text-center'>"
+                    + "<a href='#' class='btn btn-default btn-xs' onclick='createStash(\"silence/"+ client.name +"/"+ history.check +"\")'> <i class='fa fa-volume-up'></i></a>"
+                    + "<a href='#' class='btn btn-default btn-xs'> <i class='fa fa-times'></i></a>"
+                  + "</td>"
+                + "</tr>"
+                + "<tr>"
+                  + "<td colspan='6' class='hiddenRow'><div id='"+ history.check +"' class='accordian-body collapse'>Demo2</div></td>"
+                + "</tr>";
         }
         nextCheck();
       });
-      
     }
 
     async.each(client.history, function(check, callback){
@@ -237,7 +243,7 @@ $(document).ready(function () {
     },
     function(err){
       if (err) return console.error("Error while processing checks data: " + err);
-      $("#client-details #checks").html(spans);
+      $("#client-details #historyList tbody").html(spans);
     });
   });
 
@@ -252,5 +258,10 @@ $(document).ready(function () {
   $("#clients-list").on('click', 'a', function(e) {
     getClient(this.id);
   });
-
 });
+
+var createStash = function(id){
+  var data = {path: id, content:{"reason": "uchiwa"}};
+  console.log(data.path);
+  socket.emit('create_stash', JSON.stringify(data));
+};

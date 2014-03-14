@@ -126,6 +126,17 @@ io.sockets.on('connection', function (socket) {
       io.sockets.emit('client', {content: JSON.stringify(sensu.client)});
     });
   });
+  socket.on('create_stash', function (data){
+    console.log(data)
+    sensu.postStash(data, function(err, result){
+      if(err){
+        console.log("error");
+      }
+      else {
+        console.log("success");
+      }
+    });
+  });
 });
 
 /**

@@ -21,6 +21,8 @@ color: #000;
 .breadcrumb a {
   color: #fff;
 }
+
+/* Modal */
 .modal.modal-wide .modal-dialog {
   width: 95%;
   padding: 10px 0px;
@@ -28,6 +30,7 @@ color: #000;
 .modal-wide .modal-body {
   overflow-y: auto;
   max-height: 800px;
+  padding-top: 0px;
 }
 .modal-wide .modal-body .tab-content { 
   margin-bottom: 200px;
@@ -159,4 +162,11 @@ hr {
 }
 .well:hover {
   background-color: rgb(255, 255, 204);
+}
+
+.table>tbody>tr>td {
+  vertical-align: middle;
+}
+.table .hiddenRow {
+    padding: 0 !important;
 }
