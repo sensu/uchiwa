@@ -38,7 +38,7 @@ History.prototype.getStyle = function (callback) {
 History.prototype.getCheck = function (callback) {
    checkName = this.check;
   if(checkName == "keepalive"){
-    callback(null, new Check({name: check, command: "keepalive", subscribers: "", interval: ""}));
+    callback(null, new Check({name: checkName, command: "keepalive", subscribers: "", interval: ""}));
   }
   else {
     //console.log(checkName + " " + checks);

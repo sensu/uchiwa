@@ -2,6 +2,23 @@ $(document).ready(function () {
   socket = io.connect();
   socket.emit('get_clients');
 
+  socket.on('checks', function(data) {
+    checks = JSON.parse(data.content);
+  });
+
+  socket.on('stashes', function(data) {
+    stashes = JSON.parse(data.content);
+  });
+
+  socket.on('messenger', function(data) {
+    var message = JSON.parse(data.content);
+    displayMessage(message.type, message.page, message.content);
+  });
+
+  $("#clients-list").on('click', 'a', function(e) {
+    getClient(this.id);
+  });
+
   //
   // Clients
   //
@@ -136,7 +153,7 @@ $(document).ready(function () {
   });
 
   //
-  // Client
+  // Client details
   //
 
   socket.on('client', function(data) {
@@ -260,30 +277,4 @@ $(document).ready(function () {
       $("#client-details #historyList tbody").html(spans);
     });
   });
-
-  //
-  // Checks
-  //
-
-  socket.on('checks', function(data) {
-    checks = JSON.parse(data.content);
-  });
-
-  socket.on('stashes', function(data) {
-    stashes = JSON.parse(data.content);
-  });
-
-  $("#clients-list").on('click', 'a', function(e) {
-    getClient(this.id);
-  });
 });
-
-var postStash = function(id){
-  var data = {path: id, content:{"reason": "uchiwa"}};
-  socket.emit('create_stash', JSON.stringify(data));
-};
-
-var deleteStash = function(id){
-  var data = {path: id, content:{}};
-  socket.emit('delete_stash', JSON.stringify(data));
-};

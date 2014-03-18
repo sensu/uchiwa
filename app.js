@@ -139,20 +139,21 @@ io.sockets.on('connection', function (socket) {
   socket.on('create_stash', function (data){
     sensu.postStash(data, function(err, result){
       if(err){
-        console.log("error");
+        io.sockets.emit('messenger', {content: JSON.stringify({"type": "error", "page": "client-details", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
       }
       else {
         console.log("success");
+        io.sockets.emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The stash has been created."})});
       }
     });
   });
   socket.on('delete_stash', function (data){
     sensu.deleteStash(data, function(err){
       if(err){
-        console.log("error");
+        io.sockets.emit('messenger', {content: JSON.stringify({"type": "error", "page": "client-details", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
       }
       else {
-        console.log("success");
+        io.sockets.emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The stash has been deleted."})});
       }
     });
   });

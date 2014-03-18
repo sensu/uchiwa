@@ -60,12 +60,13 @@ var getClient = function(id){
         $(this).off('hide.bs.modal');
         $("#client-details #checks").html("<span class='not-found'><i class='fa fa-spinner fa-spin'></i></span>");
         clearInterval(timer);
+        client = null;
       })
       var timer = setInterval(function(){
         if($("#client-details").data('bs.modal').isShown){
           socket.emit('get_client', {name: client.name});
         }
-      },  10000);
+      }, 10000);
     }
     else {
       console.log("Client '" + id + "' was not found.")
@@ -87,3 +88,26 @@ $(document).ready(function(){
     });
   }
 });
+
+var postStash = function(id){
+  var data = {path: id, content:{"reason": "uchiwa"}};
+  socket.emit('create_stash', JSON.stringify(data));
+};
+
+var deleteStash = function(id){
+  var data = {path: id, content:{}};
+  socket.emit('delete_stash', JSON.stringify(data));
+};
+
+var displayMessage = function(type, page, message){
+  if (type == "danger" || type == "warning" || type == "success" || type == "info"){
+    type == "default";
+  }
+
+  var html = "<div class='alert alert-"+ type +" alert-dismissable>"
+             + "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>"
+             + message
+             + "</div>";
+
+  $("#" + page + " #message").html(html);
+};
