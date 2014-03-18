@@ -8,4 +8,5 @@ function Event(data) {
   this.occurrences = data.occurrences;
   this.output = data.output;
   this.status = data.status;
+  this.silence_path = "silence/"+this.client+"/"+this.check;
 }

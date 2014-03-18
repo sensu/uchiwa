@@ -225,15 +225,29 @@ $(document).ready(function () {
           spans += "<td>"+ history.check +"</td>"
                   + "<td>"+ history.history +"</td>"
                   + "<td><i class='fa fa-clock-o'></i> "+ history.last_check +"</td>"
-                  + "<td class='text-center'>"
-                    + "<a href='#' class='btn btn-default btn-xs' onclick='createStash(\"silence/"+ client.name +"/"+ history.check +"\")'> <i class='fa fa-volume-up'></i></a>"
-                    + "<a href='#' class='btn btn-default btn-xs'> <i class='fa fa-times'></i></a>"
+                  + "<td class='text-center'>";
+
+          if(_.isObject(check)){
+            //console.log('check is not null '+check);
+            check.isSilenced("silence/"+client.name+"/"+check.name, function(result){
+              if(result){
+                spans += "<a href='#' class='btn btn-success btn-xs btn-hover' onclick='deleteStash(\"silence/"+ client.name +"/"+ history.check +"\")'> <i class='fa fa-volume-off'></i></a>";
+              }
+              else {
+                spans += "<a href='#' class='btn btn-warning btn-xs btn-hover' onclick='postStash(\"silence/"+ client.name +"/"+ history.check +"\")'> <i class='fa fa-volume-up'></i></a>";
+              }
+            });
+          }
+
+          spans += "<a href='#' class='btn btn-danger btn-xs btn-hover'> <i class='fa fa-times'></i></a>"
                   + "</td>"
                 + "</tr>"
                 + "<tr>"
                   + "<td colspan='6' class='hiddenRow'><div id='"+ history.check +"' class='accordian-body collapse'>Demo2</div></td>"
                 + "</tr>";
         }
+
+        
         nextCheck();
       });
     }
@@ -255,13 +269,21 @@ $(document).ready(function () {
     checks = JSON.parse(data.content);
   });
 
+  socket.on('stashes', function(data) {
+    stashes = JSON.parse(data.content);
+  });
+
   $("#clients-list").on('click', 'a', function(e) {
     getClient(this.id);
   });
 });
 
-var createStash = function(id){
+var postStash = function(id){
   var data = {path: id, content:{"reason": "uchiwa"}};
-  console.log(data.path);
   socket.emit('create_stash', JSON.stringify(data));
+};
+
+var deleteStash = function(id){
+  var data = {path: id, content:{}};
+  socket.emit('delete_stash', JSON.stringify(data));
 };

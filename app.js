@@ -85,13 +85,24 @@ var pull = function(){
         sensu.checks = result;
         callback(err);
       });
+    },
+    function(callback){
+      sensu.getStashes(function(err, result){
+        sensu.stashes = result;
+        callback(err);
+      });
+    },
+    function(callback){
+      sensu.getTimestamp(sensu.stashes, "content.timestamp", function(err){
+        callback();
+      });
     }
   ], function(err){
     if (!err){
-      console.log("refreshed!");
       io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
       io.sockets.emit('clients', {content: JSON.stringify(sensu.clients)});
       io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});
+      io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
     }
   });
 };
@@ -122,13 +133,21 @@ io.sockets.on('connection', function (socket) {
       }
     ], function(err){
       if (err) return console.error("Fatal error! " + err);
-      console.log("refreshed!");
       io.sockets.emit('client', {content: JSON.stringify(sensu.client)});
     });
   });
   socket.on('create_stash', function (data){
-    console.log(data)
     sensu.postStash(data, function(err, result){
+      if(err){
+        console.log("error");
+      }
+      else {
+        console.log("success");
+      }
+    });
+  });
+  socket.on('delete_stash', function (data){
+    sensu.deleteStash(data, function(err){
       if(err){
         console.log("error");
       }
@@ -151,6 +170,7 @@ app.get('/clients', function(req,res) {
     io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
     io.sockets.emit('clients', {content: JSON.stringify(sensu.clients)});
     io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});
+    io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
   });
 });
 app.get('/events',function(req,res) {

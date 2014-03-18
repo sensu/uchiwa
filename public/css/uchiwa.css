@@ -170,3 +170,12 @@ hr {
 .table .hiddenRow {
     padding: 0 !important;
 }
+
+.btn-hover {
+  font-weight: normal;
+  color: #333333;
+  cursor: pointer;
+  background-color: inherit;
+  border-color: transparent;
+  width: 50%;
+}
