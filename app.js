@@ -6,6 +6,7 @@ var express = require('express'),
   http = require('http'),
   path = require('path'),
   async = require('async'),
+  moment = require('moment'),
   app = module.exports = express();
 
 server = http.createServer(app);
@@ -14,6 +15,7 @@ io.set('log level', 1);
 
 var config = require('./config.js')
 var Sensu = require('./lib/sensu.js').Sensu;
+var clients = {};
 
 /**
  * App configuration
@@ -111,8 +113,18 @@ var pull = function(){
 pull();
 setInterval(pull, config.uchiwa.refresh);
 
-// Listen for events
+
 io.sockets.on('connection', function (socket) {
+
+  // Keep track of active clients
+  clients[socket.id] = socket; 
+
+  // Remove client on disconnection
+  socket.on('disconnect', function () {
+    delete clients[socket.id];
+  });
+
+  // Listen for events
   socket.on('get_client', function (data){
     async.series([
       function(callback){
@@ -133,27 +145,26 @@ io.sockets.on('connection', function (socket) {
       }
     ], function(err){
       if (err) return console.error("Fatal error! " + err);
-      io.sockets.emit('client', {content: JSON.stringify(sensu.client)});
+      clients[socket.id].emit('client', {content: JSON.stringify(sensu.client)});
     });
   });
   socket.on('create_stash', function (data){
     sensu.postStash(data, function(err, result){
       if(err){
-        io.sockets.emit('messenger', {content: JSON.stringify({"type": "error", "page": "client-details", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "page": "client-details", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
       }
       else {
-        console.log("success");
-        io.sockets.emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The stash has been created."})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The stash has been created."})});
       }
     });
   });
   socket.on('delete_stash', function (data){
     sensu.deleteStash(data, function(err){
       if(err){
-        io.sockets.emit('messenger', {content: JSON.stringify({"type": "error", "page": "client-details", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "page": "client-details", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
       }
       else {
-        io.sockets.emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The stash has been deleted."})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The stash has been deleted."})});
       }
     });
   });

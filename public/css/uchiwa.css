@@ -179,3 +179,7 @@ hr {
   border-color: transparent;
   width: 50%;
 }
+
+.btn.disabled {
+  color: #C8C8C8;
+}

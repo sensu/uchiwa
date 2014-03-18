@@ -163,7 +163,7 @@ $(document).ready(function () {
 
     $("#client-details #name").html(client.name);
  
-    var parseCheck = function(data, nextCheck) {
+    var parseHistory = function(data, nextCheck) {
       history = new History(data);
       var output = "";
       var eventDetails = "";
@@ -255,9 +255,13 @@ $(document).ready(function () {
               }
             });
           }
+          if(_.isObject(event)){
+            spans += "<a href='#' class='btn btn-danger btn-xs btn-hover'> <i class='fa fa-check'></i></a>";
+          } else {
+            spans += "<a href='#' class='btn btn-xs disabled'> <i class='fa fa-check'></i></a>";
+          }
 
-          spans += "<a href='#' class='btn btn-danger btn-xs btn-hover'> <i class='fa fa-times'></i></a>"
-                  + "</td>"
+          spans += "</td>"
                 + "</tr>"
                 + "<tr>"
                   + "<td colspan='6' class='hiddenRow'><div id='"+ history.check +"' class='accordian-body collapse'>Demo2</div></td>"
@@ -270,7 +274,7 @@ $(document).ready(function () {
     }
 
     async.each(client.history, function(check, callback){
-      parseCheck(check, callback);
+      parseHistory(check, callback);
     },
     function(err){
       if (err) return console.error("Error while processing checks data: " + err);
