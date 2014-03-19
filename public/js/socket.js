@@ -248,15 +248,15 @@ $(document).ready(function () {
             //console.log('check is not null '+check);
             check.isSilenced("silence/"+client.name+"/"+check.name, function(result){
               if(result){
-                spans += "<a href='#' class='btn btn-success btn-xs btn-hover' onclick='deleteStash(\"silence/"+ client.name +"/"+ history.check +"\")'> <i class='fa fa-volume-off'></i></a>";
+                spans += "<a href='#' class='btn btn-success btn-xs btn-hover' onclick=\"deleteStash('"+ client.name +"', '"+ history.check +"')\"> <i class='fa fa-volume-off'></i></a>";
               }
               else {
-                spans += "<a href='#' class='btn btn-warning btn-xs btn-hover' onclick='postStash(\"silence/"+ client.name +"/"+ history.check +"\")'> <i class='fa fa-volume-up'></i></a>";
+                spans += "<a href='#' class='btn btn-warning btn-xs btn-hover' onclick=\"postStash('"+ client.name +"', '"+ history.check +"')\"> <i class='fa fa-volume-up'></i></a>";
               }
             });
           }
           if(_.isObject(event)){
-            spans += "<a href='#' class='btn btn-danger btn-xs btn-hover'> <i class='fa fa-check'></i></a>";
+            spans += "<a href='#' class='btn btn-danger btn-xs btn-hover' onclick=\"resolveEvent('"+ client.name +"', '"+ history.check +"')\"> <i class='fa fa-check'></i></a>";
           } else {
             spans += "<a href='#' class='btn btn-xs disabled'> <i class='fa fa-check'></i></a>";
           }

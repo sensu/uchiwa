@@ -48,56 +48,69 @@ app.use(function(err, req, res, next) {
 
 var sensu = new Sensu(config.sensu);
 
+var getStashes = function(callback){
+  sensu.getStashes(function(err, result){
+    sensu.stashes = result;
+    sensu.getTimestamp(sensu.stashes, "content.timestamp", function(){});
+    callback(err);
+  });
+};
+
+var getClients = function(callback){
+  sensu.getClients(function(err, result){
+    sensu.clients = result;
+    sensu.getTimestamp(sensu.clients, "timestamp", function(err){});
+    callback(err);
+  });
+};
+
+var getEvents = function(callback){
+  sensu.getEvents(function(err, result){
+    sensu.events = result;
+    sensu.getTimestamp(sensu.events, "timestamp", function(err){});
+    callback(err);
+  });
+};
+
+var getChecks = function(callback){
+  sensu.getChecks(function(err, result){
+    sensu.checks = result;
+    callback(err);
+  });
+};
+
+var getClient = function(data, callback){
+  sensu.getClient(data.name, function(err, result){
+    sensu.client = result;
+    sensu.sortEvents(sensu.client, "last_status", function(err){});
+    sensu.getTimestamp(sensu.client, "last_execution", function(err){});
+    callback(err);
+  });
+};
+
 var pull = function(){
   async.series([
     function(callback){
-      sensu.getClients(function(err, result){
-        sensu.clients = result;
-        callback(err);
-      });
+      getClients(function(err){ callback(err); });
     },
     function(callback){
-      sensu.getTimestamp(sensu.clients, "timestamp", function(err){
-        callback();
-      });
-    },
-    function(callback){
-      sensu.getEvents(function(err, result){
-        sensu.events = result;
-        callback(err);
-      });
-    },
-    function(callback){
-      sensu.getTimestamp(sensu.events, "issued", function(err){
-        callback();
-      });
+      getEvents(function(err){ callback(err); });
     },
     function(callback){
       sensu.sortEvents(sensu.events, 'status', function(err){
-        callback();
+        callback(err);
       });
     },
     function(callback){
       sensu.sortClients(sensu.clients, sensu.events, function(err){
-        callback();
-      });
-    },
-    function(callback){
-      sensu.getChecks(function(err, result){
-        sensu.checks = result;
         callback(err);
       });
     },
     function(callback){
-      sensu.getStashes(function(err, result){
-        sensu.stashes = result;
-        callback(err);
-      });
+      getChecks(function(err){ callback(err); });
     },
     function(callback){
-      sensu.getTimestamp(sensu.stashes, "content.timestamp", function(err){
-        callback();
-      });
+      getStashes(function(err){ callback(err); });
     }
   ], function(err){
     if (!err){
@@ -108,12 +121,13 @@ var pull = function(){
     }
   });
 };
-
 // Perform a pull on start and every config.uchiwa.refresh milliseconds
 pull();
 setInterval(pull, config.uchiwa.refresh);
 
-
+/**
+ * Listen for events
+ */
 io.sockets.on('connection', function (socket) {
 
   // Keep track of active clients
@@ -123,35 +137,25 @@ io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function () {
     delete clients[socket.id];
   });
-
-  // Listen for events
+  
   socket.on('get_client', function (data){
-    async.series([
-      function(callback){
-        sensu.getClient(data.name, function(err, result){
-          sensu.client = result;
-          callback(err);
-        });
-      },
-      function(callback){
-        sensu.sortEvents(sensu.client, "last_status", function(err){
-          callback();
-        });
-      },
-      function(callback){
-        sensu.getTimestamp(sensu.client, "last_execution", function(err){
-          callback();
-        });
+    getClient(data, function(err){
+      if (err){
+        return console.error("Fatal error! " + err);
+      } else {
+        clients[socket.id].emit('client', {content: JSON.stringify(sensu.client)});
       }
-    ], function(err){
-      if (err) return console.error("Fatal error! " + err);
-      clients[socket.id].emit('client', {content: JSON.stringify(sensu.client)});
+    });
+  });
+  socket.on('get_stashes', function (data){
+    getStashes(function(){
+       clients[socket.id].emit('stashes', {content: JSON.stringify(sensu.stashes)});
     });
   });
   socket.on('create_stash', function (data){
     sensu.postStash(data, function(err, result){
       if(err){
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "page": "client-details", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "page": "client-details", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
       }
       else {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The stash has been created."})});
@@ -161,10 +165,20 @@ io.sockets.on('connection', function (socket) {
   socket.on('delete_stash', function (data){
     sensu.deleteStash(data, function(err){
       if(err){
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "page": "client-details", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "page": "client-details", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
       }
       else {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The stash has been deleted."})});
+      }
+    });
+  });
+  socket.on('resolve_event', function (data){
+    sensu.resolveEvent(data, function(err){
+      if(err){
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "page": "client-details", "content": "<strong>Error!</strong> The check was not resolved. Reason: " + err})});
+      }
+      else {
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The check has been resolved."})});
       }
     });
   });
