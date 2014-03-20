@@ -25,13 +25,14 @@ color: #000;
 /* Modal */
 .modal.modal-wide .modal-dialog {
   width: 95%;
-  padding: 10px 0px;
+  padding: 20px 0px 20px 0px;
 }
+
 .modal-wide .modal-body {
   overflow-y: auto;
-  max-height: 800px;
   padding-top: 0px;
 }
+
 .modal-wide .modal-body .tab-content { 
   margin-bottom: 200px;
 }
