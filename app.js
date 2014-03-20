@@ -36,7 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
  * Error handling
  * NODE_ENV=development node app.js
  */
-if ('development' == app.get('env')) {
+if ('development' == process.env.NODE_ENV) {
   console.log('Debugging enabled.')
   app.use(express.errorHandler({showStack: true, dumpExceptions: true}));
   io.set('log level', 3);

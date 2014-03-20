@@ -209,7 +209,7 @@ $(document).ready(function () {
           }
         },
         function(callback){
-          if($("#checks #"+history['check']).hasClass('in')){
+          if($("td #"+client.name+"-"+history.check).hasClass('in')){
             detailsClass = "in";
           }
           else {
@@ -264,7 +264,7 @@ $(document).ready(function () {
           spans += "</td>"
                 + "</tr>"
                 + "<tr>"
-                  + "<td colspan='6' class='hiddenRow'><div id='"+ history.check +"' class='accordian-body collapse'>Demo2</div></td>"
+                  + "<td colspan='6' class='hiddenRow'><div id='"+ history.check +"' class='accordian-body "+ detailsClass +"'>hello!</div></td>"
                 + "</tr>";
         }
 
