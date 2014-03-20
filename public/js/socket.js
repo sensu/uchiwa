@@ -219,7 +219,7 @@ $(document).ready(function () {
         }
       ], function(err){
         if (!err){
-          spans += "<tr data-toggle='collapse' data-target='#"+ history.check +"' class='accordion-toggle'>";
+          spans += "<tr data-toggle='collapse' data-target='#"+ client.name+"-"+history.check +"' class='accordion-toggle'>";
 
           if (history.last_status == 0){
             if(history.last_execution == 0){
@@ -264,7 +264,7 @@ $(document).ready(function () {
           spans += "</td>"
                 + "</tr>"
                 + "<tr>"
-                  + "<td colspan='6' class='hiddenRow'><div id='"+ history.check +"' class='accordian-body "+ detailsClass +"'>hello!</div></td>"
+                  + "<td colspan='6' class='hiddenRow'><div id='"+ client.name+"-"+history.check +"' class='accordian-body "+ detailsClass +"'>Hello there!</div></td>"
                 + "</tr>";
         }
 
