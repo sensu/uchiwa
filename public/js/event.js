@@ -5,6 +5,7 @@ function Event(data) {
   this.handlers = data.handlers;
   this.issued = data.issued;
   this.last_check = data.last_check;
+  this.last_issued = data.last_issued;
   this.occurrences = data.occurrences;
   this.output = data.output;
   this.status = data.status;

@@ -51,7 +51,7 @@ var sensu = new Sensu(config.sensu);
 var getStashes = function(callback){
   sensu.getStashes(function(err, result){
     sensu.stashes = result;
-    sensu.getTimestamp(sensu.stashes, "content.timestamp", function(){});
+    sensu.getTimestamp(sensu.stashes, "content.timestamp", "last_check", function(){});
     callback(err);
   });
 };
@@ -59,7 +59,7 @@ var getStashes = function(callback){
 var getClients = function(callback){
   sensu.getClients(function(err, result){
     sensu.clients = result;
-    sensu.getTimestamp(sensu.clients, "timestamp", function(err){});
+    sensu.getTimestamp(sensu.clients, "timestamp", "last_check", function(err){});
     callback(err);
   });
 };
@@ -67,7 +67,8 @@ var getClients = function(callback){
 var getEvents = function(callback){
   sensu.getEvents(function(err, result){
     sensu.events = result;
-    sensu.getTimestamp(sensu.events, "timestamp", function(err){});
+    sensu.getTimestamp(sensu.events, "timestamp", "last_check", function(err){});
+    sensu.getTimestamp(sensu.events, "issued", "last_issued", function(err){});
     callback(err);
   });
 };
@@ -83,7 +84,7 @@ var getClient = function(data, callback){
   sensu.getClient(data.name, function(err, result){
     sensu.client = result;
     sensu.sortEvents(sensu.client, "last_status", function(err){});
-    sensu.getTimestamp(sensu.client, "last_execution", function(err){});
+    sensu.getTimestamp(sensu.client, "last_execution", "last_check", function(err){});
     callback(err);
   });
 };

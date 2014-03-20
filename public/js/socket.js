@@ -264,7 +264,26 @@ $(document).ready(function () {
           spans += "</td>"
                 + "</tr>"
                 + "<tr>"
-                  + "<td colspan='6' class='hiddenRow'><div id='"+ client.name+"-"+history.check +"' class='accordian-body "+ detailsClass +"'>Hello there!</div></td>"
+                  + "<td colspan='6' class='hiddenRow'><div id='"+ client.name+"-"+history.check +"' class='accordian-body "+ detailsClass +"'>";
+                  
+          if(_.isObject(event)){
+            spans += "<h5>Event details</h5>"
+              + "<dl class='dl-horizontal'>"
+                + "<dt>Output</dt>"
+                + "<dd>"+event.output+"</dd>"
+                + "<dt>Occurrences</dt>"
+                + "<dd>"+event.occurrences+"</dd>"
+                + "<dt>Flapping</dt>"
+                + "<dd>"+event.flapping+"</dd>"
+                + "<dt>Handlers</dt>"
+                + "<dd>"+event.handlers+"</dd>"
+                + "<dt>Issued</dt>"
+                + "<dd>"+event.last_issued+"</dd>"
+              + "</dl>";
+          }
+          
+          spans += "<h5>Check details</h5>" 
+                +"</div></td>"
                 + "</tr>";
         }
 
