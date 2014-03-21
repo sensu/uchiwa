@@ -221,6 +221,7 @@ $(document).ready(function () {
         if (!err){
           spans += "<tr data-toggle='collapse' data-target='#"+ client.name+"-"+history.check +"' class='accordion-toggle'>";
 
+          // Status
           if (history.last_status == 0){
             if(history.last_execution == 0){
               spans += "<td><span class='label label-warning'>Inactive</span></td>";
@@ -239,11 +240,17 @@ $(document).ready(function () {
             spans += "<td><span class='label label-default'>Unknown</span></td>";
           }
 
-          spans += "<td>"+ history.check +"</td>"
-                  + "<td>"+ history.history +"</td>"
-                  + "<td><i class='fa fa-clock-o'></i> "+ history.last_check +"</td>"
+          // Check name
+          spans += "<td>"+ history.check +"</td>";
+
+          // Output
+          spans += (_.isObject(event)) ? "<td>"+ event.output +"</td>" : "<td></td>" ;
+       
+          // Last execution
+          spans += "<td><i class='fa fa-clock-o'></i> "+ history.last_check +"</td>"
                   + "<td class='text-center'>";
 
+          // Silence
           if(_.isObject(check)){
             //console.log('check is not null '+check);
             check.isSilenced("silence/"+client.name+"/"+check.name, function(result){
@@ -255,22 +262,24 @@ $(document).ready(function () {
               }
             });
           }
+
+          // Resolve
           if(_.isObject(event)){
             spans += "<a href='#' class='btn btn-danger btn-xs btn-hover' onclick=\"resolveEvent('"+ client.name +"', '"+ history.check +"')\"> <i class='fa fa-check'></i></a>";
           } else {
             spans += "<a href='#' class='btn btn-xs disabled'> <i class='fa fa-check'></i></a>";
           }
 
+          // Events & Check details
           spans += "</td>"
                 + "</tr>"
                 + "<tr>"
-                  + "<td colspan='6' class='hiddenRow'><div id='"+ client.name+"-"+history.check +"' class='accordian-body "+ detailsClass +"'>";
-                  
+                + "<td colspan='6' class='hiddenRow'><div id='"+ client.name+"-"+history.check +"' class='accordian-body "+ detailsClass +"'>";
+          
+          // Event details
           if(_.isObject(event)){
             spans += "<h5>Event details</h5>"
               + "<dl class='dl-horizontal'>"
-                + "<dt>Output</dt>"
-                + "<dd>"+event.output+"</dd>"
                 + "<dt>Occurrences</dt>"
                 + "<dd>"+event.occurrences+"</dd>"
                 + "<dt>Flapping</dt>"
@@ -282,11 +291,32 @@ $(document).ready(function () {
               + "</dl>";
           }
           
-          spans += "<h5>Check details</h5>" 
-                +"</div></td>"
+          // Check details
+          spans += "<h5>Check details</h5>"
+                + "<dl class='dl-horizontal'>"
+                  + "<dt>Command</dt>"
+                  + "<dd>"+check.command+"</dd>"
+                  + "<dt>History</dt>"
+                  + "<dd>"+history.history+"</dd>"
+                  + "<dt>Subscribers</dt>"
+                  + "<dd>"+check.subscribers+"</dd>"
+                  + "<dt>Handlers</dt>"
+                  + "<dd>"+check.handlers+"</dd>"
+                  + "<dt>Interval</dt>"
+                  + "<dd>"+check.interval+"</dd>"
+                  + "<dt>Type</dt>"
+                  + "<dd>"+check.type+"</dd>"
+                  + "<dt>Handle</dt>"
+                  + "<dd>"+check.handle+"</dd>"
+                  + "<dt>Standalone</dt>"
+                  + "<dd>"+check.standalone+"</dd>"
+                  + "<dt>Subdue</dt>"
+                  + "<dd>Begin: "+check.subdue.begin+" End: "+check.subdue.end+"</dd>";
+
+          spans += "</dl>"; 
+                + "</div></td>"
                 + "</tr>";
         }
-
         
         nextCheck();
       });
