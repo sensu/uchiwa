@@ -72,22 +72,8 @@ $(document).ready(function () {
         parseClient(client, callback);
       },
       function(err){
-        // Once we parsed each clients
-        async.series([
-          // Display message if no events found
-          function(callback){
-            var style;
-            //var currentEvents = clientsList.find(".danger, .warning");
-            if(events.length == 0) { // Do we have at least one alert?
-              status = (filter.clients) ? "block" : "none";
-              spans += "<span class='not-found' style='display: "+ status +";'><i class='fa fa-thumbs-o-up'></i> <h3>No alerts... for now!</h3></span>";
-            }
-            callback();
-          }
-        ], function(err){
-          // Display HTML
-          clientsList.html(spans);
-        });
+        // Display clients
+        clientsList.html(spans);
       });
     }
   });
