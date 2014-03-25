@@ -147,8 +147,12 @@ $(document).ready(function () {
     client.history = JSON.parse(data.content);
     var spans = "";
 
+    // Update client details
     $("#client-details #name").html(client.name);
- 
+    $("#client-details #address").html(client.address);
+    $("#client-details #subscriptions").html(client.subscriptions.join(', '));
+    $("#client-details #last-check").html(client.last_check);
+
     var parseHistory = function(data, nextCheck) {
       history = new History(data);
       var output = "";

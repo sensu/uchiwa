@@ -184,3 +184,7 @@ hr {
 .btn.disabled {
   color: #C8C8C8;
 }
+
+.panel .list-group-item {
+  height:auto; overflow:auto;
+}

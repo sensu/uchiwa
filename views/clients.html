@@ -17,7 +17,7 @@
       <div class="modal-content">
         <div class="modal-body">
           <div class="page-header">
-            <h3><i class="fa fa-hdd-o"></i> <span id="name"></span></h3>
+            <h3><span id="name"></span></h3>
           </div>
           <span class="divider"></span>
           <div class="row-fluid">
@@ -42,7 +42,24 @@
               </div>
             </div>
             <div class="col-xs-4">
-              <div class="sparkline-graph"></div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa fa-hdd-o"></i> Client details</h3>
+                </div>
+                <div class="panel-body">
+                  <div class="list-group">
+                    <div class="list-group-item">IP address
+                      <span class="pull-right text-muted small"><em id="address">Loading...</em></span>
+                    </div>
+                    <div class="list-group-item">Subscriptions
+                      <span class="pull-right text-muted small"><em id="subscriptions">Loading...</em></span>
+                    </div>
+                    <div class="list-group-item">Last check
+                      <span class="pull-right text-muted small"><em id="last-check">Loading...</em></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div><!-- /.row -->
         </div><!-- /.modal-body -->
