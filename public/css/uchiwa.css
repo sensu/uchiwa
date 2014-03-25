@@ -1,19 +1,34 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Open Sans'), local('OpenSans'), url(http://themes.googleusercontent.com/static/fonts/opensans/v8/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+}
+
+html, html a {
+    -webkit-font-smoothing: antialiased !important;;
+}
+
 body { 
-  padding-top: 40px; 
+  padding-top: 40px;
+  background-color: #fff;
+  font-weight: 600;
+  color: #4d4d4d;
 }
 .navbar {
-  background-color: #000;
+  background-color: #32323a;
+  font-weight: 600;
 }
 .navbar-nav > .selected,
 .navbar-nav > .selected a {
-  color: #000;
-  background-color: #fff;
+  background-color: #28282e;
 }
 .navbar-default .navbar-nav> .selected > a {
-color: #000;
+color: #fff;
 }
 .breadcrumb {
-  background-color: #000;
+  background-color: #32323a;
+  text-transform: none;
 }
 .breadcrumb .active {
   color: #fff;
@@ -23,6 +38,10 @@ color: #000;
 }
 
 /* Modal */
+
+.modal-body {
+  background-color: #fff;
+}
 .modal.modal-wide .modal-dialog {
   width: 95%;
   padding: 20px 0px 20px 0px;
@@ -157,6 +176,10 @@ hr {
 }
 .well .lead{
   margin-bottom: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #333;
+  font-size: 18px;
 }
 .well span {
   display: block;
@@ -185,6 +208,63 @@ hr {
   color: #C8C8C8;
 }
 
+.panel {
+  border: 0px;
+  -webkit-box-shadow:0 0 0;
+  box-shadow:0 0 0;
+}
+
+.panel .panel-heading {
+  font-weight: 500;
+}
+
+.panel .panel-title {
+  font-size: 15px;
+  text-transform: uppercase;
+}
+
 .panel .list-group-item {
+  font-weight: 500;
   height:auto; overflow:auto;
+  border-right: 0px;
+  border-left: 0px;
+}
+
+.label {
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active, .btn-warning.active, .open .dropdown-toggle.btn-warning {
+  border:0px;
+}
+
+.timestamp {
+  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.btn-black {
+  background: #333;
+  color: #fff;
+  border-color: #222;
+}
+
+.btn-black:hover,
+.btn-black:active,
+.btn-black:focus {
+   background: #222;
+   border-color: #111;
+   color: #fff;
+}
+
+.title {
+  text-transform: uppercase;
 }

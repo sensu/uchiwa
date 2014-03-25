@@ -56,7 +56,7 @@ $(document).ready(function () {
             + "<div class='well "+ status +"'>"
               + "<span class='lead'>"+ client.name +"</span>"
               + "<span><strong>"+ client.eventsCount() +"</strong></span>"
-              + "<span class='small'><i class='fa fa-clock-o'></i> "+ client.last_check +"</span>"
+              + "<span class='small timestamp'><i class='fa fa-clock-o'></i> "+ client.last_check +"</span>"
               + "</a>"
             + "</div>"
           + "</div>";
@@ -148,7 +148,8 @@ $(document).ready(function () {
     var spans = "";
 
     // Update client details
-    $("#client-details #name").html(client.name);
+    var ackButton = "<span class='pull-right'><button type='button' class='btn btn-sm btn-black'><i class='fa fa-volume-up'></i> Silence</button></span>";
+    $("#client-details #name").html(ackButton + client.name);
     $("#client-details #address").html(client.address);
     $("#client-details #subscriptions").html(client.subscriptions.join(', '));
     $("#client-details #last-check").html(client.last_check);
@@ -268,7 +269,7 @@ $(document).ready(function () {
           
           // Event details
           if(_.isObject(event)){
-            spans += "<h5>Event details</h5>"
+            spans += "<h5 class='title'><i class='fa fa-exclamation-triangle'></i> Event details</h5>"
               + "<dl class='dl-horizontal'>"
                 + "<dt>Occurrences</dt>"
                 + "<dd>"+event.occurrences+"</dd>"
@@ -282,7 +283,7 @@ $(document).ready(function () {
           }
           
           // Check details
-          spans += "<h5>Check details</h5>"
+          spans += "<h5 class='title'><i class='fa fa-terminal'></i> Check details</h5>"
                 + "<dl class='dl-horizontal'>"
                   + "<dt>Command</dt>"
                   + "<dd>"+check.command+"</dd>"
