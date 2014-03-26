@@ -83,9 +83,7 @@ var getChecks = function(callback){
 var getClient = function(data, callback){
   sensu.getClient(data.name, function(err, result){
     sensu.client = result;
-    sensu.sortEvents(sensu.client, "check", function(err){});
-    sensu.client.reverse();
-    sensu.sortEvents(sensu.client, "last_status", function(err){});
+    sensu.sortByKey(sensu.client, "check", "last_status", function(err){});
     sensu.getTimestamp(sensu.client, "last_execution", "last_check", function(err){});
     callback(err);
   });
@@ -100,7 +98,7 @@ var pull = function(){
       getEvents(function(err){ callback(err); });
     },
     function(callback){
-      sensu.sortEvents(sensu.events, 'status', function(err){
+      sensu.sortByKey(sensu.events, "check", "status", function(err){
         callback(err);
       });
     },
