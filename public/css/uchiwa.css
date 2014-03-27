@@ -162,6 +162,13 @@ hr {
   color: #000;
 }
 
+#client-details td span.output {
+  text-overflow: ellipsis;
+  overflow : hidden;
+  display: block;
+  max-width: 330px;
+  white-space: nowrap;
+}
 .well {
   border: 0px;
 }
@@ -270,4 +277,9 @@ hr {
 
 .title {
   text-transform: uppercase;
+}
+
+.subtitle {
+  text-transform: uppercase;
+  font-size: 12px;
 }

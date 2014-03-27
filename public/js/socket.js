@@ -55,7 +55,7 @@ $(document).ready(function () {
             + "<a href='#' id='"+ client.name +"' data-toggle='modal' data-target='#client-details'>"
             + "<div class='well "+ status +"'>"
               + "<span class='lead'>"+ client.name +"</span>"
-              + "<span><strong>"+ client.eventsCount() +"</strong></span>"
+              + "<span class='subtitle'><strong>"+ client.eventsCount() +"</strong></span>"
               + "<span class='small timestamp'><i class='fa fa-clock-o'></i> "+ client.last_check +"</span>"
               + "</a>"
             + "</div>"
@@ -235,7 +235,7 @@ $(document).ready(function () {
           spans += "<td>"+ history.check +"</td>";
 
           // Output
-          spans += (_.isObject(event)) ? "<td>"+ event.output +"</td>" : "<td></td>" ;
+          spans += (_.isObject(event)) ? "<td><span class='output'>"+ event.output +"</span></td>" : "<td></td>" ;
        
           // Last execution
           spans += "<td><i class='fa fa-clock-o'></i> "+ history.last_check +"</td>"
