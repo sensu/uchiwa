@@ -146,10 +146,20 @@ $(document).ready(function () {
   
     client.history = JSON.parse(data.content);
     var spans = "";
+    //var ackButton = "";
+
+    // Update title with client status
+    client.isSilenced(function(result){
+      if(result){
+        var ackButton = "<i class='fa fa-volume-off'></i> <span class='pull-right' onclick=\"deleteStash('"+ client.name +"')\"><button type='button' class='btn btn-danger btn-sm '>Un-silence client</button></span>";
+      }
+      else {
+        var ackButton = "<i class='fa fa-volume-up'></i> <span class='pull-right' onclick=\"postStash('"+ client.name +"')\"><button type='button' class='btn btn-sm btn-black'>Silence client</button></span>";
+      }
+      $("#client-details #name").html(ackButton + client.name);
+    });
 
     // Update client details
-    var ackButton = "<span class='pull-right'><button type='button' class='btn btn-sm btn-black'><i class='fa fa-volume-up'></i> Silence</button></span>";
-    $("#client-details #name").html(ackButton + client.name);
     $("#client-details #address").html(client.address);
     $("#client-details #subscriptions").html(client.subscriptions.join(', '));
     $("#client-details #last-check").html(client.last_check);

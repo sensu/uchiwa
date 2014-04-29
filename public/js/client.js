@@ -45,12 +45,13 @@ Client.prototype.eventsCount = function(){
   }
 }
 
-Client.prototype.isSilenced = function(path, callback){
+Client.prototype.isSilenced = function(callback){
+  var path = "silence/" + this.name;
   var result = stashes.filter(function (e) { return e.path === path });
   if(result.length > 0){
     callback(true);
   }
   else {
-    callback(null);
+    callback(false);
   }
 }

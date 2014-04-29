@@ -90,13 +90,25 @@ $(document).ready(function(){
 });
 
 var postStash = function(client_name, check_name){
-  var full_path = "silence/"+ client_name +"/"+ check_name;
+  if (_.isUndefined(check_name)){
+    check_name = "";
+  }
+  else {
+    check_name = "/" + check_name;
+  }
+  var full_path = "silence/"+ client_name + check_name;
   var payload = {path: full_path, content:{"reason": "uchiwa"}};
   socket.emit('create_stash', JSON.stringify(payload));
 };
 
 var deleteStash = function(client_name, check_name){
-  var full_path = "silence/"+ client_name +"/"+ check_name;
+  if (_.isUndefined(check_name)){
+    check_name = "";
+  }
+  else {
+    check_name = "/" + check_name;
+  }
+  var full_path = "silence/"+ client_name + check_name;
   var payload = {path: full_path, content:{}};
   socket.emit('delete_stash', JSON.stringify(payload));
 };
