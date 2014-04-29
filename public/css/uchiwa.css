@@ -166,7 +166,7 @@ hr {
   text-overflow: ellipsis;
   overflow : hidden;
   display: block;
-  max-width: 330px;
+  max-width: 320px;
   white-space: nowrap;
 }
 .well {
