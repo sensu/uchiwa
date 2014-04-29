@@ -281,6 +281,8 @@ $(document).ready(function () {
           if(_.isObject(event)){
             spans += "<h5 class='title'><i class='fa fa-exclamation-triangle'></i> Event details</h5>"
               + "<dl class='dl-horizontal'>"
+                + "<dt>Full output</dt>"
+                + "<dd>"+event.output+"</dd>"
                 + "<dt>Occurrences</dt>"
                 + "<dd>"+event.occurrences+"</dd>"
                 + "<dt>Flapping</dt>"
