@@ -149,7 +149,7 @@ io.sockets.on('connection', function (socket) {
     });
   });
   socket.on('get_clients', function (data){
-    getStashes(function(){
+    getClients(function(){
        clients[socket.id].emit('clients', {content: JSON.stringify(sensu.clients)});
     });
   });
