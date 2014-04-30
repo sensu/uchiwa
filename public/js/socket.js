@@ -1,4 +1,8 @@
 $(document).ready(function () {
+  toastr.options = {
+    "positionClass": "toast-bottom-right"
+  };
+
   socket = io.connect();
   socket.emit('get_clients');
 
@@ -12,7 +16,7 @@ $(document).ready(function () {
 
   socket.on('messenger', function(data) {
     var message = JSON.parse(data.content);
-    displayMessage(message.type, message.page, message.content);
+    notification(message.type, message.content);
   });
 
   $("#clients-list").on('click', 'a', function(e) {
@@ -36,6 +40,7 @@ $(document).ready(function () {
       var checks;
       var status;
       var subscriptions = "";
+      var ackButton;
       async.series([
         // Get span color
         function(callback){
@@ -43,6 +48,19 @@ $(document).ready(function () {
             status = result;
             callback();
           });
+        },
+        function(callback){
+          
+          client.isSilenced(function(result){
+            if(result){
+              ackButton = "<span class='pull-right'><i class='fa fa-volume-off' onclick=\"deleteStash(event, '"+ client.name +"')\"></i></span>";
+            }
+            else {
+              ackButton = "<span class='pull-right'><i class='fa fa-volume-up' onclick=\"postStash(event, '"+ client.name +"')\"></i></span>";
+            }
+            
+          });
+          callback();
         }
       ], function(err){
         if (!err){
@@ -54,7 +72,7 @@ $(document).ready(function () {
           + "<div class='col-md-3 client'>"
             + "<a href='#' id='"+ client.name +"' data-toggle='modal' data-target='#client-details'>"
             + "<div class='well "+ status +"'>"
-              + "<span class='lead'>"+ client.name +"</span>"
+              + "<span class='lead'>"+ client.name + ackButton +"  </span>"
               + "<span class='subtitle'><strong>"+ client.eventsCount() +"</strong></span>"
               + "<span class='small timestamp'><i class='fa fa-clock-o'></i> "+ client.last_check +"</span>"
               + "</a>"
@@ -151,10 +169,10 @@ $(document).ready(function () {
     // Update title with client status
     client.isSilenced(function(result){
       if(result){
-        var ackButton = "<i class='fa fa-volume-off'></i> <span class='pull-right' onclick=\"deleteStash('"+ client.name +"')\"><button type='button' class='btn btn-danger btn-sm '>Un-silence client</button></span>";
+        var ackButton = "<i class='fa fa-volume-off'></i> <span class='pull-right' onclick=\"deleteStash(event, '"+ client.name +"')\"><button type='button' class='btn btn-danger btn-sm '>Un-silence client</button></span>";
       }
       else {
-        var ackButton = "<i class='fa fa-volume-up'></i> <span class='pull-right' onclick=\"postStash('"+ client.name +"')\"><button type='button' class='btn btn-sm btn-black'>Silence client</button></span>";
+        var ackButton = "<i class='fa fa-volume-up'></i> <span class='pull-right' onclick=\"postStash(event, '"+ client.name +"')\"><button type='button' class='btn btn-sm btn-black'>Silence client</button></span>";
       }
       $("#client-details #name").html(ackButton + client.name);
     });
@@ -165,13 +183,13 @@ $(document).ready(function () {
     $("#client-details #last-check").html(client.last_check);
 
     var parseHistory = function(data, nextCheck) {
-      history = new History(data);
+      clientHistory = new History(data);
       var output = "";
       var eventDetails = "";
       var events = "";
       async.series([
         function(callback){
-          history.getStyle(function(result){
+          clientHistory.getStyle(function(result){
             status = result;
             callback();
           });
@@ -183,15 +201,15 @@ $(document).ready(function () {
           });
         },
         function(callback){
-          history.getEvent(clientEvents, client.name, function(err, result){
+          clientHistory.getEvent(clientEvents, client.name, function(err, result){
             if(err) console.log("Could not find active events for " + client.name);
             event = result;
             callback(err);
           });
         },
         function(callback){
-          history.getCheck(function(err, result){
-            if(err) console.log("Could not find the check " + history.check + " for client " + client.name);
+          clientHistory.getCheck(function(err, result){
+            if(err) console.log("Could not find the check " + clientHistory.check + " for client " + client.name);
             check = result;
             callback(err);
           });
@@ -210,7 +228,7 @@ $(document).ready(function () {
           }
         },
         function(callback){
-          if($("td #"+client.name+"-"+history.check).hasClass('in')){
+          if($("td #"+client.name+"-"+clientHistory.check).hasClass('in')){
             detailsClass = "in";
           }
           else {
@@ -220,21 +238,21 @@ $(document).ready(function () {
         }
       ], function(err){
         if (!err){
-          spans += "<tr data-toggle='collapse' data-target='#"+ client.name+"-"+history.check +"' class='accordion-toggle'>";
+          spans += "<tr data-toggle='collapse' data-target='#"+ client.name+"-"+clientHistory.check +"' class='accordion-toggle'>";
 
           // Status
-          if (history.last_status == 0){
-            if(history.last_execution == 0){
+          if (clientHistory.last_status == 0){
+            if(clientHistory.last_execution == 0){
               spans += "<td><span class='label label-warning'>Inactive</span></td>";
             }
             else {
               spans += "<td><span class='label label-success'>Active</span></td>";
             }
           }
-          else if(history.last_status == 1){
+          else if(clientHistory.last_status == 1){
             spans += "<td><span class='label label-warning'>Warning</span></td>";
           }
-          else if(history.last_status == 2){
+          else if(clientHistory.last_status == 2){
             spans += "<td><span class='label label-danger'>Critical</span></td>";
           }
           else {
@@ -242,13 +260,13 @@ $(document).ready(function () {
           }
 
           // Check name
-          spans += "<td>"+ history.check +"</td>";
+          spans += "<td>"+ clientHistory.check +"</td>";
 
           // Output
           spans += (_.isObject(event)) ? "<td><span class='output'>"+ event.output +"</span></td>" : "<td></td>" ;
        
           // Last execution
-          spans += "<td><i class='fa fa-clock-o'></i> "+ history.last_check +"</td>"
+          spans += "<td><i class='fa fa-clock-o'></i> "+ clientHistory.last_check +"</td>"
                   + "<td class='text-center'>";
 
           // Silence
@@ -256,17 +274,17 @@ $(document).ready(function () {
             //console.log('check is not null '+check);
             check.isSilenced("silence/"+client.name+"/"+check.name, function(result){
               if(result){
-                spans += "<a href='#' class='btn btn-success btn-xs btn-hover' onclick=\"deleteStash('"+ client.name +"', '"+ history.check +"')\"> <i class='fa fa-volume-off'></i></a>";
+                spans += "<a href='#' class='btn btn-success btn-xs btn-hover' onclick=\"deleteStash(event, '"+ client.name +"', '"+ clientHistory.check +"')\"> <i class='fa fa-volume-off'></i></a>";
               }
               else {
-                spans += "<a href='#' class='btn btn-warning btn-xs btn-hover' onclick=\"postStash('"+ client.name +"', '"+ history.check +"')\"> <i class='fa fa-volume-up'></i></a>";
+                spans += "<a href='#' class='btn btn-warning btn-xs btn-hover' onclick=\"postStash(event, '"+ client.name +"', '"+ clientHistory.check +"')\"> <i class='fa fa-volume-up'></i></a>";
               }
             });
           }
 
           // Resolve
           if(_.isObject(event)){
-            spans += "<a href='#' class='btn btn-danger btn-xs btn-hover' onclick=\"resolveEvent('"+ client.name +"', '"+ history.check +"')\"> <i class='fa fa-check'></i></a>";
+            spans += "<a href='#' class='btn btn-danger btn-xs btn-hover' onclick=\"resolveEvent('"+ client.name +"', '"+ clientHistory.check +"')\"> <i class='fa fa-check'></i></a>";
           } else {
             spans += "<a href='#' class='btn btn-xs disabled'> <i class='fa fa-check'></i></a>";
           }
@@ -275,7 +293,7 @@ $(document).ready(function () {
           spans += "</td>"
                 + "</tr>"
                 + "<tr>"
-                + "<td colspan='6' class='hiddenRow'><div id='"+ client.name+"-"+history.check +"' class='accordian-body "+ detailsClass +"'>";
+                + "<td colspan='6' class='hiddenRow'><div id='"+ client.name+"-"+clientHistory.check +"' class='accordian-body "+ detailsClass +"'>";
           
           // Event details
           if(_.isObject(event)){
@@ -300,7 +318,7 @@ $(document).ready(function () {
                   + "<dt>Command</dt>"
                   + "<dd>"+check.command+"</dd>"
                   + "<dt>History</dt>"
-                  + "<dd>"+history.history+"</dd>"
+                  + "<dd>"+clientHistory.history+"</dd>"
                   + "<dt>Subscribers</dt>"
                   + "<dd>"+check.subscribers+"</dd>"
                   + "<dt>Handlers</dt>"

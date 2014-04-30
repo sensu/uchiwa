@@ -89,7 +89,8 @@ $(document).ready(function(){
   }
 });
 
-var postStash = function(client_name, check_name){
+var postStash = function(e, client_name, check_name){
+  var event = e || window.event;
   if (_.isUndefined(check_name)){
     check_name = "";
   }
@@ -99,9 +100,11 @@ var postStash = function(client_name, check_name){
   var full_path = "silence/"+ client_name + check_name;
   var payload = {path: full_path, content:{"reason": "uchiwa"}};
   socket.emit('create_stash', JSON.stringify(payload));
+  e.stopPropagation();
 };
 
-var deleteStash = function(client_name, check_name){
+var deleteStash = function(e, client_name, check_name){
+  var event = e || window.event;
   if (_.isUndefined(check_name)){
     check_name = "";
   }
@@ -111,6 +114,7 @@ var deleteStash = function(client_name, check_name){
   var full_path = "silence/"+ client_name + check_name;
   var payload = {path: full_path, content:{}};
   socket.emit('delete_stash', JSON.stringify(payload));
+  e.stopPropagation();
 };
 
 var resolveEvent = function(client_name, check_name){
@@ -118,31 +122,15 @@ var resolveEvent = function(client_name, check_name){
   socket.emit('resolve_event', JSON.stringify(payload));
 };
 
-var displayMessage = function(type, page, message){
-  console.log(client.name);
-  if(type == "danger" || type == "warning" || type == "success" || type == "info"){
-    type == "default";
-  }
-
-  if(page == "all"){
-    var selector = "#message";
-  } else {
-    var selector = "#" + page + " #message";
-  }
-
-  var box = "<div class='alert alert-"+ type +" alert-dismissable>"
-          + "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'></button>"
-          + message
-          + "</div>";
-
-  $(selector).html(box);
-  window.setTimeout(function() { $(selector).empty() }, 5000);
+var notification = function(type, message){
+  toastr[type](message);
   fetch();
 };
 
 var fetch = function(){
   if(_.isString(client.name)){
-    socket.emit('get_stashes', {})
-    socket.emit('get_client', {name: client.name})
+    socket.emit('get_stashes', {});
+    socket.emit('get_clients', {});
+    socket.emit('get_client', {name: client.name});
   }
 };

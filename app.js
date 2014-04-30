@@ -115,10 +115,10 @@ var pull = function(){
     }
   ], function(err){
     if (!err){
+      io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
       io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
       io.sockets.emit('clients', {content: JSON.stringify(sensu.clients)});
-      io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});
-      io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
+      io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});     
     }
   });
 };
@@ -148,6 +148,11 @@ io.sockets.on('connection', function (socket) {
       }
     });
   });
+  socket.on('get_clients', function (data){
+    getStashes(function(){
+       clients[socket.id].emit('clients', {content: JSON.stringify(sensu.clients)});
+    });
+  });
   socket.on('get_stashes', function (data){
     getStashes(function(){
        clients[socket.id].emit('stashes', {content: JSON.stringify(sensu.stashes)});
@@ -156,30 +161,30 @@ io.sockets.on('connection', function (socket) {
   socket.on('create_stash', function (data){
     sensu.postStash(data, function(err, result){
       if(err){
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "page": "client-details", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
       }
       else {
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The stash has been created."})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "content": "<strong>Success!</strong> The stash has been created."})});
       }
     });
   });
   socket.on('delete_stash', function (data){
     sensu.deleteStash(data, function(err){
       if(err){
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "page": "client-details", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
       }
       else {
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The stash has been deleted."})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "content": "<strong>Success!</strong> The stash has been deleted."})});
       }
     });
   });
   socket.on('resolve_event', function (data){
     sensu.resolveEvent(data, function(err){
       if(err){
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "page": "client-details", "content": "<strong>Error!</strong> The check was not resolved. Reason: " + err})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "content": "<strong>Error!</strong> The check was not resolved. Reason: " + err})});
       }
       else {
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "page": "client-details", "content": "<strong>Success!</strong> The check has been resolved."})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "content": "<strong>Success!</strong> The check has been resolved."})});
       }
     });
   });
@@ -194,10 +199,10 @@ app.get('/', function(req,res) {
 app.get('/clients', function(req,res) {
   res.render('clients.html', {title: 'Clients'});
   io.sockets.on('connection', function (socket) {
+    io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
     io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
     io.sockets.emit('clients', {content: JSON.stringify(sensu.clients)});
     io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});
-    io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
   });
 });
 app.get('/events',function(req,res) {
