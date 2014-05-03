@@ -1,4 +1,11 @@
 <% include partials/header.html %>
+<script>
+$(document).ready(function () {
+  fetchAll();
+});
+</script>
+<script src="/js/updateClients.js"></script>
+<script src="/js/updateClient.js"></script>
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="col-lg-12">
@@ -8,8 +15,10 @@
       </ol>
     </div>
   </div>
+
+  <div id="clients-list">
   
-  <div id="clients-list" class='row-fluid'></div>
+  </div>
 
   <!-- Modal -->
   <div id="client-details" class="modal modal-wide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

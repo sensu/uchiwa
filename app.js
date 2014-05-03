@@ -92,6 +92,18 @@ var getClient = function(data, callback){
 var pull = function(){
   async.series([
     function(callback){
+      getStashes(function(err){
+        io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
+        callback(err);
+      });
+    },
+    function(callback){
+      getChecks(function(err){
+        io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});
+        callback(err);
+      });
+    },
+    function(callback){
       getClients(function(err){ callback(err); });
     },
     function(callback){
@@ -106,19 +118,11 @@ var pull = function(){
       sensu.sortClients(sensu.clients, sensu.events, function(err){
         callback(err);
       });
-    },
-    function(callback){
-      getChecks(function(err){ callback(err); });
-    },
-    function(callback){
-      getStashes(function(err){ callback(err); });
     }
   ], function(err){
     if (!err){
-      io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
       io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
       io.sockets.emit('clients', {content: JSON.stringify(sensu.clients)});
-      io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});     
     }
   });
 };
@@ -132,7 +136,7 @@ setInterval(pull, config.uchiwa.refresh);
 io.sockets.on('connection', function (socket) {
 
   // Keep track of active clients
-  clients[socket.id] = socket; 
+  clients[socket.id] = socket;
 
   // Remove client on disconnection
   socket.on('disconnect', function () {
@@ -148,15 +152,17 @@ io.sockets.on('connection', function (socket) {
       }
     });
   });
+  socket.on('get_checks', function (data){
+    clients[socket.id].emit('checks', {content: JSON.stringify(sensu.checks)});
+  });
   socket.on('get_clients', function (data){
-    getClients(function(){
-       clients[socket.id].emit('clients', {content: JSON.stringify(sensu.clients)});
-    });
+    clients[socket.id].emit('clients', {content: JSON.stringify(sensu.clients)});
+  });
+  socket.on('get_events', function (data){
+    clients[socket.id].emit('events', {content: JSON.stringify(sensu.events)});   
   });
   socket.on('get_stashes', function (data){
-    getStashes(function(){
-       clients[socket.id].emit('stashes', {content: JSON.stringify(sensu.stashes)});
-    });
+    clients[socket.id].emit('stashes', {content: JSON.stringify(sensu.stashes)});
   });
   socket.on('create_stash', function (data){
     sensu.postStash(data, function(err, result){
@@ -198,12 +204,6 @@ app.get('/', function(req,res) {
 });
 app.get('/clients', function(req,res) {
   res.render('clients.html', {title: 'Clients'});
-  io.sockets.on('connection', function (socket) {
-    io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
-    io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
-    io.sockets.emit('clients', {content: JSON.stringify(sensu.clients)});
-    io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});
-  });
 });
 app.get('/events',function(req,res) {
   res.render('events.html', {title: 'Events'});

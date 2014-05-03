@@ -10,12 +10,12 @@ function Check(data) {
   this.standalone = (_.isUndefined(data.standalone)) ? "false" : data.standalone;
 }
 
-Check.prototype.isSilenced = function(path, callback){
+Check.prototype.isSilenced = function(path){
   var result = stashes.filter(function (e) { return e.path === path });
   if(result.length > 0){
-    callback(true);
+    return true;
   }
   else {
-    callback(null);
+    return false;
   }
 }

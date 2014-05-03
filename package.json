@@ -8,8 +8,8 @@
   "dependencies": {
     "async": "0.2.*",
     "express": "3.4.*",
-    "ejs": "0.8.*",
     "socket.io": "0.9.*",
-    "moment": "2.5.*"
+    "moment": "2.5.*",
+    "uinexpress": "0.5.*"
   }
 }

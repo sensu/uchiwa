@@ -1,37 +1,36 @@
-var countEvents = function(events, callback) {
-  if (typeof events === 'undefined'){
-    callback("");
-  }
-  else {
-    if (events.length != 1){
-      callback(events[0].check + " and " + (events.length - 1) + " more...");
-    }
-    else {
-      callback(events[0].check);
-    }
-  }
-}
+$(document).ready(function(){
 
-var findEvent = function(events_list, check, client, callback){
-  var eventDetails = events_list.filter(function (e) { return e.client == client && e.check == check });
-  if (eventDetails.length != 0){
-    callback(null, eventDetails);
-  }
-  else {
-    callback(true, "");
-  }
-  
-};
+  toastr.options = {
+    "positionClass": "toast-bottom-right"
+  };
 
-var getStyle = function(status, callback){
+  url = window.location.pathname;
+  urlRegExp = new RegExp(url.replace(/\/$/,'') + "$");
+  if (url === '/'){
+    $(".navbar-nav #dashboard").addClass("selected");
+  }
+  else{
+    $(".navbar-nav li").each(function(){
+      if(urlRegExp.test($(this).find('a').attr('href'))){
+        $(this).addClass('selected');
+      }
+    });
+  }
+
+  $("#clients-list").on('click', 'a', function(e) {
+    getClient(this.id);
+  });
+});
+
+var getStyle = function(status){
   if (status == 2){
-    callback("danger");
+    return "danger";
   }
   else if (status == 1){
-    callback("warning");
+    return "warning";
   }
   else {
-    callback("success");
+    return "success";
   }
 };
 
@@ -74,21 +73,6 @@ var getClient = function(id){
   });
 };
 
-$(document).ready(function(){
-  url = window.location.pathname;
-  urlRegExp = new RegExp(url.replace(/\/$/,'') + "$");
-  if (url === '/'){
-    $(".navbar-nav #dashboard").addClass("selected");
-  }
-  else{
-    $(".navbar-nav li").each(function(){
-      if(urlRegExp.test($(this).find('a').attr('href'))){
-        $(this).addClass('selected');
-      }
-    });
-  }
-});
-
 var postStash = function(e, client_name, check_name){
   var event = e || window.event;
   if (_.isUndefined(check_name)){
@@ -129,8 +113,29 @@ var notification = function(type, message){
 
 var fetch = function(){
   if(_.isString(client.name)){
-    socket.emit('get_stashes', {});
-    socket.emit('get_clients', {});
+    fetchAll();
     socket.emit('get_client', {name: client.name});
   }
 };
+
+var fetchAll = function(){
+  async.series([
+    function(callback){
+      socket.emit('get_stashes', {});
+      callback(null);
+    },
+    function(callback){
+      socket.emit('get_checks', {});
+      callback(null);
+    },
+    function(callback){
+      socket.emit('get_events', {});
+      callback(null);
+    },
+    function(callback){
+      socket.emit('get_clients', {});
+      callback(null);
+    }
+  ], function(err){
+  });
+}
