@@ -6,7 +6,7 @@
 }
 
 html, html a {
-    -webkit-font-smoothing: antialiased !important;;
+  -webkit-font-smoothing: antialiased !important;;
 }
 
 body { 
@@ -52,9 +52,6 @@ color: #fff;
   padding-top: 0px;
 }
 
-.modal-wide .modal-body .tab-content { 
-  margin-bottom: 200px;
-}
 .not-found {
   text-align: center;
 }
@@ -62,62 +59,9 @@ color: #fff;
   font-size: 150px;
 }
 
-/* Spans */
-.tab-panel .list-group-item { 
-  border:0;
-}
-.test { 
-  padding: 0px;
-}
-.tab-panel .list-group-item .output {
-  display:inline-block;
-  max-width: 30%;
-  overflow:hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  vertical-align:top
-}
-.tab-panel .list-group-item .first {
-  border-top-right-radius: 0px;
-  border-top-left-radius: 0px;
-}
-.tab-panel .list-group-item .last {
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 0px;
-}
-.tab-panel .list-group .checkbox {
-  display: inline-block;
-  margin: 0px;
-}
-.tab-panel .list-group input[type="checkbox"]{
-  margin-top: 2px;
-}
-.tab-panel .list-group .fa {
-  margin-right:5px;
-}
-.tab-panel .success {
-  border-left: 6px solid #43ac6a;
-}
-.tab-panel .warning {
-  border-left: 6px solid #e99002;
-}
-.tab-panel .danger {
-  border-left: 6px solid #F04124;
-}
-a.list-group-item.read {
-  color: #222;
-  background-color: #F3F3F3;
-}
-a.list-group-item:hover {
-  color: #000;
-  background-color: rgb(255, 255, 204);
-}
 hr {
   margin-top: 5px;
   margin-bottom: 10px;
-}
-.nav-pills>li>a {
-  padding: 5px 10px;
 }
 
 /* Navigation buttons */
@@ -146,9 +90,6 @@ hr {
 }
 .btn-circle:hover {
   color: #000
-}
-.menu-buttons {
-  padding-bottom: 25px;
 }
 
 #clients-list {
