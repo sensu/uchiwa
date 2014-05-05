@@ -15,7 +15,8 @@
     <link href="/css/uchiwa.css" rel="stylesheet">
     <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="/css/toastr.min.css" rel="stylesheet">
-    
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+
     <!-- Dashboard scripts -->
     <script src="/js/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -28,31 +29,34 @@
     <script src="/js/uchiwa.js"></script>
     <script src="/js/socket.js"></script>
     <script src="/js/toastr.min.js"></script>
+    <script src="/js/updateClients.js"></script>
+    <script src="/js/updateClient.js"></script>
   </head>
 
   <body>
-  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">uchiwa</a>
-      </div>
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse">
+
+  <div class="navbar navbar-twitch" role="navigation">
+    <div class="container">
+      <div class="">
         <ul class="nav navbar-nav">
-          <li id="dashboard"><a href="/">Dashboard</a></li>
-          <li id="clients"><a href="/clients">Clients</a></li>
-          <li id="events"><a href="/events">Events</a></li>
+          <li id="dashboard">
+            <a href="/">
+              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Dashboard"> 
+                <i class="fa fa-tachometer"></i>
+              </span>
+            </a>
+          </li>
+          <li id="clients">
+            <a href="/clients">
+              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Clients"> 
+                <i class="fa fa-hdd-o"></i>
+              </span>
+            </a>
+          </li>
         </ul>
-      </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </nav>
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
 
       <!-- Page content -->
       <div id="page-wrapper">     

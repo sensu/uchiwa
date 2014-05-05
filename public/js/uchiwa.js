@@ -20,7 +20,43 @@ $(document).ready(function(){
   $("#clients-list").on('click', 'a', function(e) {
     getClient(this.id);
   });
+
+  // navbar
+  $('.navbar-nav [data-toggle="tooltip"]').tooltip();
+  $('.navbar-twitch-toggle').on('click', function(event) {
+    event.preventDefault();
+    $('.navbar-twitch').toggleClass('open');
+  });
 });
+
+var fetch = function(){
+  if(_.isString(client.name)){
+    fetchAll();
+    socket.emit('get_client', {name: client.name});
+  }
+};
+
+var fetchAll = function(){
+  async.series([
+    function(callback){
+      socket.emit('get_stashes', {});
+      callback(null);
+    },
+    function(callback){
+      socket.emit('get_checks', {});
+      callback(null);
+    },
+    function(callback){
+      socket.emit('get_events', {});
+      callback(null);
+    },
+    function(callback){
+      socket.emit('get_clients', {});
+      callback(null);
+    }
+  ], function(err){
+  });
+};
 
 var getStyle = function(status){
   if (status == 2){
@@ -111,31 +147,41 @@ var notification = function(type, message){
   fetch();
 };
 
-var fetch = function(){
-  if(_.isString(client.name)){
-    fetchAll();
-    socket.emit('get_client', {name: client.name});
-  }
-};
+var countClients = function(status){
+  var nb = clients.filter(function (e) { return e.status == status });
+  return nb.length;
+}
 
-var fetchAll = function(){
-  async.series([
-    function(callback){
-      socket.emit('get_stashes', {});
-      callback(null);
-    },
-    function(callback){
-      socket.emit('get_checks', {});
-      callback(null);
-    },
-    function(callback){
-      socket.emit('get_events', {});
-      callback(null);
-    },
-    function(callback){
-      socket.emit('get_clients', {});
-      callback(null);
+var updateDashboard = function(){
+  
+  var severity = function(count){
+    var critical = 5;
+    var warning = 1;
+    if(count >= critical){
+       return "critical";
     }
-  ], function(err){
+    else if(count < warning){
+      return "success";
+    }
+    else {
+      return "warning";
+    }
+  }
+
+  // Clients in critical & non-critical state
+  var status = {warning: 1, critical: 2};
+  _.each(status, function(element, index){
+    var count = countClients(element)
+    $('.dashboard #'+ index +' .count').html(count);
+    $('.dashboard #'+ index).attr( "class", severity(count) );
   });
+
+  // Totals 
+  $('.dashboard #events .count').html(events.length);
+  
+  $('.dashboard #events').attr( "class", severity(events.length) );
+
+  $('.dashboard #clients .count').html(clients.length);
+
+  
 }

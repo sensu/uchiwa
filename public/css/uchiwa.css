@@ -1,40 +1,116 @@
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 600;
-  src: local('Open Sans'), local('OpenSans'), url(http://themes.googleusercontent.com/static/fonts/opensans/v8/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
-}
-
 html, html a {
   -webkit-font-smoothing: antialiased !important;;
 }
 
 body { 
-  padding-top: 40px;
+  padding-left: 65px;
   background-color: #fff;
-  font-weight: 600;
+  font-weight: 400;
   color: #4d4d4d;
+  font-family: 'Lato', sans-serif;
 }
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  color: #56575B;
+}
+
 .navbar {
-  background-color: #32323a;
-  font-weight: 600;
+  background-color: #2C394A;
 }
-.navbar-nav > .selected,
-.navbar-nav > .selected a {
-  background-color: #28282e;
+.navbar-twitch {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 50px;
+  height: 100%;
+  border-radius: 0px;
+  border: 0px;
+    z-index: 1030;
 }
-.navbar-default .navbar-nav> .selected > a {
-color: #fff;
+.navbar-twitch.open {
+  width: 240px;
 }
-.breadcrumb {
-  background-color: #32323a;
-  text-transform: none;
+.navbar-twitch > .container {
+  padding: 0px;
+  width: 100%;
 }
-.breadcrumb .active {
+.navbar-twitch .navbar-header,
+.navbar-twitch .navbar-brand {
+  float: none;
+  display: block;
+  width: 100%;
+  margin: 0px;
+}
+.navbar-twitch .navbar-brand {
+    height: 50px;   
+}
+.navbar-twitch > .container .navbar-brand {
+  padding: 0px;
+  margin: 0px;
+}
+.navbar-twitch > .container .navbar-brand > .small-nav {
+  display: block;
+}
+.navbar-twitch > .container .navbar-brand > .small-nav > span.logo, 
+.navbar-twitch.open > .container .navbar-brand > .full-nav {
+    display: block;
+  font-weight: bold;
+  padding: 15px 2px 15px 3px;
+  font-size: 18pt;
+}
+.navbar-twitch.open > .container .navbar-brand {
+  width: 100%;
+  padding: 15px 15px 60px;
+  text-align: center;
+}
+.navbar-twitch.navbar-inverse > .container .navbar-brand > .small-nav > span.logo {
+  /*color: rgb(255, 255, 255);*/
+}
+.navbar-twitch .navbar-nav > li {
+  float: none;
+}
+.navbar-twitch > .container .full-nav {
+  display: none;
+}
+.navbar-twitch.open > .container .full-nav {
+  display: block;
+}
+.navbar-twitch.open > .container .small-nav {
+  display: none;
+}
+.navbar-twitch .navbar-collapse {
+  padding: 0px;
+}
+.navbar-twitch .navbar-nav {
+  float: none;
+  margin: 0px;
+}
+.navbar-twitch .navbar-nav > li > a {
   color: #fff;
+  padding: 0px;
+  border-left: 3px solid #2C394A;
 }
-.breadcrumb a {
+.navbar-twitch .navbar-nav > li > a:hover {
   color: #fff;
+  background-color: #2C394A;
+  border-left: 3px solid #5F97FB;
+}
+.navbar-twitch .navbar-nav > .selected > a {
+  color: #2C394A;
+  background-color: #fff;
+  border-left: 3px solid #fff;
+}
+.navbar-twitch .navbar-nav > li > a > span {
+  display: block;
+  font-size: 16pt;
+  padding: 13px 15px 13px 12px;
+}
+.navbar-twitch .tooltip,
+.navbar-twitch .tooltip .tooltip-inner {
+  max-width: auto;
+  white-space:nowrap;
 }
 
 /* Modal */
@@ -163,17 +239,12 @@ hr {
   box-shadow:0 0 0;
 }
 
-.panel .panel-heading {
-  font-weight: 500;
-}
-
 .panel .panel-title {
   font-size: 15px;
   text-transform: uppercase;
 }
 
 .panel .list-group-item {
-  font-weight: 500;
   height:auto; overflow:auto;
   border-right: 0px;
   border-left: 0px;
@@ -187,17 +258,15 @@ hr {
 
 .breadcrumb {
   font-size: 12px;
-  font-weight: 600;
 }
 
 .timestamp {
   color: #333;
   font-size: 12px;
-  font-weight: 600;
 }
 
 .btn-black {
-  background: #333;
+  background: #2C394A;
   color: #fff;
   border-color: #222;
 }
@@ -205,8 +274,8 @@ hr {
 .btn-black:hover,
 .btn-black:active,
 .btn-black:focus {
-   background: #222;
-   border-color: #111;
+   background: #2C394A;
+   border-color: #2C394A;
    color: #fff;
 }
 
@@ -217,4 +286,46 @@ hr {
 .subtitle {
   text-transform: uppercase;
   font-size: 12px;
+}
+
+.dashboard {
+  padding-left: 20px;
+  padding-right: 20px;
+  color: #fff;
+  text-align: center;
+} 
+
+.dashboard fa {
+  text-align: left;
+}
+
+.dashboard .critical {
+  background-color: #F04124;
+  min-height: 125px;
+}
+
+.dashboard .warning {
+  background-color: #e99002;
+  min-height: 125px;
+}
+
+.dashboard .success {
+  background-color: #43ac6a;
+  min-height: 125px;
+}
+
+.dashboard .default {
+  background-color: #2C394A;
+  min-height: 125px;
+}
+
+.dashboard .count {
+  font-weight: 700;
+  font-size: 60px;
+} 
+
+.dashboard .small {
+  font-size: 15px;
+  font-weight: 700;
+  padding-top: 15px;
 }

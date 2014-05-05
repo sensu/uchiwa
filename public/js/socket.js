@@ -20,6 +20,7 @@ $(document).ready(function () {
   socket.on('clients', function(data) {
     clients = JSON.parse(data.content);
     updateClients(clients);
+    updateDashboard();
   });
 
   //
