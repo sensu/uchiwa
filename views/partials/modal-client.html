@@ -1,0 +1,55 @@
+<!-- Modal -->
+<div id="client-details" class="modal modal-wide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="page-header">
+          <h3><span id="name" class="title"></span></h3>
+        </div>
+        <span class="divider"></span>
+        <div class="row-fluid">
+          <div class="col-xs-8">
+            <div class="tab-panel fade in active" id="home">
+              <div id="message">
+              </div>
+              <table id="historyList" class="table table-hover table-condensed list">
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Check name</th>
+                    <th>Output</th>
+                    <th>Last execution</th>
+                    <th class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-xs-4">
+            <div class="panel">
+              <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-hdd-o"></i> Client details</h3>
+              </div>
+              <div class="panel-body">
+                <div class="list-group">
+                  <div class="list-group-item">IP address
+                    <span class="pull-right small"><strong id="address">Loading...</strong></span>
+                  </div>
+                  <div class="list-group-item">Subscriptions
+                    <span class="pull-right small"><strong id="subscriptions">Loading...</strong></span>
+                  </div>
+                  <div class="list-group-item">Last check
+                    <span class="pull-right small"><strong id="last-check">Loading...</strong></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.row -->
+      </div><!-- /.modal-body -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

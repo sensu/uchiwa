@@ -50,41 +50,41 @@ var sensu = new Sensu(config.sensu);
 
 var getStashes = function(callback){
   sensu.getStashes(function(err, result){
-    sensu.stashes = result;
-    sensu.getTimestamp(sensu.stashes, "content.timestamp", "last_check", function(){});
+    sensu.stashes = (err) ? {} : result;
+    if (!err) sensu.getTimestamp(sensu.stashes, "content.timestamp", "last_check", function(){});
     callback(err);
   });
 };
 
 var getClients = function(callback){
   sensu.getClients(function(err, result){
-    sensu.clients = result;
-    sensu.getTimestamp(sensu.clients, "timestamp", "last_check", function(err){});
+    sensu.clients = (err) ? {} : result;
+    if (!err) sensu.getTimestamp(sensu.clients, "timestamp", "last_check", function(err){});
     callback(err);
   });
 };
 
 var getEvents = function(callback){
   sensu.getEvents(function(err, result){
-    sensu.events = result;
-    sensu.getTimestamp(sensu.events, "timestamp", "last_check", function(err){});
-    sensu.getTimestamp(sensu.events, "issued", "last_issued", function(err){});
+    sensu.events = (err) ? {} : result;
+    if (!err) sensu.getTimestamp(sensu.events, "timestamp", "last_check", function(err){});
+    if (!err) sensu.getTimestamp(sensu.events, "issued", "last_issued", function(err){});
     callback(err);
   });
 };
 
 var getChecks = function(callback){
   sensu.getChecks(function(err, result){
-    sensu.checks = result;
+    sensu.checks = (err) ? {} : result;
     callback(err);
   });
 };
 
 var getClient = function(data, callback){
   sensu.getClient(data.name, function(err, result){
-    sensu.client = result;
-    sensu.sortByKey(sensu.client, "check", "last_status", function(err){});
-    sensu.getTimestamp(sensu.client, "last_execution", "last_check", function(err){});
+    sensu.client = (err) ? {} : result;
+    if (!err) sensu.sortByKey(sensu.client, "check", "last_status", function(err){});
+    if (!err) sensu.getTimestamp(sensu.client, "last_execution", "last_check", function(err){});
     callback(err);
   });
 };
@@ -93,13 +93,11 @@ var pull = function(){
   async.series([
     function(callback){
       getStashes(function(err){
-        io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
         callback(err);
       });
     },
     function(callback){
       getChecks(function(err){
-        io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});
         callback(err);
       });
     },
@@ -120,7 +118,12 @@ var pull = function(){
       });
     }
   ], function(err){
-    if (!err){
+    if (err){
+      io.sockets.emit('messenger', {content: JSON.stringify({"type": "error", "content": err})});
+    }
+    else {
+      io.sockets.emit('stashes', {content: JSON.stringify(sensu.stashes)});
+      io.sockets.emit('checks', {content: JSON.stringify(sensu.checks)});
       io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
       io.sockets.emit('clients', {content: JSON.stringify(sensu.clients)});
     }
@@ -142,7 +145,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function () {
     delete clients[socket.id];
   });
-  
+
   socket.on('get_client', function (data){
     getClient(data, function(err){
       if (err){
@@ -159,7 +162,7 @@ io.sockets.on('connection', function (socket) {
     clients[socket.id].emit('clients', {content: JSON.stringify(sensu.clients)});
   });
   socket.on('get_events', function (data){
-    clients[socket.id].emit('events', {content: JSON.stringify(sensu.events)});   
+    clients[socket.id].emit('events', {content: JSON.stringify(sensu.events)});
   });
   socket.on('get_stashes', function (data){
     clients[socket.id].emit('stashes', {content: JSON.stringify(sensu.stashes)});
@@ -167,17 +170,17 @@ io.sockets.on('connection', function (socket) {
   socket.on('create_stash', function (data){
     sensu.postStash(data, function(err, result){
       if(err){
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
       }
       else {
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "content": "<strong>Success!</strong> The stash has been created."})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Success!</strong> The stash has been created."})});
       }
     });
   });
   socket.on('delete_stash', function (data){
     sensu.deleteStash(data, function(err){
       if(err){
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
       }
       else {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "content": "<strong>Success!</strong> The stash has been deleted."})});
@@ -187,7 +190,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('resolve_event', function (data){
     sensu.resolveEvent(data, function(err){
       if(err){
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "danger", "content": "<strong>Error!</strong> The check was not resolved. Reason: " + err})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The check was not resolved. Reason: " + err})});
       }
       else {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "content": "<strong>Success!</strong> The check has been resolved."})});

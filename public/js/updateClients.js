@@ -3,10 +3,10 @@ var updateClients = function(clients) {
   var lines = [ "<div class='row'>" ];
   var clientsList = $("div#clients-list");
   var template = [
-    "<% var nbClients = 1; %>",
+    "<% var i = 1; %>",
     "<% _.each(clients, function(data) { %>",
       "<% var client = new Client(data); %>",
-      "<% if(nbClients % 4 === 0){ %>",
+      "<% if(i % 4 === 0){ %>",
         "</div><div class='row'>",
       "<% } %>",
       "<% var isSilenced = client.isSilenced(); %>",
@@ -20,7 +20,7 @@ var updateClients = function(clients) {
             "</a>",
           "</div>",
         "</div>",
-      "<% nbClients++; %>",
+      "<% i++; %>",
     "<% }); %>"
   ].join("");
 

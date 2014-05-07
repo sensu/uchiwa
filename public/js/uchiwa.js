@@ -17,7 +17,7 @@ $(document).ready(function(){
     });
   }
 
-  $("#clients-list").on('click', 'a', function(e) {
+  $(".container-fluid .list").on('click', 'a', function(e) {
     getClient(this.id);
   });
 
@@ -30,6 +30,7 @@ $(document).ready(function(){
 });
 
 var fetch = function(){
+  if(typeof client === "undefined") return;
   if(_.isString(client.name)){
     fetchAll();
     socket.emit('get_client', {name: client.name});
@@ -148,23 +149,24 @@ var notification = function(type, message){
 };
 
 var countClients = function(status){
+  if(_.isEmpty(clients)) return 0;
   var nb = clients.filter(function (e) { return e.status == status });
   return nb.length;
 }
 
 var updateDashboard = function(){
-  
+
   var severity = function(count){
     var critical = 5;
     var warning = 1;
     if(count >= critical){
        return "critical";
     }
-    else if(count < warning){
-      return "success";
+    else if(count >= warning){
+      return "warning";
     }
     else {
-      return "warning";
+      return "success";
     }
   }
 
@@ -176,12 +178,10 @@ var updateDashboard = function(){
     $('.dashboard #'+ index).attr( "class", severity(count) );
   });
 
-  // Totals 
+  // Display events and clients counts
   $('.dashboard #events .count').html(events.length);
-  
   $('.dashboard #events').attr( "class", severity(events.length) );
-
   $('.dashboard #clients .count').html(clients.length);
 
-  
+
 }

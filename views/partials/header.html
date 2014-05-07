@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"> 
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -22,15 +22,16 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/async.js"></script>
     <script src="/js/underscore-min.js"></script>
+    <script src="/js/toastr.min.js"></script>
     <script src="/js/check.js"></script>
     <script src="/js/client.js"></script>
     <script src="/js/event.js"></script>
     <script src="/js/history.js"></script>
     <script src="/js/uchiwa.js"></script>
     <script src="/js/socket.js"></script>
-    <script src="/js/toastr.min.js"></script>
     <script src="/js/updateClients.js"></script>
     <script src="/js/updateClient.js"></script>
+    <script src="/js/updateEvents.js"></script>
   </head>
 
   <body>
@@ -41,14 +42,14 @@
         <ul class="nav navbar-nav">
           <li id="dashboard">
             <a href="/">
-              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Dashboard"> 
+              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Dashboard">
                 <i class="fa fa-tachometer"></i>
               </span>
             </a>
           </li>
           <li id="clients">
             <a href="/clients">
-              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Clients"> 
+              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Clients">
                 <i class="fa fa-hdd-o"></i>
               </span>
             </a>
@@ -59,4 +60,4 @@
   </div>
 
       <!-- Page content -->
-      <div id="page-wrapper">     
+      <div id="page-wrapper">

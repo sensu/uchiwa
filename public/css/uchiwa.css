@@ -2,7 +2,7 @@ html, html a {
   -webkit-font-smoothing: antialiased !important;;
 }
 
-body { 
+body {
   padding-left: 65px;
   background-color: #fff;
   font-weight: 400;
@@ -44,7 +44,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin: 0px;
 }
 .navbar-twitch .navbar-brand {
-    height: 50px;   
+    height: 50px;
 }
 .navbar-twitch > .container .navbar-brand {
   padding: 0px;
@@ -53,7 +53,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .navbar-twitch > .container .navbar-brand > .small-nav {
   display: block;
 }
-.navbar-twitch > .container .navbar-brand > .small-nav > span.logo, 
+.navbar-twitch > .container .navbar-brand > .small-nav > span.logo,
 .navbar-twitch.open > .container .navbar-brand > .full-nav {
     display: block;
   font-weight: bold;
@@ -168,24 +168,23 @@ hr {
   color: #000
 }
 
-#clients-list {
+.list {
   position: relative;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding: 20px 15px 0px 10px;
   min-height: 1px;
 }
-#clients-list a {
+.list a {
   text-decoration:none;
   color: #000;
 }
-
-#client-details td span.output {
+.list td span.output {
   text-overflow: ellipsis;
   overflow : hidden;
   display: block;
   max-width: 320px;
   white-space: nowrap;
 }
+
 .well {
   border: 0px;
 }
@@ -293,7 +292,7 @@ hr {
   padding-right: 20px;
   color: #fff;
   text-align: center;
-} 
+}
 
 .dashboard fa {
   text-align: left;
@@ -322,7 +321,7 @@ hr {
 .dashboard .count {
   font-weight: 700;
   font-size: 60px;
-} 
+}
 
 .dashboard .small {
   font-size: 15px;
