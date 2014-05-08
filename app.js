@@ -67,7 +67,6 @@ var getClients = function(callback){
 var getEvents = function(callback){
   sensu.getEvents(function(err, result){
     sensu.events = (err) ? {} : result;
-    if (!err) sensu.getTimestamp(sensu.events, "timestamp", "last_check", function(err){});
     if (!err) sensu.getTimestamp(sensu.events, "issued", "last_issued", function(err){});
     callback(err);
   });

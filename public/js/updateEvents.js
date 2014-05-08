@@ -15,7 +15,7 @@ var updateEvents = function(events) {
               "<div class='well danger'>",
                 "<span class='lead'><%= event.client %><span class='pull-right'><i class='fa fa-volume-up'></i></span></span>",
                 "<span class='subtitle'><strong><%= event.check %></strong></span>",
-                "<span class='small timestamp'><i class='fa fa-clock-o'></i> <%= event.last_check %></span>",
+                "<span class='small timestamp'><i class='fa fa-clock-o'></i> <%= event.last_issued %></span>",
               "</div>",
             "</a>",
           "</div>",
