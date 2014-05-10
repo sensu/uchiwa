@@ -15,7 +15,7 @@ var updateEvents = function(events) {
       "<%  %>",
           "<div class='col-md-3 client'>",
             "<a href='#' id='<%= event.client %>' data-toggle='modal' data-target='#client-details'>",
-              "<div class='well danger'>",
+              "<div class='well <% (event.status == 1) ? print('warning') : print('danger'); %>'>",
                 "<span class='lead'><%= event.client %><span class='pull-right'><i class='fa fa-volume-up'></i></span></span>",
                 "<span class='subtitle'><strong><%= event.check %></strong></span>",
                 "<span class='small timestamp'><i class='fa fa-clock-o'></i> <%= event.last_issued %></span>",

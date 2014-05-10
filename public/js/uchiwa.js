@@ -152,6 +152,9 @@ var notification = function(type, message){
 var countClients = function(status){
   if(_.isEmpty(clients)) return 0;
   var nb = clients.filter(function (e) { return e.status == status });
+  nb = _.uniq(nb,function(item){
+    return item.name;
+  });
   return nb.length;
 }
 
