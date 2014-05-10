@@ -1,0 +1,18 @@
+<% include partials/header.html %>
+<script>
+$(document).ready(function () {
+  socket.emit('get_stashes', {});
+});
+</script>
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="col-lg-12">
+      <h1>Stashes</h1>
+    </div>
+  </div>
+
+  <div id="stashes-list" class="list"></div>
+
+  </div><!-- /.row -->
+</div><!-- /.container -->
+<% include partials/footer.html %>

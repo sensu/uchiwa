@@ -51,7 +51,7 @@ var sensu = new Sensu(config.sensu);
 var getStashes = function(callback){
   sensu.getStashes(function(err, result){
     sensu.stashes = (err) ? {} : result;
-    if (!err) sensu.getTimestamp(sensu.stashes, "content.timestamp", "last_check", function(){});
+    if (!err) sensu.getTimestamp(sensu.stashes, "timestamp", "last_check", function(){});
     callback(err);
   });
 };
@@ -172,7 +172,7 @@ io.sockets.on('connection', function (socket) {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
       }
       else {
-        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Success!</strong> The stash has been created."})});
+        clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "content": "<strong>Success!</strong> The stash has been created."})});
       }
     });
   });
@@ -207,11 +207,8 @@ app.get('/', function(req,res) {
 app.get('/clients', function(req,res) {
   res.render('clients.html', {title: 'Clients'});
 });
-app.get('/events',function(req,res) {
-  res.render('events.html', {title: 'Events'});
-  io.sockets.on('connection', function (socket) {
-    io.sockets.emit('events', {content: JSON.stringify(sensu.events)});
-  });
+app.get('/stashes', function(req,res) {
+  res.render('stashes.html', {title: 'Stashes'});
 });
 
 /**

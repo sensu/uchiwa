@@ -9,6 +9,7 @@ $(document).ready(function () {
   socket.on('stashes', function(data) {
     if(_.isUndefined(data.content)) return;
     stashes = JSON.parse(data.content);
+    updateStashes(stashes);
   });
 
   socket.on('messenger', function(data) {

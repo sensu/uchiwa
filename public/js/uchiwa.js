@@ -119,14 +119,15 @@ var postStash = function(e, client_name, check_name){
     check_name = "/" + check_name;
   }
   var full_path = "silence/"+ client_name + check_name;
-  var payload = {path: full_path, content:{"reason": "uchiwa"}};
+  var timestamp = Math.floor(Date.now() / 1000);
+  var payload = {path: full_path, content:{"reason": "uchiwa", "timestamp": timestamp}};
   socket.emit('create_stash', JSON.stringify(payload));
   e.stopPropagation();
 };
 
 var deleteStash = function(e, client_name, check_name){
   var event = e || window.event;
-  if (_.isUndefined(check_name)){
+  if (_.isUndefined(check_name) || _.isEmpty(check_name)){
     check_name = "";
   }
   else {

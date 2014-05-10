@@ -1,8 +1,11 @@
 var updateClients = function(clients) {
 
   var lines = [ "<div class='row'>" ];
-  var clientsList = $("div#clients-list");
+  var list = $("div#clients-list");
   var template = [
+    "<% if(clients.length == 0){ %>",
+      "<div class='not-found'><i class='fa fa-exclamation-triangle'></i></div> <div class='not-found'>No clients found!</div>",
+    "<% } %>",
     "<% var i = 1; %>",
     "<% _.each(clients, function(data) { %>",
       "<% var client = new Client(data); %>",
@@ -25,8 +28,8 @@ var updateClients = function(clients) {
   ].join("");
 
   var lines = _.template(template, {clients: clients});
-  if(!$('#client-details').hasClass('in') && clientsList.length){
-    clientsList.html(lines);
+  if(!$('#client-details').hasClass('in') && list.length){
+    list.html(lines);
   }
 
 };

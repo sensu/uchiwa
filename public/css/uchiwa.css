@@ -129,10 +129,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .not-found {
+  font-size: 30pt;
   text-align: center;
 }
 .not-found .fa {
-  font-size: 150px;
+  font-size: 50px;
 }
 
 hr {
@@ -196,6 +197,9 @@ hr {
 }
 .well.danger {
   border-left: 3px solid #F04124;
+}
+.well.default {
+  border-left: 3px solid #2C394A;
 }
 .well .lead{
   margin-bottom: 10px;
@@ -327,4 +331,14 @@ hr {
   font-size: 15px;
   font-weight: 700;
   padding-top: 15px;
+}
+
+.tag {
+  padding: 3px 7px;
+  color: #fff;
+  background-color: #2C394A;
+  display:inline;
+  float: left;
+  clear: left;
+  margin-bottom: 3px;
 }

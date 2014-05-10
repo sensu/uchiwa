@@ -10,6 +10,6 @@
     "express": "3.4.*",
     "socket.io": "0.9.*",
     "moment": "2.5.*",
-    "uinexpress": "0.5.*"
+    "underscore": "1.6.*"
   }
 }

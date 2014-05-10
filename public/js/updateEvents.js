@@ -1,8 +1,11 @@
 var updateEvents = function(events) {
 
   var lines = [ "<div class='row'>" ];
-  var eventsList = $("div#events-list");
+  var list = $("div#events-list");
   var template = [
+    "<% if(events.length == 0){ %>",
+      "<div class='not-found'><i class='fa fa-thumbs-o-up'></i></div> <div class='not-found'>No events found!</div>",
+    "<% } %>",
     "<% var i = 1; %>",
     "<% _.each(events, function(data) { %>",
       "<% var event = new Event(data); %>",
@@ -25,8 +28,8 @@ var updateEvents = function(events) {
   ].join("");
 
   var lines = _.template(template, {events: events});
-  if(eventsList.length){
-    eventsList.html(lines);
+  if(list.length){
+    list.html(lines);
   }
 
 };
