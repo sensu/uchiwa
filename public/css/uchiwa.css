@@ -219,7 +219,7 @@ hr {
   vertical-align: middle;
 }
 .table .hiddenRow {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 
 .btn-hover {
@@ -263,11 +263,6 @@ hr {
   font-size: 12px;
 }
 
-.timestamp {
-  color: #333;
-  font-size: 12px;
-}
-
 .btn-black {
   background: #2C394A;
   color: #fff;
@@ -289,6 +284,19 @@ hr {
 .subtitle {
   text-transform: uppercase;
   font-size: 12px;
+}
+
+.subtitle .fa {
+  padding-right: 5px;
+}
+
+.timestamp {
+  color: #333;
+  font-size: 12px;
+}
+
+.timestamp .fa {
+  padding-right: 3px;
 }
 
 .dashboard {
@@ -341,4 +349,10 @@ hr {
   float: left;
   clear: left;
   margin-bottom: 3px;
+  font-size: 12px;
+  text-transform: none;
+}
+
+.tag .fa {
+  padding-right: 5px;
 }

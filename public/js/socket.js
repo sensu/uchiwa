@@ -4,6 +4,7 @@ $(document).ready(function () {
   socket.on('checks', function(data) {
     if(_.isUndefined(data.content)) return;
     checks = JSON.parse(data.content);
+    updateChecks(checks);
   });
 
   socket.on('stashes', function(data) {
