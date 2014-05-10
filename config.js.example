@@ -2,6 +2,8 @@ module.exports = {
   sensu: {
     host: '10.20.30.40',
     port: 4567,
+    user: '',
+    pass: '',
     path: '/',
     timeout: 5000
   },
