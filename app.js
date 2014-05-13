@@ -7,7 +7,7 @@ var express = require('express'),
   path = require('path'),
   async = require('async'),
   moment = require('moment'),
-  app = module.exports = express();
+  app = express();
 
 server = http.createServer(app);
 io = require('socket.io').listen(server);
@@ -31,6 +31,16 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
+/**
+ * Authentification
+ */
+if (config.uchiwa.user && config.uchiwa.pass){
+  var basicAuth = express.basicAuth(function(username, password) {
+    return (username == config.uchiwa.user && password == config.uchiwa.pass);
+  }, 'Restrict area, please identify');
+  app.all('*', basicAuth);
+}
 
 /**
  * Error handling
