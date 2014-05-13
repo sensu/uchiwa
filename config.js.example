@@ -8,6 +8,8 @@ module.exports = {
     timeout: 5000
   },
   uchiwa: {
+    user: '',
+    pass: '',
     refresh: 10000
   }
 }
