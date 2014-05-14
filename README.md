@@ -1,6 +1,6 @@
 # Uchiwa
 
-*Uchiwa* is simple dashboard for the Sensu monitoring framework, built with node.js.
+*Uchiwa* is a simple dashboard for the Sensu monitoring framework, built with node.js.
 
 The dashboard is under active development, and major changes are not uncommon.
 
