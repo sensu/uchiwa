@@ -219,6 +219,9 @@ io.sockets.on('connection', function (socket) {
 app.get('/', function(req,res) {
    res.render('index.html');
 });
+app.get('/index', function (req, res) {
+    res.render('index.html');
+});
 app.get('/checks', function(req,res) {
   res.render('checks.html');
 });
