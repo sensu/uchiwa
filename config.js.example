@@ -1,6 +1,7 @@
 module.exports = {
   sensu: {
     host: '10.20.30.40',
+    ssl: false,
     port: 4567,
     user: '',
     pass: '',

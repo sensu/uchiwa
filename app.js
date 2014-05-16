@@ -31,6 +31,7 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
 
 /**
  * Authentification
