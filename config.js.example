@@ -5,7 +5,7 @@ module.exports = {
     port: 4567,
     user: '',
     pass: '',
-    path: '/',
+    path: '',
     timeout: 5000
   },
   uchiwa: {
