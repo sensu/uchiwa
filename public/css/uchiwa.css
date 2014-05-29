@@ -171,18 +171,22 @@ hr {
 
 .list {
   position: relative;
-  padding: 20px 15px 0px 10px;
+  padding: 10px 15px 0px 10px;
   min-height: 1px;
 }
 .list a {
   text-decoration:none;
-  color: #000;
 }
-.list td span.output {
+.list td.output {
   text-overflow: ellipsis;
   overflow : hidden;
-  display: block;
-  max-width: 320px;
+  max-width: 300px;
+  white-space: nowrap;
+}
+.list td.checkname {
+  text-overflow: ellipsis;
+  overflow : hidden;
+  max-width: 180px;
   white-space: nowrap;
 }
 
@@ -228,12 +232,12 @@ hr {
   cursor: pointer;
   background-color: inherit;
   border-color: transparent;
-  width: 50%;
+  width: 40%;
 }
 
-.btn.disabled {
+.btn-disabled, .btn-disabled:hover {
   color: #C8C8C8;
-  width: 50%;
+  width: 40%;
 }
 
 .panel {
@@ -251,6 +255,10 @@ hr {
   height:auto; overflow:auto;
   border-right: 0px;
   border-left: 0px;
+}
+
+.panel-default {
+  background-color: #e4e7ea;
 }
 
 .label {
@@ -300,14 +308,43 @@ hr {
 }
 
 .dashboard {
-  padding-left: 20px;
-  padding-right: 20px;
   color: #fff;
-  text-align: center;
 }
 
-.dashboard fa {
-  text-align: left;
+.dashboard .panel {
+  height: 160px;
+}
+
+.dashboard .graph {
+  height: 150px;
+  color: #fff;
+}
+
+.dashboard .icon {
+  padding-top: 10px;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+}
+
+.dashboard .stat-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.75;
+  padding-top: 5px;
+}
+
+.dashboard .count {
+  font-weight: 700;
+  font-size: 50px;
+  line-height: 45px;
+}
+
+.dashboard .count-small {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 20px;
 }
 
 .dashboard .critical {
@@ -330,17 +367,6 @@ hr {
   min-height: 125px;
 }
 
-.dashboard .count {
-  font-weight: 700;
-  font-size: 60px;
-}
-
-.dashboard .small {
-  font-size: 15px;
-  font-weight: 700;
-  padding-top: 15px;
-}
-
 .tag {
   padding: 3px 7px;
   color: #fff;
@@ -356,3 +382,35 @@ hr {
 .tag .fa {
   padding-right: 5px;
 }
+
+.mb15 {
+  margin-bottom: 15px;
+}
+
+/* Graphics */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+.morris-hover.morris-default-style {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  background-color: #2C394A !important;
+  opacity: 0.95 !important;
+  font-family: 'Lato', sans-serif !important;
+}
+.morris-hover.morris-default-style .morris-hover-row-label {
+  color: #FFFFFF !important;
+}
+
+/* Search bar */
+.search {
+  display: block;
+  width: 100%;
+  .box-sizing(border-box);
+}
+.input-group {
+  padding-bottom: 20px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+

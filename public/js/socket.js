@@ -1,49 +1,98 @@
-$(document).ready(function () {
-  socket = io.connect();
+/*
+ * @license
+ * angular-socket-io v0.6.0
+ * (c) 2014 Brian Ford http://briantford.com
+ * License: MIT
+ */
 
-  socket.on('checks', function(data) {
-    if(_.isUndefined(data.content)) return;
-    checks = JSON.parse(data.content);
-    updateChecks(checks);
-  });
+angular.module('btford.socket-io', []).
+  provider('socketFactory', function () {
 
-  socket.on('stashes', function(data) {
-    if(_.isUndefined(data.content)) return;
-    stashes = JSON.parse(data.content);
-    updateStashes(stashes);
-  });
+    'use strict';
 
-  socket.on('messenger', function(data) {
-    if(_.isUndefined(data.content)) return;
-    var message = JSON.parse(data.content);
-    notification(message.type, message.content);
-  });
+    // when forwarding events, prefix the event name
+    var defaultPrefix = 'socket:',
+      ioSocket;
 
-  //
-  // Clients
-  //
-  socket.on('clients', function(data) {
-    if(_.isUndefined(data.content)) return;
-    clients = JSON.parse(data.content);
-    updateClients(clients);
-    updateDashboard();
-  });
+    // expose to provider
+    this.$get = function ($rootScope, $timeout) {
 
-  //
-  // Events
-  //
-  socket.on('events', function(data) {
-    if(_.isUndefined(data.content)) return;
-    events = JSON.parse(data.content);
-    updateEvents(events);
-  });
+      var asyncAngularify = function (socket, callback) {
+        return callback ? function () {
+          var args = arguments;
+          $timeout(function () {
+            callback.apply(socket, args);
+          }, 0);
+        } : angular.noop;
+      };
 
-  //
-  // Client details
-  //
-  socket.on('client', function(data) {
-    if(_.isUndefined(data.content)) return;
-    client.history = JSON.parse(data.content);
-    updateClient(client);
+      return function socketFactory (options) {
+        options = options || {};
+        var socket = options.ioSocket || io.connect();
+        var prefix = options.prefix || defaultPrefix;
+        var defaultScope = options.scope || $rootScope;
+
+        var addListener = function (eventName, callback) {
+          socket.on(eventName, callback.__ng = asyncAngularify(socket, callback));
+        };
+
+        var addOnceListener = function (eventName, callback) {
+          socket.once(eventName, callback.__ng = asyncAngularify(socket, callback));
+        };
+
+        var wrappedSocket = {
+          on: addListener,
+          addListener: addListener,
+          once: addOnceListener,
+
+          emit: function (eventName, data, callback) {
+            var lastIndex = arguments.length - 1;
+            var callback = arguments[lastIndex];
+            if(typeof callback == 'function') {
+              callback = asyncAngularify(socket, callback);
+              arguments[lastIndex] = callback;
+            }
+            return socket.emit.apply(socket, arguments);
+          },
+
+          removeListener: function (ev, fn) {
+            if (fn && fn.__ng) {
+              arguments[1] = fn.__ng;
+            }
+            return socket.removeListener.apply(socket, arguments);
+          },
+
+          removeAllListeners: function() {
+            return socket.removeAllListeners.apply(socket, arguments);
+          },
+
+          disconnect: function (close) {
+            return socket.disconnect(close);
+          },
+
+          // when socket.on('someEvent', fn (data) { ... }),
+          // call scope.$broadcast('someEvent', data)
+          forward: function (events, scope) {
+            if (events instanceof Array === false) {
+              events = [events];
+            }
+            if (!scope) {
+              scope = defaultScope;
+            }
+            events.forEach(function (eventName) {
+              var prefixedEvent = prefix + eventName;
+              var forwardBroadcast = asyncAngularify(socket, function (data) {
+                scope.$broadcast(prefixedEvent, data);
+              });
+              scope.$on('$destroy', function () {
+                socket.removeListener(eventName, forwardBroadcast);
+              });
+              socket.on(eventName, forwardBroadcast);
+            });
+          }
+        };
+
+        return wrappedSocket;
+      };
+    };
   });
-});

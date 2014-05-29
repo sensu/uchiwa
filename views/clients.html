@@ -1,22 +1,38 @@
 <% include partials/header.html %>
-<script>
-$(document).ready(function () {
-  fetchAll();
-});
-</script>
-<div class="container-fluid">
+<div class="container-fluid" ng-controller="clients">
   <div class="row-fluid">
     <div class="col-lg-12">
       <h1>Clients</h1>
     </div>
   </div>
+  <div class="list">
+    <div class="row-fluid">
+      <div class="col-lg-12 input-group">
+        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        <input class="search" ng-model="query">
+      </div>
+    </div>
+    <div ng-repeat="row in rows">
+      <div class="row">
+        <div class='col-md-3 client' ng-repeat="client in row | filter:query">
+          <a href='#' id='{{client.name}}' data-toggle='modal' data-target='#client-details' ng-click="getClient(client.name);">
+            <div class='well {{client.style}}'>
+              <span class='lead'>{{client.name}}<span class='pull-right'><i class="fa {{client.silenceIcon}}" ng-click="stash($event, client);"></i></span>
+              <span class='subtitle'><strong>{{client.eventsSummary}}</strong></span>
+              <span class='small timestamp'><i class='fa fa-clock-o'></i> {{client.last_check}}</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <div id="clients-list" class="list">
-
+   <div ng-cloak class="ng-cloak" ng-show="rows.length == 0">
+    <div class='not-found'><i class='fa fa-exclamation-triangle'></i></div>
+    <div class='not-found'> No clients found!</div>
   </div>
 
   <% include partials/modal-client.html %>
 
-  </div><!-- /.row -->
 </div><!-- /.container -->
 <% include partials/footer.html %>

@@ -11,6 +11,7 @@ module.exports = {
   uchiwa: {
     user: '',
     pass: '',
+    stats: 10,
     refresh: 10000
   }
 }
