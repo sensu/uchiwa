@@ -80,3 +80,6 @@ Created and maintained by [Simon Plourde][author] (<simon.plourde@gmail.com>)
 
 ## License
 Apache 2.0 (see [LICENSE][license])
+
+[author]:                 https://github.com/palourde
+[license]:                https://github.com/palourde/uchiwa/blob/master/LICENSE
