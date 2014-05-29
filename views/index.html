@@ -1,9 +1,4 @@
 <% include partials/header.html %>
-<script>
-$(document).ready(function () {
-  fetchAll();
-});
-</script>
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="col-lg-12">
@@ -11,44 +6,134 @@ $(document).ready(function () {
     </div>
   </div><!-- /.row -->
 
-  <div class="row">
-    <div class="dashboard">
-      <div class="col-lg-3">
-        <div id="events" class="default">
-          <div class="small">Events</div>
-          <i class="fa fa-bell fa-4x"></i>&nbsp;&nbsp;&nbsp;
-          <span class="count">0</span>
-        </div>
-      </div>
-      <div class="col-lg-3">
-        <div id="critical" class="default">
-          <div class="small">Clients in critical state</div>
-          <i class="fa fa-ban fa-4x"></i>&nbsp;&nbsp;&nbsp;
-          <span class="count">0</span>
-        </div>
-      </div>
-      <div class="col-lg-3">
-        <div id="warning" class="default">
-          <div class="small">Clients in non-critical state</div>
-          <i class="fa fa-exclamation-triangle fa-4x"></i>&nbsp;&nbsp;&nbsp;
-          <span class="count">0</span>
-        </div>
-      </div>
-      <div class="col-lg-3">
-        <div id="clients" class="default">
-          <div class="small">Clients</div>
-          <i class="fa fa-hdd-o fa-4x"></i>&nbsp;&nbsp;&nbsp;
-          <span class="count">0</span>
+  <div class="row-fluid">
+    <div class="col-lg-12">
+      <div class="panel" ng-controller="dashboard">
+        <div class="dashboard panel-boby">
+          <div class="row">
+            <div class="col-md-2">
+              <div id="events" class="panel {{eventsStyle()}}">
+                <div class="panel-heading">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <div class="row">
+                        <div class="col-xs-5">
+                          <div class="icon"><i class="fa fa-bell fa-4x"></i></div>
+                        </div>
+                        <div class="col-xs-6">
+                          <div class="stat-label">Events</div>
+                          <span class="count">{{countEvents(0)}}</span>
+                        </div>
+                      </div>
+                      <div class="mb15"></div>
+                      <div class="row">
+                        <div class="col-xs-6">
+                          <div class="stat-label">Critical</div>
+                          <span class="count-small">{{countEvents(2)}}</span>
+                        </div>
+                        <div class="col-xs-6">
+                          <div class="stat-label">Warning</div>
+                          <span class="count-small">{{countEvents(1)}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div id="events" class="panel {{eventsStyle()}}">
+                <div class="panel-heading">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <div class="row">
+                        <div class="col-xs-5">
+                          <div class="icon"><i class="fa fa-hdd-o fa-4x"></i></div>
+                        </div>
+                        <div class="col-xs-6">
+                          <div class="stat-label">Clients</div>
+                          <span class="count">{{countClients(0)}}</span>
+                        </div>
+                      </div>
+                      <div class="mb15"></div>
+                      <div class="row">
+                        <div class="col-xs-6">
+                          <div class="stat-label">Critical</div>
+                          <span class="count-small">{{countClients(2)}}</span>
+                        </div>
+                        <div class="col-xs-6">
+                          <div class="stat-label">Warning</div>
+                          <span class="count-small">{{countClients(1)}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="panel default">
+                <div class="panel-heading">
+                  <div id="dashboard-graph" class="graph panel default"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div><!-- /.row -->
-
-  <div id="events-list" class="list">
-
+  </div>
+  <div class="row-fluid">
+    <div class="col-lg-12">
+      <div class="list" ng-controller="events">
+        <div class="row-fluid">
+          <div class="col-lg-12 input-group">
+            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+            <input class="search" ng-model="query">
+          </div>
+        </div>
+        <div ng-repeat="row in rows">
+          <div class="row">
+            <div class='col-md-3 client' ng-repeat="event in row | filter:query">
+              <a href='#' id='{{event.client}}' data-toggle='modal' data-target='#client-details' ng-click="getClient(event.client);">
+                <div class='well {{event.style}}'>
+                  <span class='lead'>{{event.check}}<span class='pull-right'><i class="fa {{event.silenceIcon}}" ng-click="stash($event, event);"></i></span>
+                  <span class='subtitle'><strong>{{event.client}}</strong></span>
+                  <span class='small timestamp'><i class='fa fa-clock-o'></i> {{event.last_issued}}</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div ng-cloak class="ng-cloak" ng-show="rows.length == 0">
+          <div class='not-found'><i class='fa fa-thumbs-o-up'></i></div>
+          <div class='not-found'> No events found!</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <% include partials/modal-client.html %>
 
 </div><!-- /.container -->
+<script type="text/javascript">
+  dashboardGraph = Morris.Line({
+    element: 'dashboard-graph',
+    data: [],
+    xkey: 'y',
+    ykeys: ['e', 's'],
+    labels: ['Events', 'Stashes'],
+    lineColors: ['#2CA7E5', '#F9CD65'],
+    hideHover: 'auto',
+    pointSize: 0,
+    fillOpacity: 1,
+    gridTextColor: '#fff',
+    gridTextFamily: "'Lato', sans-serif",
+    gridTextWeight: 700,
+    grid: false,
+    lineWidth: 4,
+    axes: true,
+    behaveLikeLine: true
+  });
+</script>
 <% include partials/footer.html %>

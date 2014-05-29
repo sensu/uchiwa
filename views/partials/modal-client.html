@@ -1,14 +1,14 @@
 <!-- Modal -->
-<div id="client-details" class="modal modal-wide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="client-details" class="modal modal-wide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="client">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
         <div class="page-header">
-          <h3><span id="name" class="title"></span></h3>
+          <h3><span id="name" class="title"><i class='fa {{client.silenceIcon}}' ng-click="stash($event, client);"></i> {{client.name}}</span></h3>
         </div>
         <span class="divider"></span>
         <div class="row-fluid">
-          <div class="col-xs-8">
+          <div class="col-xs-9">
             <div class="tab-panel fade in active" id="home">
               <div id="message">
               </div>
@@ -19,16 +19,69 @@
                     <th>Check name</th>
                     <th>Output</th>
                     <th>Last execution</th>
-                    <th class="text-center">Actions</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr></tr>
+                  <tr data-toggle='collapse' data-target='#{{client.name}}-{{check.check}}' class='accordion-toggle' ng-repeat-start="check in client.history">
+                    <td><span class='label label-{{check.style}}'>{{check.isActive}}</span></td>
+                    <td class="checkname">{{check.check}}</td>
+                    <td class="output" ng-if="check.output">{{check.output}}</td>
+                    <td ng-if="!check.output"></td>
+                    <td class="timestamp"><i class='fa fa-clock-o'></i> {{check.last_check}}</td>
+                    <td class='text-center'>
+                      <a href='#' class='btn btn-xs btn-hover btn-success' ng-click="stash($event, client, check);"><i class='fa {{check.silenceIcon}}'></i></a>
+                      <a href='#' class='btn btn-xs btn-danger btn-hover' ng-if="check.event" ng-click="resolve($event, client, check);"> <i class='fa fa-check'></i></a>
+                      <a href='#' class='btn btn-xs btn-disabled' ng-if="!check.event"> <i class='fa fa-check'></i></a>
+                    </td>
+                  </tr>
+                  <tr ng-repeat-end>
+                    <td colspan='6' class='hiddenRow'>
+                      <div id='{{client.name}}-{{check.check}}' class='accordian-body collapse'>
+                        <h5 class='title' ng-if="check.event"><i class='fa fa-exclamation-triangle'></i> Event details</h5>
+                        <dl class='dl-horizontal' ng-if="check.event">
+                          <dt>Full output</dt>
+                          <dd>{{check.event.output}}</dd>
+                          <dt>Occurrences</dt>
+                          <dd>{{check.event.occurrences}}</dd>
+                          <dt>Flapping</dt>
+                          <dd>{{check.event.flapping}}</dd>
+                          <dt>Handlers</dt>
+                          <dd>{{check.event.handlers}}</dd>
+                          <dt>Issued</dt>
+                          <dd>{{check.event.last_issued}}</dd>
+                        </dl>
+                        <h5 class='title'><i class='fa fa-terminal'></i> Check details</h5>
+                        <dl class='dl-horizontal'>
+                          <dt>Name</dt>
+                          <dd>{{check.check}}</dd>
+                          <dt ng-if="check.model.command">Command</dt>
+                          <dd ng-if="check.model.command">{{check.model.command}}</dd>
+                          <dt>History</dt>
+                          <dd>{{check.history}}</dd>
+                          <dt ng-if="check.model.subscribers">Subscribers</dt>
+                          <dd ng-if="check.model.subscribers">{{check.model.subscribers}}</dd>
+                          <dt ng-if="check.model.handlers">Handlers</dt>
+                          <dd ng-if="check.model.handlers">{{check.model.handlers}}</dd>
+                          <dt ng-if="check.model.interval">Interval</dt>
+                          <dd ng-if="check.model.interval">{{check.model.interval}}</dd>
+                          <dt ng-if="check.model.type">Type</dt>
+                          <dd ng-if="check.model.type">{{check.model.type}}</dd>
+                          <dt ng-if="check.model.handle">Handle</dt>
+                          <dd ng-if="check.model.handle">{{check.model.handle}}</dd>
+                          <dt ng-if="check.model.standalone">Standalone</dt>
+                          <dd ng-if="check.model.standalone">{{check.model.standalone}}</dd>
+                          <dt ng-if="check.model.subdue">Subdue</dt>
+                          <dd ng-if="check.model.subdue">Begin: {{check.model.subdue.begin}} End: {{check.model.subdue.end}}</dd>
+                        </dl>
+                      </div>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
-          <div class="col-xs-4">
+          <div class="col-xs-3">
             <div class="panel">
               <div class="panel-heading">
                 <h3 class="panel-title"><i class="fa fa-hdd-o"></i> Client details</h3>
@@ -36,13 +89,13 @@
               <div class="panel-body">
                 <div class="list-group">
                   <div class="list-group-item">IP address
-                    <span class="pull-right small"><strong id="address">Loading...</strong></span>
+                    <span class="pull-right small"><strong id="address">{{client.address}}</strong></span>
                   </div>
                   <div class="list-group-item">Subscriptions
-                    <span class="pull-right small"><strong id="subscriptions">Loading...</strong></span>
+                    <span class="pull-right small text-right"><strong id="subscriptions"><span ng-repeat="subscription in client.subscriptions">{{subscription}}<br/></span></strong></span>
                   </div>
                   <div class="list-group-item">Last check
-                    <span class="pull-right small"><strong id="last-check">Loading...</strong></span>
+                    <span class="pull-right small"><strong id="last-check">{{client.last_check}}</strong></span>
                   </div>
                 </div>
               </div>

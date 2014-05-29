@@ -24,7 +24,7 @@ The dashboard is under active development, and major changes are not uncommon.
 
 ## Getting Started
 
-* Copy **config.js.example** to **config.js** - modify your Sensu API information
+* Copy **config.js.example** to **config.js** - modify your Sensu API information. See configuration section below
 * Start the dashboard: `node app.js`
 * Browse your browser: `http://localhost:3000/`
 
@@ -56,5 +56,27 @@ In case you want the dashboard to be accessible within a certain path on the pro
 }
 ```
 
+## Configuration
+### sensu
+- `host` - String: The address of the Sensu API.
+- `ssl` - Boolean: Determines whether or not the API use a SSL certificate.
+- `port` - Integer: The port of the Sensu API. The default value is *4567*.
+- `user` - String: The username of the Sensu API. Leave empty for none.
+- `pass` - String: The password of the Sensu API. Leave empty for none.
+- `path` - String: The path of the Sensu API. Leave empty in case of doubt.
+- `timeout` - Integer: Timeout for the Sensu API, in milliseconds. The default value is *5000*.
+
+### uchiwa
+- `user` - String: The username of the Uchiwa dashboard. Leave empty for none.
+- `pass` - String: The password of the Uchiwa dashboard. Leave empty for none.
+- `stats` - Integer: Determines the retention, in minutes, of graphics data. The default value is *10*.
+- `refresh` - Integer: Determines the interval to pull the Sensu API, in milliseconds. The default value is *10000*.
+
 ## Debugging
 You may start the dashboard with the following command in order to enable verbose mode: `NODE_ENV="development" node app.js`
+
+## Authors
+Created and maintained by [Simon Plourde][author] (<simon.plourde@gmail.com>)
+
+## License
+Apache 2.0 (see [LICENSE][license])

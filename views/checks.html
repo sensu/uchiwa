@@ -1,18 +1,39 @@
 <% include partials/header.html %>
-<script>
-$(document).ready(function () {
-  socket.emit('get_checks', {});
-});
-</script>
-<div class="container-fluid">
+<div class="container-fluid" ng-controller="checks">
   <div class="row-fluid">
     <div class="col-lg-12">
       <h1>Checks</h1>
     </div>
   </div>
+  <div class="list">
+    <div class="row-fluid">
+      <div class="col-lg-12 input-group">
+        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        <input class="search" ng-model="query">
+      </div>
+    </div>
+    <div ng-repeat="row in rows">
+      <div class="row">
+        <div class='col-md-6 client' ng-repeat="check in row | filter:query">
+          <div class='well default'>
+            <span class='lead'>{{check.name}}
+              <span class='pull-right small tag' ng-if="check.hasSubscribers"><i class='fa fa-tag'></i> 
+                <span style="display:inline-block;" ng-repeat="subscriber in check.subscribers"> {{subscriber}}</span>
+              </span>
+            </span>
+            <span class='subtitle'><i class='fa fa-terminal'></i> <strong>{{check.command}}</strong></span>
+            <span class='small timestamp'><i class='fa fa-clock-o'></i> {{check.interval}} seconds</span>
+            <span class='small' ng-if="check.standalone">Standalone</span>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
 
-  <div id="checks-list" class="list"></div>
+  <div ng-cloak class="ng-cloak" ng-show="rows.length == 0">
+    <div class='not-found'><i class='fa fa-exclamation-triangle'></i></div>
+    <div class='not-found'> No checks found!</div>
+  </div>
 
-  </div><!-- /.row -->
 </div><!-- /.container -->
 <% include partials/footer.html %>

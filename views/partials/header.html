@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="uchiwa">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,25 +16,18 @@
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/toastr.min.css" rel="stylesheet">
     <link href='//fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+    <link href="css/morris.css" rel="stylesheet">
 
     <!-- Dashboard scripts -->
     <script src="js/jquery.min.js"></script>
+    <script src="js/angular.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/async.js"></script>
     <script src="js/underscore-min.js"></script>
     <script src="js/toastr.min.js"></script>
-    <script src="js/check.js"></script>
-    <script src="js/client.js"></script>
-    <script src="js/event.js"></script>
-    <script src="js/history.js"></script>
-    <script src="js/stash.js"></script>
     <script src="js/uchiwa.js"></script>
-    <script src="js/socket.js"></script>
-    <script src="js/updateChecks.js"></script>
-    <script src="js/updateClients.js"></script>
-    <script src="js/updateClient.js"></script>
-    <script src="js/updateEvents.js"></script>
-    <script src="js/updateStashes.js"></script>
+    <script src="js/raphael-min.js"></script>
+    <script src="js/morris.min.js"></script>
   </head>
 
   <body>
@@ -75,6 +68,5 @@
       </div><!--/.nav-collapse -->
     </div>
   </div>
-
-      <!-- Page content -->
-      <div id="page-wrapper">
+  <!-- Page content -->
+  <div id="page-wrapper">
