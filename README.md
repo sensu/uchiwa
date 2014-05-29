@@ -8,6 +8,7 @@ The dashboard is under active development, and major changes are not uncommon.
 
 * Real-time updates with Socket.IO
 * Client and checks stashes management
+* Easily filter events, clients, stashes and events
 * Simple client details view
 * Easy installation
 
