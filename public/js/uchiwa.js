@@ -15,7 +15,6 @@ $(document).ready(function(){
     if(_.isUndefined(data.content)) return;
     var message = JSON.parse(data.content);
     notification(message.type, message.content);
-    console.log("messenger");
   });
 
   /**

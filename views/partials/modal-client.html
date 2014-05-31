@@ -23,7 +23,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr data-toggle='collapse' data-target='#{{client.name}}-{{check.check}}' class='accordion-toggle' ng-repeat-start="check in client.history">
+                  <tr ng-click="toggleActive($index)" class='accordion-toggle' ng-repeat-start="check in client.history">
                     <td><span class='label label-{{check.style}}'>{{check.isActive}}</span></td>
                     <td class="checkname">{{check.check}}</td>
                     <td class="output" ng-if="check.output">{{check.output}}</td>
@@ -37,19 +37,23 @@
                   </tr>
                   <tr ng-repeat-end>
                     <td colspan='6' class='hiddenRow'>
-                      <div id='{{client.name}}-{{check.check}}' class='accordian-body collapse'>
-                        <h5 class='title' ng-if="check.event"><i class='fa fa-exclamation-triangle'></i> Event details</h5>
+                      <div id='{{client.name}}-{{check.check}}' class='accordian-body collapse' ng-class="{true: 'collapse', false: 'in'}[toggle[$index].hidden]">
+                        <h5 class='title' ng-if="check.event"><i class='fa fa-bell'></i> Event details</h5>
                         <dl class='dl-horizontal' ng-if="check.event">
                           <dt>Full output</dt>
-                          <dd>{{check.event.output}}</dd>
+                          <dd>{{check.event.check.output}}</dd>
                           <dt>Occurrences</dt>
                           <dd>{{check.event.occurrences}}</dd>
-                          <dt>Flapping</dt>
-                          <dd>{{check.event.flapping}}</dd>
-                          <dt>Handlers</dt>
-                          <dd>{{check.event.handlers}}</dd>
+                          <dt ng-if="check.event.check.flapping">Flapping</dt>
+                          <dd ng-if="check.event.check.flapping">{{check.event.check.flapping}}</dd>
+                          <dt ng-if="check.event.check.handlers">Handlers</dt>
+                          <dd ng-if="check.event.check.handlers">{{check.event.check.handlers}}</dd>
                           <dt>Issued</dt>
-                          <dd>{{check.event.last_issued}}</dd>
+                          <dd>{{check.event.check.last_issued}}</dd>
+                          <dt ng-if="check.event.check.last_executed">Executed</dt>
+                          <dd ng-if="check.event.check.last_executed">{{check.event.check.last_executed}}</dd>
+                          <dt ng-if="check.event.check.duration">Duration</dt>
+                          <dd ng-if="check.event.check.duration">{{check.event.check.duration}}</dd>
                         </dl>
                         <h5 class='title'><i class='fa fa-terminal'></i> Check details</h5>
                         <dl class='dl-horizontal'>
@@ -88,6 +92,9 @@
               </div>
               <div class="panel-body">
                 <div class="list-group">
+                  <div class="list-group-item">Sensu version
+                    <span class="pull-right small"><strong id="address">{{client.version}}</strong></span>
+                  </div>
                   <div class="list-group-item">IP address
                     <span class="pull-right small"><strong id="address">{{client.address}}</strong></span>
                   </div>

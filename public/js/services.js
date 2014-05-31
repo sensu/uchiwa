@@ -63,7 +63,7 @@ serviceModule.service('eventsService', function(){
   this.stash = function(e, currentEvent){
     var event = e || window.event;
     event.stopPropagation();
-    var path = "silence/"+ currentEvent.client + "/" + currentEvent.check;
+    var path = "silence/"+ currentEvent.client.name + "/" + currentEvent.check.name;
     if(currentEvent.isSilenced){
       var payload = {path: path, content:{}};
       socket.emit('delete_stash', JSON.stringify(payload));
@@ -77,7 +77,6 @@ serviceModule.service('eventsService', function(){
     }
     currentEvent.silenceIcon = icon;
     currentEvent.isSilenced = !currentEvent.isSilenced;
-
     return currentEvent;
 
   };

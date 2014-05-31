@@ -95,11 +95,11 @@
         <div ng-repeat="row in rows">
           <div class="row">
             <div class='col-md-3 client' ng-repeat="event in row | filter:query">
-              <a href='#' id='{{event.client}}' data-toggle='modal' data-target='#client-details' ng-click="getClient(event.client);">
+              <a href='#' id='{{event.client.name}}' data-toggle='modal' data-target='#client-details' ng-click="getClient(event.client.name);">
                 <div class='well {{event.style}}'>
-                  <span class='lead'>{{event.check}}<span class='pull-right'><i class="fa {{event.silenceIcon}}" ng-click="stash($event, event);"></i></span>
-                  <span class='subtitle'><strong>{{event.client}}</strong></span>
-                  <span class='small timestamp'><i class='fa fa-clock-o'></i> {{event.last_issued}}</span>
+                  <span class='lead'>{{event.check.name}}<span class='pull-right'><i class="fa {{event.silenceIcon}}" ng-click="stash($event, event);"></i></span></span>
+                  <span class='subtitle'><strong>{{event.client.name}}</strong></span>
+                  <span class='small timestamp'><i class='fa fa-clock-o'></i> {{event.check.last_issued}}</span>
                 </div>
               </a>
             </div>

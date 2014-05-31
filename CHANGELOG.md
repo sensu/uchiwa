@@ -1,3 +1,11 @@
+### 0.0.4 (2014-05-31)
+
+#### Features
+- Support the upcoming release of Sensu 0.13.0
+
+#### Bug Fixes
+- Keep check details expanded in client view
+
 ### 0.0.3 (2014-05-28)
 
 #### Features
