@@ -1,6 +1,15 @@
 var controllerModule = angular.module('uchiwa.controllers', []);
 
 /**
+ * Init
+ */
+controllerModule.controller('init', ['$scope', 'socket',
+  function($scope, socket) {
+    socket.emit('get_sensu', {});
+  }
+]);
+
+/**
  * Checks
  */
 controllerModule.controller('checks', ['$scope', 'socket',
@@ -14,13 +23,12 @@ controllerModule.controller('checks', ['$scope', 'socket',
       }
       return rows;
     };
-    socket.emit('get_sensu', {});
     $scope.$on('socket:sensu', function(event, data) {
       var sensu = JSON.parse(data.content);
       $scope.rows = $scope.getRows(sensu.checks,2);
     });
   }
-])
+]);
 
 /**
  * Client
@@ -35,6 +43,7 @@ controllerModule.controller('client', ['$scope', 'socket', 'clientsService',
     $scope.$on('socket:client', function(event, data) {
       var client = JSON.parse(data.content);
       $scope.client = client;
+      console.log(client);
     });
     $scope.stash = function(e, client, check){
       clientsService.stash(e, client, check);
@@ -44,8 +53,16 @@ controllerModule.controller('client', ['$scope', 'socket', 'clientsService',
     };
     $('#client-details').on('hide.bs.modal', function () {
       $scope.client = {name: "Loading..."};
+      $scope.toggle = {};
       clearInterval(timer);
     });
+
+    // Keep track of collapsed check details
+    $scope.toggle = {};
+    $scope.toggleActive = function (index) {
+      if(typeof $scope.toggle[index] === "undefined") $scope.toggle[index] = {hidden: true};
+      $scope.toggle[index].hidden = !$scope.toggle[index].hidden;
+    };
   }
 ]);
 
@@ -69,7 +86,6 @@ controllerModule.controller('clients', ['$scope', 'socket', 'clientsService',
       }
       return rows;
     };
-    socket.emit('get_sensu', {});
     $scope.$on('socket:sensu', function(event, data) {
       var sensu = JSON.parse(data.content);
       $scope.rows = $scope.getRows(sensu.clients,4);
@@ -82,22 +98,21 @@ controllerModule.controller('clients', ['$scope', 'socket', 'clientsService',
  */
 controllerModule.controller('dashboard', ['$scope', 'socket',
   function($scope, socket) {
-    socket.emit('get_sensu', {});
     socket.emit('get_stats', {});
     $scope.$on('socket:sensu', function(event, data) {
       var sensu = JSON.parse(data.content);
       $scope.clients = sensu.clients;
       $scope.events = sensu.events;
       $scope.eventsStyle = function() {
-        var criticals = $scope.events.filter(function (e){ return e.status === 2 }).length;
+        var criticals = $scope.events.filter(function (e){ return e.check.status === 2 }).length;
         if(criticals > 0) return "critical";
-        var warnings = $scope.events.filter(function (e){ return e.status === 2 }).length;
+        var warnings = $scope.events.filter(function (e){ return e.check.status === 1 }).length;
         return (warnings > 0) ? "warning" : "success";
       };
       $scope.clientsStyle = function() {
         var criticals = $scope.clients.filter(function (e){ return e.status === 2 }).length;
         if(criticals > 0) return "critical";
-        var warnings = $scope.clients.filter(function (e){ return e.status === 2 }).length;
+        var warnings = $scope.clients.filter(function (e){ return e.status === 1 }).length;
         return (warnings > 0) ? "warning" : "success";
       };
       $scope.countClients = function(status) {
@@ -106,11 +121,10 @@ controllerModule.controller('dashboard', ['$scope', 'socket',
       };
       $scope.countEvents = function(status) {
         if(status == 0) return $scope.events.length;
-        var count = $scope.events.filter(function (e){ return e.status === status }).length;
+        var count = $scope.events.filter(function (e){ return e.check.status === status }).length;
         return count;
       };
     });
-
   }
 ]);
 
@@ -128,7 +142,6 @@ controllerModule.controller('events', ['$scope', 'socket', 'eventsService',
       }
       return rows;
     };
-    socket.emit('get_sensu', {});
     $scope.$on('socket:sensu', function(event, data) {
       var sensu = JSON.parse(data.content);
       $scope.rows = $scope.getRows(sensu.events,4);
@@ -156,9 +169,9 @@ controllerModule.controller('stashes', ['$scope', 'socket', 'stashesService',
       }
       return rows;
     };
-    socket.emit('get_sensu', {});
     $scope.$on('socket:sensu', function(event, data) {
       var sensu = JSON.parse(data.content);
+      console.log(sensu.stashes);
       $scope.rows = $scope.getRows(sensu.stashes,3);
       $scope.deleteStash = function(stash, index){
         stashesService.stash(stash);

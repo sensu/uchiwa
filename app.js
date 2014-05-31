@@ -81,10 +81,13 @@ var getClients = function(callback){
 
 var getEvents = function(callback){
   sensu.getEvents(function(err, result){
-    sensu.events = (err) ? {} : result;
-    if (!err) sensu.getTimestamp(sensu.events, "issued", "last_issued", function(err){});
-    if (!err) sensu.buildEvents(function(){});
-    callback(err);
+    sensu.events = (err) ? {} : result; 
+    if (!err) {
+     sensu.buildEvents(callback);
+    } 
+    else {
+      callback(err);
+    }
   });
 };
 
@@ -99,55 +102,36 @@ var getChecks = function(callback){
 var getClient = function(data, callback){
   sensu.getClient(data.name, function(err, result){
     var client = (err) ? {} : result;
-    if (!err) sensu.sortEvents(client.history, "check", "last_status", function(err){});
+    if (!err) sensu.sortHistory(client.history, "check", "last_status", function(err){});
     if (!err) sensu.getTimestamp(client.history, "last_execution", "last_check", function(err){});
     callback(err, client);
   });
 };
 
 var pull = function(){
-  async.series([
+  async.waterfall([
+    getStashes,
+    getChecks,
+    getClients,
+    getEvents,
     function(callback){
-      getStashes(function(err){
-        callback(err);
-      });
+      sensu.sortEvents(sensu.events, "name", "status", callback);
     },
     function(callback){
-      getChecks(function(err){
-        callback(err);
-      });
+      sensu.sortClients(sensu.clients, sensu.events, callback);
     },
     function(callback){
-      getClients(function(err){ callback(err); });
+      sensu.sortByKey(sensu.checks, "name", callback);
     },
     function(callback){
-      getEvents(function(err){ callback(err); });
-    },
-    function(callback){
-      sensu.sortEvents(sensu.events, "check", "status", function(err){
-        callback(err);
-      });
-    },
-    function(callback){
-      sensu.sortClients(sensu.clients, sensu.events, function(err){
-        callback(err);
-      });
-    },
-    function(callback){
-      sensu.sortByKey(sensu.checks, "name", function(err){
-        callback(err);
-      });
-    },
-    function(callback){
-      sensu.buildClients(function(){
-        callback();
-      });
+      sensu.buildClients(callback);
     },
     function(callback){
       stats.getDashboard(callback);
     }
   ], function(err){
     if (err){
+      console.log(err);
       io.sockets.emit('messenger', {content: JSON.stringify({"type": "error", "content": err})});
     }
     else {
@@ -157,14 +141,12 @@ var pull = function(){
   });
 };
 // Perform a pull on start and every config.uchiwa.refresh milliseconds
-pull();
 setInterval(pull, config.uchiwa.refresh);
-
+pull();
 /**
  * Listen for events
  */
 io.sockets.on('connection', function (socket) {
-
   // Keep track of active clients
   clients[socket.id] = socket;
 
@@ -178,6 +160,7 @@ io.sockets.on('connection', function (socket) {
       if (err){
         return console.error("Fatal error! " + err);
       } else {
+        //console.log(result);
         clients[socket.id].emit('client', {content: JSON.stringify(result)});
       }
     });
@@ -189,13 +172,11 @@ io.sockets.on('connection', function (socket) {
     clients[socket.id].emit('stats', {content: JSON.stringify(stats.dashboard)});
   });
   socket.on('create_stash', function (data){
-    console.log("create_stash");
     sensu.postStash(data, function(err, result){
       if(err){
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
       }
       else {
-        console.log("emit");
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "success", "content": "<strong>Success!</strong> The stash has been created."})});
       }
     });
