@@ -4,7 +4,17 @@
     <div class="modal-content">
       <div class="modal-body">
         <div class="page-header">
-          <h3><span id="name" class="title"><i class='fa {{client.silenceIcon}}' ng-click="stash($event, client);"></i> {{client.name}}</span></h3>
+          <h3>
+            <span id="name" class="title">
+              <i class='fa {{client.silenceIcon}}' ng-click="stash($event, client.dc, client);"></i> {{client.name}}
+            </span>
+            <span class="pull-right dropdown">
+              <button type="button" class="btn-critical btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-trash-o fa-lg"></i></button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#" ng-click="delete(client.dc, client.name);">Delete this client</a></li>
+              </ul>
+            </span>
+          </h3>
         </div>
         <span class="divider"></span>
         <div class="row-fluid">
@@ -26,12 +36,12 @@
                   <tr ng-click="toggleActive($index)" class='accordion-toggle' ng-repeat-start="check in client.history">
                     <td><span class='label label-{{check.style}}'>{{check.isActive}}</span></td>
                     <td class="checkname">{{check.check}}</td>
-                    <td class="output" ng-if="check.output">{{check.output}}</td>
+                    <td class="output" ng-if="check.output">{{check.output}}{{client}}</td>
                     <td ng-if="!check.output"></td>
                     <td class="timestamp"><i class='fa fa-clock-o'></i> {{check.last_check}}</td>
                     <td class='text-center'>
-                      <a href='#' class='btn btn-xs btn-hover btn-success' ng-click="stash($event, client, check);"><i class='fa {{check.silenceIcon}}'></i></a>
-                      <a href='#' class='btn btn-xs btn-danger btn-hover' ng-if="check.event" ng-click="resolve($event, client, check);"> <i class='fa fa-check'></i></a>
+                      <a href='#' class='btn btn-xs btn-hover btn-success' ng-click="stash($event, client.dc, client, check);"><i class='fa {{check.silenceIcon}}'></i></a>
+                      <a href='#' class='btn btn-xs btn-danger btn-hover' ng-if="check.event" ng-click="resolve($event, client.dc, client, check);"> <i class='fa fa-check'></i></a>
                       <a href='#' class='btn btn-xs btn-disabled' ng-if="!check.event"> <i class='fa fa-check'></i></a>
                     </td>
                   </tr>
@@ -44,8 +54,8 @@
                           <dd>{{check.event.check.output}}</dd>
                           <dt>Occurrences</dt>
                           <dd>{{check.event.occurrences}}</dd>
-                          <dt ng-if="check.event.check.flapping">Flapping</dt>
-                          <dd ng-if="check.event.check.flapping">{{check.event.check.flapping}}</dd>
+                          <dt ng-if="check.event.action">Action</dt>
+                          <dd ng-if="check.event.action">{{check.event.action}}</dd>
                           <dt ng-if="check.event.check.handlers">Handlers</dt>
                           <dd ng-if="check.event.check.handlers">{{check.event.check.handlers}}</dd>
                           <dt>Issued</dt>
@@ -92,6 +102,9 @@
               </div>
               <div class="panel-body">
                 <div class="list-group">
+                  <div class="list-group-item">Datacenter
+                    <span class="pull-right small"><strong id="address">{{client.dc}}</strong></span>
+                  </div>
                   <div class="list-group-item">Sensu version
                     <span class="pull-right small"><strong id="address">{{client.version}}</strong></span>
                   </div>

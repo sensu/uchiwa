@@ -1,3 +1,13 @@
+### 0.1.0 (2014-06-06)
+
+#### Features
+- Support multiple Sensu APIs
+- Delete a client from the client view
+
+#### Bug Fixes
+- Improved error logging
+- Display event.action instead of event.flapping in client view
+
 ### 0.0.4 (2014-05-31)
 
 #### Features

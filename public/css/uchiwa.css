@@ -3,8 +3,8 @@ html, html a {
 }
 
 body {
-  padding-left: 65px;
-  background-color: #fff;
+  padding-left: 50px;
+  background-color: #fffff;
   font-weight: 400;
   color: #4d4d4d;
   font-family: 'Lato', sans-serif;
@@ -157,22 +157,53 @@ hr {
   outline:none!important;
   margin-right: 7px;
 }
-.btn-red {
+
+.critical {
   color: #DA3610;
-  border-color: #DA3610;
 }
-.btn-green {
+.warning {
+  color: #e99002;
+}
+.success {
   color: #43ac6a;
-  border-color: #43ac6a;
 }
+.unknown {
+  color: #9C9990;
+}
+
+.blue {
+  color: #2C394A;
+  border-color: #2C394A;
+}
+
 .btn-circle:hover {
   color: #000
 }
 
+.nav-list {
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.nav-list li.active a {
+  color: #588FC5;
+}
+
+.nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:hover, .nav-tabs.nav-justified>.active>a:focus {
+  border: 0px;
+}
+
+.nav-tabs.nav-justified>li>a {
+  border: 0px;
+}
+
+/* Modal for client */
+
 .list {
   position: relative;
-  padding: 10px 15px 0px 10px;
+  padding: 10px 15px 0px 0px;
   min-height: 1px;
+  background-color: #ffffff;
 }
 .list a {
   text-decoration:none;
@@ -192,6 +223,7 @@ hr {
 
 .well {
   border: 0px;
+  margin-bottom: 5px;
 }
 .well.success {
   border-left: 3px solid #43ac6a;
@@ -244,6 +276,11 @@ hr {
   border: 0px;
   -webkit-box-shadow:0 0 0;
   box-shadow:0 0 0;
+  margin-bottom: 10px
+}
+
+.panel.critical, .panel.warning, .panel.success{
+  color: #fff;
 }
 
 .panel .panel-title {
@@ -271,10 +308,16 @@ hr {
   font-size: 12px;
 }
 
-.btn-black {
+.btn-black, .btn-blue {
   background: #2C394A;
   color: #fff;
   border-color: #222;
+}
+
+.btn-critical {
+  background: #F04124;
+  color: #fff;
+  border:0px;
 }
 
 .btn-black:hover,
@@ -310,6 +353,7 @@ hr {
 
 .dashboard {
   color: #fff;
+  padding-top: 20px;
 }
 
 .dashboard .panel {
@@ -405,13 +449,51 @@ hr {
 
 /* Search bar */
 .search {
-  display: block;
+  display: inline-block;
   width: 100%;
   .box-sizing(border-box);
 }
 .input-group {
-  padding-bottom: 20px;
+  padding-bottom: 0px;
   padding-left: 0px;
   padding-right: 0px;
+  padding-top: 5px;
 }
 
+.section-header {
+  font-size: 23px;
+  font-weight: 300;
+  border-bottom: 1px solid #eee;
+}
+
+.text-muted {
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 400;
+  padding-top: 10px;
+}
+
+.nav>li {
+  position: relative;
+  display: block;
+}
+
+.nav>li>a {
+  color: #4d4d4d;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.mg-t-md {
+  margin-top: 25px;
+}
+
+.mg-r-sm {
+  margin-right: 10px;
+}
+
+.client {
+  margin-top: 10px;
+  padding-left: 7px;
+  padding-right: 7px;
+}
