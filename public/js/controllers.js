@@ -14,42 +14,74 @@ controllerModule.controller('init', ['$scope', 'socket',
  */
 controllerModule.controller('checks', ['$scope', 'socket',
   function($scope, socket) {
-    $scope.getRows = function(array, columns) {
-      var rows = [];
-      var i,j,temparray, chunk = columns;
+
+    // Helpers
+    $scope.splitArray = function(array, n) { // Divide an array into 'n' arrays 
+      var arrays = [];
+      var i,j,temparray, chunk = n;
       for (i=0,j=array.length; i<j; i+=chunk) {
           temparray = array.slice(i, i+chunk);
-          rows.push(temparray);
+          arrays.push(temparray);
       }
-      return rows;
+      return arrays;
     };
+    $scope.getRows = function(array, n) { // Get rows for each DC
+      _.each(array, function(element,index,list){
+        list[index] = $scope.splitArray(element,n);
+      });
+      return array;
+    };
+
+    // Socket.IO
     $scope.$on('socket:sensu', function(event, data) {
       var sensu = JSON.parse(data.content);
-      $scope.rows = $scope.getRows(sensu.checks,2);
+      $scope.dc = sensu.dc;
+      $scope.aggregation = $scope.getRows(sensu.checks, 2);
     });
+
+    // Toggle system
+    $scope.toggle = {};
+    $scope.toggleOn = function (index) {
+      if(typeof $scope.toggle[index] === "undefined") $scope.toggle[index] = {hidden: false};
+      $scope.toggle[index].hidden = !$scope.toggle[index].hidden;
+    };
+    $scope.showOnly = function (index, dc) {
+      _.each(dc, function(datacenter, i){
+        if(i == index) return $scope.toggle[index] = {hidden: false};
+        $scope.toggle[i] = {hidden: true};
+      });
+    };
+    $scope.showAll = function (dc) {
+      _.each(dc, function(datacenter, i){
+        $scope.toggle[i] = {hidden: false};
+      });
+    };
   }
 ]);
 
 /**
  * Client
  */
-controllerModule.controller('client', ['$scope', 'socket', 'clientsService',
-  function($scope, socket, clientsService) {
+controllerModule.controller('client', ['$scope', '$location', 'socket', 'clientsService',
+  function($scope, $location, socket, clientsService) {
     var timer = setInterval(function(){
       if($("#client-details").data('bs.modal')){
-        socket.emit('get_client', {name: $scope.client.name});
+        socket.emit('get_client', {dc: $scope.client.dc, client: $scope.client.name});
       }
     }, 10000);
     $scope.$on('socket:client', function(event, data) {
       var client = JSON.parse(data.content);
       $scope.client = client;
-      console.log(client);
     });
-    $scope.stash = function(e, client, check){
-      clientsService.stash(e, client, check);
+    $scope.stash = function(e, dcName, client, check){
+      clientsService.stash(e, dcName, client, check);
     };
-    $scope.resolve = function(e, client, check){
-      clientsService.resolve(e, client, check);
+    $scope.resolve = function(e, dcName, client, check){
+      clientsService.resolve(e, dcName, client, check);
+    };
+    $scope.delete = function(dcName, clientName){
+      clientsService.delete(dcName, clientName);
+      $('#client-details').modal('hide');
     };
     $('#client-details').on('hide.bs.modal', function () {
       $scope.client = {name: "Loading..."};
@@ -71,25 +103,54 @@ controllerModule.controller('client', ['$scope', 'socket', 'clientsService',
  */
 controllerModule.controller('clients', ['$scope', 'socket', 'clientsService',
   function($scope, socket, clientsService) {
-    $scope.stash = function(e, client){
-      clientsService.stash(e, client);
+
+    // Helpers
+    $scope.stash = function(e, dcName, client){
+      clientsService.stash(e, dcName, client);
     };
-    $scope.getClient = function(clientName){
-      socket.emit('get_client', {name: clientName});
+    $scope.getClient = function(dcName, clientName){
+      socket.emit('get_client', {dc: dcName, client: clientName});
     }
-    $scope.getRows = function(array, columns) {
-      var rows = [];
-      var i,j,temparray, chunk = columns;
+    $scope.splitArray = function(array, n) { // Divide an array into 'n' arrays 
+      var arrays = [];
+      var i,j,temparray, chunk = n;
       for (i=0,j=array.length; i<j; i+=chunk) {
           temparray = array.slice(i, i+chunk);
-          rows.push(temparray);
+          arrays.push(temparray);
       }
-      return rows;
+      return arrays;
     };
+    $scope.getRows = function(array, n) { // Get rows for each DC
+      _.each(array, function(element,index,list){
+        list[index] = $scope.splitArray(element,n);
+      });
+      return array;
+    };
+
+    // Socket.IO
     $scope.$on('socket:sensu', function(event, data) {
       var sensu = JSON.parse(data.content);
-      $scope.rows = $scope.getRows(sensu.clients,4);
+      $scope.dc = sensu.dc;
+      $scope.aggregation = $scope.getRows(sensu.clients, 3);
     });
+
+    // Toggle system
+    $scope.toggle = {};
+    $scope.toggleOn = function (index) {
+      if(typeof $scope.toggle[index] === "undefined") $scope.toggle[index] = {hidden: false};
+      $scope.toggle[index].hidden = !$scope.toggle[index].hidden;
+    };
+    $scope.showOnly = function (index, dc) {
+      _.each(dc, function(datacenter, i){
+        if(i == index) return $scope.toggle[index] = {hidden: false};
+        $scope.toggle[i] = {hidden: true};
+      });
+    };
+    $scope.showAll = function (dc) {
+      _.each(dc, function(datacenter, i){
+        $scope.toggle[i] = {hidden: false};
+      });
+    };
   }
 ]);
 
@@ -103,26 +164,46 @@ controllerModule.controller('dashboard', ['$scope', 'socket',
       var sensu = JSON.parse(data.content);
       $scope.clients = sensu.clients;
       $scope.events = sensu.events;
-      $scope.eventsStyle = function() {
-        var criticals = $scope.events.filter(function (e){ return e.check.status === 2 }).length;
-        if(criticals > 0) return "critical";
-        var warnings = $scope.events.filter(function (e){ return e.check.status === 1 }).length;
-        return (warnings > 0) ? "warning" : "success";
+      $scope.countEvents = function() {
+        var criticals = 0;
+        var warnings = 0;
+        _.each($scope.events, function(element){
+          criticals += element.filter(function (e){ return e.check.status === 2 }).length;
+          warnings += element.filter(function (e){ return e.check.status === 1 }).length;
+        });
+
+        // Display counts
+        $scope.events.warning = warnings;
+        $scope.events.critical = criticals;
+        $scope.events.total = criticals + warnings;
+
+        // Return style
+        return (criticals > 0) ? "critical" : (warnings > 0) ? "warning" : "success";
+      };
+      $scope.countClients = function() {
+        var criticals = 0;
+        var warnings = 0;
+        var total = 0;
+        _.each($scope.clients, function(element){
+          criticals += element.filter(function (e){ return e.status === 2 }).length;
+          warnings += element.filter(function (e){ return e.status === 1 }).length;
+          total += element.length;
+        });
+
+        // Display counts
+        $scope.clients.warning = warnings;
+        $scope.clients.critical = criticals;
+        $scope.clients.total = total;
+
+        // Return style
+        return (criticals > 0) ? "critical" : (warnings > 0) ? "warning" : "success";
       };
       $scope.clientsStyle = function() {
+        return 0;
         var criticals = $scope.clients.filter(function (e){ return e.status === 2 }).length;
         if(criticals > 0) return "critical";
         var warnings = $scope.clients.filter(function (e){ return e.status === 1 }).length;
         return (warnings > 0) ? "warning" : "success";
-      };
-      $scope.countClients = function(status) {
-        if(status == 0) return $scope.clients.length;
-        return ($scope.clients.filter(function (e){ return e.status === status }).length);
-      };
-      $scope.countEvents = function(status) {
-        if(status == 0) return $scope.events.length;
-        var count = $scope.events.filter(function (e){ return e.check.status === status }).length;
-        return count;
       };
     });
   }
@@ -133,25 +214,57 @@ controllerModule.controller('dashboard', ['$scope', 'socket',
  */
 controllerModule.controller('events', ['$scope', 'socket', 'eventsService',
   function($scope, socket, eventsService) {
-    $scope.getRows = function(array, columns) {
-      var rows = [];
-      var i,j,temparray, chunk = columns;
+
+    // Helpers
+    $scope.stash = function(e, dcName, event){
+      eventsService.stash(e, dcName, event);
+    };
+    $scope.getClient = function(dcName, clientName){
+      socket.emit('get_client', {dc: dcName, client: clientName});
+    }
+    $scope.getDcStatus = function(index, clients){
+      dcService.status(index, clients);
+    }
+    $scope.splitArray = function(array, n) { // Divide an array into 'n' arrays 
+      var arrays = [];
+      var i,j,temparray, chunk = n;
       for (i=0,j=array.length; i<j; i+=chunk) {
           temparray = array.slice(i, i+chunk);
-          rows.push(temparray);
+          arrays.push(temparray);
       }
-      return rows;
+      return arrays;
     };
+    $scope.getRows = function(array, n) { // Get rows for each DC
+      _.each(array, function(element,index,list){
+        list[index] = $scope.splitArray(element,n);
+      });
+      return array;
+    };
+
+    // Socket.IO
     $scope.$on('socket:sensu', function(event, data) {
       var sensu = JSON.parse(data.content);
-      $scope.rows = $scope.getRows(sensu.events,4);
+      $scope.dc = sensu.dc;
+      $scope.aggregation = $scope.getRows(sensu.events, 3);
     });
-    $scope.stash = function(e, event){
-      eventsService.stash(e, event);
+
+    // Toggle system
+    $scope.toggle = {};
+    $scope.toggleOn = function (index) {
+      if(typeof $scope.toggle[index] === "undefined") $scope.toggle[index] = {hidden: false};
+      $scope.toggle[index].hidden = !$scope.toggle[index].hidden;
     };
-    $scope.getClient = function(clientName){
-      socket.emit('get_client', {name: clientName});
-    }
+    $scope.showOnly = function (index, dc) {
+      _.each(dc, function(datacenter, i){
+        if(i == index) return $scope.toggle[index] = {hidden: false};
+        $scope.toggle[i] = {hidden: true};
+      });
+    };
+    $scope.showAll = function (dc) {
+      _.each(dc, function(datacenter, i){
+        $scope.toggle[i] = {hidden: false};
+      });
+    };
   }
 ]);
 
@@ -160,24 +273,56 @@ controllerModule.controller('events', ['$scope', 'socket', 'eventsService',
  */
 controllerModule.controller('stashes', ['$scope', 'socket', 'stashesService',
   function($scope, socket, stashesService) {
-    $scope.getRows = function(array, columns) {
-      var rows = [];
-      var i,j,temparray, chunk = columns;
+    
+    // Helpers
+    $scope.splitArray = function(array, n) { // Divide an array into 'n' arrays 
+      var arrays = [];
+      var i,j,temparray, chunk = n;
       for (i=0,j=array.length; i<j; i+=chunk) {
           temparray = array.slice(i, i+chunk);
-          rows.push(temparray);
+          arrays.push(temparray);
       }
-      return rows;
+      return arrays;
     };
+    $scope.getRows = function(array, n) { // Get rows for each DC
+      _.each(array, function(element,index,list){
+        list[index] = $scope.splitArray(element,n);
+      });
+      return array;
+    };
+
+    // Socket.IO
     $scope.$on('socket:sensu', function(event, data) {
       var sensu = JSON.parse(data.content);
-      console.log(sensu.stashes);
-      $scope.rows = $scope.getRows(sensu.stashes,3);
-      $scope.deleteStash = function(stash, index){
-        stashesService.stash(stash);
-        sensu.stashes.splice(index, 1);
-        $scope.rows = $scope.getRows(sensu.stashes,3);
+      $scope.dc = sensu.dc;
+      $scope.aggregation = $scope.getRows(sensu.stashes, 3);
+
+      $scope.deleteStash = function(dcName, stash, index){
+        stashesService.stash(dcName, stash);
+
+        // Remove stash from $scope
+        var dcPosition = sensu.dc.indexOf(dcName);
+        var dcStashes = sensu.stashes[dcPosition];    
+        dcStashes[0].splice(index, 1);
       };
     }); 
+
+    // Toggle system
+    $scope.toggle = {};
+    $scope.toggleOn = function (index) {
+      if(typeof $scope.toggle[index] === "undefined") $scope.toggle[index] = {hidden: false};
+      $scope.toggle[index].hidden = !$scope.toggle[index].hidden;
+    };
+    $scope.showOnly = function (index, dc) {
+      _.each(dc, function(datacenter, i){
+        if(i == index) return $scope.toggle[index] = {hidden: false};
+        $scope.toggle[i] = {hidden: true};
+      });
+    };
+    $scope.showAll = function (dc) {
+      _.each(dc, function(datacenter, i){
+        $scope.toggle[i] = {hidden: false};
+      });
+    };
   }
 ]);

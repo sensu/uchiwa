@@ -2,17 +2,16 @@
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="col-lg-12">
-      <h1>Uchiwa</h1>
+      <h1>Events</h1>
     </div>
-  </div><!-- /.row -->
-
+  </div>
   <div class="row-fluid">
     <div class="col-lg-12">
       <div class="panel" ng-controller="dashboard">
         <div class="dashboard panel-boby">
           <div class="row">
             <div class="col-md-3">
-              <div id="events" class="panel {{eventsStyle()}}">
+              <div id="events" class="panel {{countEvents()}}">
                 <div class="panel-heading">
                   <div class="row">
                     <div class="col-xs-12">
@@ -22,18 +21,18 @@
                         </div>
                         <div class="col-xs-6">
                           <div class="stat-label">Events</div>
-                          <span class="count">{{countEvents(0)}}</span>
+                          <span class="count">{{events.total}}</span>
                         </div>
                       </div>
                       <div class="mb15"></div>
                       <div class="row">
                         <div class="col-xs-6">
                           <div class="stat-label">Critical</div>
-                          <span class="count-small">{{countEvents(2)}}</span>
+                          <span class="count-small">{{events.critical}}</span>
                         </div>
                         <div class="col-xs-6">
                           <div class="stat-label">Warning</div>
-                          <span class="count-small">{{countEvents(1)}}</span>
+                          <span class="count-small">{{events.warning}}</span>
                         </div>
                       </div>
                     </div>
@@ -42,7 +41,7 @@
               </div>
             </div>
             <div class="col-md-3">
-              <div id="events" class="panel {{eventsStyle()}}">
+              <div id="events" class="panel {{countClients()}}">
                 <div class="panel-heading">
                   <div class="row">
                     <div class="col-xs-12">
@@ -52,18 +51,18 @@
                         </div>
                         <div class="col-xs-6">
                           <div class="stat-label">Clients</div>
-                          <span class="count">{{countClients(0)}}</span>
+                          <span class="count">{{clients.total}}</span>
                         </div>
                       </div>
                       <div class="mb15"></div>
                       <div class="row">
                         <div class="col-xs-6">
                           <div class="stat-label">Critical</div>
-                          <span class="count-small">{{countClients(2)}}</span>
+                          <span class="count-small">{{clients.critical}}</span>
                         </div>
                         <div class="col-xs-6">
                           <div class="stat-label">Warning</div>
-                          <span class="count-small">{{countClients(1)}}</span>
+                          <span class="count-small">{{clients.warning}}</span>
                         </div>
                       </div>
                     </div>
@@ -83,32 +82,52 @@
       </div>
     </div>
   </div>
-  <div class="row-fluid">
-    <div class="col-lg-12">
-      <div class="list" ng-controller="events">
-        <div class="row-fluid">
-          <div class="col-lg-12 input-group">
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-            <input class="search" ng-model="query">
+  <div class="row-fluid" ng-controller="events">
+
+    <div class="col-lg-2">
+      <ul class="nav nav-pills nav-stacked mg-t-md">
+        <li>
+          <span class="text-muted">Filter</span>
+          <div class="input-group">
+            <input class="search input-sm" ng-model="query">
           </div>
-        </div>
-        <div ng-repeat="row in rows">
-          <div class="row">
-            <div class='col-md-3 client' ng-repeat="event in row | filter:query">
-              <a href='#' id='{{event.client.name}}' data-toggle='modal' data-target='#client-details' ng-click="getClient(event.client.name);">
-                <div class='well {{event.style}}'>
-                  <span class='lead'>{{event.check.name}}<span class='pull-right'><i class="fa {{event.silenceIcon}}" ng-click="stash($event, event);"></i></span></span>
-                  <span class='subtitle'><strong>{{event.client.name}}</strong></span>
-                  <span class='small timestamp'><i class='fa fa-clock-o'></i> {{event.check.last_issued}}</span>
+        </li>
+      </ul>
+      <ul class="nav nav-pills nav-stacked mg-t-md">
+        <li>
+          <span class="text-muted">datacenters</span>
+        </li>
+        <li>
+          <a href="#" ng-click="showAll(dc)" class='accordion-toggle'><i class="fa fa-circle blue mg-r-sm"></i> All</a>
+        </li>
+        <li ng-repeat="datacenter in dc">
+          <a href="#" ng-click="showOnly($index, dc)" class='accordion-toggle'><i class="fa fa-circle mg-r-sm {{datacenter.style}}"></i> {{datacenter.name}} ({{datacenter.events}})</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-lg-10">
+      <div class="list">
+        <div ng-repeat="rows in aggregation">
+          <div class="section-header" ng-click="toggleOn($index)" class='accordion-toggle'>
+            <i class="fa" ng-class="toggle[$index].hidden ? 'fa-angle-up' : 'fa-angle-down'"></i> {{dc[$index].name}}
+          </div>
+          <div class='accordian-body' ng-class="toggle[$index].hidden ? 'collapse' : 'in'">
+            <div ng-repeat="row in rows">
+              <div class="row">
+                <div class='col-md-4 client' ng-repeat="event in row | filter:query">
+                  <a href='#' id='{{event.client.name}}' data-toggle='modal' data-target='#client-details' ng-click="getClient(dc[$parent.$parent.$index].name, event.client.name);">
+                    <div class='well {{event.style}}'>
+                      <span class='lead'>{{event.check.name}}<span class='pull-right'><i class="fa {{event.silenceIcon}}" ng-click="stash($event, dc[$parent.$parent.$index].name, event);"></i></span></span>
+                      <span class='subtitle'><strong>{{event.client.name}}</strong></span>
+                      <span class='small timestamp'><i class='fa fa-clock-o'></i> {{event.check.last_issued}}</span>
+                    </div>
+                  </a>
                 </div>
-              </a>
+              </div>
             </div>
           </div>
-        </div>
-        <div ng-cloak class="ng-cloak" ng-show="rows.length == 0">
-          <div class='not-found'><i class='fa fa-thumbs-o-up'></i></div>
-          <div class='not-found'> No events found!</div>
-        </div>
+        </div>    
       </div>
     </div>
   </div>

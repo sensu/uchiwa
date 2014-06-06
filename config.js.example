@@ -1,13 +1,26 @@
 module.exports = {
-  sensu: {
-    host: '10.20.30.40',
-    ssl: false,
-    port: 4567,
-    user: '',
-    pass: '',
-    path: '',
-    timeout: 5000
-  },
+  sensu: [
+    {
+      name: 'API 1',
+      host: '10.20.30.40',
+      ssl: false,
+      port: 4567,
+      user: '',
+      pass: '',
+      path: '',
+      timeout: 5000
+    },
+    {
+      name: 'API 2',
+      host: '10.20.30.50',
+      ssl: false,
+      port: 4567,
+      user: '',
+      pass: '',
+      path: '',
+      timeout: 5000
+    }
+  ],
   uchiwa: {
     user: '',
     pass: '',

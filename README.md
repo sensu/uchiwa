@@ -6,6 +6,7 @@ The dashboard is under active development, and major changes are not uncommon.
 
 ## Features
 
+* Support of multiple Sensu APIs
 * Real-time updates with Socket.IO
 * Client and checks stashes management
 * Easily filter events, clients, stashes and events
@@ -28,6 +29,10 @@ The dashboard is under active development, and major changes are not uncommon.
 * Copy **config.js.example** to **config.js** - modify your Sensu API information. See configuration section below
 * Start the dashboard: `node app.js`
 * Browse your browser: `http://localhost:3000/`
+
+### Migration from 0.0.x to 0.1.x
+
+With the support of mutiple Sensu APIs, the configuration structure has been modified. To configure multiple APIs, simply refer yourself to the **config.js.example** file.
 
 ### Use nginx as proxy
 
