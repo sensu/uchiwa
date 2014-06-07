@@ -135,24 +135,4 @@
   <% include partials/modal-client.html %>
 
 </div><!-- /.container -->
-<script type="text/javascript">
-  dashboardGraph = Morris.Line({
-    element: 'dashboard-graph',
-    data: [],
-    xkey: 'y',
-    ykeys: ['e', 's'],
-    labels: ['Events', 'Stashes'],
-    lineColors: ['#2CA7E5', '#F9CD65'],
-    hideHover: 'auto',
-    pointSize: 0,
-    fillOpacity: 1,
-    gridTextColor: '#fff',
-    gridTextFamily: "'Lato', sans-serif",
-    gridTextWeight: 700,
-    grid: false,
-    lineWidth: 4,
-    axes: true,
-    behaveLikeLine: true
-  });
-</script>
 <% include partials/footer.html %>
