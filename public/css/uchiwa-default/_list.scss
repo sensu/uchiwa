@@ -1,0 +1,23 @@
+@import "variables";
+
+.list {
+  position: relative;
+  padding: 10px 15px 0px 0px;
+  min-height: 1px;
+  background-color: $list-background-color;
+}
+.list a {
+  text-decoration:none;
+}
+.list td.output {
+  text-overflow: ellipsis;
+  overflow : hidden;
+  max-width: 300px;
+  white-space: nowrap;
+}
+.list td.checkname {
+  text-overflow: ellipsis;
+  overflow : hidden;
+  max-width: 180px;
+  white-space: nowrap;
+}

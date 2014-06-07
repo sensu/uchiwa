@@ -1,0 +1,60 @@
+@import "variables";
+
+html, html a {
+  -webkit-font-smoothing: antialiased !important;
+}
+
+body {
+  padding-left: 50px;
+  background-color: $body-background-color;
+  font-weight: 400;
+  color: $body-text-color;
+  font-family: 'Lato', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  color: $header-text-color;
+}
+
+hr {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.section-header {
+  font-size: 23px;
+  font-weight: 300;
+  border-bottom: $section-header-border-bottom;
+}
+
+.text-muted {
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 400;
+  padding-top: 10px;
+}
+
+.mb15 {
+  margin-bottom: 15px;
+}
+
+.mg-t-md {
+  margin-top: 25px;
+}
+
+.mg-r-sm {
+  margin-right: 10px;
+}
+
+.table>tbody>tr>td {
+  vertical-align: middle;
+}
+.table .hiddenRow {
+  padding: 0 !important;
+}

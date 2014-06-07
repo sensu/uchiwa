@@ -1,0 +1,615 @@
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+html, html a {
+  -webkit-font-smoothing: antialiased !important; }
+
+body {
+  padding-left: 50px;
+  background-color: white;
+  font-weight: 400;
+  color: #4d4d4d;
+  font-family: 'Lato', sans-serif; }
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  color: #56575b; }
+
+hr {
+  margin-top: 5px;
+  margin-bottom: 10px; }
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important; }
+
+.section-header {
+  font-size: 23px;
+  font-weight: 300;
+  border-bottom: 1px solid #eeeeee; }
+
+.text-muted {
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 400;
+  padding-top: 10px; }
+
+.mb15 {
+  margin-bottom: 15px; }
+
+.mg-t-md {
+  margin-top: 25px; }
+
+.mg-r-sm {
+  margin-right: 10px; }
+
+.table > tbody > tr > td {
+  vertical-align: middle; }
+
+.table .hiddenRow {
+  padding: 0 !important; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.navbar {
+  background-color: #2c394a; }
+
+.navbar-twitch {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 50px;
+  height: 100%;
+  border-radius: 0px;
+  border: 0px;
+  z-index: 1030; }
+
+.navbar-twitch.open {
+  width: 240px; }
+
+.navbar-twitch > .container {
+  padding: 0px;
+  width: 100%; }
+
+.navbar-twitch .navbar-header,
+.navbar-twitch .navbar-brand {
+  float: none;
+  display: block;
+  width: 100%;
+  margin: 0px; }
+
+.navbar-twitch .navbar-brand {
+  height: 50px; }
+
+.navbar-twitch > .container .navbar-brand {
+  padding: 0px;
+  margin: 0px; }
+
+.navbar-twitch > .container .navbar-brand > .small-nav {
+  display: block; }
+
+.navbar-twitch > .container .navbar-brand > .small-nav > span.logo,
+.navbar-twitch.open > .container .navbar-brand > .full-nav {
+  display: block;
+  font-weight: bold;
+  padding: 15px 2px 15px 3px;
+  font-size: 18pt; }
+
+.navbar-twitch.open > .container .navbar-brand {
+  width: 100%;
+  padding: 15px 15px 60px;
+  text-align: center; }
+
+.navbar-twitch.navbar-inverse > .container .navbar-brand > .small-nav > span.logo {
+  /*color: rgb(255, 255, 255);*/ }
+
+.navbar-twitch .navbar-nav > li {
+  float: none; }
+
+.navbar-twitch > .container .full-nav {
+  display: none; }
+
+.navbar-twitch.open > .container .full-nav {
+  display: block; }
+
+.navbar-twitch.open > .container .small-nav {
+  display: none; }
+
+.navbar-twitch .navbar-collapse {
+  padding: 0px; }
+
+.navbar-twitch .navbar-nav {
+  float: none;
+  margin: 0px; }
+
+.navbar-twitch .navbar-nav > li > a {
+  color: white;
+  padding: 0px;
+  border-left: 3px solid #2c394a; }
+
+.navbar-twitch .navbar-nav > li > a:hover {
+  color: white;
+  background-color: #2c394a;
+  border-left: 3px solid #5f97fb; }
+
+.navbar-twitch .navbar-nav > .selected > a {
+  color: #2c394a;
+  background-color: white;
+  border-left: 3px solid white; }
+
+.navbar-twitch .navbar-nav > li > a > span {
+  display: block;
+  font-size: 16pt;
+  padding: 13px 15px 13px 12px; }
+
+.navbar-twitch .tooltip,
+.navbar-twitch .tooltip .tooltip-inner {
+  max-width: auto;
+  white-space: nowrap;
+  color: white; }
+
+.navbar-twitch .tooltip .tooltip-inner {
+  background-color: #333333; }
+
+.tooltip.right .tooltip-arrow {
+  border-right: 5px solid #333333; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.critical {
+  color: #d9534f; }
+
+.warning {
+  color: #fcf8e3; }
+
+.success {
+  color: #43ac6a; }
+
+.unknown {
+  color: #9c9990; }
+
+.blue {
+  color: #2c394a;
+  border-color: #2c394a; }
+
+.btn-circle {
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  padding: 0 0 0 0;
+  font-size: 15px;
+  background-color: white;
+  border-radius: 50%;
+  border-width: 2px;
+  outline: none !important;
+  margin-right: 7px; }
+
+.btn-circle:hover {
+  color: black; }
+
+.btn-hover {
+  font-weight: normal;
+  color: #333333;
+  cursor: pointer;
+  background-color: inherit;
+  border-color: transparent;
+  width: 40%; }
+
+.btn-disabled, .btn-disabled:hover {
+  color: #c8c8c8;
+  width: 40%; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.modal-body {
+  background-color: white; }
+
+.modal-body .table-hover > tbody > tr:hover > td,
+.modal-body .table-hover > tbody > tr:hover > th {
+  background-color: whitesmoke; }
+
+.modal.modal-wide .modal-dialog {
+  width: 95%;
+  padding: 20px 0px 20px 0px; }
+
+.modal-wide .modal-body {
+  overflow-y: auto;
+  padding-top: 0px; }
+
+.not-found {
+  font-size: 30pt;
+  text-align: center; }
+
+.not-found .fa {
+  font-size: 50px; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.list {
+  position: relative;
+  padding: 10px 15px 0px 0px;
+  min-height: 1px;
+  background-color: white; }
+
+.list a {
+  text-decoration: none; }
+
+.list td.output {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 300px;
+  white-space: nowrap; }
+
+.list td.checkname {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 180px;
+  white-space: nowrap; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.well {
+  border: 0px;
+  margin-bottom: 5px;
+  background-color: #fafafa; }
+
+.well.success {
+  border-left: 3px solid #43ac6a; }
+
+.well.warning {
+  border-left: 3px solid #fcf8e3; }
+
+.well.danger {
+  border-left: 3px solid #d9534f; }
+
+.well.default {
+  border-left: 3px solid #2c394a; }
+
+.well .lead {
+  margin-bottom: 5px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #333333;
+  font-size: 18px; }
+
+.well span {
+  display: block; }
+
+.well:hover {
+  background-color: #ffffcc; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.nav-list {
+  font-size: 13px;
+  text-transform: uppercase; }
+
+.nav-list li.active a {
+  color: #588fc5; }
+
+.nav-tabs.nav-justified > .active > a, .nav-tabs.nav-justified > .active > a:hover, .nav-tabs.nav-justified > .active > a:focus {
+  border: 0px; }
+
+.nav-tabs.nav-justified > li > a {
+  border: 0px; }
+
+.nav > li {
+  position: relative;
+  display: block; }
+
+.nav > li > a {
+  color: #4d4d4d;
+  font-size: 13px;
+  font-weight: 400; }
+
+.nav > li > a:hover, .nav > li > a:focus {
+  background-color: #eeeeee; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.morris-hover.morris-default-style {
+  font-size: 12px;
+  font-weight: 700;
+  background-color: #2c394a;
+  opacity: 0.95;
+  font-family: 'Lato', sans-serif; }
+
+.morris-hover.morris-default-style .morris-hover-row-label {
+  color: white; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.panel {
+  border: 0px;
+  -webkit-box-shadow: 0 0 0;
+  box-shadow: 0 0 0;
+  margin-bottom: 10px;
+  background-color: white; }
+
+.panel.critical, .panel.warning, .panel.success {
+  color: #fff; }
+
+.panel .panel-title {
+  font-size: 15px;
+  text-transform: uppercase; }
+
+.panel .list-group-item {
+  height: auto;
+  overflow: auto;
+  border-right: 0px;
+  border-left: 0px;
+  background-color: white; }
+
+.panel-default {
+  background-color: #e4e7ea; }
+
+.label {
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 10px; }
+
+.breadcrumb {
+  font-size: 12px; }
+
+.btn-black, .btn-blue {
+  background: #2c394a;
+  color: white;
+  border-color: #222222; }
+
+.btn-critical {
+  background-color: #d9534f;
+  color: white;
+  border: 0px; }
+
+.btn-black:hover,
+.btn-black:active,
+.btn-black:focus {
+  background: #2c394a;
+  border-color: #2c394a;
+  color: white; }
+
+.title {
+  text-transform: uppercase; }
+
+.subtitle {
+  color: #333333;
+  text-transform: uppercase;
+  font-size: 12px; }
+
+.subtitle .fa {
+  padding-right: 5px; }
+
+.timestamp {
+  color: #333333;
+  font-size: 12px; }
+
+.timestamp .fa {
+  padding-right: 3px; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.dashboard {
+  color: white;
+  padding-top: 20px; }
+
+.dashboard .panel {
+  height: 160px; }
+
+.dashboard .graph {
+  height: 150px;
+  color: white; }
+
+.dashboard .icon {
+  padding-top: 10px;
+  text-align: center;
+  display: inline-block;
+  width: 100%; }
+
+.dashboard .stat-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.75;
+  padding-top: 5px; }
+
+.dashboard .count {
+  font-weight: 700;
+  font-size: 50px;
+  line-height: 45px; }
+
+.dashboard .count-small {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 20px; }
+
+.dashboard .critical {
+  background-color: #d9534f;
+  min-height: 125px; }
+
+.dashboard .warning {
+  background-color: #fcf8e3;
+  min-height: 125px; }
+
+.dashboard .success {
+  background-color: #43ac6a;
+  min-height: 125px; }
+
+.dashboard .default {
+  background-color: #2c394a;
+  min-height: 125px; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.tag {
+  padding: 3px 7px;
+  color: white;
+  background-color: #2c394a;
+  display: inline;
+  float: left;
+  clear: left;
+  margin-bottom: 3px;
+  font-size: 12px;
+  text-transform: none; }
+
+.tag .fa {
+  padding-right: 5px; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Navbar */
+/* Nav */
+/* Modal */
+/* Buttons */
+/* List */
+/* Wells */
+/* Panels */
+/* Timestamp */
+/* Dashboard */
+/* Tag */
+/* Morris Chart Library */
+/* Search bar */
+.search {
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: white;
+  color: black; }
+
+.input-group {
+  padding: 5px 0 0 0; }
+
+.client {
+  margin-top: 10px;
+  padding-left: 7px;
+  padding-right: 7px; }

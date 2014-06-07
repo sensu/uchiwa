@@ -1,0 +1,53 @@
+@import "variables";
+
+.critical {
+  color: $button-danger-text-color;
+}
+
+.warning {
+  color: $button-warning-text-color;
+}
+
+.success {
+  color: $button-success-text-color;
+}
+
+.unknown {
+  color: $button-unknown-text-color;
+}
+
+.blue {
+  color: $blue-text-color;
+  border-color: $blue-border-color;
+}
+
+.btn-circle {
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  padding: 0 0 0 0;
+  font-size: 15px;
+  background-color: $button-circle-background-color;
+  border-radius: 50%;
+  border-width: 2px;
+  outline:none!important;
+  margin-right: 7px;
+}
+
+.btn-circle:hover {
+  color: $button-circle-hover-text-color;
+}
+
+.btn-hover {
+  font-weight: normal;
+  color: $button-hover-text-color;
+  cursor: pointer;
+  background-color: inherit;
+  border-color: transparent;
+  width: 40%;
+}
+
+.btn-disabled, .btn-disabled:hover {
+  color: $button-disabled-text-color;
+  width: 40%;
+}

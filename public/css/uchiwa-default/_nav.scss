@@ -1,0 +1,33 @@
+@import "variables";
+
+.nav-list {
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.nav-list li.active a {
+  color: $nav-list-active;
+}
+
+.nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:hover, .nav-tabs.nav-justified>.active>a:focus {
+  border: 0px;
+}
+
+.nav-tabs.nav-justified>li>a {
+  border: 0px;
+}
+
+.nav>li {
+  position: relative;
+  display: block;
+}
+
+.nav>li>a {
+  color: #4d4d4d;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.nav>li>a:hover, .nav>li>a:focus {
+  background-color: $nav-non-default-state;
+}

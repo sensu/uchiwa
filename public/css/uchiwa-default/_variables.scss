@@ -1,0 +1,104 @@
+/* Colors */
+$primary-color: #ffffff !default;
+$secondary-color: #2C394A !default;
+$tertiary-color: #000000 !default;
+$quaternary-color: #333333 !default;
+
+$danger-color: #D9534F !default;
+$success-color: #43ac6a !default;
+$warning-color: #fcf8e3 !default;
+$unknown-color: #9C9990 !default;
+
+/* Body, Sections and Headers */
+$body-background-color: $primary-color !default;
+$body-text-color: #4D4D4D !default;
+$header-text-color: #56575B !default;
+$section-header-border-bottom: 1px solid #EEEEEE !default;
+
+/* Navbar */
+$navbar-background-color: $secondary-color !default;
+$navbar-nav-text-color: $primary-color !default;
+$navbar-nav-border-left: 3px solid $secondary-color  !default;
+
+$navbar-nav-hover-text-color: $primary-color !default;
+$navbar-nav-hover-background-color: $secondary-color !default;
+$navbar-nav-hover-border-left: 3px solid #5F97FB !default;
+
+$navbar-nav-selected-text-color: $secondary-color !default;
+$navbar-nav-selected-background-color: $primary-color !default;
+$navbar-nav-selected-border-left: 3px solid $primary-color !default;
+
+$navbar-tooltip-background-color: $quaternary-color !default;
+$navbar-tooltip-text-color: $primary-color !default;
+
+/* Nav */
+$nav-list-active: #588FC5 !default;
+$nav-non-default-state: #EEEEEE !default;
+
+/* Modal */
+$modal-body-background-color: $primary-color !default;
+$modal-body-table-hover-background-color: #F5F5F5 !default;
+
+/* Buttons */
+$button-danger-text-color: $danger-color !default;
+$button-warning-text-color: $warning-color !default;
+$button-success-text-color: $success-color !default;
+$button-unknown-text-color: $unknown-color !default;
+
+$button-circle-background-color: $primary-color !default;
+$button-circle-hover-text-color: $tertiary-color !default;
+
+$button-hover-text-color: $quaternary-color !default;
+$button-disabled-text-color: #C8C8C8 !default;
+
+$blue-text-color: $secondary-color !default;
+$blue-border-color: $secondary-color !default;
+
+$button-black-background-color: $secondary-color !default;
+$button-black-text-color: $primary-color !default;
+$button-black-border-color: #222222 !default;;
+$button-black-alt-border-color: $secondary-color !default;
+
+$button-critical-background-color: $danger-color !default;
+$button-critical-text-color: $primary-color !default;
+
+/* List */
+$list-background-color: $primary-color !default;
+
+/* Wells */
+$well-background-color: #FAFAFA !default;
+$well-success-border-left: 3px solid $success-color !default;
+$well-warning-border-left: 3px solid $warning-color !default;
+$well-danger-border-left: 3px solid $danger-color !default;
+$well-default-border-left: 3px solid $secondary-color !default;
+$well-lead-text-color: $quaternary-color !default;
+$well-hover-background-color: #FFFFCC !default;
+
+/* Panels */
+$panel-background-color: $primary-color !default;
+$panel-list-group-item-background-color: $primary-color !default;
+$panel-default-background-color: #e4e7ea !default;
+
+/* Timestamp */
+$timestamp-text-color: $quaternary-color !default;
+
+/* Dashboard */
+$dashboard-text-color: $primary-color !default;
+$dashboard-graph-text-color: $primary-color !default;
+
+$dashboard-critical-background-color: $danger-color !default;
+$dashboard-warning-background-color: $warning-color !default;
+$dashboard-success-background-color: $success-color !default;
+$dashboard-default-background-color: $secondary-color !default;
+
+/* Tag */
+$tag-text-color: $primary-color !default;
+$tag-background-color: $secondary-color !default;
+
+/* Morris Chart Library */
+$morris-hover-background-color: $secondary-color !default;
+$morris-hover-text-color: $primary-color !default;
+
+/* Search bar */
+$search-bar-background-color: $primary-color !default;
+$search-bar-text-color: $tertiary-color !default;

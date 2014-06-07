@@ -1,0 +1,17 @@
+@import "variables";
+
+.tag {
+  padding: 3px 7px;
+  color: $tag-text-color;
+  background-color: $tag-background-color;
+  display:inline;
+  float: left;
+  clear: left;
+  margin-bottom: 3px;
+  font-size: 12px;
+  text-transform: none;
+}
+
+.tag .fa {
+  padding-right: 5px;
+}
