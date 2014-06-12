@@ -2,6 +2,7 @@
 /**
  * Module dependencies.
  */
+var fs = require('fs');
 var yargs = require('yargs')
   .describe('c', 'Load a config (file)')
   .alias('c', 'config')
@@ -9,18 +10,15 @@ var yargs = require('yargs')
   .alias('c', 'config_file')
   .default('c', './config.js')
 ;
-
 var argv = yargs.argv;
-var fs = require('fs');
 
-if (fs.existsSync(argv.c)) {
-  var config = require(argv.c)
-}
-else {
+if (!fs.existsSync(argv.c)) {
   yargs.showHelp();
   console.log('Config file must exist and be readable.')
   process.exit(1);
 }
+
+var config = require(argv.c)
 
 var express = require('express'),
   http = require('http'),
