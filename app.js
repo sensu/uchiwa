@@ -2,6 +2,26 @@
 /**
  * Module dependencies.
  */
+var yargs = require('yargs')
+  .describe('c', 'Load a config (file)')
+  .alias('c', 'config')
+  .alias('c', 'config-file')
+  .alias('c', 'config_file')
+  .default('c', './config.js')
+;
+
+var argv = yargs.argv;
+var fs = require('fs');
+
+if (fs.existsSync(argv.c)) {
+  var config = require(argv.c)
+}
+else {
+  yargs.showHelp();
+  console.log('Config file must exist and be readable.')
+  process.exit(1);
+}
+
 var express = require('express'),
   http = require('http'),
   path = require('path'),
@@ -14,7 +34,6 @@ server = http.createServer(app);
 io = require('socket.io').listen(server);
 io.set('log level', 1);
 
-var config = require('./config.js')
 var Sensu = require('./lib/sensu.js').Sensu;
 var Dc = require('./lib/dc.js').Dc;
 var Stats  = require('./lib/stats.js').Stats;
@@ -183,7 +202,7 @@ io.sockets.on('connection', function (socket) {
       }
     });
   });
- 
+
   socket.on('create_stash', function (data){
     data = JSON.parse(data);
     getDc(data, function(err, result){

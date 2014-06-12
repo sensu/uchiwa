@@ -11,6 +11,7 @@
     "express": "3.4.*",
     "socket.io": "0.9.*",
     "moment": "2.5.*",
-    "underscore": "1.6.*"
+    "underscore": "1.6.*",
+    "yargs": "1.2.*"
   }
 }
