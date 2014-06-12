@@ -1,3 +1,11 @@
+### 0.1.2 (2014-06-12)
+
+#### Features
+- Updated font-awesome; use database icon for stashes.
+
+#### Bug Fixes
+- Stashes can have non-silence paths, use stash.path in stashesService
+
 ### 0.1.1 (2014-06-12)
 
 #### Features
