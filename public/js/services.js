@@ -91,9 +91,7 @@ serviceModule.service('eventsService', function(){
  */
 serviceModule.service('stashesService', function(){
   this.stash = function(dcName, stash, index){
-    var checkName = (_.isNull(stash.check)) ? "" : "/" + stash.check;
-    var path = "silence/"+ stash.client + checkName;
-    var payload = {path: path, content:{}};
+    var payload = {path: stash.path, content:{}};
     socket.emit('delete_stash', JSON.stringify({dc: dcName, payload: payload}));
     return stash;
   };
