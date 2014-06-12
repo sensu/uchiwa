@@ -204,7 +204,7 @@ hr {
   color: #d9322a; }
 
 .warning {
-  color: #fcf8e3; }
+  color: #e99002; }
 
 .success {
   color: #43ac6a; }
@@ -337,7 +337,7 @@ hr {
   border-left: 3px solid #43ac6a; }
 
 .well.warning {
-  border-left: 3px solid #fcf8e3; }
+  border-left: 3px solid #e99002; }
 
 .well.danger {
   border-left: 3px solid #d9322a; }
@@ -555,7 +555,7 @@ hr {
   min-height: 125px; }
 
 .dashboard .warning {
-  background-color: #fcf8e3;
+  background-color: #e99002;
   min-height: 125px; }
 
 .dashboard .success {
