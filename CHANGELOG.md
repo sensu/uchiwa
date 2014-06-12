@@ -1,3 +1,11 @@
+### 0.1.1 (2014-06-12)
+
+#### Features
+- CLI argument parsing for config
+
+#### Bug Fixes
+- Do not crash when Sensu return an empty object in dc.js
+
 ### 0.1.0 (2014-06-06)
 
 #### Features
