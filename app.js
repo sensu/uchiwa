@@ -14,11 +14,11 @@ var argv = yargs.argv;
 
 if (!fs.existsSync(argv.c)) {
   yargs.showHelp();
-  console.log('Config file must exist and be readable.')
+  console.log('Config file must exist and be readable.');
   process.exit(1);
 }
 
-var config = require(argv.c)
+var config = require(argv.c);
 
 var express = require('express'),
   http = require('http'),
