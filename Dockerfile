@@ -7,4 +7,4 @@ ADD . /src
 RUN cd /src; npm install
 
 EXPOSE 3000
-CMD ["node", "/src/app.js"]
+CMD ["node", "/src/app.js", "-c", "/src/config.js"]
