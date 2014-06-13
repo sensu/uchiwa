@@ -1,0 +1,28 @@
+@import "../../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/variables";
+@import "../../bower_components/bootswatch-scss/yeti/variables";
+
+// Brand colors
+// -------------------------
+$brand-warning: #F0AD4E;
+$brand-danger:  #D9534F;
+
+// Typography
+// -------------------------
+$font-family-sans-serif: 'Open Sans', sans-serif;
+$font-family-serif: 'Open Sans' serif;
+$font-family-monospace: 'Open Sans', monospace;
+
+$font-size-small: ceil($font-size-base * 0.85); // ~12px
+
+$headings-font-weight: 500;
+
+// Inverted navbar
+// -------------------------
+$navbar-inverse-color: #fff;
+
+// Form states and alerts
+// -------------------------
+$state-success-bg: #43ac6a;
+$state-info-bg: #5bc0de;
+$state-warning-bg: #e99002;
+$state-danger-bg: #f04124;
