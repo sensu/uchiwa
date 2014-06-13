@@ -15,7 +15,6 @@
     "async": "~0.9.0",
     "bootstrap": "3.1.1",
     "bootstrap-sass-official": "3.1.1",
-    "bootswatch-scss": "git@github.com:log0ymxm/bootswatch-scss.git#b0252103b457f341abc16a82cdb79fc175f1257c",
     "fontawesome": "4.1.0",
     "jquery": "~2.1.1",
     "morris.js": "~0.5.0",
