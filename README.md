@@ -34,6 +34,8 @@ The dashboard is under active development, and major changes are not uncommon.
 
 With the support of mutiple Sensu APIs, the configuration structure has been modified. To configure multiple APIs, simply refer yourself to the **config.js.example** file.
 
+Also make sure to run `npm install` to install any missing dependencies.
+
 ### Use nginx as proxy
 
 The first thing you need is Nginx **1.3.13** or higher, since previous versions do not support websocket connections.
