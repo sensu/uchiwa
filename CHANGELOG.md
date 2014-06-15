@@ -1,3 +1,9 @@
+### 0.1.3 (2014-06-15)
+
+#### Features
+- Manage 3rd party libraries with Bower
+- Create Sass themes
+
 ### 0.1.2 (2014-06-12)
 
 #### Features
