@@ -1,5 +1,4 @@
 $(document).ready(function(){
-
   socket = io.connect();
 
   /**
@@ -29,11 +28,28 @@ $(document).ready(function(){
   /**
   * Graphics
   */
-  
+  dashboardGraph = Morris.Line({
+      element: 'dashboard-graph',
+      data: [],
+      xkey: 'y',
+      ykeys: ['e', 's'],
+      labels: ['Events', 'Stashes'],
+      lineColors: ['#2CA7E5', '#F9CD65'],
+      hideHover: 'auto',
+      pointSize: 0,
+      fillOpacity: 1,
+      gridTextColor: '#fff',
+      gridTextFamily: "'Lato', sans-serif",
+      gridTextWeight: 700,
+      grid: false,
+      lineWidth: 4,
+      axes: true,
+      behaveLikeLine: true
+  });
+
   socket.on('stats', function(data) {
     if(_.isUndefined(data.content) || $('#dashboard-graph').length == 0) return;
     var stats = JSON.parse(data.content);
     dashboardGraph.setData(stats);
   });
-
 });
