@@ -1,0 +1,13 @@
+@import "variables";
+
+.morris-hover.morris-default-style {
+  font-size: 12px;
+  font-weight: 700;
+  background-color: $morris-hover-background-color;
+  opacity: 0.95;
+  font-family: 'Lato', sans-serif;
+}
+
+.morris-hover.morris-default-style .morris-hover-row-label {
+  color: $morris-hover-text-color;
+}

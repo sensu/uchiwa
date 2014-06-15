@@ -1,0 +1,16 @@
+@import "variables";
+
+.search {
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: $search-bar-background-color;
+  color: $search-bar-text-color;
+  @if variable-exists('search-bar-border-width') {
+    border-width: $search-bar-border-width;
+  }
+}
+
+.input-group {
+  padding: 5px 0 0 0;
+}

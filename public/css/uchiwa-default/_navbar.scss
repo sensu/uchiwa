@@ -1,0 +1,128 @@
+@import "variables";
+
+.navbar {
+  background-color: $navbar-background-color;
+}
+
+.navbar-twitch {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 50px;
+  height: 100%;
+  border-radius: 0px;
+  border: 0px;
+  z-index: 1030;
+}
+
+.navbar-twitch.open {
+  width: 240px;
+}
+
+.navbar-twitch > .container {
+  padding: 0px;
+  width: 100%;
+}
+
+.navbar-twitch .navbar-header,
+.navbar-twitch .navbar-brand {
+  float: none;
+  display: block;
+  width: 100%;
+  margin: 0px;
+}
+
+.navbar-twitch .navbar-brand {
+  height: 50px;
+}
+
+.navbar-twitch > .container .navbar-brand {
+  padding: 0px;
+  margin: 0px;
+}
+
+.navbar-twitch > .container .navbar-brand > .small-nav {
+  display: block;
+}
+
+.navbar-twitch > .container .navbar-brand > .small-nav > span.logo,
+.navbar-twitch.open > .container .navbar-brand > .full-nav {
+  display: block;
+  font-weight: bold;
+  padding: 15px 2px 15px 3px;
+  font-size: 18pt;
+}
+
+.navbar-twitch.open > .container .navbar-brand {
+  width: 100%;
+  padding: 15px 15px 60px;
+  text-align: center;
+}
+
+.navbar-twitch.navbar-inverse > .container .navbar-brand > .small-nav > span.logo {
+  /*color: rgb(255, 255, 255);*/
+}
+
+.navbar-twitch .navbar-nav > li {
+  float: none;
+}
+
+.navbar-twitch > .container .full-nav {
+  display: none;
+}
+
+.navbar-twitch.open > .container .full-nav {
+  display: block;
+}
+
+.navbar-twitch.open > .container .small-nav {
+  display: none;
+}
+
+.navbar-twitch .navbar-collapse {
+  padding: 0px;
+}
+
+.navbar-twitch .navbar-nav {
+  float: none;
+  margin: 0px;
+}
+
+.navbar-twitch .navbar-nav > li > a {
+  color: $navbar-nav-text-color;
+  padding: 0px;
+  border-left: $navbar-nav-border-left;
+}
+
+.navbar-twitch .navbar-nav > li > a:hover {
+  color: $navbar-nav-hover-text-color;
+  background-color: $navbar-nav-hover-background-color;
+  border-left: $navbar-nav-hover-border-left;
+}
+
+.navbar-twitch .navbar-nav > .selected > a {
+  color: $navbar-nav-selected-text-color;
+  background-color: $navbar-nav-selected-background-color;
+  border-left: $navbar-nav-selected-border-left;
+}
+
+.navbar-twitch .navbar-nav > li > a > span {
+  display: block;
+  font-size: 16pt;
+  padding: 13px 15px 13px 12px;
+}
+
+.navbar-twitch .tooltip,
+.navbar-twitch .tooltip .tooltip-inner {
+  max-width: auto;
+  white-space:nowrap;
+  color: $navbar-tooltip-text-color;
+}
+
+.navbar-twitch .tooltip .tooltip-inner {
+  background-color: $navbar-tooltip-background-color;
+}
+
+.tooltip.right .tooltip-arrow {
+  border-right: 5px solid $navbar-tooltip-background-color;
+}

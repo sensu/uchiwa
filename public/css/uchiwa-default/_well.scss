@@ -1,0 +1,39 @@
+@import "variables";
+
+.well {
+  border: 0px;
+  margin-bottom: 5px;
+  background-color: $well-background-color;
+}
+
+.well.success {
+  border-left: $well-success-border-left;
+}
+
+.well.warning {
+  border-left: $well-warning-border-left;
+}
+
+.well.danger {
+  border-left: $well-danger-border-left;
+}
+
+.well.default {
+  border-left: $well-default-border-left;
+}
+
+.well .lead{
+  margin-bottom: 5px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: $well-lead-text-color;
+  font-size: 18px;
+}
+
+.well span {
+  display: block;
+}
+
+.well:hover {
+  background-color: $well-hover-background-color;
+}

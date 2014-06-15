@@ -1,0 +1,28 @@
+@import "variables";
+
+.modal-body {
+  background-color: $modal-body-background-color;
+}
+
+.modal-body .table-hover > tbody > tr:hover > td,
+.modal-body .table-hover > tbody > tr:hover > th {
+  background-color: $modal-body-table-hover-background-color;
+}
+
+.modal.modal-wide .modal-dialog {
+  width: 95%;
+  padding: 20px 0px 20px 0px;
+}
+
+.modal-wide .modal-body {
+  overflow-y: auto;
+  padding-top: 0px;
+}
+
+.not-found {
+  font-size: 30pt;
+  text-align: center;
+}
+.not-found .fa {
+  font-size: 50px;
+}
