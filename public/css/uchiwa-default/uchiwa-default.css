@@ -192,7 +192,7 @@ hr {
 /* Morris Chart Library */
 /* Search bar */
 .critical {
-  color: #d9534f; }
+  color: #f04124; }
 
 .warning {
   color: #e99002; }
@@ -331,7 +331,7 @@ hr {
   border-left: 3px solid #e99002; }
 
 .well.danger {
-  border-left: 3px solid #d9534f; }
+  border-left: 3px solid #f04124; }
 
 .well.default {
   border-left: 3px solid #2c394a; }
@@ -464,7 +464,7 @@ hr {
   border-color: #222222; }
 
 .btn-critical {
-  background-color: #d9534f;
+  background-color: #f04124;
   color: white;
   border: 0px; }
 
@@ -542,7 +542,7 @@ hr {
   line-height: 20px; }
 
 .dashboard .critical {
-  background-color: #d9534f;
+  background-color: #f04124;
   min-height: 125px; }
 
 .dashboard .warning {
