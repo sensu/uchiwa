@@ -7,3 +7,4 @@ node_modules
 config.js
 public/bower_components
 .sass-cache
+npm-debug.log
