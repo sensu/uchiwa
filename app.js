@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -131,11 +130,11 @@ pull();
 // Return DC object and check client if any specified
 var getDc = function(data, callback){
   if(datacenters.length === 0) return callback("<strong>Error!</strong> No datacenters found.");
-  var dc = datacenters.filter(function (e) { return e.name === data.dc });
+  var dc = datacenters.filter(function (e) { return e.name === data.dc; });
   if (dc.length !== 1) return callback("<strong>Error!</strong> The datacenter " + data.dc + " was not found.");
   if(_.has(data, "client")){
-    if(dc[0].sensu.clients.length == 0) return callback("<strong>Error!</strong> No clients found.");
-    var client = dc[0].sensu.clients.filter(function (e) { return e.name === data.client });
+    if(dc[0].sensu.clients.length === 0) return callback("<strong>Error!</strong> No clients found.");
+    var client = dc[0].sensu.clients.filter(function (e) { return e.name === data.client; });
     if (client.length !== 1) return callback("<strong>Error!</strong> The client " + data.client + " was not found.");
   }
   callback(null, dc[0]);
@@ -187,7 +186,7 @@ io.sockets.on('connection', function (socket) {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": err})});
       }
       else {
-        result.sensu.deleteClient(data.payload, function(err){
+        result.sensu.delete('clients', data.payload, function(err){
           if (err){
             clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The client was not deleted. Reason: " + err})});
           }
@@ -206,7 +205,7 @@ io.sockets.on('connection', function (socket) {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": err})});
       }
       else {
-        result.sensu.postStash(JSON.stringify(data.payload), function(err){
+        result.sensu.post('stashes', JSON.stringify(data.payload), function(err){
           if (err){
             clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
           }
@@ -225,7 +224,7 @@ io.sockets.on('connection', function (socket) {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": err})});
       }
       else {
-        result.sensu.deleteStash(data.payload, function(err){
+        result.sensu.delete('stashes', data.payload, function(err){
           if (err){
             clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
           }
@@ -244,7 +243,7 @@ io.sockets.on('connection', function (socket) {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": err})});
       }
       else {
-        result.sensu.resolveEvent(JSON.stringify(data.payload), function(err){
+        result.sensu.post('resolve', JSON.stringify(data.payload), function(err){
           if (err){
             clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The check was not resolved. Reason: " + err})});
           }
