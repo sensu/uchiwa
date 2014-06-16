@@ -48,7 +48,7 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 /**
  * Authentification
@@ -114,7 +114,7 @@ var pull = function(){
         nextDc();
       });
     });
-  }, function(err){
+  }, function(){
     io.sockets.emit('sensu', {content: JSON.stringify(sensu)});
 
     // Update stats
@@ -129,13 +129,13 @@ pull();
 
 // Return DC object and check client if any specified
 var getDc = function(data, callback){
-  if(datacenters.length === 0) return callback("<strong>Error!</strong> No datacenters found.");
+  if(datacenters.length === 0) { return callback("<strong>Error!</strong> No datacenters found."); }
   var dc = datacenters.filter(function (e) { return e.name === data.dc; });
-  if (dc.length !== 1) return callback("<strong>Error!</strong> The datacenter " + data.dc + " was not found.");
+  if (dc.length !== 1) { return callback("<strong>Error!</strong> The datacenter " + data.dc + " was not found."); }
   if(_.has(data, "client")){
-    if(dc[0].sensu.clients.length === 0) return callback("<strong>Error!</strong> No clients found.");
+    if(dc[0].sensu.clients.length === 0) { return callback("<strong>Error!</strong> No clients found."); }
     var client = dc[0].sensu.clients.filter(function (e) { return e.name === data.client; });
-    if (client.length !== 1) return callback("<strong>Error!</strong> The client " + data.client + " was not found.");
+    if (client.length !== 1) { return callback("<strong>Error!</strong> The client " + data.client + " was not found."); }
   }
   callback(null, dc[0]);
 };
