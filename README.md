@@ -4,6 +4,8 @@
 
 The dashboard is under active development, and major changes are not uncommon.
 
+[![Code Climate](https://codeclimate.com/github/palourde/uchiwa.png)](https://codeclimate.com/github/palourde/uchiwa)
+
 ## Features
 
 * Support of multiple Sensu APIs
