@@ -12,8 +12,8 @@ controllerModule.controller('init', ['$scope', 'socket',
 /**
  * Checks
  */
-controllerModule.controller('checks', ['$scope', 'socket',
-  function($scope, socket) {
+controllerModule.controller('checks', ['$scope',
+  function($scope) {
 
     // Helpers
     $scope.splitArray = function(array, n) { // Divide an array into 'n' arrays 
@@ -42,13 +42,17 @@ controllerModule.controller('checks', ['$scope', 'socket',
     // Toggle system
     $scope.toggle = {};
     $scope.toggleOn = function (index) {
-      if(typeof $scope.toggle[index] === "undefined") $scope.toggle[index] = {hidden: false};
+      if(typeof $scope.toggle[index] === "undefined") { $scope.toggle[index] = {hidden: false}; }
       $scope.toggle[index].hidden = !$scope.toggle[index].hidden;
     };
     $scope.showOnly = function (index, dc) {
       _.each(dc, function(datacenter, i){
-        if(i == index) return $scope.toggle[index] = {hidden: false};
-        $scope.toggle[i] = {hidden: true};
+        if(i === index) {
+          $scope.toggle[index] = {hidden: false}; 
+        }
+        else {
+          $scope.toggle[i] = {hidden: true};
+        }
       });
     };
     $scope.showAll = function (dc) {
@@ -92,7 +96,7 @@ controllerModule.controller('client', ['$scope', '$location', 'socket', 'clients
     // Keep track of collapsed check details
     $scope.toggle = {};
     $scope.toggleActive = function (index) {
-      if(typeof $scope.toggle[index] === "undefined") $scope.toggle[index] = {hidden: true};
+      if(typeof $scope.toggle[index] === "undefined") { $scope.toggle[index] = {hidden: true}; }
       $scope.toggle[index].hidden = !$scope.toggle[index].hidden;
     };
   }
@@ -110,7 +114,7 @@ controllerModule.controller('clients', ['$scope', 'socket', 'clientsService',
     };
     $scope.getClient = function(dcName, clientName){
       socket.emit('get_client', {dc: dcName, client: clientName});
-    }
+    };
     $scope.splitArray = function(array, n) { // Divide an array into 'n' arrays 
       var arrays = [];
       var i,j,temparray, chunk = n;
@@ -137,13 +141,17 @@ controllerModule.controller('clients', ['$scope', 'socket', 'clientsService',
     // Toggle system
     $scope.toggle = {};
     $scope.toggleOn = function (index) {
-      if(typeof $scope.toggle[index] === "undefined") $scope.toggle[index] = {hidden: false};
+      if(typeof $scope.toggle[index] === "undefined") { $scope.toggle[index] = {hidden: false}; }
       $scope.toggle[index].hidden = !$scope.toggle[index].hidden;
     };
     $scope.showOnly = function (index, dc) {
       _.each(dc, function(datacenter, i){
-        if(i == index) return $scope.toggle[index] = {hidden: false};
-        $scope.toggle[i] = {hidden: true};
+        if(i === index) {
+          $scope.toggle[index] = {hidden: false}; 
+        }
+        else {
+          $scope.toggle[i] = {hidden: true};
+        }
       });
     };
     $scope.showAll = function (dc) {
@@ -168,8 +176,8 @@ controllerModule.controller('dashboard', ['$scope', 'socket',
         var criticals = 0;
         var warnings = 0;
         _.each($scope.events, function(element){
-          criticals += element.filter(function (e){ return e.check.status === 2 }).length;
-          warnings += element.filter(function (e){ return e.check.status === 1 }).length;
+          criticals += element.filter(function (e){ return e.check.status === 2; }).length;
+          warnings += element.filter(function (e){ return e.check.status === 1; }).length;
         });
 
         // Display counts
@@ -185,8 +193,8 @@ controllerModule.controller('dashboard', ['$scope', 'socket',
         var warnings = 0;
         var total = 0;
         _.each($scope.clients, function(element){
-          criticals += element.filter(function (e){ return e.status === 2 }).length;
-          warnings += element.filter(function (e){ return e.status === 1 }).length;
+          criticals += element.filter(function (e){ return e.status === 2; }).length;
+          warnings += element.filter(function (e){ return e.status === 1; }).length;
           total += element.length;
         });
 
@@ -200,9 +208,9 @@ controllerModule.controller('dashboard', ['$scope', 'socket',
       };
       $scope.clientsStyle = function() {
         return 0;
-        var criticals = $scope.clients.filter(function (e){ return e.status === 2 }).length;
-        if(criticals > 0) return "critical";
-        var warnings = $scope.clients.filter(function (e){ return e.status === 1 }).length;
+        var criticals = $scope.clients.filter(function (e){ return e.status === 2; }).length;
+        if(criticals > 0) { return "critical"; }
+        var warnings = $scope.clients.filter(function (e){ return e.status === 1; }).length;
         return (warnings > 0) ? "warning" : "success";
       };
     });
@@ -221,10 +229,10 @@ controllerModule.controller('events', ['$scope', 'socket', 'eventsService',
     };
     $scope.getClient = function(dcName, clientName){
       socket.emit('get_client', {dc: dcName, client: clientName});
-    }
+    };
     $scope.getDcStatus = function(index, clients){
       dcService.status(index, clients);
-    }
+    };
     $scope.splitArray = function(array, n) { // Divide an array into 'n' arrays 
       var arrays = [];
       var i,j,temparray, chunk = n;
@@ -251,13 +259,17 @@ controllerModule.controller('events', ['$scope', 'socket', 'eventsService',
     // Toggle system
     $scope.toggle = {};
     $scope.toggleOn = function (index) {
-      if(typeof $scope.toggle[index] === "undefined") $scope.toggle[index] = {hidden: false};
+      if(typeof $scope.toggle[index] === "undefined") { $scope.toggle[index] = {hidden: false}; }
       $scope.toggle[index].hidden = !$scope.toggle[index].hidden;
     };
     $scope.showOnly = function (index, dc) {
       _.each(dc, function(datacenter, i){
-        if(i == index) return $scope.toggle[index] = {hidden: false};
-        $scope.toggle[i] = {hidden: true};
+        if(i === index) {
+          $scope.toggle[index] = {hidden: false}; 
+        }
+        else {
+          $scope.toggle[i] = {hidden: true};
+        }
       });
     };
     $scope.showAll = function (dc) {
@@ -310,13 +322,17 @@ controllerModule.controller('stashes', ['$scope', 'socket', 'stashesService',
     // Toggle system
     $scope.toggle = {};
     $scope.toggleOn = function (index) {
-      if(typeof $scope.toggle[index] === "undefined") $scope.toggle[index] = {hidden: false};
+      if(typeof $scope.toggle[index] === "undefined") { $scope.toggle[index] = {hidden: false}; }
       $scope.toggle[index].hidden = !$scope.toggle[index].hidden;
     };
     $scope.showOnly = function (index, dc) {
       _.each(dc, function(datacenter, i){
-        if(i == index) return $scope.toggle[index] = {hidden: false};
-        $scope.toggle[i] = {hidden: true};
+        if(i === index) {
+          $scope.toggle[index] = {hidden: false}; 
+        }
+        else {
+          $scope.toggle[i] = {hidden: true};
+        }
       });
     };
     $scope.showAll = function (dc) {

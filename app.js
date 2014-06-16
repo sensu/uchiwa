@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -24,15 +23,13 @@ var express = require('express'),
   http = require('http'),
   path = require('path'),
   async = require('async'),
-  moment = require('moment'),
   _ = require('underscore'),
-  app = express();
+  app = express(),
+  server = http.createServer(app),
+  io = require('socket.io').listen(server);
 
-server = http.createServer(app);
-io = require('socket.io').listen(server);
 io.set('log level', 1);
 
-var Sensu = require('./lib/sensu.js').Sensu;
 var Dc = require('./lib/dc.js').Dc;
 var Stats  = require('./lib/stats.js').Stats;
 var clients = {};
@@ -58,7 +55,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
  */
 if (config.uchiwa.user && config.uchiwa.pass){
   var basicAuth = express.basicAuth(function(username, password) {
-    return (username == config.uchiwa.user && password == config.uchiwa.pass);
+    return (username === config.uchiwa.user && password === config.uchiwa.pass);
   }, 'Restrict area, please identify');
   app.all('*', basicAuth);
 }
@@ -67,15 +64,15 @@ if (config.uchiwa.user && config.uchiwa.pass){
  * Error handling
  * NODE_ENV=development node app.js
  */
-if ('development' == process.env.NODE_ENV) {
-  console.log('Debugging enabled.')
+if ('development' === process.env.NODE_ENV) {
+  console.log('Debugging enabled.');
   app.use(express.errorHandler({showStack: true, dumpExceptions: true}));
   io.set('log level', 3);
 }
 app.use(function(err, req, res, next) {
   console.log(err);
   res.send(500);
-})
+});
 
 // Backward compatibility with uchiwa < 0.1.0
 if(!_.isArray(config.sensu)){
@@ -85,28 +82,28 @@ if(!_.isArray(config.sensu)){
 
 var sensu = {};
 var stats = new Stats(config.uchiwa);
-var datacenters = new Array();
+var datacenters = [];
 config.sensu.forEach(function(configuration){
   datacenters.push(new Dc(configuration));
 });
 
 var pull = function(){
   var i = 0;
-  sensu = {checks: new Array(), clients: new Array(), dc: new Array(), events: new Array(), stashes: new Array()};
+  sensu = {checks: [], clients: [], dc: [], events: [], stashes: []};
   async.eachSeries(datacenters, function(datacenter, nextDc){
     datacenter.pull(function(){
       var aggregate = function(callback){
         var attributes = ["checks", "clients", "events", "stashes"];
         async.each(attributes, function(attribute, nextAttribute){
-          sensu[attribute][i] = new Array();
+          sensu[attribute][i] = [];
           async.each(datacenter.sensu[attribute], function(item, nextItem){
             item.dc = datacenter.name;
             sensu[attribute][i].push(item);
             nextItem();
-          }, function(err){
+          }, function(){
             nextAttribute();
           });
-        }, function(err){
+        }, function(){
           callback();
         });
       };
@@ -132,13 +129,13 @@ pull();
 
 // Return DC object and check client if any specified
 var getDc = function(data, callback){
-  if(datacenters.length == 0) return callback("<strong>Error!</strong> No datacenters found.");
-  var dc = datacenters.filter(function (e) { return e.name === data.dc });
-  if (dc.length != 1) return callback("<strong>Error!</strong> The datacenter " + data.dc + " was not found.");
+  if(datacenters.length === 0) return callback("<strong>Error!</strong> No datacenters found.");
+  var dc = datacenters.filter(function (e) { return e.name === data.dc; });
+  if (dc.length !== 1) return callback("<strong>Error!</strong> The datacenter " + data.dc + " was not found.");
   if(_.has(data, "client")){
-    if(dc[0].sensu.clients.length == 0) return callback("<strong>Error!</strong> No clients found.");
-    var client = dc[0].sensu.clients.filter(function (e) { return e.name === data.client });
-    if (client.length != 1) return callback("<strong>Error!</strong> The client " + data.client + " was not found.");
+    if(dc[0].sensu.clients.length === 0) return callback("<strong>Error!</strong> No clients found.");
+    var client = dc[0].sensu.clients.filter(function (e) { return e.name === data.client; });
+    if (client.length !== 1) return callback("<strong>Error!</strong> The client " + data.client + " was not found.");
   }
   callback(null, dc[0]);
 };
@@ -156,11 +153,11 @@ io.sockets.on('connection', function (socket) {
     delete clients[socket.id];
   });
 
-  socket.on('get_sensu', function (data){
+  socket.on('get_sensu', function (){
     clients[socket.id].emit('sensu', {content: JSON.stringify(sensu)});
   });
 
-  socket.on('get_stats', function (data){
+  socket.on('get_stats', function (){
     clients[socket.id].emit('stats', {content: JSON.stringify(stats.dashboard)});
   });
 
@@ -189,7 +186,7 @@ io.sockets.on('connection', function (socket) {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": err})});
       }
       else {
-        result.sensu.deleteClient(data.payload, function(err, result){
+        result.sensu.delete('clients', data.payload, function(err){
           if (err){
             clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The client was not deleted. Reason: " + err})});
           }
@@ -208,7 +205,7 @@ io.sockets.on('connection', function (socket) {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": err})});
       }
       else {
-        result.sensu.postStash(JSON.stringify(data.payload), function(err, result){
+        result.sensu.post('stashes', JSON.stringify(data.payload), function(err){
           if (err){
             clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The stash was not created. Reason: " + err})});
           }
@@ -227,7 +224,7 @@ io.sockets.on('connection', function (socket) {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": err})});
       }
       else {
-        result.sensu.deleteStash(data.payload, function(err, result){
+        result.sensu.delete('stashes', data.payload, function(err){
           if (err){
             clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The stash was not deleted. Reason: " + err})});
           }
@@ -246,7 +243,7 @@ io.sockets.on('connection', function (socket) {
         clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": err})});
       }
       else {
-        result.sensu.resolveEvent(JSON.stringify(data.payload), function(err, result){
+        result.sensu.post('resolve', JSON.stringify(data.payload), function(err){
           if (err){
             clients[socket.id].emit('messenger', {content: JSON.stringify({"type": "error", "content": "<strong>Error!</strong> The check was not resolved. Reason: " + err})});
           }
