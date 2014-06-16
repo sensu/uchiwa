@@ -25,9 +25,9 @@ var express = require('express'),
   async = require('async'),
   _ = require('underscore'),
   app = express(),
-  server = http.createServer(app),
-  io = require('socket.io').listen(server);
+  server = http.createServer(app);
 
+io = require('socket.io').listen(server);
 io.set('log level', 1);
 
 var Dc = require('./lib/dc.js').Dc;
