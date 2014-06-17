@@ -17,3 +17,12 @@ directiveModule.directive('morrisLine', function () {
     }
   };
 });
+
+directiveModule.directive('bootstrapTooltip', function () {
+  return {
+    restrict: 'EA',
+    link: function (scope, element) {
+      element.tooltip();
+    }
+  };
+});
