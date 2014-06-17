@@ -3,10 +3,17 @@ var controllerModule = angular.module('uchiwa.controllers', []);
 /**
  * Init
  */
-controllerModule.controller('init', ['$scope', 'socket',
-  function($scope, socket) {
+controllerModule.controller('init', ['$scope', 'notification', 'socket',
+  function($scope, notification, socket) {
     $scope.$on('$routeChangeSuccess', function () {
       socket.emit('get_sensu', {});
+    });
+
+    socket.on('messenger', function(data) {
+      if(angular.isDefined(data.content)) {
+        var message = JSON.parse(data.content);
+        notification(message.type, message.content);
+      }
     });
   }
 ]);
