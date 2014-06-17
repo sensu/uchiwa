@@ -13,7 +13,7 @@ serviceModule.factory('socket', function (socketFactory) {
 /**
  * Clients
  */
-serviceModule.service('clientsService', function(){
+serviceModule.service('clientsService', ['socket', function(socket){
   this.stash = function(e, dcName, client, check){
     var event = e || window.event;
     event.stopPropagation();
@@ -59,12 +59,12 @@ serviceModule.service('clientsService', function(){
     socket.emit('delete_client', JSON.stringify({dc: dcName, payload: payload}));
     return true;
   };
-});
+}]);
 
 /**
  * Events
  */
-serviceModule.service('eventsService', function(){
+serviceModule.service('eventsService', ['socket', function(socket){
   this.stash = function(e, dcName, currentEvent){
     var event = e || window.event;
     event.stopPropagation();
@@ -84,15 +84,15 @@ serviceModule.service('eventsService', function(){
     currentEvent.isSilenced = !currentEvent.isSilenced;
     return currentEvent;
   };
-});
+}]);
 
 /**
  * Stashes
  */
-serviceModule.service('stashesService', function(){
+serviceModule.service('stashesService', ['socket', function(socket){
   this.stash = function(dcName, stash, index){
     var payload = {path: stash.path, content:{}};
     socket.emit('delete_stash', JSON.stringify({dc: dcName, payload: payload}));
     return stash;
   };
-});
+}]);

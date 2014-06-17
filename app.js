@@ -40,7 +40,7 @@ var stats = {};
  */
 app.set('port', process.env.PORT || 3000);
 app.engine('.html', require('ejs').__express);
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'public'));
 app.set('view engine', 'html');
 app.use(express.logger('dev'));
 app.use(express.json());
@@ -257,24 +257,6 @@ io.sockets.on('connection', function (socket) {
 
 });
 
-/**
- * Routing
- */
-app.get('/', function(req,res) {
-   res.render('index.html');
-});
-app.get('/index', function (req, res) {
-    res.render('index.html');
-});
-app.get('/checks', function(req,res) {
-  res.render('checks.html');
-});
-app.get('/clients', function(req,res) {
-  res.render('clients.html');
-});
-app.get('/stashes', function(req,res) {
-  res.render('stashes.html');
-});
 
 /**
  * Start server

@@ -5,7 +5,9 @@ var controllerModule = angular.module('uchiwa.controllers', []);
  */
 controllerModule.controller('init', ['$scope', 'socket',
   function($scope, socket) {
-    socket.emit('get_sensu', {});
+    $scope.$on('$routeChangeSuccess', function () {
+      socket.emit('get_sensu', {});
+    });
   }
 ]);
 
@@ -167,7 +169,27 @@ controllerModule.controller('clients', ['$scope', 'socket', 'clientsService',
  */
 controllerModule.controller('dashboard', ['$scope', 'socket',
   function($scope, socket) {
+    $scope.statChartConfig = {
+      data: [],
+      xkey: 'y',
+      ykeys: ['e', 's'],
+      labels: ['Events', 'Stashes'],
+      lineColors: ['#2CA7E5', '#F9CD65'],
+      hideHover: 'auto',
+      pointSize: 0,
+      fillOpacity: 1,
+      gridTextColor: '#fff',
+      gridTextFamily: "'Lato', sans-serif",
+      gridTextWeight: 700,
+      grid: false,
+      lineWidth: 4,
+      axes: true,
+      behaveLikeLine: true
+    };
     socket.emit('get_stats', {});
+    $scope.$on('socket:stats', function(event, data) {
+      $scope.statChartConfig.data = angular.fromJson(data.content);
+    });
     $scope.$on('socket:sensu', function(event, data) {
       var sensu = JSON.parse(data.content);
       $scope.clients = sensu.clients;
