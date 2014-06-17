@@ -342,7 +342,9 @@ controllerModule.controller('stashes', ['$scope', 'socket', 'stashesService',
         stashesService.stash(dcName, stash);
 
         // Remove stash from $scope
-        var dcPosition = sensu.dc.indexOf(dcName);
+        var dcPosition = sensu.dc.map(function(dc) {
+          return dc.name;
+        }).indexOf(dcName);
         var dcStashes = sensu.stashes[dcPosition];    
         dcStashes[0].splice(index, 1);
       };
