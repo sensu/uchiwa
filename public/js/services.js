@@ -13,7 +13,7 @@ serviceModule.factory('socket', function (socketFactory) {
 /**
  * Notifications
  */
-serviceModule.provider('notification', function UnicornLauncherProvider() {
+serviceModule.provider('notification', function () {
   this.setOptions = function(options) {
     if (angular.isObject(options)) {
       window.toastr.options = options;

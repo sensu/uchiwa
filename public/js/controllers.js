@@ -373,3 +373,14 @@ controllerModule.controller('stashes', ['$scope', 'socket', 'stashesService',
     };
   }
 ]);
+
+/**
+ * Settings
+ */
+controllerModule.controller('settings', ['$cookies', '$scope',
+  function($cookies, $scope) {
+    $scope.$watch('currentTheme', function (theme) {
+      $scope.$emit('theme:changed', theme);
+    });
+  }
+]);
