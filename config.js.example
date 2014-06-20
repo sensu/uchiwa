@@ -22,6 +22,7 @@ module.exports = {
     }
   ],
   uchiwa: {
+    listen_port: 3000,
     user: '',
     pass: '',
     stats: 10,
