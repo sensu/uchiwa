@@ -38,8 +38,8 @@ var stats = {};
 /**
  * App configuration
  */
-app.set('port', process.env.PORT || config.uchiwa.listen_port);
-app.set('host', process.env.LISTEN_ADDRESS || config.uchiwa.listen_address);
+app.set('port', process.env.PORT || config.uchiwa.port);
+app.set('host', process.env.HOST || config.uchiwa.host);
 app.engine('.html', require('ejs').__express);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
@@ -281,5 +281,5 @@ app.get('/stashes', function(req,res) {
  * Start server
  */
 server.listen(app.get('port'), app.get('host'), function () {
-  console.log('Uchiwa now listening on %s:%s', app.get('host'), app.get('port'));
+  console.log('Uchiwa is now listening on %s:%s', app.get('host'), app.get('port'));
 });
