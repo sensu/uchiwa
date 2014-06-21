@@ -7,6 +7,7 @@ serviceModule.factory('socket', function (socketFactory) {
   var socket = socketFactory();
   socket.forward('sensu');
   socket.forward('client');
+  socket.forward('stats');
   return socket;
 });
 
