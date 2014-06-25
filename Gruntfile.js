@@ -19,7 +19,7 @@ module.exports = function (grunt) {
         'Gruntfile.js',
         '<%= settings.entryPoint %>',
         '<%= settings.lib %>/{,*/}*.js',
-        '<%= settings.app %>/js/{,*/}*.js',
+        '<%= settings.public %>/js/{,*/}*.js',
       ]
     }
   });

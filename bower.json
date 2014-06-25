@@ -23,5 +23,10 @@
     "raphael": "~2.1.2",
     "toastr": "~2.0.3",
     "underscore": "~1.6.0"
+  },
+  "devDependencies": {
+    "jasmine": "~2.0.0",
+    "angular-mocks": "~1.2.18",
+    "angular-socket.io-mock": "~0.0.2"
   }
 }

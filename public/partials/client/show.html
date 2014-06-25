@@ -37,7 +37,7 @@
                     <td class="checkname">{{check.check}}</td>
                     <td class="output" ng-if="check.output">{{check.output}}{{client}}</td>
                     <td ng-if="!check.output"></td>
-                    <td class="timestamp"><i class='fa fa-clock-o'></i> {{check.last_check}}</td>
+                    <td class="timestamp"><i class='fa fa-clock-o'></i> {{check.lastCheck}}</td>
                     <td class='text-center'>
                       <a href='#' class='btn btn-xs btn-hover btn-success' ng-click="stash($event, client.dc, client, check);"><i class='fa {{check.silenceIcon}}'></i></a>
                       <a href='#' class='btn btn-xs btn-danger btn-hover' ng-if="check.event" ng-click="resolve($event, client.dc, client, check);"> <i class='fa fa-check'></i></a>
@@ -58,9 +58,9 @@
                           <dt ng-if="check.event.check.handlers">Handlers</dt>
                           <dd ng-if="check.event.check.handlers">{{check.event.check.handlers}}</dd>
                           <dt>Issued</dt>
-                          <dd>{{check.event.check.last_issued}}</dd>
-                          <dt ng-if="check.event.check.last_executed">Executed</dt>
-                          <dd ng-if="check.event.check.last_executed">{{check.event.check.last_executed}}</dd>
+                          <dd>{{check.event.check.lastIssued}}</dd>
+                          <dt ng-if="check.event.check.lastExecuted">Executed</dt>
+                          <dd ng-if="check.event.check.lastExecuted">{{check.event.check.lastExecuted}}</dd>
                           <dt ng-if="check.event.check.duration">Duration</dt>
                           <dd ng-if="check.event.check.duration">{{check.event.check.duration}}</dd>
                         </dl>
@@ -114,7 +114,7 @@
                     <span class="pull-right small text-right"><strong id="subscriptions"><span ng-repeat="subscription in client.subscriptions">{{subscription}}<br/></span></strong></span>
                   </div>
                   <div class="list-group-item">Last check
-                    <span class="pull-right small"><strong id="last-check">{{client.last_check}}</strong></span>
+                    <span class="pull-right small"><strong id="last-check">{{client.lastCheck}}</strong></span>
                   </div>
                 </div>
               </div>

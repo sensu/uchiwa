@@ -1,49 +1,23 @@
-<div class="container-fluid" ng-controller="checks">
-  <div class="row-fluid">
-    <div class="col-lg-12">
-      <h1>Checks</h1>
-    </div>
-  </div>
+<div class="container-fluid">
+  <div ng-include="'partials/page-header.html'"></div>
   <div class="row-fluid">
     <div class="col-lg-2">
-      <ul class="nav nav-pills nav-stacked mg-t-md">
-        <li>
-          <span class="text-muted">Filter</span>
-
-          <div class="input-group">
-            <input class="search input-sm" ng-model="query">
-          </div>
-        </li>
-      </ul>
-      <ul class="nav nav-pills nav-stacked mg-t-md">
-        <li>
-          <span class="text-muted">datacenters</span>
-        </li>
-        <li>
-          <a href="#" ng-click="showAll(dc)" class='accordion-toggle'><i
-              class="fa fa-circle blue mg-r-sm"></i> All</a>
-        </li>
-        <li ng-repeat="datacenter in dc">
-          <a href="#" ng-click="showOnly($index, dc)" class='accordion-toggle'><i
-              class="fa fa-circle mg-r-sm blue"></i> {{datacenter.name}} ({{datacenter.checks}})</a>
-        </li>
-      </ul>
+      <div ng-include="'partials/sidebar.html'"></div>
     </div>
-
     <div class="col-lg-10">
       <div class="list">
         <div ng-repeat="rows in aggregation">
-          <div class="section-header" ng-click="toggleOn($index)" class='accordion-toggle'>
-            <i class="fa" ng-class="toggle[$index].hidden ? 'fa-angle-up' : 'fa-angle-down'"></i>
-            {{dc[$index].name}}
+          <div class="section-header accordion-toggle" ng-click="toggleOn($index)">
+            <i class="fa" ng-class="toggle[$index].hidden ? 'fa-angle-up' : 'fa-angle-down'"></i>{{dc[$index].name}}
           </div>
-          <div class='accordian-body' ng-class="toggle[$index].hidden ? 'collapse' : 'in'">
+          <div class='accordion-body' ng-class="toggle[$index].hidden ? 'collapse' : 'in'">
             <div ng-repeat="row in rows">
               <div class="row">
-                <div class='col-md-6 client' ng-repeat="check in row | filter:query">
+                <div class='col-md-6 client' ng-repeat="check in row | filter:filters.text">
                   <div class='well default'>
-                    <span class='lead'>{{check.name}}
-                      <span class='pull-right small tag' ng-if="check.hasSubscribers"><i class='fa fa-tag'></i> 
+                    <span class='lead'>
+                      <span>{{check.name}}</span>
+                      <span class='pull-right small tag' ng-if="check.hasSubscribers"><i class='fa fa-tag'></i>
                         <span style="display:inline-block;"
                               ng-repeat="subscriber in check.subscribers"> {{subscriber}}</span>
                       </span>
@@ -61,4 +35,4 @@
       </div>
     </div>
   </div>
-</div><!-- /.container -->
+</div>

@@ -1,0 +1,20 @@
+<ul class="nav nav-pills nav-stacked mg-t-md">
+  <li>
+    <span class="text-muted">Filter</span>
+    <div class="input-group">
+      <input class="search input-sm" ng-model="filters.text">
+    </div>
+  </li>
+</ul>
+<ul class="nav nav-pills nav-stacked mg-t-md">
+  <li>
+    <span class="text-muted">datacenters</span>
+  </li>
+  <li>
+    <a ng-href="" ng-click="showAll(dc)" class='accordion-toggle'><i class="fa fa-circle blue mg-r-sm"></i> All</a>
+  </li>
+  <li ng-repeat="datacenter in dc">
+    <a ng-href="" ng-click="showOnly($index, dc)" class='accordion-toggle'><i
+        class="fa fa-circle mg-r-sm {{datacenter.style}}"></i> {{datacenter.name}} ({{datacenter[dcItem]}})</a>
+  </li>
+</ul>

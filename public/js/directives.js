@@ -46,7 +46,7 @@ directiveModule.directive('siteTheme', ['$cookieStore', 'settings', function ($c
       };
       var setTheme = function (theme) {
         var themeName = angular.isObject(theme) && angular.isDefined(theme.name) ? theme.name : settings.theme;
-        scope.currentTheme = lookupTheme(themeName)
+        scope.currentTheme = lookupTheme(themeName);
         $cookieStore.put('currentTheme', scope.currentTheme);
         var fullThemeName = 'uchiwa-' + scope.currentTheme.name;
         element.attr('href', 'css/' + fullThemeName + '/' + fullThemeName + '.css');
