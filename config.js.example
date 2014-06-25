@@ -22,6 +22,8 @@ module.exports = {
     }
   ],
   uchiwa: {
+    host: '0.0.0.0',
+    port: 3000,
     user: '',
     pass: '',
     stats: 10,
