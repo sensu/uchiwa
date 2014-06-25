@@ -38,8 +38,10 @@ var stats = {};
 /**
  * App configuration
  */
-app.set('port', process.env.PORT || config.uchiwa.port);
-app.set('host', process.env.HOST || config.uchiwa.host);
+var port = config.uchiwa.port || 3000;
+var host = config.uchiwa.host || '0.0.0.0';
+app.set('port', process.env.PORT || port);
+app.set('host', process.env.HOST || host);
 app.engine('.html', require('ejs').__express);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
