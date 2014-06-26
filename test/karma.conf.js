@@ -14,7 +14,7 @@ module.exports = function(config) {
       'public/js/**/*.js',
       'test/unit/**/*.js'
     ],
-    reporters: ['junit', 'coverage'],
+    reporters: ['junit', 'coverage', 'dots'],
     coverageReporter: {
       type: 'html',
       dir: 'build/coverage/'
