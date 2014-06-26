@@ -70,7 +70,7 @@ if ('development' === process.env.NODE_ENV) {
   app.use(express.errorHandler({showStack: true, dumpExceptions: true}));
   io.set('log level', 3);
 }
-app.use(function (err, req, res) {
+app.use(function (err, req, res, next) {
   console.log(err);
   res.send(500);
 });
