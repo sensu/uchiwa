@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "bower --allow-root install",
+    "test": "karma start test/karma.conf.js",
     "start": "node app.js"
   },
   "dependencies": {
