@@ -83,6 +83,55 @@ In case you want the dashboard to be accessible within a certain path on the pro
 - `stats` - Integer: Determines the retention, in minutes, of graphics data. The default value is *10*.
 - `refresh` - Integer: Determines the interval to pull the Sensu API, in milliseconds. The default value is *10000*.
 
+## Docker
+
+This application comes pre-packaged in a docker container for easy deployment.
+
+There are two ways of running this container:
+
+### Docker with a config file.
+
+Make a config.js file for the application, and then launch the uchiwa container with the config mounted as a volume.
+
+    mkdir config
+    cp ~/uchiwa/config.js.example config/config.js
+    # Edit config
+    docker run -v config:/config bobtfish:uchiwa
+    # Docker will EXPOSE port 3000 by default, check where this is mapped on the host and browse to it.
+
+### Docker with environment variables
+
+You can instead use environment variables to configure the application. Host is fixed to 0.0.0.0 and port to 3000,
+but the other settings can be set:
+
+- `UCHIWA_USER`
+- `UCHIWA_PASS`
+- `UCHIWA_STATS`
+- `UCHIWA_REFRESH`
+
+And configuring an API is done with other environment variables which are designed to fit into Docker's
+container links (allowing you to point uchiwa at an API just be --linking it to that container)
+
+You can link multiple APIs by providing multiple sets of environment variables with different prefixes.
+
+These variables are mandatory.
+
+- `API1_PORT_4567_TCP_PORT` - The port for the API, usually 4567
+- `API1_PORT_4567_TCP_ADDR` - The hostname or IP for the API
+
+These variables are optional
+
+- `API1_UCHIWA_NAME`
+- `API1_UCHIWA_SSL`
+- `API1_UCHIWA_USER`
+- `API1_UCHIWA_PASS`
+- `API1_UCHIWA_PATH`
+- `API1_UCHIWA_TIMEOUT`
+
+An example of starting the container with the minimum set of environment needed would be:
+
+  docker run -i -t -p 3000 -e API1_PORT_4567_TCP_PORT=3000 -e API1_PORT_4567_TCP_ADDR="1.1.1.1" bobtfish/uchiwa
+
 ## Debugging
 You may start the dashboard with the following command in order to enable verbose mode: `NODE_ENV="development" node app.js`
 

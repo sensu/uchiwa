@@ -4,7 +4,7 @@ pids
 logs
 results
 node_modules
-config.js
+/config.js
 public/bower_components
 .sass-cache
 npm-debug.log
