@@ -1,0 +1,35 @@
+<div class="container-fluid">
+  <div ng-include="'partials/page-header.html'"></div>
+  <div class="row-fluid">
+    <div class="col-lg-2">
+      <div ng-include="'partials/sidebar.html'"></div>
+    </div>
+    <div class="col-lg-10">
+      <div class="list">
+        <div ng-repeat="rows in aggregation">
+          <div class="section-header accordion-toggle" ng-click="toggleOn($index)">
+            <i class="fa" ng-class="toggle[$index].hidden ? 'fa-angle-up' : 'fa-angle-down'"></i>{{dc[$index].name}}
+          </div>
+          <div class='accordion-body' ng-class="toggle[$index].hidden ? 'collapse' : 'in'">
+            <div ng-repeat="row in rows">
+              <div class="row">
+                <div class='col-md-4 client' ng-repeat="stash in row | filter:filters.text">
+                  <div class='well default'>
+                    <span class='lead'>
+                      <span>{{stash.client}}</span>
+                      <span class='pull-right'>
+                      <i class="fa fa-times" ng-click="deleteStash(dc[$parent.$parent.$index].name, stash, $index);"></i>
+                      </span>
+                    </span>
+                    <span class="subtitle"><strong>{{stash.check}}</strong></span>
+                    <span class="small timestamp"><i class="fa fa-clock-o"></i> {{stash.lastCheck}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,11 +1,10 @@
-<!-- Modal -->
 <div id="client-details" class="modal modal-wide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="client">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
         <div class="page-header">
           <h3>
-            <span id="name" class="title">
+            <span id="client-name" class="title">
               <i class='fa {{client.silenceIcon}}' ng-click="stash($event, client.dc, client);"></i> {{client.name}}
             </span>
             <span class="pull-right dropdown">
@@ -33,21 +32,21 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-click="toggleActive($index)" class='accordion-toggle' ng-repeat-start="check in client.history">
+                  <tr ng-click="toggleClientActive($index)" class='accordion-toggle' ng-repeat-start="check in client.history">
                     <td><span class='label label-{{check.style}}'>{{check.isActive}}</span></td>
-                    <td class="checkname">{{check.check}}</td>
-                    <td class="output" ng-if="check.output">{{check.output}}{{client}}</td>
+                    <td class="check-name">{{check.check}}</td>
+                    <td class="check-output" ng-if="check.output">{{check.output}}{{client}}</td>
                     <td ng-if="!check.output"></td>
-                    <td class="timestamp"><i class='fa fa-clock-o'></i> {{check.last_check}}</td>
+                    <td class="timestamp"><i class='fa fa-clock-o'></i> {{check.lastCheck}}</td>
                     <td class='text-center'>
                       <a href='#' class='btn btn-xs btn-hover btn-success' ng-click="stash($event, client.dc, client, check);"><i class='fa {{check.silenceIcon}}'></i></a>
-                      <a href='#' class='btn btn-xs btn-danger btn-hover' ng-if="check.event" ng-click="resolve($event, client.dc, client, check);"> <i class='fa fa-check'></i></a>
-                      <a href='#' class='btn btn-xs btn-disabled' ng-if="!check.event"> <i class='fa fa-check'></i></a>
+                      <a id="button-resolve" href='#' class='btn btn-xs btn-danger btn-hover' ng-if="check.event" ng-click="resolve($event, client.dc, client, check);"> <i class='fa fa-check'></i></a>
+                      <a id="button-resolve" href='#' class='btn btn-xs btn-disabled' ng-if="!check.event"> <i class='fa fa-check'></i></a>
                     </td>
                   </tr>
                   <tr ng-repeat-end>
                     <td colspan='6' class='hiddenRow'>
-                      <div id='{{client.name}}-{{check.check}}' class='accordian-body collapse' ng-class="{true: 'collapse', false: 'in'}[toggle[$index].hidden]">
+                      <div id='{{client.name}}-{{check.check}}' class='accordian-body collapse' ng-class="{true: 'in', false: 'collapse'}[toggleClient[$index].hidden]">
                         <h5 class='title' ng-if="check.event"><i class='fa fa-bell'></i> Event details</h5>
                         <dl class='dl-horizontal' ng-if="check.event">
                           <dt>Full output</dt>
@@ -59,9 +58,9 @@
                           <dt ng-if="check.event.check.handlers">Handlers</dt>
                           <dd ng-if="check.event.check.handlers">{{check.event.check.handlers}}</dd>
                           <dt>Issued</dt>
-                          <dd>{{check.event.check.last_issued}}</dd>
-                          <dt ng-if="check.event.check.last_executed">Executed</dt>
-                          <dd ng-if="check.event.check.last_executed">{{check.event.check.last_executed}}</dd>
+                          <dd>{{check.event.check.lastIssued}}</dd>
+                          <dt ng-if="check.event.check.lastExecuted">Executed</dt>
+                          <dd ng-if="check.event.check.lastExecuted">{{check.event.check.lastExecuted}}</dd>
                           <dt ng-if="check.event.check.duration">Duration</dt>
                           <dd ng-if="check.event.check.duration">{{check.event.check.duration}}</dd>
                         </dl>
@@ -103,19 +102,19 @@
               <div class="panel-body">
                 <div class="list-group">
                   <div class="list-group-item">Datacenter
-                    <span class="pull-right small"><strong id="address">{{client.dc}}</strong></span>
+                    <span class="pull-right small"><strong id="client-dc">{{client.dc}}</strong></span>
                   </div>
                   <div class="list-group-item">Sensu version
-                    <span class="pull-right small"><strong id="address">{{client.version}}</strong></span>
+                    <span class="pull-right small"><strong id="client-version">{{client.version}}</strong></span>
                   </div>
                   <div class="list-group-item">IP address
-                    <span class="pull-right small"><strong id="address">{{client.address}}</strong></span>
+                    <span class="pull-right small"><strong id="client-address">{{client.address}}</strong></span>
                   </div>
                   <div class="list-group-item">Subscriptions
-                    <span class="pull-right small text-right"><strong id="subscriptions"><span ng-repeat="subscription in client.subscriptions">{{subscription}}<br/></span></strong></span>
+                    <span class="pull-right small text-right"><strong id="client-subscriptions"><span ng-repeat="subscription in client.subscriptions">{{subscription}}<br/></span></strong></span>
                   </div>
                   <div class="list-group-item">Last check
-                    <span class="pull-right small"><strong id="last-check">{{client.last_check}}</strong></span>
+                    <span class="pull-right small"><strong id="client-lastCheck">{{client.lastCheck}}</strong></span>
                   </div>
                 </div>
               </div>

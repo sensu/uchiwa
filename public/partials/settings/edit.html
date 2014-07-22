@@ -1,0 +1,16 @@
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="col-lg-12">
+      <h1>Settings</h1>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="col-lg-12">
+      <form class="form-inline">
+        <label for="current-theme" class="text-muted">My theme</label>
+        <select id="current-theme" class="form-control"
+                ng-model="currentTheme" ng-options="theme.name for theme in themes"></select>
+      </form>
+    </div>
+  </div>
+</div>

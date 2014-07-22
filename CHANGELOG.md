@@ -1,3 +1,8 @@
+### 0.1.4 (2014-07-22)
+
+#### Features
+- Use AngularJS Routing
+
 ### 0.1.3 (2014-06-15)
 
 #### Features
