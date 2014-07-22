@@ -86,8 +86,56 @@ In case you want the dashboard to be accessible within a certain path on the pro
 ## Debugging
 You may start the dashboard with the following command in order to enable verbose mode: `NODE_ENV="development" node app.js`
 
+## Contributing
+Everyone is welcome to submit patches. Whether your pull request is a bug fix or introduces new classes or functions to the project, we kindly ask that you include tests for your changes. Even if it's just a small improvement, a test is necessary to ensure the bug is never re-introduced.
+
+### Testing
+You should always make sure to have all dependencies installed (`npm install`)
+
+#### Unit testing
+Simply run `npm test`
+
+#### E2E testing
+1. Clone (this)[https://github.com/palourde/uchiwa-sensu] cookbook (`git clone git@github.com:palourde/uchiwa-sensu.git`)
+2. Boot the virtual machines (`vagrant up`)
+3. Use the following configuration file (*config.js*):
+```
+module.exports = {
+  sensu: [
+    {
+      name: "0.12.6",
+      host: '10.20.30.40',
+      ssl: false,
+      port: 4567,
+      user: '',
+      pass: '',
+      path: '',
+      timeout: 5000
+    },
+    {
+      name: "0.13.0",
+      host: '10.20.30.41',
+      ssl: false,
+      port: 4567,
+      user: '',
+      pass: '',
+      path: '',
+      timeout: 5000
+    }
+  ],
+  uchiwa: {
+    user: '',
+    pass: '',
+    retention: 10,
+    refresh: 10000
+  }
+}
+```
+4. Run E2E tests (`npm run protractor`)
+
 ## Authors
-Created and maintained by [Simon Plourde][author] (<simon.plourde@gmail.com>)
+* Author: [Simon Plourde][author] (<simon.plourde@gmail.com>)
+* Contributor: Ethan Hann (<ethanhann@gmail.com>)
 
 ## License
 Apache 2.0 (see [LICENSE][license])
