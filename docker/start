@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#      name: 'API 1',
+#      host: '10.20.30.40',
+#      ssl: false,
+#      port: 4567,
+#      user: '',
+#      pass: '',
+#      path: '',
+#      timeout: 5000
+#    },
+#    {
+#      name: 'API 2',
+#      host: '10.20.30.50',
+#      ssl: false,
+#      port: 4567,
+#      user: '',
+#      pass: '',
+#      path: '',
+#      timeout: 5000
+#    }
+#  ],
+export UCHIWA_STATS=${UCHIWA_STATS:-10}
+export UCHIWA_REFRESH=${UCHIWA_REFRESH:-10000}
+export UCHIWA_USER=${UCHIWA_USER:-}
+export UCHIWA_PASS=${UCHIWA_PASS:-}
+node /src/app.js -c /config/config.js
+
+
