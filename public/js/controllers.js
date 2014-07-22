@@ -45,8 +45,8 @@ controllerModule.controller('checks', ['$scope', 'utilityService', 'toggleServic
 /**
  * Client
  */
-controllerModule.controller('client', ['$scope', '$location', 'socket', 'clientsService', 'toggleService',
-  function ($scope, $location, socket, clientsService, toggleService) {
+controllerModule.controller('client', ['$scope', '$location', 'socket', 'clientsService', 'toggleService', 'toggleClientService',
+  function ($scope, $location, socket, clientsService, toggleService, toggleClientService) {
     var timer = setInterval(function () {
       if ($('#client-details').data('bs.modal')) {
         socket.emit('get_client', {dc: $scope.client.dc, client: $scope.client.name});
@@ -64,13 +64,13 @@ controllerModule.controller('client', ['$scope', '$location', 'socket', 'clients
     };
     $('#client-details').on('hide.bs.modal', function () {
       $scope.client = {name: 'Loading...'};
-      $scope.toggle = {};
+      $scope.toggle = toggleService.toggle;
       clearInterval(timer);
     });
 
     // Keep track of collapsed check details
-    $scope.toggle = toggleService.toggle;
-    $scope.toggleActive = toggleService.toggleOn;
+    $scope.toggleClient = toggleClientService.toggle;
+    $scope.toggleClientActive = toggleClientService.toggleOn;
   }
 ]);
 
@@ -134,7 +134,7 @@ controllerModule.controller('dashboard', ['$rootScope', '$scope', 'socket', 'eve
 
     $scope.getStatusClass = function (statuses) {
       if (angular.isDefined(statuses)) {
-        return statuses.criticals > 0 ? 'critical' : statuses.warnings > 0 ? 'warning' : 'success';
+        return statuses.critical > 0 ? 'critical' : statuses.warning > 0 ? 'warning' : 'success';
       }
     };
 

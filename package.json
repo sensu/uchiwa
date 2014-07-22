@@ -4,7 +4,17 @@
   "private": true,
   "scripts": {
     "postinstall": "bower --allow-root install",
+
     "test": "karma start test/karma.conf.js",
+
+    "preupdate-webdriver": "npm install",
+    "update-webdriver": "webdriver-manager update",
+
+    "preprotractor": "npm run update-webdriver",
+    "protractor": "protractor test/protractor-conf.js",
+    "protractor-debug": "protractor debug test/protractor-conf.js",
+
+    "prestart": "npm install",
     "start": "node app.js"
   },
   "dependencies": {
@@ -31,6 +41,7 @@
     "karma-jasmine": "~0.1.0",
     "karma-junit-reporter": "~0.2.1",
     "karma-phantomjs-launcher": "~0.1.2",
-    "phantomjs": "~1.9.7"
+    "phantomjs": "~1.9.7",
+    "protractor": "^0.24.2"
   }
 }

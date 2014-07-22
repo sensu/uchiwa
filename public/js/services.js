@@ -81,6 +81,20 @@ serviceModule.service('toggleService', function () {
 });
 
 /**
+ * Toggle Client
+ */
+serviceModule.service('toggleClientService', function () {
+	var toggle = [];
+	this.toggle = toggle;
+	this.toggleOn = function (index) {
+		if (angular.isUndefined(toggle[index])) {
+			toggle[index] = {hidden: false};
+		}
+		toggle[index].hidden = !toggle[index].hidden;
+	};
+});
+
+/**
  * Clients
  */
 serviceModule.service('clientsService', ['socket', function (socket) {

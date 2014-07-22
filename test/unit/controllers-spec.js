@@ -225,6 +225,8 @@ describe('controllers', function () {
       expect($scope.clients.warning).toEqual(expectedWarningClients);
       expect($scope.events.critical).toEqual(expectedCriticalEvents);
       expect($scope.events.warning).toEqual(expectedWarningEvents);
+	    expect($scope.getStatusClass($scope.clients)).toEqual('critical');
+	    expect($scope.getStatusClass($scope.events)).toEqual('critical');
     });
 
     it('should emit get_client', function () {
