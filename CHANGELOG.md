@@ -1,3 +1,8 @@
+### 0.1.5 (2014-07-22)
+
+#### Features
+- Use Docker build repository
+
 ### 0.1.4 (2014-07-22)
 
 #### Features
