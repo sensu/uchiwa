@@ -96,7 +96,7 @@ Make a config.js file for the application, and then launch the uchiwa container 
     mkdir config
     cp ~/uchiwa/config.js.example config/config.js
     # Edit config
-    docker run -v config:/config bobtfish:uchiwa
+    docker run -v /full/path/to/config:/config uchiwa/uchiwa
     # Docker will EXPOSE port 3000 by default, check where this is mapped on the host and browse to it.
 
 ### Docker with environment variables
@@ -130,7 +130,7 @@ These variables are optional
 
 An example of starting the container with the minimum set of environment needed would be:
 
-  docker run -i -t -p 3000 -e API1_PORT_4567_TCP_PORT=3000 -e API1_PORT_4567_TCP_ADDR="1.1.1.1" bobtfish/uchiwa
+  docker run -i -t -p 3000 -e API1_PORT_4567_TCP_PORT=3000 -e API1_PORT_4567_TCP_ADDR="1.1.1.1" uchiwa/uchiwa
 
 ## Debugging
 You may start the dashboard with the following command in order to enable verbose mode: `NODE_ENV="development" node app.js`

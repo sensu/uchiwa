@@ -27,4 +27,3 @@ var allconf = {
 }
 console.log(allconf)
 module.exports = allconf
-
