@@ -145,19 +145,26 @@ controllerModule.controller('dashboard', ['$rootScope', '$scope', 'socket', 'eve
       $scope.countStatuses = function (collection, getStatusCode) {
         var criticals = 0;
         var warnings = 0;
+        var unknowns = 0;
+        var total = 0;
 
         angular.forEach(collection, function (item) {
+          total += item.length;
           criticals += item.filter(function (item) {
             return getStatusCode(item) === 2;
           }).length;
           warnings += item.filter(function (item) {
             return getStatusCode(item) === 1;
           }).length;
+          unknowns += item.filter(function (item) {
+            return getStatusCode(item) > 2;
+          }).length;
         });
 
         collection.warning = warnings;
         collection.critical = criticals;
-        collection.total = criticals + warnings;
+        collection.unknown = unknowns;
+        collection.total = total;
       };
 
       $scope.countStatuses($scope.clients, function (item) {
