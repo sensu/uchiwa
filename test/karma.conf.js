@@ -5,6 +5,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files : [
       'public/bower_components/jquery/dist/jquery.js',
+      'public/bower_components/underscore/underscore.js',
       'public/bower_components/angular/angular.js',
       'public/bower_components/angular-cookies/angular-cookies.js',
       'public/bower_components/angular-route/angular-route.js',

@@ -15,7 +15,7 @@ serviceModule.factory('socket', function (socketFactory) {
  * Notifications
  */
 serviceModule.provider('notification', function () {
-  this.setOptions = function(options) {
+  this.setOptions = function (options) {
     if (angular.isObject(options)) {
       window.toastr.options = options;
     }
@@ -29,9 +29,20 @@ serviceModule.provider('notification', function () {
 });
 
 /**
+ * Underscore.js
+ */
+serviceModule.factory('underscore', function () {
+  if (angular.isUndefined(window._)) {
+    console.log('underscore.js is required');
+  } else {
+    return window._;
+  }
+});
+
+/**
  * Utility/Helpers
  */
-serviceModule.service('utilityService', function () {
+serviceModule.service('utilityService', ['underscore', function (underscore) {
   // Divide an array into 'n' arrays
   var splitArray = function (array, n) {
     var arrays = [];
@@ -44,12 +55,12 @@ serviceModule.service('utilityService', function () {
   };
 
   this.getRows = function (array, n) {
-    angular.forEach(array, function (element, index, list) {
+    underscore.each(array, function (element, index, list) {
       list[index] = splitArray(element, n);
     });
     return array;
   };
-});
+}]);
 
 /**
  * Toggle
@@ -84,14 +95,14 @@ serviceModule.service('toggleService', function () {
  * Toggle Client
  */
 serviceModule.service('toggleClientService', function () {
-	var toggle = [];
-	this.toggle = toggle;
-	this.toggleOn = function (index) {
-		if (angular.isUndefined(toggle[index])) {
-			toggle[index] = {hidden: false};
-		}
-		toggle[index].hidden = !toggle[index].hidden;
-	};
+  var toggle = [];
+  this.toggle = toggle;
+  this.toggleOn = function (index) {
+    if (angular.isUndefined(toggle[index])) {
+      toggle[index] = {hidden: false};
+    }
+    toggle[index].hidden = !toggle[index].hidden;
+  };
 });
 
 /**
