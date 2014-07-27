@@ -35,7 +35,7 @@
                   <tr ng-click="toggleClientActive($index)" class='accordion-toggle' ng-repeat-start="check in client.history">
                     <td><span class='label label-{{check.style}}'>{{check.isActive}}</span></td>
                     <td class="check-name">{{check.check}}</td>
-                    <td class="check-output" ng-if="check.output">{{check.output}}{{client}}</td>
+                    <td class="check-output" ng-if="check.output">{{check.output}}</td>
                     <td ng-if="!check.output"></td>
                     <td class="timestamp"><i class='fa fa-clock-o'></i> {{check.lastCheck}}</td>
                     <td class='text-center'>
