@@ -1,3 +1,10 @@
+### 0.1.6 (2014-07-28)
+
+#### Bug Fixes
+- Truncate checkout output in client modal for dark theme (Issue #57)
+- Use underscore .each in utilityService
+- Show proper clients & events counts in dashboard panels
+
 ### 0.1.5 (2014-07-22)
 
 #### Features
