@@ -183,11 +183,16 @@ describe('controllers', function () {
           },
           {
             status: 1
+          },
+          {
+            status: 3
           }
         ]
       ];
       var expectedCriticalClients = 2;
       var expectedWarningClients = 2;
+      var expectedUnknownClients = 1;
+      var expectedTotalClients = 5;
 
       var expectedEvents = [
         [
@@ -210,11 +215,19 @@ describe('controllers', function () {
             'check': {
               'status': 1
             }
+          },
+          {
+            'check': {
+              'status': 3
+            }
           }
         ]
       ];
       var expectedCriticalEvents = 2;
       var expectedWarningEvents = 2;
+      var expectedUnknownEvents = 1;
+      var expectedTotalEvents = 5;
+
       var payload = {
         content: angular.toJson({events: expectedEvents, clients: clients})
       };
@@ -223,8 +236,12 @@ describe('controllers', function () {
 
       expect($scope.clients.critical).toEqual(expectedCriticalClients);
       expect($scope.clients.warning).toEqual(expectedWarningClients);
+      expect($scope.clients.unknown).toEqual(expectedUnknownClients);
+      expect($scope.clients.total).toEqual(expectedTotalClients);
       expect($scope.events.critical).toEqual(expectedCriticalEvents);
       expect($scope.events.warning).toEqual(expectedWarningEvents);
+      expect($scope.events.unknown).toEqual(expectedUnknownEvents);
+      expect($scope.events.total).toEqual(expectedTotalEvents);
 	    expect($scope.getStatusClass($scope.clients)).toEqual('critical');
 	    expect($scope.getStatusClass($scope.events)).toEqual('critical');
     });
