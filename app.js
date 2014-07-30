@@ -9,7 +9,7 @@ var yargs = require('yargs')
     .alias('c', 'config')
     .alias('c', 'config-file')
     .alias('c', 'config_file')
-    .default('c', './config.js');
+    .default('c', './config.json');
 var argv = yargs.argv;
 
 if (!fs.existsSync(argv.c)) {

@@ -1,0 +1,32 @@
+{
+  "sensu": [
+    {
+      "name": "Site 1",
+      "host": "api1.example.com",
+      "port": 4567,
+      "ssl": false,
+      "user": "",
+      "pass": "",
+      "path": "",
+      "timeout": 5000
+    },
+    {
+      "name": "Site 2",
+      "host": "api2.example.com",
+      "port": 4567,
+      "ssl": false,
+      "user": "",
+      "pass": "",
+      "path": "",
+      "timeout": 5000
+    }
+  ],
+  "uchiwa": {
+    "host": "0.0.0.0",
+    "port": 3000,
+    "user": "admin",
+    "pass": "secret",
+    "stats": 10,
+    "refresh": 10000
+  }
+}
