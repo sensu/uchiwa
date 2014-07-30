@@ -18,7 +18,12 @@ if (!fs.existsSync(argv.c)) {
   process.exit(1);
 }
 
-var config = require(argv.c);
+try {
+  var config = require(argv.c);
+} catch (e) {
+  console.log('Syntax error with the config file ' + argv.c);
+  process.exit(1);
+}
 
 var express = require('express'),
   http = require('http'),
