@@ -21,10 +21,44 @@ module.exports = function (grunt) {
         '<%= settings.lib %>/{,*/}*.js',
         '<%= settings.public %>/js/{,*/}*.js',
       ]
+    },
+    karma: {
+      unit: {
+        configFile: 'test/karma.conf.js'
+      }
+    },
+    sass: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: '<%= settings.public %>/css',
+          src: ['**/*.scss'],
+          dest: '<%= settings.public %>/css',
+          ext: '.css'
+        }]
+      }
+    },
+    watch: {
+      scss: {
+        files: ['<%= settings.public %>/css/**/*.scss'],
+        tasks: ['sass:dist'],
+        options: {
+          spawn: false
+        }
+      }
     }
   });
 
-  grunt.registerTask('default', [
+  grunt.registerTask('dev', [
+    'watch:scss'
+  ]);
+
+  grunt.registerTask('lint', [
     'newer:jshint'
+  ]);
+
+  grunt.registerTask('default', [
+    'sass',
+    'karma:unit'
   ]);
 };
