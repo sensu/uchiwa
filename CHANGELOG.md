@@ -1,3 +1,17 @@
+### 0.1.7 (2014-07-30)
+
+#### Features
+- The configuration file now use a standard JSON file (see migration notes below) (PR #66)
+- Add Sass Grunt task (PR #67)
+
+#### Migrating from 0.1.6 to 0.1.7
+
+The configuration file is now a standard *JSON* file and therefore, has been renamed from **config.js** to **config.json**.
+
+If you already have a **config.js** file, you can still force uchiwa to use it with, for example, the following command: `node app.js -c ./config.js` or by modifing the init script if it was installed from the packages.
+
+Refer yourself to the **config.json.example** file in doubt.
+
 ### 0.1.6 (2014-07-28)
 
 #### Bug Fixes

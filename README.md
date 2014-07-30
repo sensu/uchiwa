@@ -1,6 +1,6 @@
 # Uchiwa
 
-*Uchiwa* is a simple dashboard for the Sensu monitoring framework, built with node.js.
+*Uchiwa* is a simple dashboard for the Sensu monitoring framework, built with Node.js and AngularJS.
 
 The dashboard is under active development, and major changes are not uncommon.
 
@@ -21,23 +21,21 @@ The dashboard is under active development, and major changes are not uncommon.
 
 ![Dashboard](http://palourde.github.io/images/uchiwa-client.png)
 
-## Installation
-
-* Checkout the source: `git clone git@github.com:palourde/uchiwa.git`
-* Install bower on your system: `npm install -g bower` 
-* Install the dependencies: `npm install`
-
 ## Getting Started
 
-* Copy **config.js.example** to **config.js** - modify your Sensu API information. See configuration section below
+### From source
+
+* Checkout the source: `git clone git@github.com:sensu/uchiwa.git`
+* Install bower on your system: `npm install -g bower`
+* Install the dependencies: `npm install`
+* Copy **config.json.example** to **config.json** - modify your Sensu API information. See configuration section below
 * Start the dashboard: `node app.js`
-* Browse your browser: `http://localhost:3000/`
+* Open your browser: `http://localhost:3000/`
 
-### Migration from 0.0.x to 0.1.x
+### With packages
 
-With the support of mutiple Sensu APIs, the configuration structure has been modified. To configure multiple APIs, simply refer yourself to the **config.js.example** file.
+See [Sensu documentation](http://sensuapp.org/docs/0.13/dashboards_uchiwa)
 
-Also make sure to run `npm install` to install any missing dependencies.
 
 ### Use nginx as proxy
 
@@ -91,13 +89,14 @@ There are two ways of running this container:
 
 ### Docker with a config file.
 
-Make a config.js file for the application, and then launch the uchiwa container with the config mounted as a volume.
+Make a config.json file for the application, and then launch the uchiwa container with the config mounted as a volume.
 
-    mkdir config
-    cp ~/uchiwa/config.js.example config/config.js
-    # Edit config
-    docker run -v /full/path/to/config:/config uchiwa/uchiwa
-    # Docker will EXPOSE port 3000 by default, check where this is mapped on the host and browse to it.
+    # Create a folder that will be mount as a volume to the Docker container
+    mkdir ~/uchiwa-config
+    # Copy your uchiwa config into this last folder
+    cp ~/uchiwa/config.json ~/uchiwa-config/config.json
+    # Start Docker container. It will listen on port 3000 by default
+    docker run -v ~/uchiwa-config:/config uchiwa/uchiwa
 
 ### Docker with environment variables
 
@@ -130,7 +129,7 @@ These variables are optional
 
 An example of starting the container with the minimum set of environment needed would be:
 
-  docker run -i -t -p 3000 -e API1_PORT_4567_TCP_PORT=3000 -e API1_PORT_4567_TCP_ADDR="1.1.1.1" uchiwa/uchiwa
+`docker run -i -t -p 3000 -e API1_PORT_4567_TCP_PORT=3000 -e API1_PORT_4567_TCP_ADDR="1.1.1.1" uchiwa/uchiwa`
 
 ## Debugging
 You may start the dashboard with the following command in order to enable verbose mode: `NODE_ENV="development" node app.js`
@@ -139,55 +138,21 @@ You may start the dashboard with the following command in order to enable verbos
 Everyone is welcome to submit patches. Whether your pull request is a bug fix or introduces new classes or functions to the project, we kindly ask that you include tests for your changes. Even if it's just a small improvement, a test is necessary to ensure the bug is never re-introduced.
 
 ### Testing
-You should always make sure to have all dependencies installed (`npm install`)
-
-#### Unit testing
-Simply run `npm test`
+You should always run `npm test` before submitting a Pull Request.
 
 #### E2E testing
 1. Clone (this)[https://github.com/palourde/uchiwa-sensu] cookbook (`git clone git@github.com:palourde/uchiwa-sensu.git`)
 2. Boot the virtual machines (`vagrant up`)
-3. Use the following configuration file (*config.js*):
-```
-module.exports = {
-  sensu: [
-    {
-      name: "0.12.6",
-      host: '10.20.30.40',
-      ssl: false,
-      port: 4567,
-      user: '',
-      pass: '',
-      path: '',
-      timeout: 5000
-    },
-    {
-      name: "0.13.0",
-      host: '10.20.30.41',
-      ssl: false,
-      port: 4567,
-      user: '',
-      pass: '',
-      path: '',
-      timeout: 5000
-    }
-  ],
-  uchiwa: {
-    user: '',
-    pass: '',
-    retention: 10,
-    refresh: 10000
-  }
-}
-```
+3. Copy the configuration file (**config.json**) found on the uchiwa-sensu repo into the uchiwa repo
 4. Run E2E tests (`npm run protractor`)
 
 ## Authors
 * Author: [Simon Plourde][author] (<simon.plourde@gmail.com>)
-* Contributor: Ethan Hann (<ethanhann@gmail.com>)
+* Contributor: [Ethan Hann][ethanhann] (<ethanhann@gmail.com>)
 
 ## License
 Apache 2.0 (see [LICENSE][license])
 
 [author]:                 https://github.com/palourde
 [license]:                https://github.com/palourde/uchiwa/blob/master/LICENSE
+[ethanhann]:              http://www.ethanhann.com/
