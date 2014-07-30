@@ -5,6 +5,7 @@ logs
 results
 node_modules
 /config.js
+/config.json
 public/bower_components
 .sass-cache
 npm-debug.log
