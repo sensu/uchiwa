@@ -25,7 +25,7 @@ The dashboard is under active development, and major changes are not uncommon.
 
 ### From source
 
-* Checkout the source: `git clone git@github.com:sensu/uchiwa.git`
+* Checkout the source: `git clone https://github.com/sensu/uchiwa.git`
 * Install bower on your system: `npm install -g bower`
 * Install the dependencies: `npm install`
 * Copy **config.json.example** to **config.json** - modify your Sensu API information. See configuration section below
