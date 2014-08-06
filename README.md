@@ -27,7 +27,9 @@ The dashboard is under active development, and major changes are not uncommon.
 
 * Checkout the source: `git clone https://github.com/sensu/uchiwa.git`
 * Install bower on your system: `npm install -g bower`
-* Install the dependencies: `npm install`
+* Install the dependencies: 
+  * With root user: `npm install --unsafe-perm`
+  * With normal user: `npm install`
 * Copy **config.json.example** to **config.json** - modify your Sensu API information. See configuration section below
 * Start the dashboard: `node app.js`
 * Open your browser: `http://localhost:3000/`
