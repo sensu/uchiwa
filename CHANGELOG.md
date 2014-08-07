@@ -1,3 +1,25 @@
+### 0.2.0 (2014-08-07)
+
+####Features
+- New user interface! (Issue #55)
+- Temporarily silence an element
+- Filter and order by attributes
+- Display a limited number of elements by default, to reduce page size
+- Display custom attributes of checks/clients/events (Issue #58)
+- Add an overview of each DC in the navbar
+- Ability to link to a client and an incident (Issue #59)
+- Filter clients by subscriptions and ability to link it
+- Add an info page to display Sensu and Uchiwa basic information
+- Dynamic page title (Issue #70)
+- Optimize dark theme
+- Change licence to MIT (same as Sensu)
+
+#### Bug Fixes
+- Better handling of unknown elements (Issue #59)
+- Display proper information concerning check details (Issue #72)
+- Client event might have shown wrong data
+- Validate and initialize missing configuration for Sensu endpoints and Uchiwa
+
 ### 0.1.7 (2014-07-30)
 
 #### Features
