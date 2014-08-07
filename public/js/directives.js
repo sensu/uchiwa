@@ -1,22 +1,6 @@
-var directiveModule = angular.module('uchiwa.directives', []);
+'use strict';
 
-directiveModule.directive('morrisLine', function () {
-  return {
-    restrict: 'EA',
-    replace: true,
-    template: '<div class="graph"></div>',
-    scope: {
-      morrisLine: '='
-    },
-    link: function (scope, element) {
-      scope.morrisLine.element = element;
-      var chart = new Morris.Line(scope.morrisLine);
-      scope.$watch('morrisLine.data', function (newValue) {
-        chart.setData(newValue);
-      });
-    }
-  };
-});
+var directiveModule = angular.module('uchiwa.directives', []);
 
 directiveModule.directive('bootstrapTooltip', function () {
   return {

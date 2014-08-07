@@ -1,0 +1,35 @@
+@import "variables";
+
+.dropdown-menu {
+  background-color: $dropdown-background-color;
+  color: $dropdown-text-color;
+}
+
+.dropdown-menu > li > a {
+  color: $dropdown-text-color;
+  padding: 3px 20px;
+}
+
+.dropdown-menu.left {
+  left: -275%;
+}
+
+.show-on-hover:hover > div.dropdown-menu {
+    display: block;    
+}
+
+.navbar .dropdown-menu {
+  min-width: 250px;
+}
+
+.navbar .dropdown-menu > li > a, .navbar .dropdown-menu > li > a:focus {
+  font-weight: 400;
+}
+
+.navbar .dropdown-menu {
+  top: 85%;
+}
+
+.navbar .dropdown-menu .heading {
+  padding: 40px;
+}

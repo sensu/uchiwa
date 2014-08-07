@@ -26,7 +26,6 @@
     "port": 3000,
     "user": "admin",
     "pass": "secret",
-    "stats": 10,
     "refresh": 10000
   }
 }

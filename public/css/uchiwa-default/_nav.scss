@@ -5,10 +5,6 @@
   text-transform: uppercase;
 }
 
-.nav-list li.active a {
-  color: $nav-list-active;
-}
-
 .nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:hover, .nav-tabs.nav-justified>.active>a:focus {
   border: 0px;
 }
@@ -23,11 +19,39 @@
 }
 
 .nav>li>a {
-  color: #4d4d4d;
+  color: $nav-text-color;
   font-size: 13px;
   font-weight: 400;
 }
 
 .nav>li>a:hover, .nav>li>a:focus {
   background-color: $nav-non-default-state;
+}
+
+.nav-filter {
+  padding-top: 15px;
+}
+
+.nav-filter .text {
+  padding-right: 5px;
+}
+
+.nav-filter .form-control {
+  width: auto;
+  height: auto;
+  display: inline;
+}
+
+.nav-filter .form-control.subscriptions {
+  width: 140px;
+}
+
+.nav-dc {
+  text-transform: uppercase;
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus, li > a.active {
+  color: $nav-text-color;
+  background-color: inherit;
+  border-bottom: 3px solid $quinary-color;
 }

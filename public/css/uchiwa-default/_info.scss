@@ -1,0 +1,17 @@
+@import "variables";
+
+.info .center {
+  text-align: center;
+}
+
+.info .number {
+  font-weight: 700;
+  font-size: 28px;
+}
+
+.info .title {
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: $quinary-color;
+}

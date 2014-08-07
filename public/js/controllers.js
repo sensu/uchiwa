@@ -1,10 +1,13 @@
+'use strict';
+
 var controllerModule = angular.module('uchiwa.controllers', []);
 
 /**
  * Init
  */
-controllerModule.controller('init', ['$scope', 'notification', 'socket',
-  function ($scope, notification, socket) {
+controllerModule.controller('init', ['$scope', 'notification', 'socket', 'Page',
+  function ($scope, notification, socket, Page) {
+    $scope.Page = Page;
     $scope.$on('$routeChangeSuccess', function () {
       socket.emit('get_sensu', {});
     });
@@ -22,149 +25,304 @@ controllerModule.controller('init', ['$scope', 'notification', 'socket',
 /**
  * Checks
  */
-controllerModule.controller('checks', ['$scope', 'utilityService', 'toggleService',
-  function ($scope, utilityService, toggleService) {
+controllerModule.controller('checks', ['$scope', 'Page',
+  function ($scope, Page) {
     $scope.pageHeaderText = 'Checks';
     $scope.dcItem = 'checks';
+    $scope.dcFilter = {dc: ''};
+    $scope.predicate = 'name';
+    Page.setTitle('Checks');
+
+    // Helpers
+    $scope.subscribersSummary = function(subscribers){
+      var summary = '';
+      angular.forEach(subscribers, function(value){
+        summary += value + ' ';
+      });
+      return summary;
+    };
 
     // Socket.IO
     $scope.$on('socket:sensu', function (event, data) {
       var sensu = angular.fromJson(data.content);
       $scope.dc = sensu.dc;
-      $scope.aggregation = utilityService.getRows(sensu.checks, 2);
+      $scope.checks = sensu.checks;
     });
-
-    // Toggle system
-    $scope.toggle = toggleService.toggle;
-    $scope.toggleOn = toggleService.toggleOn;
-    $scope.showOnly = toggleService.showOnly;
-    $scope.showAll = toggleService.showAll;
   }
 ]);
 
 /**
  * Client
  */
-controllerModule.controller('client', ['$scope', '$location', 'socket', 'clientsService', 'toggleService', 'toggleClientService',
-  function ($scope, $location, socket, clientsService, toggleService, toggleClientService) {
-    var timer = setInterval(function () {
-      if ($('#client-details').data('bs.modal')) {
-        socket.emit('get_client', {dc: $scope.client.dc, client: $scope.client.name});
-      }
-    }, 10000);
-    $scope.$on('socket:client', function (event, data) {
-      $scope.client = angular.fromJson(data.content);
-    });
-    $scope.stash = clientsService.stash;
-    $scope.resolve = clientsService.resolve;
+controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clientsService', 'routingService', 'Page',
+  function ($scope, $routeParams, socket, clientsService, routingService, Page) {
 
-    $scope.delete = function (dcName, clientName) {
-      clientsService.delete(dcName, clientName);
-      $('#client-details').modal('hide');
+    $scope.predicate = '-last_status';
+
+     // Retrieve client
+    $scope.clientId = decodeURI($routeParams.clientId);
+    $scope.dcId = decodeURI($routeParams.dcId);
+    $scope.pull = function() {
+      socket.emit('get_client', {dc: $scope.dcId, client: $scope.clientId});
     };
-    $('#client-details').on('hide.bs.modal', function () {
-      $scope.client = {name: 'Loading...'};
-      $scope.toggle = toggleService.toggle;
+
+    $scope.pull();
+    var timer = setInterval($scope.pull, 10000);
+
+    // Socket.IO
+    $scope.$on('socket:client', function (event, data) {
+      if(!$scope.dropdown.isopen) {
+        $scope.client = angular.fromJson(data.content);
+      }
+      $scope.pageHeaderText = $scope.client.name;
+      
+
+      // Retrieve check
+      $scope.requestedCheck = decodeURI($routeParams.check);
+      $scope.selectedCheck = findCheck($scope.requestedCheck);
+
+      // Set page title
+      if(angular.isDefined($scope.selectedCheck)) {
+        Page.setTitle($scope.requestedCheck + ' - ' + $scope.client.name);
+      }
+      else {
+        Page.setTitle($scope.client.name);
+      }
+    });
+
+    // Listeners
+    $scope.$on('$routeUpdate', function(){
+      // Update check
+      $scope.requestedCheck = decodeURI($routeParams.check);
+      $scope.selectedCheck = findCheck($scope.requestedCheck);
+      if(angular.isDefined($scope.selectedCheck)) {
+        Page.setTitle($scope.requestedCheck + ' - ' + $scope.client.name);
+      }
+      else {
+        Page.setTitle($scope.client.name);
+      }
+    });
+
+    $scope.$on('$destroy', function() {
       clearInterval(timer);
     });
 
-    // Keep track of collapsed check details
-    $scope.toggleClient = toggleClientService.toggle;
-    $scope.toggleClientActive = toggleClientService.toggleOn;
+    // Services
+    $scope.remove = clientsService.remove;
+    $scope.resolve = clientsService.resolve;
+    $scope.search = routingService.search;
+    $scope.stash = clientsService.stash;
+  
+    // Helpers
+    $scope.toggled = function(e) {
+      var event = e || window.event;
+      event.stopPropagation();
+
+      $scope.dropdown.isopen = !$scope.dropdown.isopen;
+    };
+    $scope.dropdown = {
+      isopen: false
+    };
+    $scope.silenceOptions = [
+      {key: '15 minutes', value: 900},
+      {key: '1 hour', value: 3600},
+      {key: '24 hours', value: 86400},
+      {key: 'Never', value: -1},
+    ];
+
+    // Sanitize - only display useful information
+    /* jshint ignore:start */
+    var clientWhitelist = [ 'dc', 'events', 'eventsSummary', 'history', 'isSilenced', 'lastCheck', 'silenceIcon', 'status', 'timestamp', 'style' ];
+    var checkWhitelist = [ 'dc', 'hasSubscribers', 'name'];
+    var eventWhitelist = [ 'command', 'executed', 'handlers', 'hasSubscribers', 'history', 'interval', 'issued', 'name', 'status', 'standalone', 'subscribers' ];
+    $scope.sanitizeObject = function(type, key){
+      return eval(type + 'Whitelist').indexOf(key) === -1;
+    };
+    /* jshint ignore:end */
+
+    var findCheck = function(id){
+      return $scope.client.history.filter(function (item) {
+        return item.check === id;
+      })[0];
+    };
   }
 ]);
 
 /**
  * Clients
  */
-controllerModule.controller('clients', ['$scope', 'socket', 'clientsService', 'utilityService', 'toggleService',
-  function ($scope, socket, clientsService, utilityService, toggleService) {
+controllerModule.controller('clients', ['$scope', '$routeParams', 'socket', 'clientsService', 'routingService', 'Page',
+  function ($scope, $routeParams, socket, clientsService, routingService, Page) {
     $scope.pageHeaderText = 'Clients';
     $scope.dcItem = 'clients';
+    $scope.dcFilter = {dc: ''};
+    $scope.predicate = '-status';
+    Page.setTitle('Clients');
 
-    // Helpers
-    $scope.stash = clientsService.stash;
-    $scope.getClient = function (dcName, clientName) {
-      socket.emit('get_client', {dc: dcName, client: clientName});
-    };
+    // Select subscription to show
+    if(angular.isDefined($routeParams.subscription)) {
+      $scope.subscriptionsFilter = decodeURI($routeParams.subscription);
+    }
+    else {
+      $scope.subscriptionsFilter = '';
+    }
 
     // Socket.IO
     $scope.$on('socket:sensu', function (event, data) {
       var sensu = angular.fromJson(data.content);
       $scope.dc = sensu.dc;
-      $scope.aggregation = utilityService.getRows(sensu.clients, 3);
+      $scope.subscriptions = sensu.subscriptions;
+      if(!$scope.dropdown.isopen) {
+        $scope.clients = sensu.clients;
+      }
     });
 
-    // Toggle system
-    $scope.toggle = toggleService.toggle;
-    $scope.toggleOn = toggleService.toggleOn;
-    $scope.showOnly = toggleService.showOnly;
-    $scope.showAll = toggleService.showAll;
+    // Services
+    $scope.go = routingService.go;
+    $scope.stash = clientsService.stash;
+    
+    $scope.test = function() {
+      routingService.search('', 'subscription='+$scope.subscriptionsFilter);
+    };
+
+    // Helpers
+    $scope.getClient = function (dcName, clientName) {
+      socket.emit('get_client', {dc: dcName, client: clientName});
+    };
+    
+    $scope.toggled = function(e) {
+      var event = e || window.event;
+      event.stopPropagation();
+      $scope.dropdown.isopen = !$scope.dropdown.isopen;
+    };
+    $scope.dropdown = {
+      isopen: false
+    };
+    $scope.silenceOptions = [
+      {key: '15 minutes', value: 900},
+      {key: '1 hour', value: 3600},
+      {key: '24 hours', value: 86400},
+      {key: 'Never', value: -1},
+    ];
   }
 ]);
 
 /**
- * Dashboard
+ * Events
  */
-controllerModule.controller('dashboard', ['$rootScope', '$scope', 'socket', 'eventsService', 'utilityService', 'toggleService',
-  function ($rootScope, $scope, socket, eventsService, utilityService, toggleService) {
+controllerModule.controller('events', ['$rootScope', '$scope', 'socket', 'eventsService', 'routingService', 'Page',
+  function ($rootScope, $scope, socket, eventsService, routingService, Page) {
     $scope.pageHeaderText = 'Events';
     $scope.dcItem = 'events';
-    $scope.statChartConfig = {
-      data: [],
-      xkey: 'y',
-      ykeys: ['e', 's'],
-      labels: ['Events', 'Stashes'],
-      lineColors: ['#2CA7E5', '#F9CD65'],
-      hideHover: 'auto',
-      pointSize: 0,
-      fillOpacity: 1,
-      gridTextColor: '#fff',
-      gridTextFamily: '"Lato", sans-serif',
-      gridTextWeight: 700,
-      grid: false,
-      lineWidth: 4,
-      axes: true,
-      behaveLikeLine: true
-    };
-    socket.emit('get_stats', {});
-    $scope.$on('socket:stats', function (event, data) {
-      $scope.statChartConfig.data = angular.fromJson(data.content);
-    });
-
-    $scope.getStatusClass = function (statuses) {
-      if (angular.isDefined(statuses)) {
-        return statuses.critical > 0 ? 'critical' : statuses.warning > 0 ? 'warning' : 'success';
-      }
-    };
-
+    $scope.dcFilter = {dc: ''};
+    $scope.subscriptionsFilter = '';
+    $scope.predicate = '-check.status';
+    Page.setTitle('Events');
+    
+    // Socket.IO
     $scope.$on('socket:sensu', function (event, data) {
       var sensu = angular.fromJson(data.content);
       $scope.clients = sensu.clients;
+      $scope.dc = sensu.dc;
+      $scope.subscriptions = sensu.subscriptions;
+      if(!$scope.dropdown.isopen) {
+        $scope.events = sensu.events;
+      }
+    });
+
+    // Services
+    $scope.go = routingService.go;
+    $scope.stash = eventsService.stash;
+
+    // Helpers
+    $scope.getClient = function (dcName, clientName) {
+      socket.emit('get_client', {dc: dcName, client: clientName});
+    };
+
+    $scope.toggled = function(e) {
+      var event = e || window.event;
+      event.stopPropagation();
+      $scope.dropdown.isopen = !$scope.dropdown.isopen;
+    };
+
+    $scope.dropdown = {
+      isopen: false
+    };
+    $scope.silenceOptions = [
+      {key: '15 minutes', value: 900},
+      {key: '1 hour', value: 3600},
+      {key: '24 hours', value: 86400},
+      {key: 'Never', value: -1},
+    ];
+
+  }
+]);
+
+/**
+ * Info
+ */
+controllerModule.controller('info', ['$scope', 'socket', 'version', 'Page',
+  function ($scope, socket, version, Page) {
+    $scope.pageHeaderText = 'Info';
+    $scope.uchiwa = {};
+    Page.setTitle('Info');
+
+    // Socket.IO
+    socket.emit('get_info', {});
+
+    $scope.$on('socket:info', function (event, data) {
+      var config = angular.fromJson(data.content);
+      $scope.uchiwa.config = JSON.stringify(config, null, 2);
+      $scope.uchiwa.version = version.uchiwa;
+    });
+
+    $scope.$on('socket:sensu', function (event, data) {
+      var sensu = angular.fromJson(data.content);
+      $scope.dc = sensu.dc;
+    });
+
+  }
+]);
+
+/**
+ * Navbar
+ */
+controllerModule.controller('navbar', ['$scope',
+  function ($scope) {
+
+    // Socket.IO
+    $scope.$on('socket:sensu', function (event, data) {
+
+      var sensu = angular.fromJson(data.content);
+      $scope.checks = sensu.checks;
+      $scope.clients = sensu.clients;
+      $scope.dc = sensu.dc;
       $scope.events = sensu.events;
+      $scope.stashes = sensu.stashes;
+
+      // Badges count
       $scope.countStatuses = function (collection, getStatusCode) {
         var criticals = 0;
         var warnings = 0;
         var unknowns = 0;
-        var total = 0;
-
-        angular.forEach(collection, function (item) {
-          total += item.length;
-          criticals += item.filter(function (item) {
-            return getStatusCode(item) === 2;
-          }).length;
-          warnings += item.filter(function (item) {
-            return getStatusCode(item) === 1;
-          }).length;
-          unknowns += item.filter(function (item) {
-            return getStatusCode(item) > 2;
-          }).length;
-        });
+        var total = collection.length;
+        
+        criticals += collection.filter(function (item) {
+          return getStatusCode(item) === 2;
+        }).length;
+        warnings += collection.filter(function (item) {
+          return getStatusCode(item) === 1;
+        }).length;
+        unknowns += collection.filter(function (item) {
+          return getStatusCode(item) > 2;
+        }).length;
 
         collection.warning = warnings;
         collection.critical = criticals;
+        collection.total = criticals + warnings;
         collection.unknown = unknowns;
         collection.total = total;
+        collection.style = collection.critical > 0 ? 'critical' : collection.warning > 0 ? 'warning' : collection.unknown > 0 ? 'unknown' : 'success';
       };
 
       $scope.countStatuses($scope.clients, function (item) {
@@ -174,71 +332,45 @@ controllerModule.controller('dashboard', ['$rootScope', '$scope', 'socket', 'eve
         return item.check.status;
       });
     });
-
-    // Helpers
-    $scope.stash = eventsService.stash;
-    $scope.getClient = function (dcName, clientName) {
-      socket.emit('get_client', {dc: dcName, client: clientName});
-    };
-
-    // Socket.IO
-    $scope.$on('socket:sensu', function (event, data) {
-      var sensu = angular.fromJson(data.content);
-      $scope.dc = sensu.dc;
-      $scope.aggregation = utilityService.getRows(sensu.events, 3);
-    });
-
-    // Toggle system
-    $scope.toggle = toggleService.toggle;
-    $scope.toggleOn = toggleService.toggleOn;
-    $scope.showOnly = toggleService.showOnly;
-    $scope.showAll = toggleService.showAll;
-  }
-]);
-
-/**
- * Stashes
- */
-controllerModule.controller('stashes', ['$scope', 'socket', 'stashesService', 'utilityService', 'toggleService',
-  function ($scope, socket, stashesService, utilityService, toggleService) {
-    $scope.pageHeaderText = 'Stashes';
-    $scope.dcItem = 'stashes';
-    $scope.sensu = {};
-
-    // Socket.IO
-    $scope.$on('socket:sensu', function (event, data) {
-      $scope.sensu = angular.fromJson(data.content);
-      $scope.dc = $scope.sensu.dc;
-      $scope.aggregation = utilityService.getRows($scope.sensu.stashes, 3);
-    });
-
-    $scope.deleteStash = function (dcName, stash, index) {
-      stashesService.stash(dcName, stash);
-
-      // Remove stash from $scope
-      var dcPosition = $scope.sensu.dc.map(function (dc) {
-        return dc.name;
-      }).indexOf(dcName);
-      var dcStashes = $scope.sensu.stashes[dcPosition];
-      dcStashes[0].splice(index, 1);
-    };
-
-    // Toggle system
-    $scope.toggle = toggleService.toggle;
-    $scope.toggleOn = toggleService.toggleOn;
-    $scope.showOnly = toggleService.showOnly;
-    $scope.showAll = toggleService.showAll;
   }
 ]);
 
 /**
  * Settings
  */
-controllerModule.controller('settings', ['$cookies', '$scope',
-  function ($cookies, $scope) {
+controllerModule.controller('settings', ['$cookies', '$scope', 'Page',
+  function ($cookies, $scope, Page) {
     $scope.pageHeaderText = 'Settings';
+    Page.setTitle('Settings');
     $scope.$watch('currentTheme', function (theme) {
       $scope.$emit('theme:changed', theme);
     });
+  }
+]);
+
+/**
+ * Stashes
+ */
+controllerModule.controller('stashes', ['$scope', 'socket', 'stashesService', 'Page',
+  function ($scope, socket, stashesService, Page) {
+    $scope.pageHeaderText = 'Stashes';
+    $scope.dcItem = 'stashes';
+    $scope.sensu = {};
+    $scope.dcFilter = {dc: ''};
+    $scope.predicate = 'client';
+    Page.setTitle('Stashes');
+
+    // Socket.IO
+    $scope.$on('socket:sensu', function (event, data) {
+      $scope.sensu = angular.fromJson(data.content);
+      $scope.dc = $scope.sensu.dc;
+      $scope.stashes = $scope.sensu.stashes;
+    });
+
+    $scope.deleteStash = function (dcName, stash, index) {
+      stashesService.stash(dcName, stash);
+      $scope.stashes.splice(index, 1);
+    };
+
   }
 ]);

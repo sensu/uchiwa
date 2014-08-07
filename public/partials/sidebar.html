@@ -1,20 +1,54 @@
-<ul class="nav nav-pills nav-stacked mg-t-md">
-  <li>
-    <span class="text-muted">Filter</span>
-    <div class="input-group">
-      <input class="search input-sm" ng-model="filters.text">
+<div class="sidebar" role="navigation">
+  <div class="container">
+    <div class="">
+      <ul class="nav sidebar-nav">
+        <li class="logo">
+          
+        </li>
+        <li id="dashboard">
+          <a ng-href="#">
+              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Events" bootstrap-tooltip>
+                <i class="fa fa-bullhorn"></i>
+              </span>
+          </a>
+        </li>
+        <li id="clients">
+          <a ng-href="#clients">
+              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Clients" bootstrap-tooltip>
+                <i class="fa fa-hdd-o"></i>
+              </span>
+          </a>
+        </li>
+        <li id="checks">
+          <a ng-href="#checks">
+              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Checks" bootstrap-tooltip>
+                <i class="fa fa-check-square"></i>
+              </span>
+          </a>
+        </li>
+        <li id="stashes">
+          <a ng-href="#stashes">
+              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Stashes" bootstrap-tooltip>
+                <i class="fa fa-database"></i>
+              </span>
+          </a>
+        </li>
+        <li id="info">
+          <a ng-href="#info">
+              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Info" bootstrap-tooltip>
+                <i class="fa fa-info-circle"></i>
+              </span>
+          </a>
+        </li>
+        <li id="settings">
+          <a ng-href="#settings">
+              <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Settings" bootstrap-tooltip>
+                <i class="fa fa-gear"></i>
+              </span>
+          </a>
+        </li>
+      </ul>
     </div>
-  </li>
-</ul>
-<ul class="nav nav-pills nav-stacked mg-t-md">
-  <li>
-    <span class="text-muted">datacenters</span>
-  </li>
-  <li>
-    <a ng-href="" ng-click="showAll(dc)" class='accordion-toggle'><i class="fa fa-circle blue mg-r-sm"></i> All</a>
-  </li>
-  <li ng-repeat="datacenter in dc">
-    <a ng-href="" ng-click="showOnly($index, dc)" class='accordion-toggle'><i
-        class="fa fa-circle mg-r-sm {{datacenter.style}}"></i> {{datacenter.name}} ({{datacenter[dcItem]}})</a>
-  </li>
-</ul>
+    <!--/.nav-collapse -->
+  </div>
+</div>

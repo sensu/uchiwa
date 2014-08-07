@@ -1,42 +1,51 @@
 /* Colors */
-$primary-color: #333333 !default;
-$secondary-color: #0F0F0F !default;
+$primary-color: #2C2C39 !default;
+$secondary-color: #22222D !default;
 $tertiary-color: #2F2F2F !default;
-$quaternary-color: #EEEEEE !default;
+$quaternary-color: #FFFFFF !default;
+$quinary-color: #5F97FB !default;
+$senary-color: #4d4d64 !default;
+
 $danger-color: #D9322A;
 
 /* Body, Sections, and Headers */
 $body-background-color: $primary-color !default;
-$body-text-color: $quaternary-color;
-$header-text-color: $quaternary-color;
+$body-text-color: $quaternary-color !default;
+$header-text-color: $quaternary-color !default;
 $section-header-border-bottom: 1px solid $quaternary-color !default;
 
-/* Navbar */
-$navbar-nav-selected-text-color: $secondary-color !default;
-$navbar-nav-selected-background-color: $primary-color !default;
-$navbar-nav-selected-border-left: 3px solid $primary-color !default;
-$navbar-nav-hover-text-color: $quaternary-color !default;
-$navbar-nav-hover-border-left: 3px solid $tertiary-color;
+/* Breadcrumb */
+$breadcrumb-background-color: #424256 !default;
+$breadcrumb-border-color: #21212b !default;
+$breadcrumb-text-color: $body-text-color !default;
+
+/* Dropdown */
+$dropdown-background-color: $body-background-color !default;
+$dropdown-text-color: $body-text-color !default;
 
 /* Nav */
+$nav-text-color: $body-text-color !default;
 $nav-non-default-state: $tertiary-color !default;
 
-/* Modal */
-$modal-body-table-hover-background-color: $tertiary-color;
+/* Navbar */
+$navbar-background-color: $senary-color !default;
+$navbar-text-color: $body-text-color !default;
+$navbar-border-color: #424256 !default;
+
+/* Panels */
+$panel-text-color: $body-text-color !default;
+$panel-border-color: #21212b !default;
+$panel-default-background-color: #424256 !default;
+$panel-default-heading-background-color: #373747 !default;
+
+/* Tables */
+$table-tr-background-color: #373747 !default;
+
+/* Sidebar */
+$sidebar-background-color: $secondary-color !default;
+$sidebar-nav-text-color: $body-text-color !default;
+$sidebar-nav-hover-text-color: $body-text-color !default;
 
 /* Wells */
-$well-background-color: $secondary-color;
-$well-hover-background-color: $tertiary-color;
-
-/* Tag */
-$tag-text-color: $quaternary-color;
-$tag-background-color: $secondary-color;
-
-/* Morris Chart Library */
-$morris-hover-background-color: $primary-color !default;
-$morris-hover-text-color: $quaternary-color !default;
-
-/* Search bar */
-$search-bar-background-color: $secondary-color;
-$search-bar-border-width: 0;
-$search-bar-text-color: $quaternary-color;
+$well-background-color: $secondary-color !default;
+$well-hover-background-color: $tertiary-color !default;

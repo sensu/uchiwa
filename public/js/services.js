@@ -1,3 +1,5 @@
+'use strict';
+
 var serviceModule = angular.module('uchiwa.services', []);
 
 /**
@@ -7,8 +9,19 @@ serviceModule.factory('socket', function (socketFactory) {
   var socket = socketFactory();
   socket.forward('sensu');
   socket.forward('client');
-  socket.forward('stats');
+  socket.forward('info');
   return socket;
+});
+
+/**
+ * Page title
+ */
+serviceModule.factory('Page', function() {
+  var title = 'Uchiwa';
+  return {
+    title: function() { return title + ' | Uchiwa'; },
+    setTitle: function(newTitle) { title = newTitle; }
+  };
 });
 
 /**
@@ -40,78 +53,10 @@ serviceModule.factory('underscore', function () {
 });
 
 /**
- * Utility/Helpers
- */
-serviceModule.service('utilityService', ['underscore', function (underscore) {
-  // Divide an array into 'n' arrays
-  var splitArray = function (array, n) {
-    var arrays = [];
-    var i, j, temparray, chunk = n;
-    for (i = 0, j = array.length; i < j; i += chunk) {
-      temparray = array.slice(i, i + chunk);
-      arrays.push(temparray);
-    }
-    return arrays;
-  };
-
-  this.getRows = function (array, n) {
-    underscore.each(array, function (element, index, list) {
-      list[index] = splitArray(element, n);
-    });
-    return array;
-  };
-}]);
-
-/**
- * Toggle
- */
-serviceModule.service('toggleService', function () {
-  var toggle = [];
-  this.toggle = toggle;
-  this.toggleOn = function (index) {
-    if (angular.isUndefined(toggle[index])) {
-      toggle[index] = {hidden: false};
-    }
-    toggle[index].hidden = !toggle[index].hidden;
-  };
-  this.showOnly = function (index, dc) {
-    angular.forEach(dc, function (datacenter, i) {
-      if (i === index) {
-        toggle[index] = {hidden: false};
-      }
-      else {
-        toggle[i] = {hidden: true};
-      }
-    });
-  };
-  this.showAll = function (dc) {
-    angular.forEach(dc, function (datacenter, i) {
-      toggle[i] = {hidden: false};
-    });
-  };
-});
-
-/**
- * Toggle Client
- */
-serviceModule.service('toggleClientService', function () {
-  var toggle = [];
-  this.toggle = toggle;
-  this.toggleOn = function (index) {
-    if (angular.isUndefined(toggle[index])) {
-      toggle[index] = {hidden: false};
-    }
-    toggle[index].hidden = !toggle[index].hidden;
-  };
-});
-
-/**
  * Clients
  */
-serviceModule.service('clientsService', ['socket', function (socket) {
-  this.stash = function (e, dcName, client, check) {
-    var event = e || window.event;
-    event.stopPropagation();
+serviceModule.service('clientsService', ['socket', '$location', function (socket, $location) {
+  this.stash = function (dcName, client, check, expire) {
     var checkName = (angular.isUndefined(check)) ? '' : '/' + check.check;
     var isSilenced = (angular.isUndefined(check)) ? client.isSilenced : check.isSilenced;
     var path = 'silence/' + client.name + checkName;
@@ -123,8 +68,10 @@ serviceModule.service('clientsService', ['socket', function (socket) {
       icon = 'fa-volume-up';
     }
     else {
-      var timestamp = Math.floor(Date.now() / 1000);
-      payload = {path: path, content: {'reason': 'uchiwa', 'timestamp': timestamp}};
+      payload = {path: path, content: {'reason': 'uchiwa'}};
+      if(expire !== -1){
+        payload.expire = expire;
+      }
       socket.emit('create_stash', JSON.stringify({dc: dcName, payload: payload}));
       icon = 'fa-volume-off';
     }
@@ -139,10 +86,9 @@ serviceModule.service('clientsService', ['socket', function (socket) {
       return check;
     }
   };
-  this.resolve = function (e, dcName, client, check) {
-    var event = e || window.event;
-    event.stopPropagation();
+  this.resolve = function (dcName, client, check) {
     var payload = {client: client.name, check: check.check};
+    console.log(payload);
     socket.emit('resolve_event', JSON.stringify({dc: dcName, payload: payload}));
     check.style = 'success';
     check.isActive = 'Inactive';
@@ -151,9 +97,10 @@ serviceModule.service('clientsService', ['socket', function (socket) {
     check.lastCheck = 'Never';
     return check;
   };
-  this.delete = function (dcName, clientName) {
+  this.remove = function (dcName, clientName) {
     var payload = {path: clientName, content: {}};
     socket.emit('delete_client', JSON.stringify({dc: dcName, payload: payload}));
+    $location.url('/clients');
     return true;
   };
 }]);
@@ -162,9 +109,7 @@ serviceModule.service('clientsService', ['socket', function (socket) {
  * Events
  */
 serviceModule.service('eventsService', ['socket', function (socket) {
-  this.stash = function (e, dcName, currentEvent) {
-    var event = e || window.event;
-    event.stopPropagation();
+  this.stash = function (dcName, currentEvent, expire) {
     var path = 'silence/' + currentEvent.client.name + '/' + currentEvent.check.name;
     var payload;
     var icon;
@@ -174,8 +119,10 @@ serviceModule.service('eventsService', ['socket', function (socket) {
       icon = 'fa-volume-up';
     }
     else {
-      var timestamp = Math.floor(Date.now() / 1000);
-      payload = {path: path, content: {'reason': 'uchiwa', 'timestamp': timestamp}};
+      payload = {path: path, content: {'reason': 'uchiwa'}};
+      if(expire !== -1){
+        payload.expire = expire;
+      }
       socket.emit('create_stash', JSON.stringify({dc: dcName, payload: payload}));
       icon = 'fa-volume-off';
     }
@@ -193,5 +140,21 @@ serviceModule.service('stashesService', ['socket', function (socket) {
     var payload = {path: stash.path, content: {}};
     socket.emit('delete_stash', JSON.stringify({dc: dcName, payload: payload}));
     return stash;
+  };
+}]);
+
+/**
+ * Routing
+ */
+serviceModule.service('routingService', ['socket', '$location', function (path, $location) {
+  this.go = function (path) {
+    path = encodeURI(path);
+    $location.url(path);
+  };
+  this.search = function (e, path) {
+    var event = e || window.event;
+    event.stopPropagation();
+    path = encodeURI(path);
+    $location.search(path);
   };
 }]);

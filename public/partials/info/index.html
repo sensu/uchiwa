@@ -1,0 +1,50 @@
+<div class="container-fluid info">
+  <div ng-include="'partials/page-header.html'"></div>
+  <div class="row-fluid">
+    <div class="col-lg-12">
+      <div class="row-fluid">
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Uchiwa
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="title center">Version</div>
+                  <div class="number center">{{uchiwa.version}}</div>
+                  <hr>
+                  <div class="title center">Config</div>
+                  <div><XMP>{{uchiwa.config}}</XMP></div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="panel panel-default" ng-repeat="datacenter in dc">
+          <div class="panel-heading">
+            {{datacenter.name}}
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="title center">Sensu Version</div>
+                <div class="number center">{{datacenter.info.sensu.version}}</div>
+              </div>
+              <div class="col-md-4">
+                <div class="title center">Connected to transport</div>
+                <div class="number center" ng-if="datacenter.info.rabbitmq">{{datacenter.info.rabbitmq.connected}}</div>
+                <div class="number center" ng-if="datacenter.info.transport">{{datacenter.info.transport.connected}}</div>
+              </div>
+              <div class="col-md-4">
+                <div class="title center">Connected to redis</div>
+                <div class="number center">{{datacenter.info.redis.connected}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

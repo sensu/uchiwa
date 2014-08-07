@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="uchiwa">
+<html lang="en" ng-app="uchiwa" ng-controller="init">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>uchiwa</title>
+  <title ng-bind="Page.title()">uchiwa</title>
 
   <!-- Customized Bootstrap -->
   <link href="css/bootstrap-uchiwa/bootstrap-uchiwa.css" rel="stylesheet">
@@ -14,8 +14,7 @@
   <!-- 3rd Party CSS -->
   <link href="bower_components/fontawesome/css/font-awesome.min.css" rel="stylesheet">
   <link href="bower_components/toastr/toastr.css" rel="stylesheet">
-  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css">
-  <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet" type="text/css">
   <link href="bower_components/morris.js/morris.css" rel="stylesheet">
 
   <!-- Uchiwa CSS -->
@@ -24,10 +23,10 @@
 
 <body ng-cloak>
 
-<div ng-controller="init">
-  <div ng-include="'partials/nav.html'"></div>
+<div>
+  <div ng-include="'partials/navbar.html'"></div>
+  <div ng-include="'partials/sidebar.html'"></div>
   <div ng-view></div>
-  <div ng-include="'partials/client/show.html'"></div>
 </div>
 
 <!-- 3rd Party JS -->
@@ -43,12 +42,18 @@
 <script src="bower_components/morris.js/morris.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="bower_components/angular-socket-io/socket.min.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 
 <!-- Uchiwa JS -->
 <script src="js/app.js"></script>
-<script src="js/services.js"></script>
-<script src="js/directives.js"></script>
-<script src="js/controllers.js"></script>
 <script src="js/constants.js"></script>
+<script src="js/controllers.js"></script>
+<script src="js/directives.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/services.js"></script>
+
+<script type="text/javascript">
+$('[data-toggle="tooltip"]').tooltip({'placement': 'bottom'});
+</script>
 </body>
 </html>

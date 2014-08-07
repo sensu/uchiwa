@@ -1,0 +1,41 @@
+@import "variables";
+
+.panel-heading {
+  font-weight: 700;
+}
+
+.panel-body {
+  padding-bottom: 10px;
+}
+
+.panel-default {
+  background-color: $panel-default-background-color;
+  color: $panel-text-color;
+  border-color: $panel-border-color;
+}
+
+.panel-default > .panel-heading {
+  background-color: $panel-default-heading-background-color;
+  color: $panel-text-color;
+  border-color: $panel-border-color;
+}
+
+.panel-blue {
+  background-color: $panel-blue-background-color;
+}
+
+.panel-critical {
+  background-color: $panel-critical-background-color;
+}
+
+.panel-warning {
+  background-color: $panel-warning-background-color;
+}
+
+.panel-success {
+  background-color: $panel-success-background-color;
+}
+
+.panel-unknown {
+  background-color: $panel-unknown-background-color;
+}

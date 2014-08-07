@@ -1,5 +1,42 @@
-.client {
-  margin-top: 10px;
-  padding-left: 7px;
-  padding-right: 7px;
+@import "variables";
+
+.client .panel {
+  margin-top: 21px;
+}
+
+.client .client-info .title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.client .panel-heading .icon {
+  font-size: 18px;
+}
+
+.client .panel-heading .icon i {
+  padding-left: 5px;
+}
+
+.client .client-info .attributes {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.client .key {
+  font-weight: bold;
+}
+
+.client .value {
+  overflow-wrap: break-word;
+}
+
+.client .check-info .title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.client .check-output {
+  text-overflow: ellipsis;
+  overflow : hidden;
+  white-space: nowrap;
 }

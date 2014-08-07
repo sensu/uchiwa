@@ -107,7 +107,6 @@ but the other settings can be set:
 
 - `UCHIWA_USER`
 - `UCHIWA_PASS`
-- `UCHIWA_STATS`
 - `UCHIWA_REFRESH`
 
 And configuring an API is done with other environment variables which are designed to fit into Docker's
@@ -153,7 +152,7 @@ You should always run `npm test` before submitting a Pull Request.
 * Contributor: [Ethan Hann][ethanhann] (<ethanhann@gmail.com>)
 
 ## License
-Apache 2.0 (see [LICENSE][license])
+MIT (see [LICENSE][license])
 
 [author]:                 https://github.com/palourde
 [license]:                https://github.com/palourde/uchiwa/blob/master/LICENSE

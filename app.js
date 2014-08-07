@@ -12,12 +12,12 @@ var yargs = require('yargs')
     .default('c', './config.json');
 var argv = yargs.argv;
 
+// Check config file
 if (!fs.existsSync(argv.c)) {
   yargs.showHelp();
   console.log('Config file must exist and be readable.');
   process.exit(1);
 }
-
 try {
   var config = require(argv.c);
 } catch (e) {
@@ -37,15 +37,23 @@ var io = require('socket.io').listen(server);
 io.set('log level', 1);
 
 var Dc = require('./lib/dc.js').Dc;
-var Stats = require('./lib/stats.js').Stats;
 var clients = {};
-var stats = {};
+
+
+/**
+ * Initialize configuration
+ */
+if (!_.isArray(config.sensu)) {
+  config.sensu = [config.sensu];
+  config.sensu[0].name = config.sensu[0].host;
+}
+var port = config.uchiwa.port || 3000;
+var host = config.uchiwa.host || '0.0.0.0';
+config.uchiwa.refresh = config.uchiwa.refresh || 10000;
 
 /**
  * App configuration
  */
-var port = config.uchiwa.port || 3000;
-var host = config.uchiwa.host || '0.0.0.0';
 app.set('port', process.env.PORT || port);
 app.set('host', process.env.HOST || host);
 app.engine('.html', require('ejs').__express);
@@ -78,36 +86,43 @@ if ('development' === process.env.NODE_ENV) {
   app.use(express.errorHandler({showStack: true, dumpExceptions: true}));
   io.set('log level', 3);
 }
+
+/* jshint ignore:start */
 app.use(function (err, req, res, next) {
   console.log(err);
   res.send(500);
 });
+/* jshint ignore:end */
 
-// Backward compatibility with uchiwa < 0.1.0
-if (!_.isArray(config.sensu)) {
-  config.sensu = [config.sensu];
-  config.sensu[0].name = config.sensu[0].host;
-}
+// Remove passwords from public config
+var publicConfig = _.clone(config);
+publicConfig.uchiwa.user = '*****';
+publicConfig.uchiwa.pass = '*****';
+_.each(publicConfig.sensu, function (element) {
+  element.user = '*****';
+  element.pass = '*****';
+});
 
 var sensu = {};
-var stats = new Stats(config.uchiwa);
 var datacenters = [];
 config.sensu.forEach(function (configuration) {
   datacenters.push(new Dc(configuration));
 });
 
 var pull = function () {
-  var i = 0;
-  sensu = {checks: [], clients: [], dc: [], events: [], stashes: []};
+  var attributes = ['checks', 'clients', 'events', 'stashes'];
+  attributes.forEach(function(attribute) {
+    sensu[attribute] = [];
+  });
+  sensu.dc = [];
+  
   async.eachSeries(datacenters, function (datacenter, nextDc) {
     datacenter.pull(function () {
         var aggregate = function (callback) {
-          var attributes = ['checks', 'clients', 'events', 'stashes'];
           async.each(attributes, function (attribute, nextAttribute) {
-            sensu[attribute][i] = [];
             async.each(datacenter.sensu[attribute], function (item, nextItem) {
               item.dc = datacenter.name;
-              sensu[attribute][i].push(item);
+              sensu[attribute].push(item);
               nextItem();
             }, function () {
               nextAttribute();
@@ -117,7 +132,6 @@ var pull = function () {
           });
         };
         aggregate(function () {
-          i++;
           datacenter.build();
           sensu.dc.push({
             name: datacenter.name,
@@ -125,7 +139,8 @@ var pull = function () {
             clients: datacenter.clients,
             events: datacenter.events,
             stashes: datacenter.stashes,
-            checks: datacenter.checks
+            checks: datacenter.checks,
+            info: datacenter.info
           });
           nextDc();
         });
@@ -137,11 +152,19 @@ var pull = function () {
       }
     );
   }, function () {
-    io.sockets.emit('sensu', {content: JSON.stringify(sensu)});
-
-    // Update stats
-    stats.getDashboard(sensu);
-    io.sockets.emit('stats', {content: JSON.stringify(stats.dashboard)});
+    sensu.subscriptions = [];
+    async.each(sensu.clients, function (client, nextClient) {
+      if(_.isObject(client.subscriptions)){
+        async.each(client.subscriptions, function (subscription, nextSubscription) {
+          if(sensu.subscriptions.indexOf(subscription) === -1) { sensu.subscriptions.push(subscription); }
+          nextSubscription();
+        });
+      }
+      nextClient();
+    }, function() {
+      io.sockets.emit('sensu', {content: JSON.stringify(sensu)});
+    });
+    
   });
 };
 
@@ -189,10 +212,6 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('get_sensu', function () {
     clients[socket.id].emit('sensu', {content: JSON.stringify(sensu)});
-  });
-
-  socket.on('get_stats', function () {
-    clients[socket.id].emit('stats', {content: JSON.stringify(stats.dashboard)});
   });
 
   socket.on('get_client', function (data) {
@@ -249,6 +268,11 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('create_stash', function (data) {
     data = JSON.parse(data);
+   
+    // Set timestamp
+    var timestamp = Math.floor(new Date()/1000);
+    data.payload.content.timestamp = timestamp;
+   
     getDc(data, function (err, result) {
       if (err) {
         clients[socket.id].emit('messenger', {content: JSON.stringify({'type': 'error', 'content': err})});
@@ -332,6 +356,10 @@ io.sockets.on('connection', function (socket) {
         });
       }
     });
+  });
+
+  socket.on('get_info', function () {
+    clients[socket.id].emit('info', {content: JSON.stringify(publicConfig)});
   });
 
 });

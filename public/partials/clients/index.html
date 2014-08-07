@@ -1,0 +1,80 @@
+<div class="container-fluid clients">
+  <div ng-include="'partials/page-header.html'"></div>
+  <div class="row-fluid">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-8">
+              <ul class="nav nav-pills nav-dc">
+                <li><a ng-class="{active: dcFilter.dc == ''}" ng-click="dcFilter = {dc: ''}">All datacenters</a></li>
+                <li ng-repeat="datacenter in dc">
+                  <a ng-class="{active: dcFilter.dc == datacenter.name}" ng-click="$parent.dcFilter = {dc: datacenter.name}">{{ datacenter.name }}</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-sm-6 col-sm-offset-6">
+                  <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" placeholder="Search" ng-model="searchText">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="nav-filter pull-right dropdown">
+                <select class="form-control subscriptions" ng-model="subscriptionsFilter" ng-change="test()">
+                  <option value="">Subscriptions</option>
+                  <option ng-repeat="subscription in subscriptions | orderBy:'toString()'" value="{{subscription}}" ng-selected="subscriptionsFilter == subscription">{{subscription}}</option>
+                </select>
+                <select class="form-control" ng-init="limit=50" ng-model="limit">
+                  <option value="50">Show 50</option>
+                  <option value="100">Show 100</option>
+                  <option value="200">Show 200</option>
+                  <option value="{{events.length}}">Show All</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <table class="table table-hover table-condensed">
+            <thead>
+              <tr>
+                <th ng-click="predicate = '-status'; reverse=!reverse"><i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'name'; reverse=!reverse">Name <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'address'; reverse=!reverse">IP <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'eventsSummary'; reverse=!reverse">Events <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'dc'; reverse=!reverse"><i class="fa fa-cloud" data-toggle="tooltip" data-placement="top" title="Datacenter" bootstrap-tooltip></i> <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'version'; reverse=!reverse"><i class="fa fa-upload" data-toggle="tooltip" data-placement="top" title="Sensu Version" bootstrap-tooltip></i> <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'lastCheck'; reverse=!reverse"><i class='fa fa-clock-o' data-toggle="tooltip" data-placement="top" title="Issued" bootstrap-tooltip></i> <i class="fa fa-sort"></i></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="client in clients | orderBy:predicate:reverse | filter:searchText | filter:dcFilter | filter:{subscriptions:subscriptionsFilter} | limitTo:limit" ng-click="go('/client/'+client.dc+'/'+client.name)">
+                <td class="well-{{ client.style }} dropdown" ng-click="toggled($event)" dropdown-toggle>
+                  <i class="fa {{client.silenceIcon}}"></i>
+                  <ul class="dropdown-menu">
+                    <li ng-repeat="choice in silenceOptions" ng-if="!client.isSilenced">
+                      <a href ng-click="stash(client.dc, client, undefined, choice.value);">{{choice.key}}</a>
+                    </li>
+                    <li ng-if="client.isSilenced">
+                      <a href ng-click="stash(client.dc, client, undefined);"><i class="fa fa-times"></i> Delete</a>
+                    </li>
+                  </ul>
+                </td>
+                <td class="main">{{ client.name }}</td>
+                <td>{{ client.address }}</td>
+                <td class="output">{{ client.eventsSummary }}</td>
+                <td>{{ client.dc }}</td>
+                <td>{{ client.version }}</td>
+                <td>{{ client.lastCheck }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

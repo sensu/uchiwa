@@ -5,22 +5,23 @@ html, html a {
 }
 
 body {
+  font-size: 13px;
   padding-left: 50px;
   background-color: $body-background-color;
   font-weight: 400;
   color: $body-text-color;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: 'Lato', sans-serif;
-  font-weight: 300;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
   color: $header-text-color;
 }
 
 hr {
-  margin-top: 5px;
-  margin-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
@@ -55,6 +56,11 @@ hr {
 .table>tbody>tr>td {
   vertical-align: middle;
 }
+
 .table .hiddenRow {
   padding: 0 !important;
+}
+
+a {
+  color: $quinary-color;
 }

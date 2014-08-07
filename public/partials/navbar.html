@@ -1,0 +1,126 @@
+<nav class="navbar" role="navigation" ng-controller="navbar">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <span class="navbar-brand" href="#"><img src="img/uchiwa.png"></span>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      
+      <ul class="nav navbar-nav navbar-right">
+        <li class="show-on-hover">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-bullhorn"></i><span class="badge badge-{{events.style}}">{{events.total}}</span>
+          </a>
+          <div class="dropdown-menu" role="menu">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel panel-body panel-top panel-{{events.style}}">
+                  <span class="total">{{events.total}}</span> 
+                  <span class="category"><ng-pluralize count="events.total" when="{'0': 'event', '1': 'event', 'other': 'events'}"></ng-pluralize></span>
+                </div>
+                <div class="panel panel-body panel-bottom panel-default">
+                  <span class="circle circle-critical"></span> Critical <span class="pull-right count">{{events.critical}}</span>
+                  <hr>
+                  <span class="circle circle-warning"></span> Warning <span class="pull-right count">{{events.warning}}</span>
+                  <hr>
+                  <span class="circle circle-unknown"></span> Unknown <span class="pull-right count">{{events.unknown}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="show-on-hover">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-hdd-o"></i><span class="badge badge-{{clients.style}}">{{clients.total}}</span>
+          </a>
+          <div class="dropdown-menu" role="menu">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel panel-body panel-top panel-{{clients.style}}">
+                  <span class="total">{{clients.total}}</span> 
+                  <span class="category"><ng-pluralize count="clients.total" when="{'0': 'client', '1': 'client', 'other': 'clients'}"></ng-pluralize></span>
+                </div>
+                <div class="panel panel-body panel-bottom panel-default">
+                  <span class="circle circle-critical"></span> Critical <span class="pull-right count">{{clients.critical}}</span>
+                  <hr>
+                  <span class="circle circle-warning"></span> Warning <span class="pull-right count">{{clients.warning}}</span>
+                  <hr>
+                  <span class="circle circle-unknown"></span> Unknown <span class="pull-right count">{{clients.unknown}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="show-on-hover">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-cloud"></i><span class="badge badge-default">{{dc.length}}</span>
+          </a>
+          <div class="dropdown-menu" role="menu">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel panel-body panel-top panel-blue">
+                  <span class="total">{{dc.length}}</span> 
+                  <span class="category"><ng-pluralize count="dc.length" when="{'0': 'datacenter', '1': 'datacenter', 'other': 'datacenters'}"></ng-pluralize></span>
+                </div>
+                <div class="panel panel-body panel-bottom panel-default">
+                  <div ng-repeat="datacenter in dc">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="dc-title">
+                          <span class="circle circle-{{datacenter.style}}"></span>
+                          {{datacenter.name}}
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <div>{{datacenter.events}}<span class="small-category"> events</span></div>
+                            <div>{{datacenter.stashes}}<span class="small-category"> stashes</span></div>
+                          </div>
+                          <div class="col-sm-6">
+                            <div class="pull-right">{{datacenter.clients}}<span class="small-category"> clients</span></div>
+                            <div class="pull-right">{{datacenter.checks}}<span class="small-category"> checks</span></div>
+                          </div>
+                        </div>                        
+                      </div>
+                    </div>
+                    <hr ng-if="dc.length != ($index + 1)">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="show-on-hover">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-check-square"></i><span class="badge badge-default">{{checks.length}}</span>
+          </a>
+          <div class="dropdown-menu" role="menu">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel panel-body panel-top panel-blue">
+                  <span class="total">{{checks.length}}</span> 
+                  <span class="category"><ng-pluralize count="checks.length" when="{'0': 'check', '1': 'check', 'other': 'checks'}"></ng-pluralize></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="show-on-hover">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-database"></i><span class="badge badge-default">{{stashes.length}}</span>
+          </a>
+          <div class="dropdown-menu" role="menu">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel panel-body panel-top panel-blue">
+                  <span class="total">{{stashes.length}}</span> 
+                  <span class="category"><ng-pluralize count="stashes.length" when="{'0': 'stash', '1': 'stash', 'other': 'stashes'}"></ng-pluralize></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>

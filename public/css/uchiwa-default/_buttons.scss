@@ -1,53 +1,32 @@
 @import "variables";
 
-.critical {
-  color: $button-danger-text-color;
+.btn {
+  font-family: 'Roboto', sans-serif;
 }
 
-.warning {
-  color: $button-warning-text-color;
+.circle-critical {
+  background-color: $button-critical-background-color;
 }
 
-.success {
-  color: $button-success-text-color;
+.circle-warning {
+  background-color: $button-warning-background-color;
 }
 
-.unknown {
-  color: $button-unknown-text-color;
+.circle-success {
+  background-color: $button-success-background-color;
 }
 
-.blue {
-  color: $blue-text-color;
-  border-color: $blue-border-color;
+.circle-unknown {
+  background-color: $button-unknown-background-color;
 }
 
-.btn-circle {
-  width: 25px;
-  height: 25px;
-  text-align: center;
+.circle {
+  width: 10px;
+  height: 10px;
   padding: 0 0 0 0;
   font-size: 15px;
-  background-color: $button-circle-background-color;
   border-radius: 50%;
-  border-width: 2px;
   outline:none!important;
   margin-right: 7px;
-}
-
-.btn-circle:hover {
-  color: $button-circle-hover-text-color;
-}
-
-.btn-hover {
-  font-weight: normal;
-  color: $button-hover-text-color;
-  cursor: pointer;
-  background-color: inherit;
-  border-color: transparent;
-  width: 40%;
-}
-
-.btn-disabled, .btn-disabled:hover {
-  color: $button-disabled-text-color;
-  width: 40%;
+  display: inline-block;
 }

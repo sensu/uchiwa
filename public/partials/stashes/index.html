@@ -1,0 +1,62 @@
+<div class="container-fluid stashes">
+  <div ng-include="'partials/page-header.html'"></div>
+  <div class="row-fluid">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-10">
+              <ul class="nav nav-pills nav-dc">
+                <li><a ng-class="{active: dcFilter.dc == ''}" ng-click="dcFilter = {dc: ''}">All datacenters</a></li>
+                <li ng-repeat="datacenter in dc">
+                  <a ng-class="{active: dcFilter.dc == datacenter.name}" ng-click="$parent.dcFilter = {dc: datacenter.name}">{{ datacenter.name }}</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-2">
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="Search" ng-model="searchText">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+              <div class="nav-filter pull-right dropdown">
+                <select class="form-control" ng-init="limit=50" ng-model="limit">
+                  <option value="50">Show 50</option>
+                  <option value="100">Show 100</option>
+                  <option value="200">Show 200</option>
+                  <option value="{{stashes.length}}">Show All</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <table class="table table-hover table-condensed">
+            <thead>
+              <tr>
+                <th></th>
+                <th ng-click="predicate = 'name'; reverse=!reverse">Name <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'check'; reverse=!reverse">Check <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'content'; reverse=!reverse">Content <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'dc'; reverse=!reverse"><i class="fa fa-cloud" data-toggle="tooltip" data-placement="top" title="Datacenter" bootstrap-tooltip></i> <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'expire'; reverse=!reverse"><i class='fa fa-calendar-o' data-toggle="tooltip" data-placement="top" title="Expire" bootstrap-tooltip></i> <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'timestampParsed'; reverse=!reverse"><i class='fa fa-clock-o' data-toggle="tooltip" data-placement="top" title="Timestamp" bootstrap-tooltip></i> <i class="fa fa-sort"></i></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="stash in stashes | orderBy:predicate:reverse | filter:searchText | filter:dcFilter | limitTo:limit">
+                <td><i class="fa fa-times" ng-click="deleteStash(stash.dc, stash, $index);"></i></td>
+                <td class="main">{{ stash.client }}</td>
+                <td>{{ stash.check }}</td>
+                <td>{{ stash.content }}</td>
+                <td>{{ stash.dc }}</td>
+                <td>{{ stash.expireParsed }}</td>
+                <td>{{ stash.timestampParsed }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
