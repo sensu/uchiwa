@@ -95,7 +95,7 @@ app.use(function (err, req, res, next) {
 /* jshint ignore:end */
 
 // Remove passwords from public config
-var publicConfig = _.clone(config);
+var publicConfig = JSON.parse(JSON.stringify(config));
 publicConfig.uchiwa.user = '*****';
 publicConfig.uchiwa.pass = '*****';
 _.each(publicConfig.sensu, function (element) {
