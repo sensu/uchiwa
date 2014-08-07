@@ -1,6 +1,14 @@
+### 0.2.1 (2014-08-07)
+
+#### Features
+- Navbar icon now links to related page
+
+#### Bug Fixes
+- Perform a deep clone for public config display (Issue #78)
+
 ### 0.2.0 (2014-08-07)
 
-####Features
+#### Features
 - New user interface! (Issue #55)
 - Temporarily silence an element
 - Filter and order by attributes
