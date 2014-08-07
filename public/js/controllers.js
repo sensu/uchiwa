@@ -287,8 +287,11 @@ controllerModule.controller('info', ['$scope', 'socket', 'version', 'Page',
 /**
  * Navbar
  */
-controllerModule.controller('navbar', ['$scope',
-  function ($scope) {
+controllerModule.controller('navbar', ['$scope', 'routingService',
+  function ($scope, routingService) {
+
+    // Services
+    $scope.go = routingService.go;
 
     // Socket.IO
     $scope.$on('socket:sensu', function (event, data) {
