@@ -352,6 +352,27 @@ controllerModule.controller('settings', ['$cookies', '$scope', 'Page',
 ]);
 
 /**
+ * Sidebar
+ */
+controllerModule.controller('sidebar', ['$scope', '$location',
+  function ($scope, $location) {
+    $scope.getClass = function(path) {
+      console.log($location.path());
+      if (path === '/') {
+        if ($location.path() === path) {
+          return 'selected';
+        }ù
+      }
+      else if ($location.path().substr(0, path.length) === path) {
+        return 'selected';
+      } else {
+        return '';
+      }
+    }
+  }
+]);
+
+/**
  * Stashes
  */
 controllerModule.controller('stashes', ['$scope', 'socket', 'stashesService', 'Page',

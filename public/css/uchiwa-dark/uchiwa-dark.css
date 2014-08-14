@@ -540,8 +540,8 @@ a {
   border-left: 3px solid #5f97fb; }
 
 .sidebar .sidebar-nav > .selected > a {
-  color: #22222d;
-  background-color: #2c2c39;
+  color: #2c2c39;
+  background-color: #22222d;
   border-left: 3px solid #2c2c39; }
 
 .sidebar .sidebar-nav > li > a > span {

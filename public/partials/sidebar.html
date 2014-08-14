@@ -1,47 +1,45 @@
-<div class="sidebar" role="navigation">
+<div class="sidebar" role="navigation" ng-controller="sidebar">
   <div class="container">
     <div class="">
       <ul class="nav sidebar-nav">
-        <li class="logo">
-          
-        </li>
-        <li id="dashboard">
+        <li class="logo"></li>
+        <li id="dashboard" ng-class="getClass('/')">
           <a ng-href="#">
               <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Events" bootstrap-tooltip>
                 <i class="fa fa-bullhorn"></i>
               </span>
           </a>
         </li>
-        <li id="clients">
+        <li id="clients" ng-class="getClass('/clients')">
           <a ng-href="#clients">
               <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Clients" bootstrap-tooltip>
                 <i class="fa fa-hdd-o"></i>
               </span>
           </a>
         </li>
-        <li id="checks">
+        <li id="checks" ng-class="getClass('/checks')">
           <a ng-href="#checks">
               <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Checks" bootstrap-tooltip>
                 <i class="fa fa-check-square"></i>
               </span>
           </a>
         </li>
-        <li id="stashes">
+        <li id="stashes" ng-class="getClass('/stashes')">
           <a ng-href="#stashes">
               <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Stashes" bootstrap-tooltip>
                 <i class="fa fa-database"></i>
               </span>
           </a>
         </li>
-        <li id="info">
+        <li id="info" ng-class="getClass('/info')">
           <a ng-href="#info">
               <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Info" bootstrap-tooltip>
                 <i class="fa fa-info-circle"></i>
               </span>
           </a>
         </li>
-        <li id="settings">
-          <a ng-href="#settings">
+        <li id="settings" ng-class="getClass('/settings')">
+          <a ng-href="#settings" >
               <span class="small-nav" data-toggle="tooltip" data-placement="right" title="Settings" bootstrap-tooltip>
                 <i class="fa fa-gear"></i>
               </span>
