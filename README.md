@@ -4,7 +4,7 @@
 
 The dashboard is under active development, and major changes are not uncommon.
 
-[![Code Climate](https://codeclimate.com/github/palourde/uchiwa.png)](https://codeclimate.com/github/palourde/uchiwa)
+[![Build Status](https://travis-ci.org/sensu/uchiwa.svg?branch=master)](https://travis-ci.org/sensu/uchiwa) [![Code Climate](https://codeclimate.com/github/palourde/uchiwa.png)](https://codeclimate.com/github/palourde/uchiwa) 
 
 ## Features
 
