@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "bower --allow-root install",
-    "test": "grunt default",
+    "test": "karma start test/karma.conf.js",
     "preupdate-webdriver": "npm install",
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
