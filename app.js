@@ -198,7 +198,7 @@ var getDc = function (data, callback) {
 /**
  * Listen for Socket.IO messages
  */
-io.sockets.on('connection', function (socket) {
+io.on('connection', function (socket) {
   // Keep track of active clients
   clients[socket.id] = socket;
 
