@@ -33,9 +33,7 @@ var express = require('express'),
   app = express(),
   server = http.createServer(app);
 
-var io = require('socket.io').listen(server);
-io.set('log level', 1);
-
+var io = require('socket.io')(server);
 var Dc = require('./lib/dc.js').Dc;
 var clients = {};
 
@@ -79,12 +77,11 @@ if (config.uchiwa.user && config.uchiwa.pass) {
 
 /**
  * Error handling
- * NODE_ENV=development node app.js
+ * DEBUG=* NODE_ENV=development node app.js
  */
 if ('development' === process.env.NODE_ENV) {
   console.log('Debugging enabled.');
   app.use(express.errorHandler({showStack: true, dumpExceptions: true}));
-  io.set('log level', 3);
 }
 
 /* jshint ignore:start */
@@ -146,7 +143,7 @@ var pull = function () {
         });
       },
       function (messageContent) {
-        io.sockets.emit('messenger', {
+        io.emit('messenger', {
           content: messageContent
         });
       }
@@ -162,7 +159,7 @@ var pull = function () {
       }
       nextClient();
     }, function() {
-      io.sockets.emit('sensu', {content: JSON.stringify(sensu)});
+      io.emit('sensu', {content: JSON.stringify(sensu)});
     });
     
   });
@@ -201,7 +198,7 @@ var getDc = function (data, callback) {
 /**
  * Listen for Socket.IO messages
  */
-io.sockets.on('connection', function (socket) {
+io.on('connection', function (socket) {
   // Keep track of active clients
   clients[socket.id] = socket;
 

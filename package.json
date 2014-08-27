@@ -19,7 +19,7 @@
     "ejs": "0.8.*",
     "express": "3.4.*",
     "moment": "2.5.*",
-    "socket.io": "0.9.*",
+    "socket.io": "1.0.*",
     "underscore": "1.6.*",
     "yargs": "1.2.*"
   },
