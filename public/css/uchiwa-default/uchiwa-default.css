@@ -318,7 +318,9 @@ a {
 .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus, li > a.active {
   color: #4d4d4d;
   background-color: inherit;
-  border-bottom: 3px solid #5f97fb; }
+  border-bottom: 3px solid #5f97fb; 
+  margin-bottom: -3px;
+  z-index: 10; }
 
 /* Colors */
 /* Body, Sections and Headers */
