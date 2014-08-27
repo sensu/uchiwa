@@ -320,7 +320,7 @@ a {
   background-color: inherit;
   border-bottom: 3px solid #5f97fb; 
   margin-bottom: -3px;
-  z-index: :10; }
+  z-index: 10; }
 
 /* Colors */
 /* Body, Sections and Headers */
