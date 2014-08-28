@@ -18,3 +18,16 @@ filterModule.filter('displayObject', function() {
     }
   };
 });
+
+filterModule.filter('filterSubscriptions', function() {
+  return function(object, query) {
+    if(query === '' || !object) {
+      return object;
+    }
+    else {
+      return object.filter(function (item) {
+        return item.subscriptions.indexOf(query) > -1;
+      });
+    }
+  };
+});
