@@ -1,12 +1,11 @@
 'use strict';
 
 describe('directives', function() {
-  var scope, element;
+  var scope;
+  var element;
 
-  beforeEach(module('ngCookies'));
-  beforeEach(module('uchiwa.constants'));
-  beforeEach(module('uchiwa.directives'));
-  beforeEach(inject(function($rootScope) {
+  beforeEach(module('uchiwa'));
+  beforeEach(inject(function() {
     scope = jasmine.createSpyObj('scope', ['$on']);
     element = jasmine.createSpyObj('element', ['tooltip', 'attr']);
   }));
@@ -17,11 +16,11 @@ describe('directives', function() {
       expect(bootstrapTooltipDirective[0].restrict).toBe('EA');
     }));
 
-    it('should define link()', inject(function(bootstrapTooltipDirective) {
+    it('should have a link method', inject(function(bootstrapTooltipDirective) {
       expect(bootstrapTooltipDirective[0].link).toBeDefined();
     }));
 
-    it('should call element.tooltip() on link()', inject(function(bootstrapTooltipDirective) {
+    it('should call element.tooltip() when calling link', inject(function(bootstrapTooltipDirective) {
       bootstrapTooltipDirective[0].link({}, element);
       expect(element.tooltip).toHaveBeenCalled();
     }));
@@ -34,17 +33,19 @@ describe('directives', function() {
       expect(siteThemeDirective[0].restrict).toBe('EA');
     }));
 
-    it('should define link()', inject(function(siteThemeDirective) {
+    it('should have a link method', inject(function(siteThemeDirective) {
       expect(siteThemeDirective[0].link).toBeDefined();
     }));
 
-    it('should create themes property on link()', inject(function(siteThemeDirective) {
+    it('should define themes', inject(function(siteThemeDirective) {
       siteThemeDirective[0].link(scope, element);
-
       expect(scope.themes).toBeDefined();
       expect(scope.themes.length).toBeGreaterThan(0);
-      expect(scope.$on).toHaveBeenCalledWith('theme:changed', jasmine.any(Function));
     }));
 
+    it('should listen for theme:changed event', inject(function(siteThemeDirective) {
+      siteThemeDirective[0].link(scope, element);
+      expect(scope.$on).toHaveBeenCalledWith('theme:changed', jasmine.any(Function));
+    }));
   });
 });
