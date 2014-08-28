@@ -142,10 +142,11 @@ Everyone is welcome to submit patches. Whether your pull request is a bug fix or
 You should always run `npm test` before submitting a Pull Request.
 
 #### E2E testing
-1. Clone (this)[https://github.com/palourde/uchiwa-sensu] cookbook (`git clone git@github.com:palourde/uchiwa-sensu.git`)
+1. Clone [this](https://github.com/palourde/uchiwa-sensu) cookbook (`git clone git@github.com:palourde/uchiwa-sensu.git`)
 2. Boot the virtual machines (`vagrant up`)
 3. Copy the configuration file (**config.json**) found on the uchiwa-sensu repo into the uchiwa repo
-4. Run E2E tests (`npm run protractor`)
+4. Install all dependencies (`npm install`)
+5. Run E2E tests (`npm run protractor`)
 
 ## Authors
 * Author: [Simon Plourde][author] (<simon.plourde@gmail.com>)
