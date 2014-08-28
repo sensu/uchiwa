@@ -7,15 +7,18 @@ describe('Controller', function () {
   var mockNotification;
   var socket;
   var mockStashesService;
+  var mockRoutingService;
 
   beforeEach(module('uchiwa'));
 
   beforeEach(function () {
     mockNotification = jasmine.createSpy('mockNotification');
     mockStashesService = jasmine.createSpyObj('mockStashesService', ['stash']);
+    mockRoutingService = jasmine.createSpyObj('mockRoutingService', ['search', 'go']);
     module(function ($provide) {
       $provide.value('notification', mockNotification);
       $provide.value('stashesService', mockStashesService);
+      $provide.value('routingService', mockRoutingService);
     });
   });
 
@@ -23,10 +26,10 @@ describe('Controller', function () {
     $rootScope = _$rootScope_;
     $scope = $rootScope.$new();
     socket = _socket_;
-    createController = function (controllerName) {
-      return $controller(controllerName, {
+    createController = function (controllerName, properties) {
+      return $controller(controllerName, _.extend({
         '$scope': $scope
-      });
+      }, properties));
     };
   }));
 
@@ -54,6 +57,34 @@ describe('Controller', function () {
 
       expect(mockNotification).toHaveBeenCalledWith(expectedType, expectedMessage);
     });
+  });
+
+  describe('checks', function() {
+    var controllerName = 'checks';
+
+    it('should have a subscribersSummary method', function() {
+      createController(controllerName);
+      expect($scope.subscribersSummary).toBeDefined();
+    });
+
+    it('should listen for socket:sensu event', function() {
+      spyOn($scope, '$on').andCallThrough();
+      createController(controllerName);
+      expect($scope.$on).toHaveBeenCalledWith('socket:sensu', jasmine.any(Function));
+    });
+
+    describe('subscribersSummary()', function() {
+
+      it('should join strings', function() {
+        var mockArray = ['test', 'a', 'b', 'c'];
+        var mockString = 'test a b c ';
+        createController(controllerName);
+
+        expect($scope.subscribersSummary(mockArray)).toBe(mockString);
+      });
+
+    });
+
   });
 
   describe('client', function() {
@@ -102,7 +133,20 @@ describe('Controller', function () {
       createController(controllerName);
       expect($scope.stash).toBeDefined();
     });
+    it('should have a test method', function() {
+      createController(controllerName);
+      expect($scope.test).toBeDefined();
+    });
 
+    describe('test()', function() {
+
+      it('should call routing service search method', function() {
+        createController(controllerName);
+        $scope.test();
+        expect(mockRoutingService.search).toHaveBeenCalled();
+      });
+
+    })
   });
 
   describe('events', function () {
@@ -193,8 +237,8 @@ describe('Controller', function () {
       expect($scope.events.warning).toEqual(expectedWarningEvents);
       expect($scope.events.unknown).toEqual(expectedUnknownEvents);
       expect($scope.events.total).toEqual(expectedTotalEvents);
-	    expect($scope.clients.style).toEqual(expectedClientsStyle);
-	    expect($scope.events.style).toEqual(expectedEventsStyle);
+      expect($scope.clients.style).toEqual(expectedClientsStyle);
+      expect($scope.events.style).toEqual(expectedEventsStyle);
     });
 
     it('should count unknown events and clients status on socket:sensu', function () {
@@ -248,6 +292,32 @@ describe('Controller', function () {
       expect($scope.clients.style).toEqual(expectedClientsStyle);
       expect($scope.events.style).toEqual(expectedEventsStyle);
     });
+  });
+
+  describe('sidebar', function() {
+    var controllerName = 'sidebar';
+
+    it('should have a getClass method', function() {
+      createController(controllerName);
+      expect($scope.getClass).toBeDefined();
+    });
+
+    describe('getClass()', function() {
+
+      it('should return selected if path matches location', function() {
+        createController(controllerName, {
+          '$location': {
+            path: function() {
+              return 'events#some-anchor';
+            }
+          }
+        });
+        expect($scope.getClass('events')).toBe('selected');
+        expect($scope.getClass('clients')).toBe('');
+      });
+
+    });
+
   });
 
   describe('stashes', function () {
