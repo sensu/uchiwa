@@ -30,13 +30,13 @@ var express = require('express'),
   path = require('path'),
   async = require('async'),
   _ = require('underscore'),
+  moment = require('moment'),
   app = express(),
   server = http.createServer(app);
 
 var io = require('socket.io')(server);
 var Dc = require('./lib/dc.js').Dc;
 var clients = {};
-
 
 /**
  * Initialize configuration
@@ -48,6 +48,9 @@ if (!_.isArray(config.sensu)) {
 var port = config.uchiwa.port || 3000;
 var host = config.uchiwa.host || '0.0.0.0';
 config.uchiwa.refresh = config.uchiwa.refresh || 10000;
+
+var dateFormat = config.uchiwa.dateFormat || 'YYYY[-]MM[-]DD HH[:]mm[:]ss';
+moment.defaultFormat = dateFormat;
 
 /**
  * App configuration

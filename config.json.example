@@ -26,6 +26,7 @@
     "port": 3000,
     "user": "admin",
     "pass": "secret",
-    "refresh": 10000
+    "refresh": 10000,
+    "dateFormat": "MM/DD/YYYY HH:mm:ss"
   }
 }
