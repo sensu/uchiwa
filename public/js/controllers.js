@@ -35,11 +35,7 @@ controllerModule.controller('checks', ['$scope', 'Page',
 
     // Helpers
     $scope.subscribersSummary = function(subscribers){
-      var summary = '';
-      angular.forEach(subscribers, function(value){
-        summary += value + ' ';
-      });
-      return summary;
+      return subscribers.join(' ');
     };
 
     // Socket.IO

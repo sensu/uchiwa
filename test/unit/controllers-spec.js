@@ -77,7 +77,7 @@ describe('Controller', function () {
 
       it('should join strings', function() {
         var mockArray = ['test', 'a', 'b', 'c'];
-        var mockString = 'test a b c ';
+        var mockString = 'test a b c';
         createController(controllerName);
 
         expect($scope.subscribersSummary(mockArray)).toBe(mockString);
