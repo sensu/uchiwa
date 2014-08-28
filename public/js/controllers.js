@@ -362,7 +362,7 @@ controllerModule.controller('sidebar', ['$scope', '$location',
       } else {
         return '';
       }
-    }
+    };
   }
 ]);
 
