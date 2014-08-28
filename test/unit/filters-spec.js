@@ -21,4 +21,13 @@ describe('filters', function() {
     }));
     
   });
+
+  describe('filterSubscriptions', function() {
+
+    it('should filter subscriptions', inject(function(filterSubscriptionsFilter) {
+      expect(filterSubscriptionsFilter([{name: 'test1', subscriptions: []}, {name: 'test2', subscriptions: ['linux']}], 'linux')).toEqual([{name: 'test2', subscriptions: ['linux']}]);
+      expect(filterSubscriptionsFilter([{name: 'test1', subscriptions: []}, {name: 'test2', subscriptions: ['linux']}], '')).toEqual([{name: 'test1', subscriptions: []}, {name: 'test2', subscriptions: ['linux']}]);
+    }));
+    
+  });
 });

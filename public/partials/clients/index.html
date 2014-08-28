@@ -52,7 +52,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="client in clients | orderBy:predicate:reverse | filter:searchText | filter:dcFilter | filter:{subscriptions:subscriptionsFilter} | limitTo:limit" ng-click="go('/client/'+client.dc+'/'+client.name)">
+              <tr ng-repeat="client in clients | orderBy:predicate:reverse | filter:searchText | filter:dcFilter | filterSubscriptions:subscriptionsFilter | limitTo:limit" ng-click="go('/client/'+client.dc+'/'+client.name)">
                 <td class="well-{{ client.style }} dropdown" ng-click="toggled($event)" dropdown-toggle>
                   <i class="fa {{client.silenceIcon}}"></i>
                   <ul class="dropdown-menu">
