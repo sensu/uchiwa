@@ -6,8 +6,8 @@ describe('directives', function() {
 
   beforeEach(module('uchiwa'));
   beforeEach(inject(function() {
-    scope = jasmine.createSpyObj('scope', ['$on']);
-    element = jasmine.createSpyObj('element', ['tooltip', 'attr']);
+    scope = jasmine.createSpyObj('scope', ['$on', '$watch']);
+    element = jasmine.createSpyObj('element', ['tooltip', 'attr', 'removeAttr', 'addClass']);
   }));
 
   describe('bootstrapTooltip', function() {
@@ -21,7 +21,7 @@ describe('directives', function() {
     }));
 
     it('should call element.tooltip() when calling link', inject(function(bootstrapTooltipDirective) {
-      bootstrapTooltipDirective[0].link({}, element);
+      bootstrapTooltipDirective[0].link(scope, element);
       expect(element.tooltip).toHaveBeenCalled();
     }));
 
@@ -48,4 +48,26 @@ describe('directives', function() {
       expect(scope.$on).toHaveBeenCalledWith('theme:changed', jasmine.any(Function));
     }));
   });
+
+  describe('statusGlyph', function() {
+
+    it('should be restricted to elements and attributes', inject(function(statusGlyphDirective) {
+      expect(statusGlyphDirective[0].restrict).toBe('EA');
+    }));
+
+    it('should have a link method', inject(function(statusGlyphDirective) {
+      expect(statusGlyphDirective[0].link).toBeDefined();
+    }));
+
+    it('should add classes when calling link', inject(function(statusGlyphDirective) {
+      var attrs = {
+        statusGlyph: 'client.style'
+      };
+      statusGlyphDirective[0].link(scope, element, attrs);
+
+      expect(scope.$watch).toHaveBeenCalledWith(attrs.statusGlyph, jasmine.any(Function));
+    }));
+
+  });
+
 });
