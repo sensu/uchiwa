@@ -67,7 +67,7 @@ directiveModule.directive('statusGlyph', function() {
             element.addClass('fa-question-circle');
             break;
         }
-        element.addClass('text-' + value);
+        element.addClass('text-' + style);
       }
 
       scope.$watch(attrs.statusGlyph, function(value) {
