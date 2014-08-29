@@ -54,4 +54,6 @@
   color: $nav-text-color;
   background-color: inherit;
   border-bottom: 3px solid $quinary-color;
+  margin-bottom: -3px;
+  z-index: 10;
 }
