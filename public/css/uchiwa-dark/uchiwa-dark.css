@@ -200,7 +200,8 @@ a {
   font-weight: bold; }
 
 .client .value {
-  overflow-wrap: break-word; }
+  overflow-wrap: break-word; 
+  white-space: pre-line; }
 
 .client .check-info .title {
   font-size: 14px;
