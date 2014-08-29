@@ -26,15 +26,15 @@ html, html a {
 body {
   font-size: 13px;
   padding-left: 50px;
-  background-color: #2c2c39;
+  background-color: #2C2C39;
   font-weight: 400;
-  color: white;
+  color: #FFFFFF;
   font-family: 'Roboto', sans-serif; }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
-  color: white; }
+  color: #FFFFFF; }
 
 hr {
   margin-top: 20px;
@@ -46,7 +46,7 @@ hr {
 .section-header {
   font-size: 23px;
   font-weight: 300;
-  border-bottom: 1px solid white; }
+  border-bottom: 1px solid #FFFFFF; }
 
 .text-muted {
   text-transform: uppercase;
@@ -70,7 +70,7 @@ hr {
   padding: 0 !important; }
 
 a {
-  color: #5f97fb; }
+  color: #5F97FB; }
 
 /* Colors */
 /* Body, Sections and Headers */
@@ -93,19 +93,19 @@ a {
   padding: 2px 5px; }
 
 .badge-critical {
-  background-color: #ea5443; }
+  background-color: #EA5443; }
 
 .badge-warning {
-  background-color: #f9ba46; }
+  background-color: #F9BA46; }
 
 .badge-success {
   background-color: #43ac6a; }
 
 .badge-unknown {
-  background-color: #9c9990; }
+  background-color: #9C9990; }
 
 .badge-default {
-  background-color: #22222d; }
+  background-color: #22222D; }
 
 /* Colors */
 /* Body, Sections and Headers */
@@ -128,7 +128,7 @@ a {
   margin-bottom: 0px; }
 
 .breadcrumb > .active {
-  color: white; }
+  color: #FFFFFF; }
 
 /* Colors */
 /* Body, Sections and Headers */
@@ -146,16 +146,16 @@ a {
   font-family: 'Roboto', sans-serif; }
 
 .circle-critical {
-  background-color: #ea5443; }
+  background-color: #EA5443; }
 
 .circle-warning {
-  background-color: #f9ba46; }
+  background-color: #F9BA46; }
 
 .circle-success {
   background-color: #43ac6a; }
 
 .circle-unknown {
-  background-color: #9c9990; }
+  background-color: #9C9990; }
 
 .circle {
   width: 10px;
@@ -200,7 +200,7 @@ a {
   font-weight: bold; }
 
 .client .value {
-  overflow-wrap: break-word; 
+  overflow-wrap: break-word;
   white-space: pre-line; }
 
 .client .check-info .title {
@@ -225,11 +225,11 @@ a {
 /* Timestamp */
 /* Wells */
 .dropdown-menu {
-  background-color: #2c2c39;
-  color: white; }
+  background-color: #2C2C39;
+  color: #FFFFFF; }
 
 .dropdown-menu > li > a {
-  color: white;
+  color: #FFFFFF;
   padding: 3px 20px; }
 
 .dropdown-menu.left {
@@ -273,7 +273,7 @@ a {
   font-weight: 700;
   font-size: 12px;
   text-transform: uppercase;
-  color: #5f97fb; }
+  color: #5F97FB; }
 
 /* Colors */
 /* Body, Sections and Headers */
@@ -302,12 +302,12 @@ a {
   display: block; }
 
 .nav > li > a {
-  color: white;
+  color: #FFFFFF;
   font-size: 13px;
   font-weight: 400; }
 
 .nav > li > a:hover, .nav > li > a:focus {
-  background-color: #2f2f2f; }
+  background-color: #2F2F2F; }
 
 .nav-filter {
   padding-top: 15px; }
@@ -327,11 +327,9 @@ a {
   text-transform: uppercase; }
 
 .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus, li > a.active {
-  color: white;
+  color: #FFFFFF;
   background-color: inherit;
-  border-bottom: 3px solid #5f97fb; 
-  margin-bottom: -3px;
-  z-index: 10; }
+  border-bottom: 3px solid #5F97FB; }
 
 /* Colors */
 /* Body, Sections and Headers */
@@ -346,7 +344,7 @@ a {
 /* Timestamp */
 /* Wells */
 .navbar {
-  color: white;
+  color: #FFFFFF;
   height: 61px;
   background-color: #4d4d64;
   margin-bottom: 0px;
@@ -361,7 +359,7 @@ a {
 
 .navbar .nav > li > a {
   font-size: 28px;
-  color: white;
+  color: #FFFFFF;
   background-color: #4d4d64; }
 
 .navbar .nav > li > a:hover, .navbar .nav > li > a:focus {
@@ -382,7 +380,7 @@ a {
   padding-bottom: 15px; }
 
 .navbar .panel.panel-top {
-  color: white;
+  color: #FFFFFF;
   text-align: center;
   font-weight: 700; }
 
@@ -427,28 +425,28 @@ a {
 
 .panel-default {
   background-color: #424256;
-  color: white;
+  color: #FFFFFF;
   border-color: #21212b; }
 
 .panel-default > .panel-heading {
   background-color: #373747;
-  color: white;
+  color: #FFFFFF;
   border-color: #21212b; }
 
 .panel-blue {
-  background-color: #22222d; }
+  background-color: #22222D; }
 
 .panel-critical {
-  background-color: #ea5443; }
+  background-color: #EA5443; }
 
 .panel-warning {
-  background-color: #f9ba46; }
+  background-color: #F9BA46; }
 
 .panel-success {
   background-color: #43ac6a; }
 
 .panel-unknown {
-  background-color: #9c9990; }
+  background-color: #9C9990; }
 
 /* Colors */
 /* Body, Sections and Headers */
@@ -463,11 +461,11 @@ a {
 /* Timestamp */
 /* Wells */
 .sidebar {
-  background-color: #22222d; }
+  background-color: #22222D; }
 
 .nav > .logo {
-  background-color: #5f97fb;
-  border-left: 3px #5f97fb;
+  background-color: #5F97FB;
+  border-left: 3px #5F97FB;
   display: block;
   padding-left: 16px;
   padding-right: 15px;
@@ -533,19 +531,19 @@ a {
   margin: 0px; }
 
 .sidebar .sidebar-nav > li > a {
-  color: white;
+  color: #FFFFFF;
   padding: 0px;
-  border-left: 3px solid #22222d; }
+  border-left: 3px solid #22222D; }
 
 .sidebar .sidebar-nav > li > a:hover {
-  color: white;
-  background-color: #22222d;
-  border-left: 3px solid #5f97fb; }
+  color: #FFFFFF;
+  background-color: #22222D;
+  border-left: 3px solid #5F97FB; }
 
 .sidebar .sidebar-nav > .selected > a {
-  color: #2c2c39;
-  background-color: #22222d;
-  border-left: 3px solid #2c2c39; }
+  color: #2C2C39;
+  background-color: #22222D;
+  border-left: 3px solid #2C2C39; }
 
 .sidebar .sidebar-nav > li > a > span {
   display: block;
@@ -556,13 +554,13 @@ a {
 .sidebar .tooltip .tooltip-inner {
   max-width: auto;
   white-space: nowrap;
-  color: #2c2c39; }
+  color: #2C2C39; }
 
 .sidebar .tooltip .tooltip-inner {
-  background-color: #5f97fb; }
+  background-color: #5F97FB; }
 
 .tooltip.right .tooltip-arrow {
-  border-right: 5px solid #5f97fb; }
+  border-right: 5px solid #5F97FB; }
 
 /* Colors */
 /* Body, Sections and Headers */
@@ -631,32 +629,34 @@ a {
 .well {
   border: 0px;
   margin-bottom: 5px;
-  background-color: #22222d; }
+  background-color: #22222D; }
 
 .well-success {
   border-left: 3px solid #43ac6a; }
 
 .well-warning {
-  border-left: 3px solid #f9ba46; }
+  border-left: 3px solid #F9BA46; }
 
 .well-critical {
-  border-left: 3px solid #ea5443; }
+  border-left: 3px solid #EA5443; }
 
 .well-unknown {
-  border-left: 3px solid #9c9990; }
+  border-left: 3px solid #9C9990; }
 
 .well-default {
-  border-left: 3px solid #22222d; }
+  border-left: 3px solid #22222D; }
 
 .well .lead {
   margin-bottom: 5px;
   font-weight: 400;
   text-transform: uppercase;
-  color: white;
+  color: #FFFFFF;
   font-size: 18px; }
 
 .well span {
   display: block; }
 
 .well:hover {
-  background-color: #2f2f2f; }
+  background-color: #2F2F2F; }
+
+/*# sourceMappingURL=uchiwa-dark.css.map */
