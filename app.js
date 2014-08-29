@@ -36,6 +36,7 @@ var express = require('express'),
 
 var io = require('socket.io')(server);
 var Dc = require('./lib/dc.js').Dc;
+var Messenger = require('./lib/messenger.js').Messenger;
 var clients = {};
 
 /**
@@ -105,6 +106,8 @@ _.each(publicConfig.sensu, function (element) {
 
 var sensu = {};
 var datacenters = [];
+var messenger = new Messenger();
+
 config.sensu.forEach(function (configuration) {
   datacenters.push(new Dc(configuration));
 });
@@ -175,23 +178,23 @@ pull();
 // Return DC object and check client if any specified
 var getDc = function (data, callback) {
   if (datacenters.length === 0) {
-    return callback('<strong>Error!</strong> No datacenters found.');
+    return callback('No datacenters found.');
   }
   var dc = datacenters.filter(function (e) {
     return e.name === data.dc;
   });
   if (dc.length !== 1) {
-    return callback('<strong>Error!</strong> The datacenter ' + data.dc + ' was not found.');
+    return callback('The datacenter ' + data.dc + ' was not found.');
   }
   if (_.has(data, 'client')) {
     if (dc[0].sensu.clients.length === 0) {
-      return callback('<strong>Error!</strong> No clients found.');
+      return callback('No clients found.');
     }
     var client = dc[0].sensu.clients.filter(function (e) {
       return e.name === data.client;
     });
     if (client.length !== 1) {
-      return callback('<strong>Error!</strong> The client ' + data.client + ' was not found.');
+      return callback('The client ' + data.client + ' was not found.');
     }
   }
   callback(null, dc[0]);
@@ -211,27 +214,17 @@ io.on('connection', function (socket) {
   });
 
   socket.on('get_sensu', function () {
-    clients[socket.id].emit('sensu', {content: JSON.stringify(sensu)});
+    messenger.post(clients[socket.id], false, sensu, 'sensu');
   });
 
   socket.on('get_client', function (data) {
     getDc(data, function (err, result) {
       if (err) {
-        clients[socket.id].emit('messenger', {content: JSON.stringify({'type': 'error', 'content': err})});
+        messenger.alert(clients[socket.id], err, 'generic');
       }
       else {
         result.getClient(data.client, function (err, result) {
-          if (err) {
-            clients[socket.id].emit('messenger', {
-              content: JSON.stringify({
-                'type': 'error',
-                'content': '<strong>Error!</strong> ' + err
-              })
-            });
-          }
-          else {
-            clients[socket.id].emit('client', {content: JSON.stringify(result)});
-          }
+          messenger.post(clients[socket.id], err, result, 'client');
         });
       }
     });
@@ -241,26 +234,11 @@ io.on('connection', function (socket) {
     data = JSON.parse(data);
     getDc(data, function (err, result) {
       if (err) {
-        clients[socket.id].emit('messenger', {content: JSON.stringify({'type': 'error', 'content': err})});
+        messenger.alert(clients[socket.id], err, 'generic');
       }
       else {
         result.sensu.delete('clients', data.payload, function (err) {
-          if (err) {
-            clients[socket.id].emit('messenger', {
-              content: JSON.stringify({
-                'type': 'error',
-                'content': '<strong>Error!</strong> The client was not deleted. Reason: ' + err
-              })
-            });
-          }
-          else {
-            clients[socket.id].emit('messenger', {
-              content: JSON.stringify({
-                'type': 'success',
-                'content': '<strong>Success!</strong> The client has been deleted.'
-              })
-            });
-          }
+          messenger.alert(clients[socket.id], err, 'deleteClient');
         });
       }
     });
@@ -275,26 +253,11 @@ io.on('connection', function (socket) {
    
     getDc(data, function (err, result) {
       if (err) {
-        clients[socket.id].emit('messenger', {content: JSON.stringify({'type': 'error', 'content': err})});
+        messenger.alert(clients[socket.id], err, 'generic');
       }
       else {
         result.sensu.post('stashes', JSON.stringify(data.payload), function (err) {
-          if (err) {
-            clients[socket.id].emit('messenger', {
-              content: JSON.stringify({
-                'type': 'error',
-                'content': '<strong>Error!</strong> The stash was not created. Reason: ' + err
-              })
-            });
-          }
-          else {
-            clients[socket.id].emit('messenger', {
-              content: JSON.stringify({
-                'type': 'success',
-                'content': '<strong>Success!</strong> The stash has been created.'
-              })
-            });
-          }
+          messenger.alert(clients[socket.id], err, 'createStash');
         });
       }
     });
@@ -304,26 +267,11 @@ io.on('connection', function (socket) {
     data = JSON.parse(data);
     getDc(data, function (err, result) {
       if (err) {
-        clients[socket.id].emit('messenger', {content: JSON.stringify({'type': 'error', 'content': err})});
+        messenger.alert(clients[socket.id], err, 'generic');
       }
       else {
         result.sensu.delete('stashes', data.payload, function (err) {
-          if (err) {
-            clients[socket.id].emit('messenger', {
-              content: JSON.stringify({
-                'type': 'error',
-                'content': '<strong>Error!</strong> The stash was not deleted. Reason: ' + err
-              })
-            });
-          }
-          else {
-            clients[socket.id].emit('messenger', {
-              content: JSON.stringify({
-                'type': 'success',
-                'content': '<strong>Success!</strong> The stash has been deleted.'
-              })
-            });
-          }
+          messenger.alert(clients[socket.id], err, 'deleteStash');
         });
       }
     });
@@ -333,37 +281,21 @@ io.on('connection', function (socket) {
     data = JSON.parse(data);
     getDc(data, function (err, result) {
       if (err) {
-        clients[socket.id].emit('messenger', {content: JSON.stringify({'type': 'error', 'content': err})});
+        messenger.alert(clients[socket.id], err, 'generic');
       }
       else {
         result.sensu.post('resolve', JSON.stringify(data.payload), function (err) {
-          if (err) {
-            clients[socket.id].emit('messenger', {
-              content: JSON.stringify({
-                'type': 'error',
-                'content': '<strong>Error!</strong> The check was not resolved. Reason: ' + err
-              })
-            });
-          }
-          else {
-            clients[socket.id].emit('messenger', {
-              content: JSON.stringify({
-                'type': 'success',
-                'content': '<strong>Success!</strong> The check has been resolved.'
-              })
-            });
-          }
+          messenger.alert(clients[socket.id], err, 'resolveEvent');
         });
       }
     });
   });
 
   socket.on('get_info', function () {
-    clients[socket.id].emit('info', {content: JSON.stringify(publicConfig)});
+    messenger.post(clients[socket.id], false, publicConfig, 'info');
   });
 
 });
-
 
 /**
  * Start server
