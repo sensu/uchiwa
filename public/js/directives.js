@@ -55,7 +55,7 @@ directiveModule.directive('statusGlyph', function() {
         element.addClass('fa fa-fw');
         switch(style) {
           case 'success':
-            element.addClass('fa-check-circle text-success');
+            element.addClass('fa-check-circle');
             break;
           case 'warning':
             element.addClass('fa-exclamation-circle');
@@ -71,7 +71,12 @@ directiveModule.directive('statusGlyph', function() {
       }
 
       scope.$watch(attrs.statusGlyph, function(value) {
-        style = value;
+        // convert sensu state to CSS class name
+        var styleOverrides = {
+          'critical': 'danger',
+          'unknown': 'muted'
+        };
+        style = styleOverrides[value] ? styleOverrides[value] : value;
         updateGlyph();
       });
     }
