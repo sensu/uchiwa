@@ -43,3 +43,42 @@ directiveModule.directive('siteTheme', ['$cookieStore', 'settings', function ($c
     }
   };
 }]);
+
+directiveModule.directive('statusGlyph', function() {
+  return {
+    restrict: 'EA',
+    link: function(scope, element, attrs) {
+      var style;
+
+      function updateGlyph() {
+        element.removeAttr('class');
+        element.addClass('fa fa-fw');
+        switch(style) {
+          case 'success':
+            element.addClass('fa-check-circle');
+            break;
+          case 'warning':
+            element.addClass('fa-exclamation-circle');
+            break;
+          case 'danger':
+            element.addClass('fa-bomb');
+            break;
+          case 'muted':
+            element.addClass('fa-question-circle');
+            break;
+        }
+        element.addClass('text-' + style);
+      }
+
+      scope.$watch(attrs.statusGlyph, function(value) {
+        // convert sensu state to CSS class name
+        var styleOverrides = {
+          'critical': 'danger',
+          'unknown': 'muted'
+        };
+        style = styleOverrides[value] ? styleOverrides[value] : value;
+        updateGlyph();
+      });
+    }
+  }
+});

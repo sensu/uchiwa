@@ -19,11 +19,11 @@
                   <span class="category"><ng-pluralize count="events.total" when="{'0': 'event', '1': 'event', 'other': 'events'}"></ng-pluralize></span>
                 </div>
                 <div class="panel panel-body panel-bottom panel-default">
-                  <span class="circle circle-critical"></span> Critical <span class="pull-right count">{{events.critical}}</span>
+                  <i class="fa fa-fw fa-bomb text-danger"></i> Critical <span class="pull-right count">{{events.critical}}</span>
                   <hr>
-                  <span class="circle circle-warning"></span> Warning <span class="pull-right count">{{events.warning}}</span>
+                  <i class="fa fa-fw fa-exclamation-triangle text-warning"></i> Warning <span class="pull-right count">{{events.warning}}</span>
                   <hr>
-                  <span class="circle circle-unknown"></span> Unknown <span class="pull-right count">{{events.unknown}}</span>
+                  <i class="fa fa-fw fa-question-circle text-muted"></i> Unknown <span class="pull-right count">{{events.unknown}}</span>
                 </div>
               </div>
             </div>
@@ -41,11 +41,11 @@
                   <span class="category"><ng-pluralize count="clients.total" when="{'0': 'client', '1': 'client', 'other': 'clients'}"></ng-pluralize></span>
                 </div>
                 <div class="panel panel-body panel-bottom panel-default">
-                  <span class="circle circle-critical"></span> Critical <span class="pull-right count">{{clients.critical}}</span>
+                  <i class="fa fa-fw fa-bomb text-danger"></i> Critical <span class="pull-right count">{{clients.critical}}</span>
                   <hr>
-                  <span class="circle circle-warning"></span> Warning <span class="pull-right count">{{clients.warning}}</span>
+                  <i class="fa fa-fw fa-exclamation-triangle text-warning"></i> Warning <span class="pull-right count">{{clients.warning}}</span>
                   <hr>
-                  <span class="circle circle-unknown"></span> Unknown <span class="pull-right count">{{clients.unknown}}</span>
+                  <i class="fa fa-fw fa-question-circle text-muted"></i> Unknown <span class="pull-right count">{{clients.unknown}}</span>
                 </div>
               </div>
             </div>
@@ -67,7 +67,7 @@
                     <div class="row">
                       <div class="col-sm-12">
                         <div class="dc-title">
-                          <span class="circle circle-{{datacenter.style}}"></span>
+                          <i status-glyph="datacenter.style"></i>
                           {{datacenter.name}}
                         </div>
                         <div class="row">
@@ -106,7 +106,7 @@
         </li>
         <li class="show-on-hover">
           <a ng-click="go('/stashes')">
-            <i class="fa fa-database" class="dropdown-toggle" data-toggle="dropdown"></i><span class="badge badge-default">{{stashes.length}}</span>
+            <i class="fa fa-briefcase" class="dropdown-toggle" data-toggle="dropdown"></i><span class="badge badge-default">{{stashes.length}}</span>
           </a>
           <div class="dropdown-menu" role="menu">
             <div class="row">
