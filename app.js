@@ -1,63 +1,34 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
-var fs = require('fs');
-var yargs = require('yargs')
-    .describe('c', 'Load a config (file)')
-    .alias('c', 'config')
-    .alias('c', 'config-file')
-    .alias('c', 'config_file')
-    .default('c', './config.json');
-var argv = yargs.argv;
-
-// Check config file
-if (!fs.existsSync(argv.c)) {
-  yargs.showHelp();
-  console.log('Config file must exist and be readable.');
-  process.exit(1);
-}
-try {
-  var config = require(argv.c);
-} catch (e) {
-  console.log('Syntax error with the config file ' + argv.c);
-  process.exit(1);
-}
-
-var express = require('express'),
-  http = require('http'),
-  path = require('path'),
-  async = require('async'),
-  _ = require('underscore'),
-  moment = require('moment'),
-  app = express(),
-  server = http.createServer(app);
-
+// Load Modules
+var express = require('express');
+var http = require('http');
+var path = require('path');
+var moment = require('moment');
+var app = express();
+var server = http.createServer(app);
 var io = require('socket.io')(server);
+
+// Uchiwa Librairies
+var authentication = require('./lib/authentication.js');
+var configuration = require('./lib/configuration.js');
 var Dc = require('./lib/dc.js').Dc;
-var Messenger = require('./lib/messenger.js').Messenger;
-var clients = {};
+var listeners = require('./lib/listeners.js');
+var pusher = require('./lib/pusher.js');
+var health = require('./lib/health.js');
 
-/**
- * Initialize configuration
- */
-if (!_.isArray(config.sensu)) {
-  config.sensu = [config.sensu];
-  config.sensu[0].name = config.sensu[0].host;
-}
-var port = config.uchiwa.port || 3000;
-var host = config.uchiwa.host || '0.0.0.0';
-config.uchiwa.refresh = config.uchiwa.refresh || 10000;
+// Uchiwa Configuration
+var sensu = {};
+var datacenters = [];
+var config = {};
+configuration.get(function (result) { config = result; });
+var publicConfig = configuration.public(config);
+moment.defaultFormat = config.uchiwa.dateFormat;
 
-var dateFormat = config.uchiwa.dateFormat || 'YYYY[-]MM[-]DD HH[:]mm[:]ss';
-moment.defaultFormat = dateFormat;
-
-/**
- * App configuration
- */
-app.set('port', process.env.PORT || port);
-app.set('host', process.env.HOST || host);
+// Express Configuration
+app.set('config', config);
+app.set('port', process.env.PORT || config.uchiwa.port);
+app.set('host', process.env.HOST || config.uchiwa.host);
 app.engine('.html', require('ejs').__express);
 app.set('views', path.join(__dirname, 'public'));
 app.set('view engine', 'html');
@@ -68,16 +39,6 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
-/**
- * Authentification
- */
-if (config.uchiwa.user && config.uchiwa.pass) {
-  var basicAuth = express.basicAuth(function (username, password) {
-    return (username === config.uchiwa.user && password === config.uchiwa.pass);
-  }, 'Restrict area, please identify');
-  app.all('*', basicAuth);
-}
 
 /**
  * Error handling
@@ -95,211 +56,33 @@ app.use(function (err, req, res, next) {
 });
 /* jshint ignore:end */
 
-// Remove passwords from public config
-var publicConfig = JSON.parse(JSON.stringify(config));
-publicConfig.uchiwa.user = '*****';
-publicConfig.uchiwa.pass = '*****';
-_.each(publicConfig.sensu, function (element) {
-  element.user = '*****';
-  element.pass = '*****';
-});
+// Authentification
+if (config.uchiwa.user && config.uchiwa.pass) { app.all('*', authentication.basic); }
 
-var sensu = {};
-var datacenters = [];
-var messenger = new Messenger();
-
+// Get Datacenters
 config.sensu.forEach(function (configuration) {
   datacenters.push(new Dc(configuration));
 });
 
-var pull = function () {
-  var attributes = ['checks', 'clients', 'events', 'stashes'];
-  attributes.forEach(function(attribute) {
-    sensu[attribute] = [];
-  });
-  sensu.dc = [];
-  
-  async.eachSeries(datacenters, function (datacenter, nextDc) {
-    datacenter.pull(function () {
-        var aggregate = function (callback) {
-          async.each(attributes, function (attribute, nextAttribute) {
-            async.each(datacenter.sensu[attribute], function (item, nextItem) {
-              item.dc = datacenter.name;
-              sensu[attribute].push(item);
-              nextItem();
-            }, function () {
-              nextAttribute();
-            });
-          }, function () {
-            callback();
-          });
-        };
-        aggregate(function () {
-          datacenter.build();
-          sensu.dc.push({
-            name: datacenter.name,
-            style: datacenter.style,
-            clients: datacenter.clients,
-            events: datacenter.events,
-            stashes: datacenter.stashes,
-            checks: datacenter.checks,
-            info: datacenter.info
-          });
-          nextDc();
-        });
-      },
-      function (messageContent) {
-        io.emit('messenger', {
-          content: messageContent
-        });
-      }
-    );
-  }, function () {
-    sensu.subscriptions = [];
-    async.each(sensu.clients, function (client, nextClient) {
-      if(_.isObject(client.subscriptions)){
-        async.each(client.subscriptions, function (subscription, nextSubscription) {
-          if(sensu.subscriptions.indexOf(subscription) === -1) { sensu.subscriptions.push(subscription); }
-          nextSubscription();
-        });
-      }
-      nextClient();
-    }, function() {
-      io.emit('sensu', {content: JSON.stringify(sensu)});
-    });
-    
+// Pull & Push Sensu data
+var refreshData = function () {
+  pusher.pull(io, sensu, datacenters, function (result) {
+    sensu = result;
+    pusher.push(io, sensu, function () {});
   });
 };
+setInterval(refreshData, config.uchiwa.refresh);
+refreshData();
 
-// Perform a pull on start and every config.uchiwa.refresh milliseconds
-setInterval(pull, config.uchiwa.refresh);
-pull();
+// Listen for Socket.IO messages
+io.on('connection', function (socket) { listeners.listen(socket, sensu, datacenters, publicConfig); });
 
-// Return DC object and check client if any specified
-var getDc = function (data, callback) {
-  if (datacenters.length === 0) {
-    return callback('No datacenters found.');
-  }
-  var dc = datacenters.filter(function (e) {
-    return e.name === data.dc;
-  });
-  if (dc.length !== 1) {
-    return callback('The datacenter ' + data.dc + ' was not found.');
-  }
-  if (_.has(data, 'client')) {
-    if (dc[0].sensu.clients.length === 0) {
-      return callback('No clients found.');
-    }
-    var client = dc[0].sensu.clients.filter(function (e) {
-      return e.name === data.client;
-    });
-    if (client.length !== 1) {
-      return callback('The client ' + data.client + ' was not found.');
-    }
-  }
-  callback(null, dc[0]);
-};
-
-
-/**
- * Listen for Socket.IO messages
- */
-io.on('connection', function (socket) {
-  // Keep track of active clients
-  clients[socket.id] = socket;
-
-  // Remove client on disconnection
-  socket.on('disconnect', function () {
-    delete clients[socket.id];
-  });
-
-  socket.on('get_sensu', function () {
-    messenger.post(clients[socket.id], false, sensu, 'sensu');
-  });
-
-  socket.on('get_client', function (data) {
-    getDc(data, function (err, result) {
-      if (err) {
-        messenger.alert(clients[socket.id], err, 'generic');
-      }
-      else {
-        result.getClient(data.client, function (err, result) {
-          messenger.post(clients[socket.id], err, result, 'client');
-        });
-      }
-    });
-  });
-
-  socket.on('delete_client', function (data) {
-    data = JSON.parse(data);
-    getDc(data, function (err, result) {
-      if (err) {
-        messenger.alert(clients[socket.id], err, 'generic');
-      }
-      else {
-        result.sensu.delete('clients', data.payload, function (err) {
-          messenger.alert(clients[socket.id], err, 'deleteClient');
-        });
-      }
-    });
-  });
-
-  socket.on('create_stash', function (data) {
-    data = JSON.parse(data);
-   
-    // Set timestamp
-    var timestamp = Math.floor(new Date()/1000);
-    data.payload.content.timestamp = timestamp;
-   
-    getDc(data, function (err, result) {
-      if (err) {
-        messenger.alert(clients[socket.id], err, 'generic');
-      }
-      else {
-        result.sensu.post('stashes', JSON.stringify(data.payload), function (err) {
-          messenger.alert(clients[socket.id], err, 'createStash');
-        });
-      }
-    });
-  });
-
-  socket.on('delete_stash', function (data) {
-    data = JSON.parse(data);
-    getDc(data, function (err, result) {
-      if (err) {
-        messenger.alert(clients[socket.id], err, 'generic');
-      }
-      else {
-        result.sensu.delete('stashes', data.payload, function (err) {
-          messenger.alert(clients[socket.id], err, 'deleteStash');
-        });
-      }
-    });
-  });
-
-  socket.on('resolve_event', function (data) {
-    data = JSON.parse(data);
-    getDc(data, function (err, result) {
-      if (err) {
-        messenger.alert(clients[socket.id], err, 'generic');
-      }
-      else {
-        result.sensu.post('resolve', JSON.stringify(data.payload), function (err) {
-          messenger.alert(clients[socket.id], err, 'resolveEvent');
-        });
-      }
-    });
-  });
-
-  socket.on('get_info', function () {
-    messenger.post(clients[socket.id], false, publicConfig, 'info');
-  });
-
+// Status Page
+app.get('/health/:component?', function(req, res){
+  health.get(req, res, sensu, config);
 });
 
-/**
- * Start server
- */
+// Start Server
 server.listen(app.get('port'), app.get('host'), function () {
   console.log('Uchiwa is now listening on %s:%s', app.get('host'), app.get('port'));
 });

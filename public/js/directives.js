@@ -80,5 +80,5 @@ directiveModule.directive('statusGlyph', function() {
         updateGlyph();
       });
     }
-  }
+  };
 });
