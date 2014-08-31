@@ -1,13 +1,15 @@
 'use strict';
 
+// Express
+var express = require('express.io');
+var app = express();
+app.http().io();
+
 // Load Modules
-var express = require('express');
-var http = require('http');
 var path = require('path');
 var moment = require('moment');
-var app = express();
-var server = http.createServer(app);
-var io = require('socket.io')(server);
+var bunyan = require('bunyan');
+var log = bunyan.createLogger({name: 'uchiwa', src: true});
 
 // Uchiwa Librairies
 var authentication = require('./lib/authentication.js');
@@ -32,12 +34,8 @@ app.set('host', process.env.HOST || config.uchiwa.host);
 app.engine('.html', require('ejs').__express);
 app.set('views', path.join(__dirname, 'public'));
 app.set('view engine', 'html');
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(require('express-bunyan-logger')());
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 /**
@@ -45,13 +43,13 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
  * DEBUG=* NODE_ENV=development node app.js
  */
 if ('development' === process.env.NODE_ENV) {
-  console.log('Debugging enabled.');
+  log.info('Debugging enabled.');
   app.use(express.errorHandler({showStack: true, dumpExceptions: true}));
 }
 
 /* jshint ignore:start */
 app.use(function (err, req, res, next) {
-  console.log(err);
+  log.error(err);
   res.send(500);
 });
 /* jshint ignore:end */
@@ -66,16 +64,16 @@ config.sensu.forEach(function (configuration) {
 
 // Pull & Push Sensu data
 var refreshData = function () {
-  pusher.pull(io, sensu, datacenters, function (result) {
+  pusher.pull(app, sensu, datacenters, function (result) {
     sensu = result;
-    pusher.push(io, sensu, function () {});
+    pusher.push(app, result, function () {});
   });
 };
 setInterval(refreshData, config.uchiwa.refresh);
 refreshData();
 
 // Listen for Socket.IO messages
-io.on('connection', function (socket) { listeners.listen(socket, sensu, datacenters, publicConfig); });
+listeners.listen(app, sensu, datacenters, publicConfig); 
 
 // Status Page
 app.get('/health/:component?', function(req, res){
@@ -83,6 +81,6 @@ app.get('/health/:component?', function(req, res){
 });
 
 // Start Server
-server.listen(app.get('port'), app.get('host'), function () {
-  console.log('Uchiwa is now listening on %s:%s', app.get('host'), app.get('port'));
+app.listen(app.get('port'), app.get('host'), function () {
+  log.info('Uchiwa is now listening on %s:%s', app.get('host'), app.get('port'));
 });

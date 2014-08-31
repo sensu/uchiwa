@@ -20,8 +20,6 @@
     "bootstrap-sass-official": "3.1.1",
     "fontawesome": "4.1.0",
     "jquery": "~2.1.1",
-    "morris.js": "~0.5.0",
-    "raphael": "~2.1.2",
     "toastr": "~2.0.3",
     "underscore": "~1.6.0"
   },
