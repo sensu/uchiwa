@@ -55,7 +55,7 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clie
 
     $scope.predicate = '-last_status';
 
-     // Retrieve client
+    // Retrieve client
     $scope.clientId = decodeURI($routeParams.clientId);
     $scope.dcId = decodeURI($routeParams.dcId);
     $scope.pull = function() {
@@ -71,7 +71,6 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clie
         $scope.client = angular.fromJson(data.content);
       }
       $scope.pageHeaderText = $scope.client.name;
-      
 
       // Retrieve check
       $scope.requestedCheck = decodeURI($routeParams.check);
@@ -108,7 +107,7 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clie
     $scope.resolve = clientsService.resolve;
     $scope.search = routingService.search;
     $scope.stash = clientsService.stash;
-  
+
     // Helpers
     $scope.toggled = function(e) {
       var event = e || window.event;
@@ -176,7 +175,7 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'socket', 'cli
     // Services
     $scope.go = routingService.go;
     $scope.stash = clientsService.stash;
-    
+
     $scope.test = function() {
       routingService.search('', 'subscription='+$scope.subscriptionsFilter);
     };
@@ -185,7 +184,7 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'socket', 'cli
     $scope.getClient = function (dcName, clientName) {
       socket.emit('get_client', {dc: dcName, client: clientName});
     };
-    
+
     $scope.toggled = function(e) {
       var event = e || window.event;
       event.stopPropagation();
@@ -214,7 +213,7 @@ controllerModule.controller('events', ['$rootScope', '$scope', 'socket', 'events
     $scope.subscriptionsFilter = '';
     $scope.predicate = '-check.status';
     Page.setTitle('Events');
-    
+
     // Socket.IO
     $scope.$on('socket:sensu', function (event, data) {
       var sensu = angular.fromJson(data.content);
@@ -305,7 +304,7 @@ controllerModule.controller('navbar', ['$scope', 'routingService',
         var warnings = 0;
         var unknowns = 0;
         var total = collection.length;
-        
+
         criticals += collection.filter(function (item) {
           return getStatusCode(item) === 2;
         }).length;
