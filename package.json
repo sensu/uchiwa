@@ -3,15 +3,19 @@
   "version": "0.2.1",
   "private": true,
   "scripts": {
+    "jshint": "grunt jshint",
+    "js-files": "find . -name '*.js' ! -path './node_modules/*' !  -path './public/bower_components/*'",
+    "karma": "karma start test/karma.conf.js",
+    "lintspaces": "lintspaces -t -d spaces -i js-comments -s 2 `npm run -s js-files`",
     "postinstall": "bower --allow-root install",
-    "test": "karma start test/karma.conf.js",
     "preupdate-webdriver": "npm install",
-    "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js",
     "protractor-debug": "protractor debug test/protractor-conf.js",
     "prestart": "npm install",
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "npm run jshint && npm run lintspaces && npm run karma",
+    "update-webdriver": "webdriver-manager update"
   },
   "dependencies": {
     "async": "^0.2.10",
@@ -34,6 +38,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-newer": "~0.7.0",
     "jshint-stylish": "~0.4.0",
+    "lintspaces-cli": "~0.0.4",
     "load-grunt-tasks": "~0.6.0",
     "grunt-contrib-sass": "~0.8.1",
     "time-grunt": "~0.2.1",

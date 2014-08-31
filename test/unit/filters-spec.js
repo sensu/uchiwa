@@ -19,7 +19,7 @@ describe('filters', function() {
       expect(displayObjectFilter(['test', 'test1', 'test2'])).toBe('test, test1, test2');
       expect(displayObjectFilter({key: 'value'})).toEqual({key: 'value'});
     }));
-    
+
   });
 
   describe('filterSubscriptions', function() {
@@ -28,6 +28,6 @@ describe('filters', function() {
       expect(filterSubscriptionsFilter([{name: 'test1', subscriptions: []}, {name: 'test2', subscriptions: ['linux']}], 'linux')).toEqual([{name: 'test2', subscriptions: ['linux']}]);
       expect(filterSubscriptionsFilter([{name: 'test1', subscriptions: []}, {name: 'test2', subscriptions: ['linux']}], '')).toEqual([{name: 'test1', subscriptions: []}, {name: 'test2', subscriptions: ['linux']}]);
     }));
-    
+
   });
 });

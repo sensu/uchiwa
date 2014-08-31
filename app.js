@@ -73,7 +73,7 @@ setInterval(refreshData, config.uchiwa.refresh);
 refreshData();
 
 // Listen for Socket.IO messages
-listeners.listen(app, sensu, datacenters, publicConfig); 
+listeners.listen(app, sensu, datacenters, publicConfig);
 
 // Status Page
 app.get('/health/:component?', function(req, res){
