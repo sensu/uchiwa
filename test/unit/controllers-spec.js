@@ -14,7 +14,7 @@ describe('Controller', function () {
   beforeEach(function () {
     mockNotification = jasmine.createSpy('mockNotification');
     mockStashesService = jasmine.createSpyObj('mockStashesService', ['stash']);
-    mockRoutingService = jasmine.createSpyObj('mockRoutingService', ['search', 'go']);
+    mockRoutingService = jasmine.createSpyObj('mockRoutingService', ['search', 'go', 'initFilters', 'permalink', 'updateFilters']);
     module(function ($provide) {
       $provide.value('notification', mockNotification);
       $provide.value('stashesService', mockStashesService);
@@ -68,7 +68,7 @@ describe('Controller', function () {
     });
 
     it('should listen for socket:sensu event', function() {
-      spyOn($scope, '$on').andCallThrough();
+      spyOn($scope, '$on').and.callThrough();
       createController(controllerName);
       expect($scope.$on).toHaveBeenCalledWith('socket:sensu', jasmine.any(Function));
     });
@@ -98,9 +98,9 @@ describe('Controller', function () {
       createController(controllerName);
       expect($scope.resolve).toBeDefined();
     });
-    it('should have a search method', function () {
+    it('should have a permalink method', function () {
       createController(controllerName);
-      expect($scope.search).toBeDefined();
+      expect($scope.permalink).toBeDefined();
     });
     it('should have a stash method', function () {
       createController(controllerName);
@@ -133,17 +133,17 @@ describe('Controller', function () {
       createController(controllerName);
       expect($scope.stash).toBeDefined();
     });
-    it('should have a test method', function() {
+    it('should have a permalink method', function() {
       createController(controllerName);
-      expect($scope.test).toBeDefined();
+      expect($scope.permalink).toBeDefined();
     });
 
-    describe('test()', function() {
+    describe('permalink()', function() {
 
-      it('should call routing service search method', function() {
+      it('should call routing service permalink method', function() {
         createController(controllerName);
-        $scope.test();
-        expect(mockRoutingService.search).toHaveBeenCalled();
+        $scope.permalink();
+        expect(mockRoutingService.permalink).toHaveBeenCalled();
       });
 
     })

@@ -18,12 +18,12 @@ angular.module('uchiwa').config(['$routeProvider', 'notificationProvider',
   function ($routeProvider, notificationProvider) {
     $routeProvider
       .when('/', {redirectTo: function () { return '/events'; }})
-      .when('/events', {templateUrl: 'partials/events/index.html', controller: 'events'})
+      .when('/events', {templateUrl: 'partials/events/index.html', reloadOnSearch: false, controller: 'events'})
       .when('/client/:dcId/:clientId', {templateUrl: 'partials/client/index.html', reloadOnSearch: false, controller: 'client'})
       .when('/clients', {templateUrl: 'partials/clients/index.html', reloadOnSearch: false, controller: 'clients'})
-      .when('/checks', {templateUrl: 'partials/checks/index.html', controller: 'checks'})
+      .when('/checks', {templateUrl: 'partials/checks/index.html', reloadOnSearch: false, controller: 'checks'})
       .when('/info', {templateUrl: 'partials/info/index.html', controller: 'info'})
-      .when('/stashes', {templateUrl: 'partials/stashes/index.html', controller: 'stashes'})
+      .when('/stashes', {templateUrl: 'partials/stashes/index.html', reloadOnSearch: false, controller: 'stashes'})
       .when('/settings', {templateUrl: 'partials/settings/edit.html', controller: 'settings'})
       .otherwise('/');
     notificationProvider.setOptions({
