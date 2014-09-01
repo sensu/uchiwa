@@ -1,4 +1,4 @@
-<div class="container-fluid dashboard">
+<div class="container-fluid events">
   <div ng-include="'partials/page-header.html'"></div>
   <div class="row-fluid">
     <div class="col-lg-12">
@@ -7,9 +7,9 @@
           <div class="row">
             <div class="col-md-8">
               <ul class="nav nav-pills nav-dc">
-                <li><a ng-class="{active: dcFilter.dc == ''}" ng-click="dcFilter = {dc: ''}">All datacenters</a></li>
+                <li><a ng-class="{active: filters.dc == ''}" ng-click="permalink($event, 'dc', '')">All datacenters</a></li>
                 <li ng-repeat="datacenter in dc">
-                  <a ng-class="{active: dcFilter.dc == datacenter.name}" ng-click="$parent.dcFilter = {dc: datacenter.name}">{{ datacenter.name }}</a>
+                  <a ng-class="{active: filters.dc == datacenter.name}" ng-click="permalink($event, 'dc', datacenter.name)">{{ datacenter.name }}</a>
                 </li>
               </ul>
             </div>
@@ -17,13 +17,13 @@
               <div class="row">
                 <div class="col-sm-6 col-sm-offset-6">
                   <div class="input-group input-group-sm">
-                    <input type="text" class="form-control" placeholder="Search" ng-model="searchText">
+                    <input type="text" class="form-control" placeholder="Search" ng-model="filters.q" ng-change="permalink($event, 'q', filters.q)">
                     <span class="input-group-addon"><i class="fa fa-search"></i></span>
                   </div>
                 </div>
               </div>
               <div class="nav-filter pull-right dropdown">
-                <select class="form-control" ng-init="limit=50" ng-model="limit">
+                <select class="form-control" ng-init="limit=50" ng-model="filters.limit" ng-change="permalink($event, 'limit', filters.limit)">
                   <option value="50">Show 50</option>
                   <option value="100">Show 100</option>
                   <option value="200">Show 200</option>
@@ -48,7 +48,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="event in events | orderBy:predicate:reverse | filter:searchText | filter:dcFilter | limitTo:limit" ng-click="go('/client/'+event.dc+'/'+event.client.name+'?check='+event.check.name)">
+              <tr ng-repeat="event in events | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | limitTo:filters.limit" ng-click="go('/client/'+event.dc+'/'+event.client.name+'?check='+event.check.name)">
                 <td class="well-{{ event.style }} dropdown" ng-click="toggled($event)" dropdown-toggle>
                   <i class="fa {{event.silenceIcon}}"></i>
                   <ul class="dropdown-menu">

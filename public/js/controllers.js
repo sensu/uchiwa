@@ -18,25 +18,17 @@ controllerModule.controller('init', ['$scope', 'notification', 'socket', 'Page',
         notification(message.type, message.content);
       }
     });
-    $scope.filters = {text: ''};
   }
 ]);
 
 /**
  * Checks
  */
-controllerModule.controller('checks', ['$scope', 'Page',
-  function ($scope, Page) {
-    $scope.pageHeaderText = 'Checks';
-    $scope.dcItem = 'checks';
-    $scope.dcFilter = {dc: ''};
-    $scope.predicate = 'name';
+controllerModule.controller('checks', ['$scope', '$routeParams', 'routingService', 'Page',
+  function ($scope, $routeParams, routingService, Page) {
     Page.setTitle('Checks');
-
-    // Helpers
-    $scope.subscribersSummary = function(subscribers){
-      return subscribers.join(' ');
-    };
+    $scope.pageHeaderText = 'Checks';
+    $scope.predicate = 'name';
 
     // Socket.IO
     $scope.$on('socket:sensu', function (event, data) {
@@ -44,6 +36,22 @@ controllerModule.controller('checks', ['$scope', 'Page',
       $scope.dc = sensu.dc;
       $scope.checks = sensu.checks;
     });
+
+    // Helpers
+    $scope.subscribersSummary = function(subscribers){
+      return subscribers.join(' ');
+    };
+
+    // Routing
+    $scope.filters = {};
+    routingService.initFilters($routeParams, $scope.filters, ['dc', 'limit', 'q']);
+    $scope.$on('$locationChangeSuccess', function(){
+      routingService.updateFilters($routeParams, $scope.filters);
+    });
+
+    // Services
+    $scope.permalink = routingService.permalink;
+
   }
 ]);
 
@@ -85,6 +93,28 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clie
       }
     });
 
+    // Helpers
+    $scope.toggled = function(e) {
+      var event = e || window.event;
+      event.stopPropagation();
+
+      $scope.dropdown.isopen = !$scope.dropdown.isopen;
+    };
+    $scope.dropdown = {
+      isopen: false
+    };
+    $scope.silenceOptions = [
+      {key: '15 minutes', value: 900},
+      {key: '1 hour', value: 3600},
+      {key: '24 hours', value: 86400},
+      {key: 'Never', value: -1},
+    ];
+    var findCheck = function(id){
+      return $scope.client.history.filter(function (item) {
+        return item.check === id;
+      })[0];
+    };
+
     // Listeners
     $scope.$on('$routeUpdate', function(){
       // Update check
@@ -102,29 +132,6 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clie
       clearInterval(timer);
     });
 
-    // Services
-    $scope.remove = clientsService.remove;
-    $scope.resolve = clientsService.resolve;
-    $scope.search = routingService.search;
-    $scope.stash = clientsService.stash;
-
-    // Helpers
-    $scope.toggled = function(e) {
-      var event = e || window.event;
-      event.stopPropagation();
-
-      $scope.dropdown.isopen = !$scope.dropdown.isopen;
-    };
-    $scope.dropdown = {
-      isopen: false
-    };
-    $scope.silenceOptions = [
-      {key: '15 minutes', value: 900},
-      {key: '1 hour', value: 3600},
-      {key: '24 hours', value: 86400},
-      {key: 'Never', value: -1},
-    ];
-
     // Sanitize - only display useful information
     /* jshint ignore:start */
     var clientWhitelist = [ 'dc', 'events', 'eventsSummary', 'history', 'isSilenced', 'lastCheck', 'silenceIcon', 'status', 'timestamp', 'style' ];
@@ -135,11 +142,11 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clie
     };
     /* jshint ignore:end */
 
-    var findCheck = function(id){
-      return $scope.client.history.filter(function (item) {
-        return item.check === id;
-      })[0];
-    };
+    // Services
+    $scope.remove = clientsService.remove;
+    $scope.resolve = clientsService.resolve;
+    $scope.permalink = routingService.permalink;
+    $scope.stash = clientsService.stash;
   }
 ]);
 
@@ -148,19 +155,9 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clie
  */
 controllerModule.controller('clients', ['$scope', '$routeParams', 'socket', 'clientsService', 'routingService', 'Page',
   function ($scope, $routeParams, socket, clientsService, routingService, Page) {
-    $scope.pageHeaderText = 'Clients';
-    $scope.dcItem = 'clients';
-    $scope.dcFilter = {dc: ''};
-    $scope.predicate = '-status';
     Page.setTitle('Clients');
-
-    // Select subscription to show
-    if(angular.isDefined($routeParams.subscription)) {
-      $scope.subscriptionsFilter = decodeURI($routeParams.subscription);
-    }
-    else {
-      $scope.subscriptionsFilter = '';
-    }
+    $scope.pageHeaderText = 'Clients';
+    $scope.predicate = '-status';
 
     // Socket.IO
     $scope.$on('socket:sensu', function (event, data) {
@@ -172,18 +169,22 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'socket', 'cli
       }
     });
 
-    // Services
-    $scope.go = routingService.go;
-    $scope.stash = clientsService.stash;
-
-    $scope.test = function() {
-      routingService.search('', 'subscription='+$scope.subscriptionsFilter);
-    };
-
     // Helpers
     $scope.getClient = function (dcName, clientName) {
       socket.emit('get_client', {dc: dcName, client: clientName});
     };
+
+    // Routing
+    $scope.filters = {};
+    routingService.initFilters($routeParams, $scope.filters, ['dc', 'subscription', 'limit', 'q']);
+    $scope.$on('$locationChangeSuccess', function(){
+      routingService.updateFilters($routeParams, $scope.filters);
+    });
+
+    // Services
+    $scope.go = routingService.go;
+    $scope.stash = clientsService.stash;
+    $scope.permalink = routingService.permalink;
 
     $scope.toggled = function(e) {
       var event = e || window.event;
@@ -205,14 +206,11 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'socket', 'cli
 /**
  * Events
  */
-controllerModule.controller('events', ['$rootScope', '$scope', 'socket', 'eventsService', 'routingService', 'Page',
-  function ($rootScope, $scope, socket, eventsService, routingService, Page) {
-    $scope.pageHeaderText = 'Events';
-    $scope.dcItem = 'events';
-    $scope.dcFilter = {dc: ''};
-    $scope.subscriptionsFilter = '';
-    $scope.predicate = '-check.status';
+controllerModule.controller('events', ['$scope', '$routeParams', 'socket', 'eventsService', 'routingService', 'Page',
+  function ($scope, $routeParams, socket, eventsService, routingService, Page) {
     Page.setTitle('Events');
+    $scope.pageHeaderText = 'Events';
+    $scope.predicate = '-check.status';
 
     // Socket.IO
     $scope.$on('socket:sensu', function (event, data) {
@@ -225,14 +223,22 @@ controllerModule.controller('events', ['$rootScope', '$scope', 'socket', 'events
       }
     });
 
-    // Services
-    $scope.go = routingService.go;
-    $scope.stash = eventsService.stash;
-
     // Helpers
     $scope.getClient = function (dcName, clientName) {
       socket.emit('get_client', {dc: dcName, client: clientName});
     };
+
+    // Routing
+    $scope.filters = {};
+    routingService.initFilters($routeParams, $scope.filters, ['dc', 'limit', 'q']);
+    $scope.$on('$locationChangeSuccess', function(){
+      routingService.updateFilters($routeParams, $scope.filters);
+    });
+
+    // Services
+    $scope.go = routingService.go;
+    $scope.stash = eventsService.stash;
+    $scope.permalink = routingService.permalink;
 
     $scope.toggled = function(e) {
       var event = e || window.event;
@@ -364,14 +370,12 @@ controllerModule.controller('sidebar', ['$scope', '$location',
 /**
  * Stashes
  */
-controllerModule.controller('stashes', ['$scope', 'socket', 'stashesService', 'Page',
-  function ($scope, socket, stashesService, Page) {
-    $scope.pageHeaderText = 'Stashes';
-    $scope.dcItem = 'stashes';
-    $scope.sensu = {};
-    $scope.dcFilter = {dc: ''};
-    $scope.predicate = 'client';
+controllerModule.controller('stashes', ['$scope', '$routeParams', 'socket', 'routingService', 'stashesService', 'Page',
+  function ($scope, $routeParams, socket, routingService, stashesService, Page) {
     Page.setTitle('Stashes');
+    $scope.pageHeaderText = 'Stashes';
+    $scope.sensu = {};
+    $scope.predicate = 'client';
 
     // Socket.IO
     $scope.$on('socket:sensu', function (event, data) {
@@ -380,10 +384,21 @@ controllerModule.controller('stashes', ['$scope', 'socket', 'stashesService', 'P
       $scope.stashes = $scope.sensu.stashes;
     });
 
+    // Helpers
     $scope.deleteStash = function (dcName, stash, index) {
       stashesService.stash(dcName, stash);
       $scope.stashes.splice(index, 1);
     };
+
+    // Routing
+    $scope.filters = {};
+    routingService.initFilters($routeParams, $scope.filters, ['dc', 'limit', 'q']);
+    $scope.$on('$locationChangeSuccess', function(){
+      routingService.updateFilters($routeParams, $scope.filters);
+    });
+
+    // Services
+    $scope.permalink = routingService.permalink;
 
   }
 ]);

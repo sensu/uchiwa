@@ -37,10 +37,21 @@ describe('services', function() {
     it('should have a go method', inject(function(routingService) {
       expect(routingService.go).toBeDefined();
     }));
-    it('should have a search method', inject(function(routingService) {
-      expect(routingService.search).toBeDefined();
+    it('should have a deleteEmptyParameter method', inject(function(routingService) {
+      expect(routingService.deleteEmptyParameter).toBeDefined();
     }));
-
+    it('should have a initFilters method', inject(function(routingService) {
+      expect(routingService.initFilters).toBeDefined();
+    }));
+    it('should have a permalink method', inject(function(routingService) {
+      expect(routingService.permalink).toBeDefined();
+    }));
+    it('should have a updateFilters method', inject(function(routingService) {
+      expect(routingService.updateFilters).toBeDefined();
+    }));
+    it('should have a updateValue method', inject(function(routingService) {
+      expect(routingService.updateValue).toBeDefined();
+    }));
   });
 
 });

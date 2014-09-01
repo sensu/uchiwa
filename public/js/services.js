@@ -147,14 +147,49 @@ serviceModule.service('stashesService', ['socket', function (socket) {
  * Routing
  */
 serviceModule.service('routingService', ['socket', '$location', function (path, $location) {
+  var filtersDefaultValues = {
+    'limit': 50
+  };
   this.go = function (path) {
     path = encodeURI(path);
     $location.url(path);
   };
-  this.search = function (e, path) {
-    var event = e || window.event;
-    event.stopPropagation();
-    path = encodeURI(path);
-    $location.search(path);
+  this.deleteEmptyParameter = function (routeParams, key) {
+    if (routeParams[key] === '') {
+      delete $location.$$search[key];
+      $location.$$compose();
+    }
+  };
+  this.initFilters = function (routeParams, filters, possibleFilters) {
+    var self = this;
+    angular.forEach(possibleFilters, function (key) {
+      if (angular.isDefined(routeParams[key])) {
+        self.updateValue(filters, routeParams[key], key);
+        self.deleteEmptyParameter(routeParams, key);
+      }
+      else {
+        self.updateValue(filters, '', key);
+      }
+    });
+  };
+  this.permalink = function (e, key, value) {
+    //var event = e || window.event;
+    //event.stopPropagation();
+    $location.search(key, value);
+  };
+  this.updateFilters = function (routeParams, filters) {
+    var self = this;
+    angular.forEach(routeParams, function (value, key) {
+      self.updateValue(filters, value, key);
+      self.deleteEmptyParameter(routeParams, key);
+    });
+  };
+  this.updateValue = function (filters, value, key) {
+    if (value === '') {
+      filters[key] = filtersDefaultValues[key] ? filtersDefaultValues[key] : value;
+    }
+    else {
+      filters[key] = value;
+    }
   };
 }]);

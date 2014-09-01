@@ -7,19 +7,19 @@
           <div class="row">
             <div class="col-md-10">
               <ul class="nav nav-pills nav-dc">
-                <li><a ng-class="{active: dcFilter.dc == ''}" ng-click="dcFilter = {dc: ''}">All datacenters</a></li>
+                <li><a ng-class="{active: filters.dc == ''}" ng-click="permalink($event, 'dc', '')">All datacenters</a></li>
                 <li ng-repeat="datacenter in dc">
-                  <a ng-class="{active: dcFilter.dc == datacenter.name}" ng-click="$parent.dcFilter = {dc: datacenter.name}">{{ datacenter.name }}</a>
+                  <a ng-class="{active: filters.dc == datacenter.name}" ng-click="permalink($event, 'dc', datacenter.name)">{{ datacenter.name }}</a>
                 </li>
               </ul>
             </div>
             <div class="col-md-2">
               <div class="input-group input-group-sm">
-                <input type="text" class="form-control" placeholder="Search" ng-model="searchText">
+                <input type="text" class="form-control" placeholder="Search" ng-model="filters.q" ng-change="permalink($event, 'q', filters.q)">
                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
               </div>
               <div class="nav-filter pull-right dropdown">
-                <select class="form-control" ng-init="limit=50" ng-model="limit">
+                <select class="form-control" ng-init="limit=50" ng-model="filters.limit" ng-change="permalink($event, 'limit', filters.limit)">
                   <option value="50">Show 50</option>
                   <option value="100">Show 100</option>
                   <option value="200">Show 200</option>
@@ -44,7 +44,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="stash in stashes | orderBy:predicate:reverse | filter:searchText | filter:dcFilter | limitTo:limit">
+              <tr ng-repeat="stash in stashes | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | limitTo:filters.limit">
                 <td><i class="fa fa-times" ng-click="deleteStash(stash.dc, stash, $index);"></i></td>
                 <td class="main">{{ stash.client }}</td>
                 <td>{{ stash.check }}</td>
