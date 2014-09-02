@@ -87,10 +87,10 @@
                 <i class="fa {{check.silenceIcon}}"></i>
                 <ul class="dropdown-menu">
                   <li ng-repeat="choice in silenceOptions" ng-if="!check.isSilenced">
-                    <a href ng-click="stash(check.dc, client, check, choice.value);">{{choice.key}}</a>
+                    <a href ng-click="stash(client.dc, client, check, choice.value);">{{choice.key}}</a>
                   </li>
                   <li ng-if="check.isSilenced">
-                    <a href ng-click="stash(check.dc, client, check);"><i class="fa fa-times"></i> Delete</a>
+                    <a href ng-click="stash(client.dc, client, check);"><i class="fa fa-times"></i> Delete</a>
                   </li>
                 </ul>
               </td>
