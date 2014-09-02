@@ -27,7 +27,7 @@ The dashboard is under active development, and major changes are not uncommon.
 
 * Checkout the source: `git clone https://github.com/sensu/uchiwa.git`
 * Install bower on your system: `npm install -g bower`
-* Install the dependencies: 
+* Install the dependencies:
   * With root user: `npm install --production --unsafe-perm`
   * With normal user: `npm install --production`
 * Copy **config.json.example** to **config.json** - modify your Sensu API information. See configuration section below
@@ -37,35 +37,6 @@ The dashboard is under active development, and major changes are not uncommon.
 ### With packages
 
 See [Sensu documentation](http://sensuapp.org/docs/0.13/dashboards_uchiwa)
-
-
-### Use nginx as proxy
-
-The first thing you need is Nginx **1.3.13** or higher, since previous versions do not support websocket connections.
-
-Then, you simply need to open up the Nginx configuration file and add the following route to your virtual server:
-```
-location / {
-  proxy_pass http://localhost:3000;
-  proxy_http_version 1.1;
-  proxy_set_header Upgrade $http_upgrade;
-  proxy_set_header Connection "upgrade";
-  proxy_set_header Host $host;
-}
-```
-
-In case you want the dashboard to be accessible within a certain path on the proxy, let's say /uchiwa, simply use the following block instead:
-```
- location ~ (/uchiwa/|/socket.io/) {
-  proxy_pass http://localhost:3000;
-  proxy_http_version 1.1;
-  proxy_set_header Upgrade $http_upgrade;
-  proxy_set_header Connection "upgrade";
-  proxy_set_header Host $host;
-
-  rewrite /uchiwa/(.*) /$1 break;
-}
-```
 
 ## Configuration
 ### sensu
@@ -134,6 +105,30 @@ An example of starting the container with the minimum set of environment needed 
 
 ## Debugging
 You may start the dashboard with the following command in order to enable verbose mode: `NODE_ENV="development" node app.js`
+
+## Health
+You may easily monitor Uchiwa and the Sensu API endpoints with the **/health** page.
+
+### /health
+Returns Uchiwa and Sensu API status.
+* success: 200
+  * content: `{"uchiwa":"ok","sensu":{"0.12.6":{"output":"ok"},"0.13.0":{"output":"ok"}}}`
+* error: 503
+  * content: `{"uchiwa":"ok","sensu":{"0.12.6":{"output":"connect ECONNREFUSED"},"0.13.0":{"output":"ok"}}}`
+
+### /health/uchiwa
+Returns Uchiwa status.
+* success: 200
+  * content: `{"uchiwa":"ok"}`
+* error: 503
+  * content: `{"uchiwa":"error"}`
+
+### /health/sensu
+Returns Sensu API status.
+* success: 200
+  * content: `{"sensu":{"0.12.6":{"output":"ok"},"0.13.0":{"output":"ok"}}}`
+* error: 503
+  * content: `{"sensu":{"0.12.6":{"output":"connect ECONNREFUSED"},"0.13.0":{"output":"ok"}}}`
 
 ## Contributing
 Everyone is welcome to submit patches. Whether your pull request is a bug fix or introduces new classes or functions to the project, we kindly ask that you include tests for your changes. Even if it's just a small improvement, a test is necessary to ensure the bug is never re-introduced.

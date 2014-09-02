@@ -1,3 +1,27 @@
+### 0.2.2 TBD
+
+#### Features
+
+- Automatic permalinks based on search filters (PR #111)
+- Configurable date/time formatting (PR #103)
+- Add /health page (PR #108)
+- Uchiwa logs are now in JSON format (PR #109)
+- Mark active page in sidebar
+- Use Socket.IO 1.0 (PR #99)
+- Use Express 4 (PR #109)
+- Accessibility improvements for status circles (PR #105)
+- Fix pill border overflow of datacenters list (PR #97)
+- Better unit tests coverage (PR #101)
+- Enable Travis CI
+
+#### Bug Fixes
+
+- Fix 'show all' option in clients view
+- Display clients with no subscriptions (PR #104)
+
+#### Migration Notes
+- Make sure to run `npm install`
+
 ### 0.2.1 (2014-08-07)
 
 #### Features
