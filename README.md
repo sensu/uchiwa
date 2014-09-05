@@ -146,6 +146,7 @@ You should always run `npm test` before submitting a Pull Request.
 ## Authors
 * Author: [Simon Plourde][author] (<simon.plourde@gmail.com>)
 * Contributor: [Ethan Hann][ethanhann] (<ethanhann@gmail.com>)
+* Contributor: ayan4m1
 
 ## License
 MIT (see [LICENSE][license])

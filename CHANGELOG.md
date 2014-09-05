@@ -1,3 +1,9 @@
+### 0.2.3 (2014-09-04)
+
+#### Bug Fixes
+- Fix authentication (PR #117)
+- Prevent crash when no checks are received (PR #115)
+
 ### 0.2.2 (2014-09-02)
 
 #### Features
