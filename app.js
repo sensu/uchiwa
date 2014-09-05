@@ -27,14 +27,20 @@ configuration.get(function (result) { config = result; });
 var publicConfig = configuration.public(config);
 moment.defaultFormat = config.uchiwa.dateFormat;
 
-// Express Configuration
+// Authentification
 app.set('config', config);
+
+if (config.uchiwa.user && config.uchiwa.pass) { app.all('*', authentication.basic); }
+
+// Express Configuration
 app.set('port', process.env.PORT || config.uchiwa.port);
 app.set('host', process.env.HOST || config.uchiwa.host);
 app.engine('.html', require('ejs').__express);
 app.set('views', path.join(__dirname, 'public'));
 app.set('view engine', 'html');
+
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(require('express-bunyan-logger')());
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -51,11 +57,9 @@ if ('development' === process.env.NODE_ENV) {
 app.use(function (err, req, res, next) {
   log.error(err);
   res.send(500);
+  next();
 });
 /* jshint ignore:end */
-
-// Authentification
-if (config.uchiwa.user && config.uchiwa.pass) { app.all('*', authentication.basic); }
 
 // Get Datacenters
 config.sensu.forEach(function (configuration) {
