@@ -29,7 +29,6 @@ moment.defaultFormat = config.uchiwa.dateFormat;
 
 // Authentification
 app.set('config', config);
-
 if (config.uchiwa.user && config.uchiwa.pass) { app.all('*', authentication.basic); }
 
 // Express Configuration
