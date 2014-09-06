@@ -70,7 +70,7 @@ describe('Controller', function () {
     });
   });
 
-  describe('checks', function() {
+  describe('checks', function () {
     var controllerName = 'checks';
 
     beforeEach(function () {
@@ -78,14 +78,14 @@ describe('Controller', function () {
       createController(controllerName);
     });
 
-    it('should have a subscribersSummary method', function() {
+    it('should have a subscribersSummary method', function () {
       expect($scope.subscribersSummary).toBeDefined();
     });
 
-    it('should listen for socket:sensu event', function() {
+    it('should listen for socket:sensu event', function () {
       expect($scope.$on).toHaveBeenCalledWith('socket:sensu', jasmine.any(Function));
     });
-    it('should handle the socket:sensu event', function() {
+    it('should handle the socket:sensu event', function () {
       expect($scope.dc).toBeUndefined();
       expect($scope.checks).toBeUndefined();
       $scope.$emit('socket:sensu', {content: JSON.stringify(mockSocketData)});
@@ -93,19 +93,19 @@ describe('Controller', function () {
       expect($scope.checks).toBe(mockSocketData.checks);
     });
 
-    it('should listen for the $locationChangeSuccess event', function() {
+    it('should listen for the $locationChangeSuccess event', function () {
       expect($scope.$on).toHaveBeenCalledWith('$locationChangeSuccess', jasmine.any(Function));
     });
-    it('should handle the $locationChangeSuccess event', function() {
+    it('should handle the $locationChangeSuccess event', function () {
       expect($scope.filters).toBeDefined();
       expect(mockRoutingService.initFilters).toHaveBeenCalled();
       $scope.$emit('$locationChangeSuccess', {});
       expect(mockRoutingService.updateFilters).toHaveBeenCalled();
     });
 
-    describe('subscribersSummary()', function() {
+    describe('subscribersSummary()', function () {
 
-      it('should join strings', function() {
+      it('should join strings', function () {
         var mockArray = ['test', 'a', 'b', 'c'];
         var mockString = 'test a b c';
         expect($scope.subscribersSummary(mockArray)).toBe(mockString);
@@ -115,7 +115,7 @@ describe('Controller', function () {
 
   });
 
-  describe('client', function() {
+  describe('client', function () {
     var controllerName = 'client';
 
     it('should have a remove method', function () {
@@ -161,14 +161,14 @@ describe('Controller', function () {
       createController(controllerName);
       expect($scope.stash).toBeDefined();
     });
-    it('should have a permalink method', function() {
+    it('should have a permalink method', function () {
       createController(controllerName);
       expect($scope.permalink).toBeDefined();
     });
 
-    describe('permalink()', function() {
+    describe('permalink()', function () {
 
-      it('should call routing service permalink method', function() {
+      it('should call routing service permalink method', function () {
         createController(controllerName);
         $scope.permalink();
         expect(mockRoutingService.permalink).toHaveBeenCalled();
@@ -407,20 +407,20 @@ describe('Controller', function () {
     });
   });
 
-  describe('sidebar', function() {
+  describe('sidebar', function () {
     var controllerName = 'sidebar';
 
-    it('should have a getClass method', function() {
+    it('should have a getClass method', function () {
       createController(controllerName);
       expect($scope.getClass).toBeDefined();
     });
 
-    describe('getClass()', function() {
+    describe('getClass()', function () {
 
-      it('should return selected if path matches location', function() {
+      it('should return selected if path matches location', function () {
         createController(controllerName, {
           '$location': {
-            path: function() {
+            path: function () {
               return 'events#some-anchor';
             }
           }
@@ -443,7 +443,9 @@ describe('Controller', function () {
       var stashesForDc = [stashToDelete];
 
       var payload = {
-        content: angular.toJson({dc: [{name: expectedDcName}], stashes: stashesForDc })
+        content: angular.toJson({dc: [
+          {name: expectedDcName}
+        ], stashes: stashesForDc })
       };
       $rootScope.$broadcast('socket:sensu', payload);
 
@@ -453,12 +455,12 @@ describe('Controller', function () {
       expect(mockStashesService.stash).toHaveBeenCalledWith(expectedDcName, stashToDelete);
     });
 
-    it('should listen for the $locationChangeSuccess event', function() {
+    it('should listen for the $locationChangeSuccess event', function () {
       spyOn($scope, '$on').and.callThrough();
       createController(controllerName);
       expect($scope.$on).toHaveBeenCalledWith('$locationChangeSuccess', jasmine.any(Function));
     });
-    it('should handle the $locationChangeSuccess event', function() {
+    it('should handle the $locationChangeSuccess event', function () {
       createController(controllerName);
       $scope.$emit('$locationChangeSuccess', {});
       expect(mockRoutingService.updateFilters).toHaveBeenCalled();
