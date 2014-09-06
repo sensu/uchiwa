@@ -73,6 +73,21 @@ describe('Controller', function () {
       expect($scope.$on).toHaveBeenCalledWith('socket:sensu', jasmine.any(Function));
     });
 
+    it('should handle the socket:sensu event', function() {
+      createController(controllerName);
+      expect($scope.dc).toBeUndefined();
+      expect($scope.checks).toBeUndefined();
+
+      var mockContent = {
+        dc: 'abcd',
+        checks: 'efgh'
+      };
+      $scope.$emit('socket:sensu', {content: JSON.stringify(mockContent)});
+
+      expect($scope.dc).toBe(mockContent.dc);
+      expect($scope.checks).toBe(mockContent.checks);
+    });
+
     describe('subscribersSummary()', function() {
 
       it('should join strings', function() {
