@@ -30,6 +30,17 @@ describe('services', function () {
       expect(stashesService.stash).toBeDefined();
     }));
 
+    describe('stash()', function () {
+
+      it('should emit delete_stash', inject(function (stashesService) {
+        var mockPayload = {dc: 'dcName', payload: {path: '/', content: {}}};
+        spyOn(socket, 'emit');
+        stashesService.stash(mockPayload.dc, mockPayload.payload);
+        expect(socket.emit).toHaveBeenCalledWith('delete_stash', JSON.stringify(mockPayload));
+      }));
+
+    });
+
   });
 
   describe('routingService', function () {
@@ -53,7 +64,33 @@ describe('services', function () {
       expect(routingService.updateValue).toBeDefined();
     }));
 
+    describe('go()', function() {
+
+      it('should call $location.url', inject(function (routingService, $location) {
+        var uri = '/testing';
+        spyOn($location, 'url');
+        routingService.go(uri);
+        expect($location.url).toHaveBeenCalledWith(uri);
+      }));
+
+      it('should encode URIs', inject(function (routingService, $location) {
+        var uri = '/this needs !@#$ encoding';
+        spyOn($location, 'url');
+        routingService.go(uri);
+        expect($location.url).not.toHaveBeenCalledWith(uri);
+        expect($location.url).toHaveBeenCalledWith(encodeURI(uri));
+      }));
+
+    });
+
   });
+
+  describe('underscore', function () {
+
+    it('should define _', inject(function (underscore) {
+      expect(underscore).toBe(window._);
+    }));
+
   });
 
 });
