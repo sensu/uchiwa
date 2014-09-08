@@ -8,6 +8,8 @@ describe('Controller', function () {
   var socket;
   var mockStashesService;
   var mockRoutingService;
+  var mockSocketData;
+  var mockVersion;
 
   beforeEach(module('uchiwa'));
 
@@ -15,6 +17,15 @@ describe('Controller', function () {
     mockNotification = jasmine.createSpy('mockNotification');
     mockStashesService = jasmine.createSpyObj('mockStashesService', ['stash']);
     mockRoutingService = jasmine.createSpyObj('mockRoutingService', ['search', 'go', 'initFilters', 'permalink', 'updateFilters']);
+    mockSocketData = {
+      dc: 'abcd',
+      clients: 'efgh',
+      subscriptions: 'hijk',
+      events: 'lmno'
+    };
+    mockVersion = {
+      uchiwa: 'x.y.z'
+    };
     module(function ($provide) {
       $provide.value('notification', mockNotification);
       $provide.value('stashesService', mockStashesService);
@@ -59,27 +70,44 @@ describe('Controller', function () {
     });
   });
 
-  describe('checks', function() {
+  describe('checks', function () {
     var controllerName = 'checks';
 
-    it('should have a subscribersSummary method', function() {
+    beforeEach(function () {
+      spyOn($scope, '$on').and.callThrough();
       createController(controllerName);
+    });
+
+    it('should have a subscribersSummary method', function () {
       expect($scope.subscribersSummary).toBeDefined();
     });
 
-    it('should listen for socket:sensu event', function() {
-      spyOn($scope, '$on').and.callThrough();
-      createController(controllerName);
+    it('should listen for socket:sensu event', function () {
       expect($scope.$on).toHaveBeenCalledWith('socket:sensu', jasmine.any(Function));
     });
+    it('should handle the socket:sensu event', function () {
+      expect($scope.dc).toBeUndefined();
+      expect($scope.checks).toBeUndefined();
+      $scope.$emit('socket:sensu', {content: JSON.stringify(mockSocketData)});
+      expect($scope.dc).toBe(mockSocketData.dc);
+      expect($scope.checks).toBe(mockSocketData.checks);
+    });
 
-    describe('subscribersSummary()', function() {
+    it('should listen for the $locationChangeSuccess event', function () {
+      expect($scope.$on).toHaveBeenCalledWith('$locationChangeSuccess', jasmine.any(Function));
+    });
+    it('should handle the $locationChangeSuccess event', function () {
+      expect($scope.filters).toBeDefined();
+      expect(mockRoutingService.initFilters).toHaveBeenCalled();
+      $scope.$emit('$locationChangeSuccess', {});
+      expect(mockRoutingService.updateFilters).toHaveBeenCalled();
+    });
 
-      it('should join strings', function() {
+    describe('subscribersSummary()', function () {
+
+      it('should join strings', function () {
         var mockArray = ['test', 'a', 'b', 'c'];
         var mockString = 'test a b c';
-        createController(controllerName);
-
         expect($scope.subscribersSummary(mockArray)).toBe(mockString);
       });
 
@@ -87,7 +115,7 @@ describe('Controller', function () {
 
   });
 
-  describe('client', function() {
+  describe('client', function () {
     var controllerName = 'client';
 
     it('should have a remove method', function () {
@@ -133,14 +161,14 @@ describe('Controller', function () {
       createController(controllerName);
       expect($scope.stash).toBeDefined();
     });
-    it('should have a permalink method', function() {
+    it('should have a permalink method', function () {
       createController(controllerName);
       expect($scope.permalink).toBeDefined();
     });
 
-    describe('permalink()', function() {
+    describe('permalink()', function () {
 
-      it('should call routing service permalink method', function() {
+      it('should call routing service permalink method', function () {
         createController(controllerName);
         $scope.permalink();
         expect(mockRoutingService.permalink).toHaveBeenCalled();
@@ -152,14 +180,99 @@ describe('Controller', function () {
   describe('events', function () {
     var controllerName = 'events';
 
-    it('should have a go method', function () {
-      createController(controllerName);
-      expect($scope.go).toBeDefined();
+    describe('methods', function () {
+
+      beforeEach(function () {
+        createController(controllerName);
+      });
+      it('should have a go method', function () {
+        expect($scope.go).toBeDefined();
+      });
+      it('should have a stash method', function () {
+        expect($scope.stash).toBeDefined();
+      });
+      it('should have a getClient method', function () {
+        expect($scope.getClient).toBeDefined();
+      });
+      it('should have a toggled method', function () {
+        expect($scope.toggled).toBeDefined();
+      });
+
     });
-    it('should have a stash method', function () {
+
+    it('should listen for socket:sensu event', function () {
+      spyOn($scope, '$on').and.callThrough();
       createController(controllerName);
-      expect($scope.stash).toBeDefined();
+      expect($scope.$on).toHaveBeenCalledWith('socket:sensu', jasmine.any(Function));
     });
+
+    it('should handle the socket:sensu event', function () {
+      createController(controllerName);
+      $scope.dropdown.isopen = true;
+
+      expect($scope.dc).toBeUndefined();
+      expect($scope.clients).toBeUndefined();
+      expect($scope.subscriptions).toBeUndefined();
+      expect($scope.events).toBeUndefined();
+
+      $scope.$emit('socket:sensu', {content: JSON.stringify(mockSocketData)});
+
+      expect($scope.dc).toBe(mockSocketData.dc);
+      expect($scope.clients).toBe(mockSocketData.clients);
+      expect($scope.subscriptions).toBe(mockSocketData.subscriptions);
+      expect($scope.events).toBeUndefined();
+    });
+    it('should set $scope.events when dropdown is closed', function () {
+      createController(controllerName);
+      $scope.$emit('socket:sensu', {content: JSON.stringify(mockSocketData)});
+      expect($scope.events).toBeDefined();
+    });
+
+    it('should emit get_client on getClient()', function () {
+      spyOn(socket, 'emit');
+      createController(controllerName);
+      var mockClient = {
+        dc: 'dcName',
+        client: 'clientName'
+      };
+      $scope.getClient(mockClient.dc, mockClient.client);
+      expect(socket.emit).toHaveBeenCalledWith('get_client', mockClient);
+    })
+
+  });
+
+  describe('info', function () {
+    var controllerName = 'info';
+
+    it('should emit get_info', function () {
+      spyOn(socket, 'emit');
+      createController(controllerName);
+
+      expect(socket.emit).toHaveBeenCalledWith('get_info', {});
+    });
+
+    it('should handle the socket:info event', function () {
+      spyOn($scope, '$on').and.callThrough();
+      createController(controllerName, {
+        'version': mockVersion
+      });
+      expect($scope.$on).toHaveBeenCalledWith('socket:info', jasmine.any(Function));
+
+      var config = JSON.stringify({config: '{}'}, null, 2);
+      $scope.$emit('socket:info', {content: config});
+      expect($scope.uchiwa.config).toBe(config);
+      expect($scope.uchiwa.version).toBe(mockVersion.uchiwa);
+    });
+
+    it('should handle the socket:sensu event', function () {
+      spyOn($scope, '$on').and.callThrough();
+      createController(controllerName);
+      expect($scope.$on).toHaveBeenCalledWith('socket:sensu', jasmine.any(Function));
+
+      $scope.$emit('socket:sensu', {content: JSON.stringify(mockSocketData)});
+      expect($scope.dc).toBe(mockSocketData.dc);
+    });
+
   });
 
   describe('navbar', function () {
@@ -294,20 +407,20 @@ describe('Controller', function () {
     });
   });
 
-  describe('sidebar', function() {
+  describe('sidebar', function () {
     var controllerName = 'sidebar';
 
-    it('should have a getClass method', function() {
+    it('should have a getClass method', function () {
       createController(controllerName);
       expect($scope.getClass).toBeDefined();
     });
 
-    describe('getClass()', function() {
+    describe('getClass()', function () {
 
-      it('should return selected if path matches location', function() {
+      it('should return selected if path matches location', function () {
         createController(controllerName, {
           '$location': {
-            path: function() {
+            path: function () {
               return 'events#some-anchor';
             }
           }
@@ -330,7 +443,9 @@ describe('Controller', function () {
       var stashesForDc = [stashToDelete];
 
       var payload = {
-        content: angular.toJson({dc: [{name: expectedDcName}], stashes: stashesForDc })
+        content: angular.toJson({dc: [
+          {name: expectedDcName}
+        ], stashes: stashesForDc })
       };
       $rootScope.$broadcast('socket:sensu', payload);
 
@@ -339,6 +454,18 @@ describe('Controller', function () {
       expect($scope.sensu.stashes).not.toContain(stashToDelete);
       expect(mockStashesService.stash).toHaveBeenCalledWith(expectedDcName, stashToDelete);
     });
+
+    it('should listen for the $locationChangeSuccess event', function () {
+      spyOn($scope, '$on').and.callThrough();
+      createController(controllerName);
+      expect($scope.$on).toHaveBeenCalledWith('$locationChangeSuccess', jasmine.any(Function));
+    });
+    it('should handle the $locationChangeSuccess event', function () {
+      createController(controllerName);
+      $scope.$emit('$locationChangeSuccess', {});
+      expect(mockRoutingService.updateFilters).toHaveBeenCalled();
+    });
+
   });
 
   describe('settings', function () {
