@@ -39,21 +39,22 @@ describe('filters', function () {
 
   });
 
-  describe('displayTimestamp', function () {
+  describe('getTimestamp', function () {
 
-    it('should convert epoch to human readable date', inject(function (displayTimestampFilter) {
-      expect(displayTimestampFilter('test')).toBe('unknown');
-      expect(displayTimestampFilter(1410908218)).toBe('2014-09-16 18:56:58');
+    it('should convert epoch to human readable date', inject(function (getTimestampFilter) {
+      expect(getTimestampFilter('test')).toBe('test');
+      expect(getTimestampFilter(1)).toBe(1);
+      expect(getTimestampFilter(1410908218)).toBe('2014-09-16 18:56:58');
     }));
 
   });
 
-  describe('displayExpireTimestamp', function () {
+  describe('getExpireTimestamp', function () {
 
-    it('should convert epoch to human readable date', inject(function (displayExpireTimestampFilter) {
-      expect(displayExpireTimestampFilter('test')).toBe('Unknown');
-      expect(displayExpireTimestampFilter(900, 1410908218)).toBe('2014-09-16 19:11:58');
-      expect(displayExpireTimestampFilter(-1, 1410908218)).toBe('Never');
+    it('should convert epoch to human readable date', inject(function (getExpireTimestampFilter) {
+      expect(getExpireTimestampFilter('test')).toBe('Unknown');
+      expect(getExpireTimestampFilter(900, 1410908218)).toBe('2014-09-16 19:11:58');
+      expect(getExpireTimestampFilter(-1, 1410908218)).toBe('Never');
     }));
 
   });
