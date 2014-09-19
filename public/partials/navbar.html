@@ -5,7 +5,7 @@
     </div>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      
+
       <ul class="nav navbar-nav navbar-right">
         <li class="show-on-hover">
           <a ng-click="go('/events')">
@@ -15,7 +15,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="panel panel-body panel-top panel-{{events.style}}">
-                  <span class="total">{{events.total}}</span> 
+                  <span class="total">{{events.total}}</span>
                   <span class="category"><ng-pluralize count="events.total" when="{'0': 'event', '1': 'event', 'other': 'events'}"></ng-pluralize></span>
                 </div>
                 <div class="panel panel-body panel-bottom panel-default">
@@ -37,7 +37,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="panel panel-body panel-top panel-{{clients.style}}">
-                  <span class="total">{{clients.total}}</span> 
+                  <span class="total">{{clients.total}}</span>
                   <span class="category"><ng-pluralize count="clients.total" when="{'0': 'client', '1': 'client', 'other': 'clients'}"></ng-pluralize></span>
                 </div>
                 <div class="panel panel-body panel-bottom panel-default">
@@ -59,7 +59,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="panel panel-body panel-top panel-blue">
-                  <span class="total">{{dc.length}}</span> 
+                  <span class="total">{{dc.length}}</span>
                   <span class="category"><ng-pluralize count="dc.length" when="{'0': 'datacenter', '1': 'datacenter', 'other': 'datacenters'}"></ng-pluralize></span>
                 </div>
                 <div class="panel panel-body panel-bottom panel-default">
@@ -67,7 +67,7 @@
                     <div class="row">
                       <div class="col-sm-12">
                         <div class="dc-title">
-                          <i status-glyph="datacenter.style"></i>
+                          <i status-glyph="datacenter.status"></i>
                           {{datacenter.name}}
                         </div>
                         <div class="row">
@@ -79,7 +79,7 @@
                             <div class="pull-right">{{datacenter.clients}}<span class="small-category"> clients</span></div>
                             <div class="pull-right">{{datacenter.checks}}<span class="small-category"> checks</span></div>
                           </div>
-                        </div>                        
+                        </div>
                       </div>
                     </div>
                     <hr ng-if="dc.length != ($index + 1)">
@@ -97,7 +97,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="panel panel-body panel-top panel-blue">
-                  <span class="total">{{checks.length}}</span> 
+                  <span class="total">{{checks.length}}</span>
                   <span class="category"><ng-pluralize count="checks.length" when="{'0': 'check', '1': 'check', 'other': 'checks'}"></ng-pluralize></span>
                 </div>
               </div>
@@ -112,7 +112,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="panel panel-body panel-top panel-blue">
-                  <span class="total">{{stashes.length}}</span> 
+                  <span class="total">{{stashes.length}}</span>
                   <span class="category"><ng-pluralize count="stashes.length" when="{'0': 'stash', '1': 'stash', 'other': 'stashes'}"></ng-pluralize></span>
                 </div>
               </div>

@@ -7,9 +7,6 @@ app.http().io();
 
 // Load Modules
 var path = require('path');
-var moment = require('moment');
-var bunyan = require('bunyan');
-var log = bunyan.createLogger({name: 'uchiwa', src: true});
 
 // Uchiwa Librairies
 var authentication = require('./lib/authentication.js');
@@ -18,6 +15,7 @@ var Dc = require('./lib/dc.js').Dc;
 var listeners = require('./lib/listeners.js');
 var pusher = require('./lib/pusher.js');
 var health = require('./lib/health.js');
+var logger = require('./lib/logger.js');
 
 // Uchiwa Configuration
 var sensu = {};
@@ -25,7 +23,7 @@ var datacenters = [];
 var config = {};
 configuration.get(function (result) { config = result; });
 var publicConfig = configuration.public(config);
-moment.defaultFormat = config.uchiwa.dateFormat;
+logger.level(config.uchiwa.logLevel);
 
 // Authentification
 app.set('config', config);
@@ -37,24 +35,13 @@ app.set('host', process.env.HOST || config.uchiwa.host);
 app.engine('.html', require('ejs').__express);
 app.set('views', path.join(__dirname, 'public'));
 app.set('view engine', 'html');
-
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(require('express-bunyan-logger')());
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-/**
- * Error handling
- * DEBUG=* NODE_ENV=development node app.js
- */
-if ('development' === process.env.NODE_ENV) {
-  log.info('Debugging enabled.');
-  app.use(express.errorHandler({showStack: true, dumpExceptions: true}));
-}
-
 /* jshint ignore:start */
 app.use(function (err, req, res, next) {
-  log.error(err);
+  logger.error(err);
   res.send(500);
   next();
 });
@@ -85,5 +72,5 @@ app.get('/health/:component?', function(req, res){
 
 // Start Server
 app.listen(app.get('port'), app.get('host'), function () {
-  log.info('Uchiwa is now listening on %s:%s', app.get('host'), app.get('port'));
+  logger.info('Uchiwa is now listening on %s:%s', app.get('host'), app.get('port'));
 });

@@ -24,7 +24,7 @@ module.exports = function (grunt) {
     },
     karma: {
       unit: {
-        configFile: 'test/karma.conf.js'
+        configFile: 'test/karma/conf.js'
       }
     },
     sass: {
@@ -37,6 +37,16 @@ module.exports = function (grunt) {
           ext: '.css'
         }]
       }
+    },
+    simplemocha: {
+      options: {
+        globals: ['expect'],
+        timeout: 3000,
+        ignoreLeaks: false,
+        ui: 'bdd',
+        reporter: 'tap'
+      },
+      all: { src: ['test/chai/*.js'] }
     },
     watch: {
       scss: {
@@ -59,6 +69,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', [
     'sass',
-    'karma:unit'
+    'karma:unit',
+    'mocha'
   ]);
 };

@@ -56,13 +56,24 @@ serviceModule.factory('underscore', function () {
  * Clients
  */
 serviceModule.service('clientsService', ['socket', '$location', function (socket, $location) {
+  this.getCheck = function (id, history) {
+    return history.filter(function (item) {
+      return item.check === id;
+    })[0];
+  };
+  this.getEvent = function (client, check, events) {
+    if (!client || !check || events.constructor.toString().indexOf('Array') === -1) { return null; }
+    return  events.filter(function (item) {
+      return (item.client.name === client && item.check.name === check);
+    })[0];
+  };
   this.stash = function (dcName, client, check, expire) {
     var checkName = (angular.isUndefined(check)) ? '' : '/' + check.check;
-    var isSilenced = (angular.isUndefined(check)) ? client.isSilenced : check.isSilenced;
+    var acknowledged = (angular.isUndefined(check)) ? client.acknowledged : check.acknowledged;
     var path = 'silence/' + client.name + checkName;
     var payload;
     var icon;
-    if (isSilenced) {
+    if (acknowledged) {
       payload = {path: path, content: {}};
       socket.emit('delete_stash', JSON.stringify({dc: dcName, payload: payload}));
       icon = 'fa-volume-up';
@@ -77,12 +88,12 @@ serviceModule.service('clientsService', ['socket', '$location', function (socket
     }
     if (angular.isUndefined(check)) {
       client.silenceIcon = icon;
-      client.isSilenced = !client.isSilenced;
+      client.acknowledged = !client.acknowledged;
       return client;
     }
     else {
       check.silenceIcon = icon;
-      check.isSilenced = !check.isSilenced;
+      check.acknowledged = !check.acknowledged;
       return check;
     }
   };
@@ -113,7 +124,7 @@ serviceModule.service('eventsService', ['socket', function (socket) {
     var path = 'silence/' + currentEvent.client.name + '/' + currentEvent.check.name;
     var payload;
     var icon;
-    if (currentEvent.isSilenced) {
+    if (currentEvent.acknowledged) {
       payload = {path: path, content: {}};
       socket.emit('delete_stash', JSON.stringify({dc: dcName, payload: payload}));
       icon = 'fa-volume-up';
@@ -127,7 +138,7 @@ serviceModule.service('eventsService', ['socket', function (socket) {
       icon = 'fa-volume-off';
     }
     currentEvent.silenceIcon = icon;
-    currentEvent.isSilenced = !currentEvent.isSilenced;
+    currentEvent.acknowledged = !currentEvent.acknowledged;
     return currentEvent;
   };
 }]);
