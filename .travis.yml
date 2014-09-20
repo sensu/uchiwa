@@ -4,3 +4,5 @@ node_js:
   - "0.10"
 before_script:
   - npm install -g grunt-cli
+  - echo 'America/Montreal' | sudo tee /etc/timezone
+  - sudo dpkg-reconfigure --frontend noninteractive tzdata
