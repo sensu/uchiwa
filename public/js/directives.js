@@ -44,41 +44,36 @@ directiveModule.directive('siteTheme', ['$cookieStore', 'settings', function ($c
   };
 }]);
 
-directiveModule.directive('statusGlyph', function() {
+directiveModule.directive('statusGlyph', ['$filter', function ($filter) {
   return {
     restrict: 'EA',
     link: function(scope, element, attrs) {
-      var style;
 
-      function updateGlyph() {
+      function updateGlyph(style) {
         element.removeAttr('class');
         element.addClass('fa fa-fw');
         switch(style) {
-          case 'success':
+          case 0:
             element.addClass('fa-check-circle');
             break;
-          case 'warning':
+          case 1:
             element.addClass('fa-exclamation-circle');
             break;
-          case 'danger':
+          case 2:
             element.addClass('fa-bomb');
             break;
-          case 'muted':
+          case 3:
             element.addClass('fa-question-circle');
             break;
         }
-        element.addClass('text-' + style);
+
+        var status = $filter('getStatusClass')(style);
+        element.addClass('text-' + status);
       }
 
       scope.$watch(attrs.statusGlyph, function(value) {
-        // convert sensu state to CSS class name
-        var styleOverrides = {
-          'critical': 'danger',
-          'unknown': 'muted'
-        };
-        style = styleOverrides[value] ? styleOverrides[value] : value;
-        updateGlyph();
+        updateGlyph(value);
       });
     }
   };
-});
+}]);

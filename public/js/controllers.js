@@ -74,15 +74,23 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clie
     var timer = setInterval($scope.pull, 10000);
 
     // Socket.IO
+    $scope.$on('socket:sensu', function (event, data) {
+      var sensu = angular.fromJson(data.content);
+      $scope.events = sensu.events;
+    });
+
     $scope.$on('socket:client', function (event, data) {
       if(!$scope.dropdown.isopen) {
-        $scope.client = angular.fromJson(data.content);
+        $scope.$apply(function() {
+          $scope.client = angular.fromJson(data.content);
+        });
       }
       $scope.pageHeaderText = $scope.client.name;
 
-      // Retrieve check
+      // Retrieve check & event
       $scope.requestedCheck = decodeURI($routeParams.check);
-      $scope.selectedCheck = findCheck($scope.requestedCheck);
+      $scope.selectedCheck = getCheck($scope.requestedCheck, $scope.client.history);
+      $scope.selectedEvent = getEvent($scope.client.name, $scope.requestedCheck, $scope.events);
 
       // Set page title
       if(angular.isDefined($scope.selectedCheck)) {
@@ -92,6 +100,34 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clie
         Page.setTitle($scope.client.name);
       }
     });
+
+    // Routing
+    $scope.$on('$routeUpdate', function(){
+      // Retrieve check & event
+      $scope.requestedCheck = decodeURI($routeParams.check);
+      $scope.selectedCheck = getCheck($scope.requestedCheck, $scope.client.history);
+      $scope.selectedEvent = getEvent($scope.client.name, $scope.requestedCheck, $scope.events);
+
+      if(angular.isDefined($scope.selectedCheck)) {
+        Page.setTitle($scope.requestedCheck + ' - ' + $scope.client.name);
+      }
+      else {
+        Page.setTitle($scope.client.name);
+      }
+    });
+
+    $scope.$on('$destroy', function() {
+      clearInterval(timer);
+    });
+
+    // Sanitize - only display useful information 'acknowledged', 'dc', 'events', 'eventsSummary', 'history', 'status', 'timestamp'
+    /* jshint ignore:start */
+    var clientWhitelist = [ 'acknowledged', 'dc', 'events', 'eventsSummary', 'history', 'status', 'timestamp' ];
+    var checkWhitelist = [ 'dc', 'hasSubscribers', 'name'];
+    $scope.sanitizeObject = function(type, key){
+      return eval(type + 'Whitelist').indexOf(key) === -1;
+    };
+    /* jshint ignore:end */
 
     // Helpers
     $scope.toggled = function(e) {
@@ -109,44 +145,14 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'socket', 'clie
       {key: '24 hours', value: 86400},
       {key: 'Never', value: -1},
     ];
-    var findCheck = function(id){
-      return $scope.client.history.filter(function (item) {
-        return item.check === id;
-      })[0];
-    };
-
-    // Listeners
-    $scope.$on('$routeUpdate', function(){
-      // Update check
-      $scope.requestedCheck = decodeURI($routeParams.check);
-      $scope.selectedCheck = findCheck($scope.requestedCheck);
-      if(angular.isDefined($scope.selectedCheck)) {
-        Page.setTitle($scope.requestedCheck + ' - ' + $scope.client.name);
-      }
-      else {
-        Page.setTitle($scope.client.name);
-      }
-    });
-
-    $scope.$on('$destroy', function() {
-      clearInterval(timer);
-    });
-
-    // Sanitize - only display useful information
-    /* jshint ignore:start */
-    var clientWhitelist = [ 'dc', 'events', 'eventsSummary', 'history', 'isSilenced', 'lastCheck', 'silenceIcon', 'status', 'timestamp', 'style' ];
-    var checkWhitelist = [ 'dc', 'hasSubscribers', 'name'];
-    var eventWhitelist = [ 'command', 'executed', 'handlers', 'hasSubscribers', 'history', 'interval', 'issued', 'name', 'status', 'standalone', 'subscribers' ];
-    $scope.sanitizeObject = function(type, key){
-      return eval(type + 'Whitelist').indexOf(key) === -1;
-    };
-    /* jshint ignore:end */
 
     // Services
     $scope.remove = clientsService.remove;
     $scope.resolve = clientsService.resolve;
     $scope.permalink = routingService.permalink;
     $scope.stash = clientsService.stash;
+    var getCheck = clientsService.getCheck;
+    var getEvent = clientsService.getEvent;
   }
 ]);
 

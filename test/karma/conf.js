@@ -1,7 +1,7 @@
 // karma.conf.js
 module.exports = function(config) {
   config.set({
-    basePath : '../',
+    basePath : '../../',
     frameworks: ['jasmine'],
     files : [
       'public/bower_components/jquery/dist/jquery.js',
@@ -14,7 +14,7 @@ module.exports = function(config) {
       'public/bower_components/toastr/toastr.min.js',
       'public/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
       'public/js/**/*.js',
-      'test/unit/**/*.js'
+      'test/karma/**/*.js'
     ],
     reporters: ['junit', 'coverage', 'dots'],
     coverageReporter: {
@@ -25,7 +25,7 @@ module.exports = function(config) {
       'public/js/**/*.js': ['coverage']
     },
     junitReporter: {
-      outputFile: 'build/unit/test-results.xml'
+      outputFile: 'build/karma/test-results.xml'
     },
     port: 8876,
     colors: true,

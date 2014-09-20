@@ -53,13 +53,13 @@
             </thead>
             <tbody>
               <tr ng-repeat="client in clients | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | filterSubscriptions:filters.subscription | limitTo:filters.limit" ng-click="go('/client/'+client.dc+'/'+client.name)">
-                <td class="well-{{ client.style }} dropdown" ng-click="toggled($event)" dropdown-toggle>
-                  <i class="fa {{client.silenceIcon}}"></i>
+                <td class="well-{{ client.status | getStatusClass }} dropdown" ng-click="toggled($event)" dropdown-toggle>
+                  <i class="fa {{ client.acknowledged | getAckClass }}"></i>
                   <ul class="dropdown-menu">
-                    <li ng-repeat="choice in silenceOptions" ng-if="!client.isSilenced">
+                    <li ng-repeat="choice in silenceOptions" ng-if="!client.acknowledged">
                       <a href ng-click="stash(client.dc, client, undefined, choice.value);">{{choice.key}}</a>
                     </li>
-                    <li ng-if="client.isSilenced">
+                    <li ng-if="client.acknowledged">
                       <a href ng-click="stash(client.dc, client, undefined);"><i class="fa fa-times"></i> Delete</a>
                     </li>
                   </ul>
@@ -69,7 +69,7 @@
                 <td class="output">{{ client.eventsSummary }}</td>
                 <td>{{ client.dc }}</td>
                 <td>{{ client.version }}</td>
-                <td>{{ client.lastCheck }}</td>
+                <td>{{ client.timestamp | getTimestamp }}</td>
               </tr>
             </tbody>
           </table>

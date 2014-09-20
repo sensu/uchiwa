@@ -44,14 +44,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="stash in stashes | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | limitTo:filters.limit">
+              <tr ng-repeat="stash in stashes | filter:filters.q | filter:{dc:filters.dc} | limitTo:filters.limit | buildStashes | orderBy:predicate:reverse">
                 <td><i class="fa fa-times" ng-click="deleteStash(stash.dc, stash, $index);"></i></td>
                 <td class="main">{{ stash.client }}</td>
                 <td>{{ stash.check }}</td>
                 <td>{{ stash.content }}</td>
                 <td>{{ stash.dc }}</td>
-                <td>{{ stash.expireParsed }}</td>
-                <td>{{ stash.timestampParsed }}</td>
+                <td>{{ stash.expire | getExpireTimestamp:stash.content.timestamp }}</td>
+                <td>{{ stash.content.timestamp | getTimestamp }}</td>
               </tr>
             </tbody>
           </table>
