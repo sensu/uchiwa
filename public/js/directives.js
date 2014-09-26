@@ -2,15 +2,6 @@
 
 var directiveModule = angular.module('uchiwa.directives', []);
 
-directiveModule.directive('bootstrapTooltip', function () {
-  return {
-    restrict: 'EA',
-    link: function (scope, element) {
-      element.tooltip();
-    }
-  };
-});
-
 directiveModule.directive('siteTheme', ['$cookieStore', 'settings', function ($cookieStore, settings) {
   return {
     restrict: 'EA',

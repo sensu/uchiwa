@@ -30,7 +30,7 @@
                   </li>
                 </ul>
               </span>
-              <i class="fa fa-times" data-toggle="tooltip" data-placement="top" title="Delete" bootstrap-tooltip ng-click="remove(client.dc, client.name)"></i>
+              <i class="fa fa-times" tooltip-placement="top" tooltip="Delete" ng-click="remove(client.dc, client.name)"></i>
             </span>
           </div>
           <div class="title">
@@ -79,7 +79,7 @@
               <th class="col-min"></th>
               <th class="col-sm-2">Check</th>
               <th class="col-sm-4">Output</th>
-              <th class="col-sm-2"><i class='fa fa-clock-o' data-toggle="tooltip" data-placement="top" title="Last Check" bootstrap-tooltip></i> <i class="fa fa-sort"></i></th>
+              <th class="col-sm-2"><i class='fa fa-clock-o' tooltip-placement="top" tooltip="Last Check"></i> <i class="fa fa-sort"></i></th>
               <th class="col-min"></th>
             </tr>
           </thead>
@@ -99,7 +99,7 @@
               <td class="main" >{{ check.check }}</td>
               <td class="check-output">{{ check.output }}</td>
               <td>{{ check.last_execution | getTimestamp }}</td>
-              <td><i class="fa fa-check" data-toggle="tooltip" data-placement="top" title="Resolve" bootstrap-tooltip ng-click="resolve(client.dc, client, check)" ng-if="check.event"></i></td>
+              <td><i class="fa fa-check" tooltip-placement="top" tooltip="Resolve" ng-click="resolve(client.dc, client, check)" ng-if="check.event"></i></td>
             </tr>
           </tbody>
         </table>
@@ -121,7 +121,7 @@
                   </li>
                 </ul>
               </span>
-              <i class="fa fa-check" data-toggle="tooltip" data-placement="top" title="Resolve" bootstrap-tooltip ng-click="resolve(client.dc, client, selectedCheck)"></i>
+              <i class="fa fa-check" tooltip-placement="top" tooltip="Resolve" ng-click="resolve(client.dc, client, selectedCheck)"></i>
             </span>
           </div>
           <div>
