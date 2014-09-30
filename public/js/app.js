@@ -13,6 +13,7 @@ angular.module('uchiwa', [
   // 3rd party dependencies
   'btford.socket-io',
   'imagey',
+  'toastr',
   'ui.bootstrap'
 ]);
 

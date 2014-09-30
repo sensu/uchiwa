@@ -30,13 +30,14 @@ serviceModule.factory('Page', function() {
 serviceModule.provider('notification', function () {
   this.setOptions = function (options) {
     if (angular.isObject(options)) {
-      window.toastr.options = options;
+      window.toastr = { 'options': options };
     }
   };
   this.setOptions({});
-  this.$get = function () {
+  this.$get = function (toastr, toastrConfig) {
+    angular.extend(toastrConfig, window.toastr.options);
     return function (type, message) {
-      window.toastr[type](message);
+      toastr[type](message);
     };
   };
 });
