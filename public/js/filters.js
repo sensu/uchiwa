@@ -30,7 +30,7 @@ filterModule.filter('buildEvents', function() {
       return events;
     }
     angular.forEach(events, function(event) {
-      event.sourceName = event.source || event.client.name;
+      event.sourceName = event.check.source || event.client.name;
     });
     return events;
   };
