@@ -4,7 +4,6 @@ module.exports = function(config) {
     basePath : '../../',
     frameworks: ['jasmine'],
     files : [
-      'public/bower_components/jquery/dist/jquery.js',
       'public/bower_components/underscore/underscore.js',
       'public/bower_components/angular/angular.js',
       'public/bower_components/angular-cookies/angular-cookies.js',
@@ -13,7 +12,7 @@ module.exports = function(config) {
       'public/bower_components/angular-mocks/angular-mocks.js',
       'public/bower_components/angular-socket.io-mock/angular-socket.io-mock.js',
       'public/bower_components/imagey-filter/index.js',
-      'public/bower_components/toastr/toastr.min.js',
+      'public/bower_components/angular-toastr/dist/angular-toastr.min.js',
       'public/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
       'public/js/**/*.js',
       'test/karma/**/*.js'
