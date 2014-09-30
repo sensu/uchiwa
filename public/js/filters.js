@@ -24,6 +24,18 @@ filterModule.filter('buildStashes', function() {
   };
 });
 
+filterModule.filter('buildEvents', function() {
+  return function(events) {
+    if (Object.prototype.toString.call(events) !== '[object Array]') {
+      return events;
+    }
+    angular.forEach(events, function(event) {
+      event.sourceName = event.check.source || event.client.name;
+    });
+    return events;
+  };
+});
+
 filterModule.filter('displayObject', function() {
   return function(input) {
     if(angular.isObject(input)) {

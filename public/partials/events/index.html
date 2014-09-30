@@ -39,7 +39,7 @@
             <thead>
               <tr>
                 <th class="col-min" ng-click="predicate = '-check.status'; reverse=!reverse"><i class="fa fa-sort"></i></th>
-                <th class="col-sm-2" ng-click="predicate = 'client.name'; reverse=!reverse">Client <i class="fa fa-sort"></i></th>
+                <th class="col-sm-2" ng-click="predicate = 'sourceName'; reverse=!reverse">Source <i class="fa fa-sort"></i></th>
                 <th class="col-sm-2" ng-click="predicate = 'check.name'; reverse=!reverse">Check <i class="fa fa-sort"></i></th>
                 <th class="col-sm-4" ng-click="predicate = 'check.output'; reverse=!reverse">Output <i class="fa fa-sort"></i></th>
                 <th class="col-sm-1" ng-click="predicate = 'occurrences'; reverse=!reverse"><i class="fa fa-slack" data-toggle="tooltip" data-placement="top" title="Occurrences" bootstrap-tooltip></i> <i class="fa fa-sort"></i></th>
@@ -48,7 +48,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="event in events | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | limitTo:filters.limit" ng-click="go('/client/'+event.dc+'/'+event.client.name+'?check='+event.check.name)">
+              <tr ng-repeat="event in events | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | limitTo:filters.limit | buildEvents" ng-click="go('/client/'+event.dc+'/'+event.client.name+'?check='+event.check.name)">
                 <td class="well-{{ event.check.status | getStatusClass }} dropdown" ng-click="toggled($event)" dropdown-toggle>
                   <i class="fa {{ event.acknowledged | getAckClass }}"></i>
                   <ul class="dropdown-menu">
@@ -60,7 +60,7 @@
                     </li>
                   </ul>
                 </td>
-                <td class="dropdown-toggle" >{{ event.client.name }}</td>
+                <td class="dropdown-toggle" >{{ event.sourceName }}</td>
                 <td class="main check-name">{{ event.check.name }}</td>
                 <td class="output">{{ event.check.output }}</td>
                 <td>{{ event.occurrences }}</td>
