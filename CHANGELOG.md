@@ -1,3 +1,14 @@
+### 0.2.4 (2014-09-29)
+
+#### Features
+  Use source property in events for masquerading (PR #134)
+- Date timezone is now determined by the browser (PR #124)
+- Move most of sensu.js library logic to AngularJS (PR #124)
+
+#### Bug Fixes
+- Avoid HTTP 500 errors on /health page (Issue #128)
+- Improve stability when dealing with retrieved data (Issue #119)
+
 ### 0.2.3 (2014-09-04)
 
 #### Bug Fixes
