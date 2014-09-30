@@ -1,7 +1,7 @@
 ### 0.2.4 (2014-09-29)
 
 #### Features
-  Use source property in events for masquerading (PR #134)
+- Use source property in events for masquerading (PR #134)
 - Date timezone is now determined by the browser (PR #124)
 - Move most of sensu.js library logic to AngularJS (PR #124)
 
