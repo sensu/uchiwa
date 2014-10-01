@@ -197,7 +197,9 @@ a {
   white-space: pre-line; }
 
 .client .value img {
-  display: block; }
+  display: block;
+  width: 100%;
+  height: 100%; }
 
 .client .check-info .title {
   font-size: 14px;
