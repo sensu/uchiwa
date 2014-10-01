@@ -13,11 +13,12 @@ angular.module('uchiwa', [
   // 3rd party dependencies
   'btford.socket-io',
   'imagey',
+  'toastr',
   'ui.bootstrap'
 ]);
 
-angular.module('uchiwa').config(['$routeProvider', 'notificationProvider',
-  function ($routeProvider, notificationProvider) {
+angular.module('uchiwa').config(['$routeProvider', 'notificationProvider', '$tooltipProvider',
+  function ($routeProvider, notificationProvider, $tooltipProvider) {
     $routeProvider
       .when('/', {redirectTo: function () { return '/events'; }})
       .when('/events', {templateUrl: 'partials/events/index.html', reloadOnSearch: false, controller: 'events'})
@@ -28,7 +29,5 @@ angular.module('uchiwa').config(['$routeProvider', 'notificationProvider',
       .when('/stashes', {templateUrl: 'partials/stashes/index.html', reloadOnSearch: false, controller: 'stashes'})
       .when('/settings', {templateUrl: 'partials/settings/edit.html', controller: 'settings'})
       .otherwise('/');
-    notificationProvider.setOptions({
-      'positionClass': 'toast-bottom-right'
-    });
+    $tooltipProvider.options({'placement': 'bottom'});
   }]);

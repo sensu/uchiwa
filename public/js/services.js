@@ -28,15 +28,17 @@ serviceModule.factory('Page', function() {
  * Notifications
  */
 serviceModule.provider('notification', function () {
-  this.setOptions = function (options) {
-    if (angular.isObject(options)) {
-      window.toastr.options = options;
+  this.$get = function (toastr, toastrConfig, $cookieStore) {
+    var toastrSettings = $cookieStore.get('toastrSettings');
+    if(!toastrSettings) {
+      $cookieStore.put('toastrSettings', {
+        'positionClass': 'toast-bottom-right'
+      });
+      toastrSettings = $cookieStore.get('toastrSettings');
     }
-  };
-  this.setOptions({});
-  this.$get = function () {
+    angular.extend(toastrConfig, toastrSettings);
     return function (type, message) {
-      window.toastr[type](message);
+      toastr[type](message);
     };
   };
 });
