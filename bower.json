@@ -14,11 +14,13 @@
     "angular-bootstrap": "0.11.0",
     "angular-cookies": "~1.2.16",
     "angular-route": "~1.2.16",
+    "angular-sanitize": "1.2.25",
     "angular-socket-io": "~0.6.0",
     "async": "~0.9.0",
     "bootstrap": "3.1.1",
     "bootstrap-sass-official": "3.1.1",
     "fontawesome": "4.1.0",
+    "imagey-filter": "~1.0.1",
     "jquery": "~2.1.1",
     "toastr": "~2.0.3",
     "underscore": "~1.6.0"

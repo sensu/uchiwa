@@ -9,8 +9,10 @@ angular.module('uchiwa', [
   // Angular dependencies
   'ngCookies',
   'ngRoute',
+  'ngSanitize',
   // 3rd party dependencies
   'btford.socket-io',
+  'imagey',
   'ui.bootstrap'
 ]);
 

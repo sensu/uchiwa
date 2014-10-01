@@ -58,7 +58,7 @@
                     <div class="key">{{key}}</div>
                   </div>
                   <div class="col-sm-8">
-                    <div class="value pull-right">{{value | displayObject}}</div>
+                    <div class="value pull-right" ng-bind-html="value | displayObject | richOutput"></div>
                   </div>
                 </div>
               </span>
@@ -140,7 +140,7 @@
                   <span class="key pull-right">{{key}}</span>
                 </div>
                 <div class="col-sm-10">
-                  <span class="value">{{value | getTimestamp}}</span>
+                  <span class="value" ng-bind-html="value | getTimestamp | richOutput"></span>
                 </div>
               </div>
             </div>
