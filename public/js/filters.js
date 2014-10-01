@@ -114,3 +114,14 @@ filterModule.filter('setMissingProperty', function() {
     return property || false;
   };
 });
+
+filterModule.filter('richOutput', ['$filter', function($filter) {
+  return function(text) {
+    if(typeof text !== 'string') {
+      text = angular.toJson(text);
+    }
+    text = $filter('linky')(text, '_blank');
+    text = $filter('imagey')(text);
+    return text;
+  };
+}]);
