@@ -29,8 +29,5 @@ angular.module('uchiwa').config(['$routeProvider', 'notificationProvider', '$too
       .when('/stashes', {templateUrl: 'partials/stashes/index.html', reloadOnSearch: false, controller: 'stashes'})
       .when('/settings', {templateUrl: 'partials/settings/edit.html', controller: 'settings'})
       .otherwise('/');
-    notificationProvider.setOptions({
-      'positionClass': 'toast-bottom-right'
-    });
     $tooltipProvider.options({'placement': 'bottom'});
   }]);
