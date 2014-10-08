@@ -1,3 +1,14 @@
+### 0.2.5 (2014-10-08)
+
+#### Features
+- Rich data output for links and images (Issue #86)
+- Remove jQuery dependency (PR #132)
+- Use angular-toastr module instead of toastr library (PR #132)
+- Add real favicon (PR #145)
+
+#### Bug Fixes
+- Prevent XSS attacks through toastr library
+
 ### 0.2.4 (2014-09-29)
 
 #### Features
