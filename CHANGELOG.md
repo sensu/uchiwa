@@ -1,3 +1,12 @@
+### 0.2.6 (2014-10-08)
+
+#### Features
+- Allow client checks to be ordered by history, name, output and time (PR #149)
+
+### Bug Fixes
+- Force toastr position when cookie is missing
+- Remove HTML tags from toastr notifications
+
 ### 0.2.5 (2014-10-08)
 
 #### Features
