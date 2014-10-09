@@ -31,7 +31,7 @@ serviceModule.provider('notification', function () {
   this.$get = function (toastr, toastrConfig, $cookieStore) {
     var toastrSettings = $cookieStore.get('toastrSettings');
     if(!toastrSettings) {
-      var toastrSettings = { 'positionClass': 'toast-bottom-right' }
+      toastrSettings = { 'positionClass': 'toast-bottom-right' };
       $cookieStore.put('toastrSettings', toastrSettings);
     }
     angular.extend(toastrConfig, toastrSettings);
