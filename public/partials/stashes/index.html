@@ -8,7 +8,7 @@
             <div class="col-md-10">
               <ul class="nav nav-pills nav-dc">
                 <li><a ng-class="{active: filters.dc == ''}" ng-click="permalink($event, 'dc', '')">All datacenters</a></li>
-                <li ng-repeat="datacenter in dc">
+                <li ng-repeat="datacenter in dc | orderBy:'name'">
                   <a ng-class="{active: filters.dc == datacenter.name}" ng-click="permalink($event, 'dc', datacenter.name)">{{ datacenter.name }}</a>
                 </li>
               </ul>

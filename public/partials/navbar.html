@@ -63,7 +63,7 @@
                   <span class="category"><ng-pluralize count="dc.length" when="{'0': 'datacenter', '1': 'datacenter', 'other': 'datacenters'}"></ng-pluralize></span>
                 </div>
                 <div class="panel panel-body panel-bottom panel-default">
-                  <div ng-repeat="datacenter in dc">
+                  <div ng-repeat="datacenter in dc | orderBy:'name'">
                     <div class="row">
                       <div class="col-sm-12">
                         <div class="dc-title">

@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="col-lg-8">
-        <div class="panel panel-default" ng-repeat="datacenter in dc">
+        <div class="panel panel-default" ng-repeat="datacenter in dc | orderBy:'name'">
           <div class="panel-heading">
             {{datacenter.name}}
           </div>
