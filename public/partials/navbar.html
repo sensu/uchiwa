@@ -72,12 +72,28 @@
                         </div>
                         <div class="row">
                           <div class="col-sm-6">
-                            <div>{{datacenter.events}}<span class="small-category"> events</span></div>
-                            <div>{{datacenter.stashes}}<span class="small-category"> stashes</span></div>
+                            <div>
+                              <a ng-href="/#/events/?dc={{datacenter.name | encodeURIComponent}}">
+                                {{datacenter.events}}<span class="small-category"> events</span>
+                              </a>
+                            </div>
+                            <div>
+                              <a ng-href="/#/stashes/?dc={{datacenter.name | encodeURIComponent}}">
+                                {{datacenter.stashes}}<span class="small-category"> stashes</span>
+                              </a>
+                            </div>
                           </div>
                           <div class="col-sm-6">
-                            <div class="pull-right">{{datacenter.clients}}<span class="small-category"> clients</span></div>
-                            <div class="pull-right">{{datacenter.checks}}<span class="small-category"> checks</span></div>
+                            <div class="pull-right">
+                              <a ng-href="/#/clients/?dc={{datacenter.name | encodeURIComponent}}">
+                                {{datacenter.clients}}<span class="small-category"> clients</span>
+                              </a>
+                            </div>
+                            <div class="pull-right">
+                              <a ng-href="/#/checks/?dc={{datacenter.name | encodeURIComponent}}">
+                                {{datacenter.checks}}<span class="small-category"> checks</span>
+                              </a>
+                            </div>
                           </div>
                         </div>
                       </div>
