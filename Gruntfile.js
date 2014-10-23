@@ -70,6 +70,6 @@ module.exports = function (grunt) {
   grunt.registerTask('default', [
     'sass',
     'karma:unit',
-    'mocha'
+    'simplemocha'
   ]);
 };
