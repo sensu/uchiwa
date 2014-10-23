@@ -14,6 +14,7 @@ module.exports = function(config) {
       'public/bower_components/imagey-filter/index.js',
       'public/bower_components/angular-toastr/dist/angular-toastr.min.js',
       'public/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
+      'public/bower_components/moment/min/moment.min.js',
       'public/js/**/*.js',
       'test/karma/**/*.js'
     ],
