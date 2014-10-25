@@ -2,6 +2,7 @@
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -65,10 +66,34 @@ a {
 .text-critical {
   color: #EA5443; }
 
+pre.hljs {
+  border: 0;
+  font-size: 13px;
+  padding: 0;
+  font-family: Roboto, sans-serif;
+  background-color: inherit;
+  color: #a6a17c; }
+
+pre.hljs .hljs-value {
+  color: #a6a17c; }
+
+pre.hljs .hljs-attribute {
+  color: #6d9cbe; }
+
+pre.hljs .hljs-number {
+  color: #85a241; }
+
+pre.hljs .hljs-literal {
+  color: #85a241; }
+
+pre.hljs .hljs-string {
+  color: #718c00; }
+
 /* Colors */
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -104,6 +129,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -127,6 +153,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -164,6 +191,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -214,6 +242,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -252,6 +281,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -277,6 +307,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -335,6 +366,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -409,6 +441,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -452,6 +485,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -566,6 +600,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -618,6 +653,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */

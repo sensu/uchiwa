@@ -55,10 +55,10 @@
               <span ng-show="sanitizeObject('client', key)">
                 <div class="row">
                   <div class="col-sm-4">
-                    <div class="key">{{key}}</div>
+                    <div class="key pull-right">{{key}}</div>
                   </div>
                   <div class="col-sm-8">
-                    <div class="value pull-right" ng-bind-html="value | displayObject | richOutput"></div>
+                    <div class="value" ng-bind-html="value | displayObject | richOutput"></div>
                   </div>
                 </div>
               </span>

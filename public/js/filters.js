@@ -117,11 +117,15 @@ filterModule.filter('setMissingProperty', function() {
 
 filterModule.filter('richOutput', ['$filter', function($filter) {
   return function(text) {
-    if(typeof text !== 'string') {
-      text = angular.toJson(text);
+    if(typeof text === 'object') {
+      text = hljs.highlight('json', angular.toJson(text, true)).value;
+      text = '<pre class=\"hljs\">' + text + '</pre>';
+    } else if (typeof text === 'number') {
+      text = text.toString();
+    } else {
+      text = $filter('linky')(text, '_blank');
+      text = $filter('imagey')(text);
     }
-    text = $filter('linky')(text, '_blank');
-    text = $filter('imagey')(text);
     return text;
   };
 }]);

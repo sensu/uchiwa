@@ -68,3 +68,32 @@ a {
 .text-critical {
   color: $critical-color;
 }
+
+pre.hljs {
+  border: 0;
+  font-size: 13px;
+  padding: 0;
+  font-family: Roboto, sans-serif;
+  background-color: inherit;
+  color: $code-base-color;
+}
+
+pre.hljs .hljs-value {
+  color: $code-base-color;
+}
+
+pre.hljs .hljs-attribute {
+  color: $code-attribute-color;
+}
+
+pre.hljs .hljs-number {
+  color: $code-number-color;
+}
+
+pre.hljs .hljs-literal {
+  color: $code-literal-color;
+}
+
+pre.hljs .hljs-string {
+  color: $code-string-color;
+}
