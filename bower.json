@@ -28,6 +28,7 @@
   "devDependencies": {
     "jasmine": "~2.0.0",
     "angular-mocks": "~1.2.26",
-    "angular-socket.io-mock": "~0.0.2"
+    "angular-socket.io-mock": "~0.0.2",
+    "moment": "~2.8.3"
   }
 }

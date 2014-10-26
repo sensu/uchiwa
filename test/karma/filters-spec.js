@@ -120,7 +120,7 @@ describe('filters', function () {
     it('should convert epoch to human readable date', inject(function (getTimestampFilter) {
       expect(getTimestampFilter('test')).toBe('test');
       expect(getTimestampFilter(1)).toBe(1);
-      expect(getTimestampFilter(1413028800)).toContain('2014-10-11');
+      expect(getTimestampFilter(1410908218)).toBe(moment.utc('2014-09-16 22:56:58', 'YYYY-MM-DD HH:mm:ss').local().format('YYYY-MM-DD HH:mm:ss'));
     }));
 
   });
