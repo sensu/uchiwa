@@ -176,7 +176,7 @@ describe('filters', function () {
   describe('richOutput', function () {
 
     it('should convert an object to JSON string', inject(function (richOutputFilter) {
-      expect(richOutputFilter({foo: 'bar'})).toEqual('{&#34;foo&#34;:&#34;bar&#34;}');
+      expect(richOutputFilter({foo: 'bar'})).toContain('<span class="hljs-attribute">foo</span>');
     }));
 
     it('should convert an image URL to a HTML image', inject(function (richOutputFilter) {
