@@ -1,11 +1,13 @@
 'use strict';
 
 describe('services', function () {
-  var socket;
+  var $rootScope;
+  var $scope;
 
   beforeEach(module('uchiwa'));
-  beforeEach(inject(function (_socket_) {
-    socket = _socket_;
+  beforeEach(inject(function (_$rootScope_) {
+    $rootScope = _$rootScope_;
+    $scope = $rootScope.$new();
   }));
 
   describe('Page', function () {
@@ -24,19 +26,48 @@ describe('services', function () {
 
   });
 
+  describe('clientsService', function () {
+
+    describe('resolveEvent', function () {
+
+      it('should return false when neither client & check are undefined or not objects', inject(function (clientsService) {
+        expect(clientsService.resolveEvent('foo', null, null)).toEqual(false);
+        expect(clientsService.resolveEvent('foo', undefined)).toEqual(false);
+      }));
+
+      it('should emit HTTP POST to /resolveEvent', inject(function (clientsService, uchiwaBackend) {
+        var expectedPayload = {dc: 'foo', payload: {client: 'bar', check: 'qux'}};
+        spyOn(uchiwaBackend, 'resolveEvent').and.callThrough();
+        clientsService.resolveEvent('foo', {name: 'bar'}, {check: 'qux'});
+        expect(uchiwaBackend.resolveEvent).toHaveBeenCalledWith(expectedPayload);
+      }));
+
+    });
+
+  });
+
   describe('stashesService', function () {
 
-    it('should have a stash method', inject(function (stashesService) {
-      expect(stashesService.stash).toBeDefined();
+    it('should have a deleteStash method', inject(function (stashesService) {
+      expect(stashesService.deleteStash).toBeDefined();
     }));
 
-    describe('stash()', function () {
+    describe('submit', function () {
 
-      it('should emit delete_stash', inject(function (stashesService) {
-        var mockPayload = {dc: 'dcName', payload: {path: '/', content: {}}};
-        spyOn(socket, 'emit');
-        stashesService.stash(mockPayload.dc, mockPayload.payload);
-        expect(socket.emit).toHaveBeenCalledWith('delete_stash', JSON.stringify(mockPayload));
+      it('should emit HTTP POST to /createStash for a client', inject(function (stashesService, uchiwaBackend) {
+        spyOn(uchiwaBackend, 'createStash').and.callThrough();
+        var timestamp = Math.floor(new Date()/1000);
+        var expectedPayload = {dc: 'foo', payload: {path: 'silence/bar', content: {reason: '', source: 'uchiwa', timestamp: timestamp}}};
+        stashesService.submit({acknowledged: true}, {dc: 'foo', path: ['bar', ''], acknowledged: false});
+        expect(uchiwaBackend.createStash).toHaveBeenCalledWith(expectedPayload);
+      }));
+
+      it('should emit HTTP POST to /createStash for a check', inject(function (stashesService, uchiwaBackend) {
+        spyOn(uchiwaBackend, 'createStash').and.callThrough();
+        var timestamp = Math.floor(new Date()/1000);
+        var expectedPayload = {dc: 'foo', payload: {path: 'silence/bar/qux', content: {reason: '', source: 'uchiwa', timestamp: timestamp}}};
+        stashesService.submit({acknowledged: true}, {dc: 'foo', path: ['bar', 'qux'], acknowledged: false});
+        expect(uchiwaBackend.createStash).toHaveBeenCalledWith(expectedPayload);
       }));
 
     });

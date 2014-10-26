@@ -2,11 +2,38 @@
 
 var filterModule = angular.module('uchiwa.filters', []);
 
+filterModule.filter('arrayLength', function() {
+  return function(array) {
+    if (!array) { return 0; }
+    if (array.constructor.toString().indexOf('Array') === -1) { return 0; }
+    return array.length;
+  };
+});
+
 filterModule.filter('arrayToString', function() {
   return function(array) {
     if (!array) { return ''; }
     if (array.constructor.toString().indexOf('Array') === -1) { return array; }
     return array.join(' ');
+  };
+});
+
+filterModule.filter('buildEvents', function() {
+  return function(events) {
+    if (Object.prototype.toString.call(events) !== '[object Array]') {
+      return events;
+    }
+    angular.forEach(events, function(event) {
+      if (typeof(event.check) === 'undefined' && typeof(event.client) === 'undefined') {
+        event.sourceName = 'unknown';
+        return true;
+      }
+      else if (typeof(event.check) === 'undefined') {
+        event.check = {};
+      }
+      event.sourceName = event.check.source || event.client.name;
+    });
+    return events;
   };
 });
 
@@ -21,18 +48,6 @@ filterModule.filter('buildStashes', function() {
       stash.check = path[2] || null;
     });
     return stashes;
-  };
-});
-
-filterModule.filter('buildEvents', function() {
-  return function(events) {
-    if (Object.prototype.toString.call(events) !== '[object Array]') {
-      return events;
-    }
-    angular.forEach(events, function(event) {
-      event.sourceName = event.check.source || event.client.name;
-    });
-    return events;
   };
 });
 
@@ -72,14 +87,15 @@ filterModule.filter('getAckClass', function() {
 });
 
 filterModule.filter('getExpireTimestamp', ['$filter', 'settings', function ($filter, settings) {
-  return function(expire, timestamp) {
-    if (isNaN(timestamp) || isNaN(expire)) {
+  return function(expire) {
+    if (isNaN(expire)) {
       return 'Unknown';
     }
     if (expire === -1) {
       return 'Never';
     }
-    var expiration = (expire + timestamp) * 1000;
+    var now = Math.floor(new Date()/1000);
+    var expiration = (expire + now) * 1000;
     return $filter('date')(expiration, settings.date);
   };
 }]);

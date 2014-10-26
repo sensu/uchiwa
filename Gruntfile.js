@@ -6,8 +6,6 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     settings: {
-      entryPoint: 'app.js',
-      lib: 'lib',
       public: 'public'
     },
     jshint: {
@@ -17,14 +15,26 @@ module.exports = function (grunt) {
       },
       all: [
         'Gruntfile.js',
-        '<%= settings.entryPoint %>',
-        '<%= settings.lib %>/{,*/}*.js',
         '<%= settings.public %>/js/{,*/}*.js',
       ]
     },
     karma: {
       unit: {
         configFile: 'test/karma/conf.js'
+      }
+    },
+    lintspaces: {
+      all: {
+        src: [
+          'public/js/**/*.js'
+        ],
+        options: {
+          newline: true,
+          newlineMaximum: 2,
+          indentation: 'spaces',
+          spaces: 2,
+          trailingspaces: true
+        }
       }
     },
     sass: {
@@ -37,16 +47,6 @@ module.exports = function (grunt) {
           ext: '.css'
         }]
       }
-    },
-    simplemocha: {
-      options: {
-        globals: ['expect'],
-        timeout: 3000,
-        ignoreLeaks: false,
-        ui: 'bdd',
-        reporter: 'tap'
-      },
-      all: { src: ['test/chai/*.js'] }
     },
     watch: {
       scss: {
@@ -68,8 +68,8 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'sass',
-    'karma:unit',
-    'simplemocha'
+    'jshint',
+    'lintspaces',
+    'karma:unit'
   ]);
 };

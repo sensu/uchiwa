@@ -16,21 +16,12 @@
     <div class="col-lg-4">
       <div class="panel panel-default client-info">
         <div class="panel-heading">
-
           <div class="icon">
             <span class="pull-right">
-              <span class="dropdown" ng-click="toggled($event)" dropdown-toggle>
+              <span class="dropdown" ng-click="stash($event, client)" dropdown-toggle>
                 <i class="fa {{client.acknowledged | getAckClass }}"></i>
-                <ul class="dropdown-menu">
-                  <li ng-repeat="choice in silenceOptions" ng-if="!client.acknowledged">
-                    <a href ng-click="stash(client.dc, client, undefined, choice.value);">{{choice.key}}</a>
-                  </li>
-                  <li ng-if="client.acknowledged">
-                    <a href ng-click="stash(client.dc, client, undefined);"><i class="fa fa-times"></i> Delete</a>
-                  </li>
-                </ul>
               </span>
-              <i class="fa fa-times" tooltip-placement="top" tooltip="Delete" ng-click="remove(client.dc, client.name)"></i>
+              <i class="fa fa-times" tooltip-placement="top" tooltip="Delete" ng-click="deleteClient(client.dc, client.name)"></i>
             </span>
           </div>
           <div class="title">
@@ -87,21 +78,13 @@
           </thead>
           <tbody>
             <tr ng-repeat="check in client.history | orderBy:predicate:reverse" ng-click="permalink($event,'check', check.check)">
-              <td class="well-{{ check.last_status | getStatusClass }} dropdown" ng-click="toggled($event)" dropdown-toggle>
+              <td class="well-{{ check.last_status | getStatusClass }} dropdown" ng-click="stash($event, check)">
                 <i class="fa {{check.acknowledged | getAckClass }}"></i>
-                <ul class="dropdown-menu">
-                  <li ng-repeat="choice in silenceOptions" ng-if="!check.acknowledged">
-                    <a href ng-click="stash(client.dc, client, check, choice.value);">{{choice.key}}</a>
-                  </li>
-                  <li ng-if="check.acknowledged">
-                    <a href ng-click="stash(client.dc, client, check);"><i class="fa fa-times"></i> Delete</a>
-                  </li>
-                </ul>
               </td>
               <td class="main" >{{ check.check }}</td>
               <td class="check-output">{{ check.output }}</td>
               <td>{{ check.last_execution | getTimestamp }}</td>
-              <td><i class="fa fa-check" tooltip-placement="top" tooltip="Resolve" ng-click="resolve(client.dc, client, check)" ng-if="check.event"></i></td>
+              <td><i class="fa fa-check" tooltip-placement="top" tooltip="Resolve" ng-click="resolveEvent(client.dc, client, check)" ng-if="check.event"></i></td>
             </tr>
           </tbody>
         </table>
@@ -112,18 +95,10 @@
         <div class="panel-heading">
           <div class="icon">
             <span class="pull-right">
-              <span class="dropdown" ng-click="toggled($event)" dropdown-toggle>
+              <span class="dropdown" ng-click="stash($event, selectedCheck)">
                 <i class="fa {{selectedCheck.acknowledged | getAckClass }}"></i>
-                <ul class="dropdown-menu left">
-                  <li ng-repeat="choice in silenceOptions" ng-if="!selectedCheck.acknowledged">
-                    <a href ng-click="stash(client.dc, client, selectedCheck, choice.value);">{{choice.key}}</a>
-                  </li>
-                  <li ng-if="selectedCheck.acknowledged">
-                    <a href ng-click="stash(client.dc, client, selectedCheck);"><i class="fa fa-times"></i> Delete</a>
-                  </li>
-                </ul>
               </span>
-              <i class="fa fa-check" tooltip-placement="top" tooltip="Resolve" ng-click="resolve(client.dc, client, selectedCheck)"></i>
+              <i class="fa fa-check" tooltip-placement="top" tooltip="Resolve" ng-click="resolveEvent(client.dc, client, selectedCheck)" ng-if="selectedEvent"></i>
             </span>
           </div>
           <div>

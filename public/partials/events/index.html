@@ -49,16 +49,8 @@
             </thead>
             <tbody>
               <tr ng-repeat="event in events | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | limitTo:filters.limit | buildEvents" ng-click="go('/client/'+event.dc+'/'+event.client.name+'?check='+event.check.name)">
-                <td class="well-{{ event.check.status | getStatusClass }} dropdown" ng-click="toggled($event)" dropdown-toggle>
+                <td class="well-{{ event.check.status | getStatusClass }}" ng-click="stash($event, event)">
                   <i class="fa {{ event.acknowledged | getAckClass }}"></i>
-                  <ul class="dropdown-menu">
-                    <li ng-repeat="choice in silenceOptions" ng-if="!event.isSilenced">
-                      <a href ng-click="stash(event.dc, event, choice.value);">{{choice.key}}</a>
-                    </li>
-                    <li ng-if="event.isSilenced">
-                      <a href ng-click="stash(event.dc, event);"><i class="fa fa-times"></i> Delete</a>
-                    </li>
-                  </ul>
                 </td>
                 <td class="dropdown-toggle" >{{ event.sourceName }}</td>
                 <td class="main check-name">{{ event.check.name }}</td>

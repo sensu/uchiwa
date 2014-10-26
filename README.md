@@ -1,17 +1,16 @@
 # Uchiwa
 
-*Uchiwa* is a simple dashboard for the Sensu monitoring framework, built with Node.js and AngularJS.
+*Uchiwa* is a simple dashboard for the Sensu monitoring framework, built with Go and AngularJS.
 
 The dashboard is under active development, and major changes are not uncommon.
 
 [![Build Status](https://travis-ci.org/sensu/uchiwa.svg?branch=master)](https://travis-ci.org/sensu/uchiwa)
-[![Code Climate](https://codeclimate.com/github/palourde/uchiwa.png)](https://codeclimate.com/github/palourde/uchiwa)
-[![Dependency Status](https://gemnasium.com/sensu/uchiwa.svg)](https://gemnasium.com/sensu/uchiwa)
+[![Code   Climate](https://codeclimate.com/github/sensu/uchiwa/badges/gpa.svg)](https://codeclimate.com/github/sensu/uchiwa)
 
 ## Features
 
 * Support of multiple Sensu APIs
-* Real-time updates with Socket.IO
+* Real-time updates
 * Client and checks stashes management
 * Easily filter events, clients, stashes and events
 * Simple client details view
@@ -25,64 +24,45 @@ The dashboard is under active development, and major changes are not uncommon.
 
 ## Getting Started
 
-### From source
-
-* Checkout the source: `git clone https://github.com/sensu/uchiwa.git`
-* Install bower on your system: `npm install -g bower`
-* Install the dependencies:
-  * With root user: `npm install --production --unsafe-perm`
-  * With normal user: `npm install --production`
-* Copy **config.json.example** to **config.json** - modify your Sensu API information. See configuration section below
-* Start the dashboard: `node app.js`
-* Open your browser: `http://localhost:3000/`
-
 ### With packages
 
+##### Using Sensu repositories
 See [Sensu documentation](http://sensuapp.org/docs/0.13/dashboards_uchiwa)
 
-### Use nginx as proxy
+### From source
 
-The first thing you need is Nginx **1.3.13** or higher, since previous versions do not support websocket connections.
+**Prerequisites**
+* Recent version of **git**
+* Recent version of **npm** ([guide](https://github.com/joyent/node/wiki/installing-node.js-via-package-manager))
+* Recent version of **go** ([guide](https://golang.org/doc/install))
 
-Then, you simply need to open up the Nginx configuration file and add the following route to your virtual server:
-```
-location / {
-  proxy_pass http://localhost:3000;
-  proxy_http_version 1.1;
-  proxy_set_header Upgrade $http_upgrade;
-  proxy_set_header Connection "upgrade";
-  proxy_set_header Host $host;
-}
-```
+**Installation**
+* Checkout the source: `go get github.com/sensu/uchiwa && cd $GOPATH/src/github.com/sensu/uchiwa`
+* Install third-party libraries:
+  * With standard user: `npm install --production`
+  * With root user: `npm install --production --unsafe-perm`
+* Copy **config.json.example** to **config.json** - modify your Sensu API information. See configuration section below
+* Start the dashboard: `go run uchiwa.go`
+* Open your browser: `http://localhost:3000/`
 
-In case you want the dashboard to be accessible within a certain path on the proxy, let's say /uchiwa, simply use the following block instead:
-```
- location ~ (/uchiwa/|/socket.io/) {
-  proxy_pass http://localhost:3000;
-  proxy_http_version 1.1;
-  proxy_set_header Upgrade $http_upgrade;
-  proxy_set_header Connection "upgrade";
-  proxy_set_header Host $host;
-
-  rewrite /uchiwa/(.*) /$1 break;
-}
-```
 
 ## Configuration
 ### sensu
-- `host` - String: The address of the Sensu API.
-- `ssl` - Boolean: Determines whether or not the API use a SSL certificate.
-- `port` - Integer: The port of the Sensu API. The default value is *4567*.
+- `name` - String: Name of the Sensu API (used as datacenter name). If empty, a random one will be generated.
+- `host` - String: The address of the Sensu API. **Required**.
+- `port` - Integer: The port of the Sensu API. The default value is *4567*. **Required**
+- `ssl` - Boolean: Determines whether or not to use the *HTTPS* protocol. The default value is *false*.
+- `path` - String: The path of the Sensu API. Leave empty in case of doubt
 - `user` - String: The username of the Sensu API. Leave empty for none.
 - `pass` - String: The password of the Sensu API. Leave empty for none.
-- `path` - String: The path of the Sensu API. Leave empty in case of doubt.
-- `timeout` - Integer: Timeout for the Sensu API, in milliseconds. The default value is *5000*.
+- `timeout` - Integer: Timeout for the Sensu API, in seconds. The default value is 5.
 
 ### uchiwa
+- `host` - String: The address on which Uchiwa will listen. The default value is *0.0.0.0*.
+- `port` - Integer: The port on which Uchiwa will listen. The default value is *3000*.
 - `user` - String: The username of the Uchiwa dashboard. Leave empty for none.
 - `pass` - String: The password of the Uchiwa dashboard. Leave empty for none.
-- `stats` - Integer: Determines the retention, in minutes, of graphics data. The default value is *10*.
-- `refresh` - Integer: Determines the interval to pull the Sensu API, in milliseconds. The default value is *10000*.
+- `refresh` - Integer: Determines the interval to pull the Sensu APIs, in seconds. The default value is *5*.
 
 ## Docker
 
@@ -133,9 +113,6 @@ An example of starting the container with the minimum set of environment needed 
 
 `docker run -i -t -p 3000 -e API1_PORT_4567_TCP_PORT=3000 -e API1_PORT_4567_TCP_ADDR="1.1.1.1" uchiwa/uchiwa`
 
-## Debugging
-You may start the dashboard with the following command in order to enable verbose mode: `NODE_ENV="development" node app.js`
-
 ## Health
 You may easily monitor Uchiwa and the Sensu API endpoints with the **/health** page.
 
@@ -143,35 +120,34 @@ You may easily monitor Uchiwa and the Sensu API endpoints with the **/health** p
 Returns Uchiwa and Sensu API status.
 * success: 200
   * content: `{"uchiwa":"ok","sensu":{"0.12.6":{"output":"ok"},"0.13.0":{"output":"ok"}}}`
-* error: 503
+* error: 500
   * content: `{"uchiwa":"ok","sensu":{"0.12.6":{"output":"connect ECONNREFUSED"},"0.13.0":{"output":"ok"}}}`
 
 ### /health/uchiwa
 Returns Uchiwa status.
 * success: 200
-  * content: `{"uchiwa":"ok"}`
-* error: 503
-  * content: `{"uchiwa":"error"}`
+  * content: `"ok"`
+* error: 500
+  * content: `"error"`
 
 ### /health/sensu
 Returns Sensu API status.
 * success: 200
-  * content: `{"sensu":{"0.12.6":{"output":"ok"},"0.13.0":{"output":"ok"}}}`
-* error: 503
-  * content: `{"sensu":{"0.12.6":{"output":"connect ECONNREFUSED"},"0.13.0":{"output":"ok"}}}`
+  * content: `"{0.12.6":{"output":"ok"},"0.13.0":{"output":"ok"}}`
+* error: 500
+  * content: `{"0.12.6":{"output":"connect ECONNREFUSED"},"0.13.0":{"output":"ok"}}`
 
 ## Contributing
 Everyone is welcome to submit patches. Whether your pull request is a bug fix or introduces new classes or functions to the project, we kindly ask that you include tests for your changes. Even if it's just a small improvement, a test is necessary to ensure the bug is never re-introduced.
 
 ### Testing
-You should always run `npm test` before submitting a Pull Request.
+In order to install all the tools, please run `npm install`.
 
-#### E2E testing
-1. Clone [this](https://github.com/palourde/uchiwa-sensu) cookbook (`git clone git@github.com:palourde/uchiwa-sensu.git`)
-2. Boot the virtual machines (`vagrant up`)
-3. Copy the configuration file (**config.json**) found on the uchiwa-sensu repo into the uchiwa repo
-4. Install all dependencies (`npm install`)
-5. Run E2E tests (`npm run protractor`)
+##### Backend (go)
+The command `go test -v ./...` will execute the proper unit tests.
+
+##### Frontend (AngularJS)
+The command `grunt` will execute the proper linting and unit tests.
 
 ## Authors
 * Author: [Simon Plourde][author] (<simon.plourde@gmail.com>)

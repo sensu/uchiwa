@@ -1,0 +1,10 @@
+{
+  "sensu": [
+    {
+      "url": "http://localhost:4567"
+    }
+  ],
+  "uchiwa": {
+    "host": "0.0.0.0:3000"
+  }
+}
