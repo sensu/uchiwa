@@ -37,7 +37,8 @@
                 <th></th>
                 <th ng-click="predicate = 'name'; reverse=!reverse">Name <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'check'; reverse=!reverse">Check <i class="fa fa-sort"></i></th>
-                <th ng-click="predicate = 'content'; reverse=!reverse">Content <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'source'; reverse=!reverse">Source <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'reason'; reverse=!reverse">Reason <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'dc'; reverse=!reverse"><i class="fa fa-cloud" tooltip-placement="top" tooltip="Datacenter"></i> <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'timestampParsed'; reverse=!reverse"><i class='fa fa-clock-o' tooltip-placement="top" tooltip="Timestamp"></i> <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'expire'; reverse=!reverse"><i class='fa fa-calendar-o' tooltip-placement="top" tooltip="Expiration"></i> <i class="fa fa-sort"></i></th>
@@ -48,7 +49,8 @@
                 <td><i class="fa fa-times" ng-click="deleteStash(stash);"></i></td>
                 <td class="main">{{ stash.client }}</td>
                 <td>{{ stash.check }}</td>
-                <td>{{ stash.content }}</td>
+                <td>{{ stash.content.source }}</td>
+                <td>{{ stash.content.reason }}</td>
                 <td>{{ stash.dc }}</td>
                 <td>{{ stash.content.timestamp | getTimestamp }}</td>
                 <td>{{ stash.expire | getExpireTimestamp }}</td>

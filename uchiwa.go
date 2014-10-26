@@ -4,7 +4,7 @@ import (
 	"flag"
 
 	"github.com/palourde/logger"
-	"github.com/palourde/uchiwa/uchiwa"
+	"github.com/sensu/uchiwa/uchiwa"
 )
 
 func main() {
