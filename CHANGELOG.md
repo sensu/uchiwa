@@ -12,9 +12,10 @@
 - Prettify JSON objects in client & event data (PR #170)
 
 #### Migration Notes
-- Node backend has been replaced with Go. `node app.js` or `npm start` commands no longer works.
-- Make sure to run `npm install`
+- Backend has been rewritten in Go. `node app.js` or `npm start` commands no longer works.
+- Make sure to run `npm install` when installed from source.
 - Integer values **timeout** and **refresh** within configuraton file are now handled as seconds instead of milliseconds. Any values >= 1000 will be converted to seconds during runtime.
+- Pages */health/[sensu|uchiwa]* now return the associated object content instead of the object itself. */health* is not impacted.
 
 ### 0.2.6 (2014-10-08)
 
