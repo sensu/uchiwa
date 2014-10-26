@@ -68,7 +68,6 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'sass',
     'jshint',
     'lintspaces',
     'karma:unit'
