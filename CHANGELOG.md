@@ -1,3 +1,21 @@
+### 0.3.0 (TBD)
+
+#### Features
+- Remove all WebSocket dependency (Issue #127)
+- Backend refactoring in Go (Issue #127)
+- Improve overall performance and stability
+- Add alert badge in navbar when a datacenter is missing
+- Stashes dropdown replaced with a modal dialog
+- Add custom stash messages, and display them in stashes view (PR #158)
+- Add links to DC hover menu (PR #152)
+- Display data centers in alphabetic order (PR #153)
+- Prettify JSON objects in client & event data (PR #170)
+
+#### Migration Notes
+- Node backend has been replaced with Go. `node app.js` or `npm start` commands no longer works.
+- Make sure to run `npm install`
+- Integer values **timeout** and **refresh** within configuraton file are now handled as seconds instead of milliseconds. Any values >= 1000 will be converted to seconds during runtime.
+
 ### 0.2.6 (2014-10-08)
 
 #### Features
