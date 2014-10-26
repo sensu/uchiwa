@@ -129,8 +129,8 @@ describe('filters', function () {
 
     it('should convert epoch to human readable date', inject(function (getExpireTimestampFilter) {
       expect(getExpireTimestampFilter('test')).toBe('Unknown');
-      expect(getExpireTimestampFilter(900, 1410908218)).toBe(moment.utc('2014-09-16 23:11:58').local().format('YYYY-MM-DD HH:mm:ss'));
-      expect(getExpireTimestampFilter(-1, 1410908218)).toBe('Never');
+      expect(getExpireTimestampFilter(900)).toMatch('\\d\\d\\d\\d-\\d\\d-');
+      expect(getExpireTimestampFilter(-1)).toBe('Never');
     }));
 
   });
