@@ -1,6 +1,7 @@
 /* Colors */
 /* Body, Sections, and Headers */
 /* Breadcrumb */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -12,6 +13,7 @@
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -75,10 +77,35 @@ a {
 .text-critical {
   color: #EA5443; }
 
+pre.hljs {
+  border: 0;
+  font-size: 13px;
+  padding: 0;
+  margin: 0;
+  font-family: Roboto, sans-serif;
+  background-color: inherit;
+  color: #e6e1dc; }
+
+pre.hljs .hljs-value {
+  color: #e6e1dc; }
+
+pre.hljs .hljs-attribute {
+  color: #6d9cbe; }
+
+pre.hljs .hljs-number {
+  color: #a5c261; }
+
+pre.hljs .hljs-literal {
+  color: #a5c261; }
+
+pre.hljs .hljs-string {
+  color: #718c00; }
+
 /* Colors */
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -114,6 +141,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -137,6 +165,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -174,6 +203,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -224,6 +254,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -262,6 +293,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -287,6 +319,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -345,6 +378,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -419,6 +453,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -462,6 +497,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -576,6 +612,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */
@@ -628,6 +665,7 @@ a {
 /* Body, Sections and Headers */
 /* Breadcrumb */
 /* Buttons */
+/* Code */
 /* Dropdown */
 /* Nav */
 /* Navbar */

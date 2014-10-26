@@ -133,11 +133,20 @@ filterModule.filter('setMissingProperty', function() {
 
 filterModule.filter('richOutput', ['$filter', function($filter) {
   return function(text) {
-    if(typeof text !== 'string') {
-      text = angular.toJson(text);
+    var output = '';
+    if(typeof text === 'object') {
+      if (text instanceof Array) {
+        output = text.join(', ');
+      } else {
+        var code = hljs.highlight('json', angular.toJson(text, true)).value;
+        output = '<pre class=\"hljs\">' + code + '</pre>';
+      }
+    } else if (typeof text === 'number') {
+      output = text.toString();
+    } else {
+      var linkified = $filter('linky')(text, '_blank');
+      output = $filter('imagey')(linkified);
     }
-    text = $filter('linky')(text, '_blank');
-    text = $filter('imagey')(text);
-    return text;
+    return output;
   };
 }]);
