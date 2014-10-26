@@ -39,19 +39,19 @@
                 <th ng-click="predicate = 'check'; reverse=!reverse">Check <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'content'; reverse=!reverse">Content <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'dc'; reverse=!reverse"><i class="fa fa-cloud" tooltip-placement="top" tooltip="Datacenter"></i> <i class="fa fa-sort"></i></th>
-                <th ng-click="predicate = 'expire'; reverse=!reverse"><i class='fa fa-calendar-o' tooltip-placement="top" tooltip="Expire"></i> <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'timestampParsed'; reverse=!reverse"><i class='fa fa-clock-o' tooltip-placement="top" tooltip="Timestamp"></i> <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'expire'; reverse=!reverse"><i class='fa fa-calendar-o' tooltip-placement="top" tooltip="Expiration"></i> <i class="fa fa-sort"></i></th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="stash in stashes | filter:filters.q | filter:{dc:filters.dc} | limitTo:filters.limit | buildStashes | orderBy:predicate:reverse">
-                <td><i class="fa fa-times" ng-click="deleteStash(stash.dc, stash, $index);"></i></td>
+                <td><i class="fa fa-times" ng-click="deleteStash(stash);"></i></td>
                 <td class="main">{{ stash.client }}</td>
                 <td>{{ stash.check }}</td>
                 <td>{{ stash.content }}</td>
                 <td>{{ stash.dc }}</td>
-                <td>{{ stash.expire | getExpireTimestamp:stash.content.timestamp }}</td>
                 <td>{{ stash.content.timestamp | getTimestamp }}</td>
+                <td>{{ stash.expire | getExpireTimestamp }}</td>
               </tr>
             </tbody>
           </table>

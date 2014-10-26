@@ -7,6 +7,24 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
       <ul class="nav navbar-nav navbar-right">
+        <li class="show-on-hover" ng-if="alerts.length">
+          <a>
+            <i class="fa fa-exclamation-triangle" class="dropdown-toggle" data-toggle="dropdown"></i><span class="badge badge-critical">{{alerts.length}}</span>
+          </a>
+          <div class="dropdown-menu" role="menu">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel panel-body panel-top panel-critical">
+                  <span class="total">{{alerts.length}}</span>
+                  <span class="category"><ng-pluralize count="alerts.length" when="{'0': 'alert', '1': 'alert', 'other': 'alerts'}"></ng-pluralize></span>
+                </div>
+                <div class="panel panel-body panel-default" ng-repeat="alert in alerts">
+                  <span> <i class="fa fa-cloud"></i> {{alert}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
         <li class="show-on-hover">
           <a ng-click="go('/events')">
             <i class="fa fa-bullhorn" class="dropdown-toggle" data-toggle="dropdown"></i><span class="badge badge-{{events.style}}">{{events.total}}</span>
@@ -53,21 +71,20 @@
         </li>
         <li class="show-on-hover">
           <a>
-            <i class="fa fa-cloud"  class="dropdown-toggle" data-toggle="dropdown"></i><span class="badge badge-default">{{dc.length}}</span>
+            <i class="fa fa-cloud"  class="dropdown-toggle" data-toggle="dropdown"></i><span class="badge badge-default">{{dc | arrayLength}}</span>
           </a>
           <div class="dropdown-menu" role="menu">
             <div class="row">
               <div class="col-md-12">
                 <div class="panel panel-body panel-top panel-blue">
-                  <span class="total">{{dc.length}}</span>
-                  <span class="category"><ng-pluralize count="dc.length" when="{'0': 'datacenter', '1': 'datacenter', 'other': 'datacenters'}"></ng-pluralize></span>
+                  <span class="total">{{dc | arrayLength}}</span>
+                  <span class="category"><ng-pluralize count="dc | arrayLength" when="{'0': 'datacenter', '1': 'datacenter', 'other': 'datacenters'}"></ng-pluralize></span>
                 </div>
                 <div class="panel panel-body panel-bottom panel-default">
                   <div ng-repeat="datacenter in dc | orderBy:'name'">
                     <div class="row">
                       <div class="col-sm-12">
                         <div class="dc-title">
-                          <i status-glyph="datacenter.status"></i>
                           {{datacenter.name}}
                         </div>
                         <div class="row">
@@ -107,14 +124,14 @@
         </li>
         <li class="show-on-hover">
           <a ng-click="go('/checks')">
-            <i class="fa fa-check-square" class="dropdown-toggle" data-toggle="dropdown"></i><span class="badge badge-default">{{checks.length}}</span>
+            <i class="fa fa-check-square" class="dropdown-toggle" data-toggle="dropdown"></i><span class="badge badge-default">{{checks | arrayLength}}</span>
           </a>
           <div class="dropdown-menu" role="menu">
             <div class="row">
               <div class="col-md-12">
                 <div class="panel panel-body panel-top panel-blue">
-                  <span class="total">{{checks.length}}</span>
-                  <span class="category"><ng-pluralize count="checks.length" when="{'0': 'check', '1': 'check', 'other': 'checks'}"></ng-pluralize></span>
+                  <span class="total">{{checks | arrayLength}}</span>
+                  <span class="category"><ng-pluralize count="checks | arrayLength" when="{'0': 'check', '1': 'check', 'other': 'checks'}"></ng-pluralize></span>
                 </div>
               </div>
             </div>
@@ -122,14 +139,14 @@
         </li>
         <li class="show-on-hover">
           <a ng-click="go('/stashes')">
-            <i class="fa fa-briefcase" class="dropdown-toggle" data-toggle="dropdown"></i><span class="badge badge-default">{{stashes.length}}</span>
+            <i class="fa fa-briefcase" class="dropdown-toggle" data-toggle="dropdown"></i><span class="badge badge-default">{{stashes | arrayLength}}</span>
           </a>
           <div class="dropdown-menu" role="menu">
             <div class="row">
               <div class="col-md-12">
                 <div class="panel panel-body panel-top panel-blue">
-                  <span class="total">{{stashes.length}}</span>
-                  <span class="category"><ng-pluralize count="stashes.length" when="{'0': 'stash', '1': 'stash', 'other': 'stashes'}"></ng-pluralize></span>
+                  <span class="total">{{stashes | arrayLength}}</span>
+                  <span class="category"><ng-pluralize count="stashes | arrayLength" when="{'0': 'stash', '1': 'stash', 'other': 'stashes'}"></ng-pluralize></span>
                 </div>
               </div>
             </div>

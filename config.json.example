@@ -4,11 +4,7 @@
       "name": "Site 1",
       "host": "api1.example.com",
       "port": 4567,
-      "ssl": false,
-      "user": "",
-      "pass": "",
-      "path": "",
-      "timeout": 5000
+      "timeout": 5
     },
     {
       "name": "Site 2",
@@ -18,7 +14,7 @@
       "user": "",
       "pass": "",
       "path": "",
-      "timeout": 5000
+      "timeout": 5
     }
   ],
   "uchiwa": {
@@ -26,6 +22,6 @@
     "port": 3000,
     "user": "admin",
     "pass": "secret",
-    "refresh": 10000
+    "refresh": 5
   }
 }

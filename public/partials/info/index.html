@@ -30,16 +30,15 @@
             <div class="row">
               <div class="col-md-4">
                 <div class="title center">Sensu Version</div>
-                <div class="number center">{{datacenter.info.sensu.version}}</div>
+                <div class="number center">{{datacenter.version}}</div>
               </div>
               <div class="col-md-4">
                 <div class="title center">Connected to transport</div>
-                <div class="number center" ng-if="datacenter.info.rabbitmq">{{datacenter.info.rabbitmq.connected}}</div>
-                <div class="number center" ng-if="datacenter.info.transport">{{datacenter.info.transport.connected}}</div>
+                <div class="number center">{{datacenter.transport}}</div>
               </div>
               <div class="col-md-4">
                 <div class="title center">Connected to redis</div>
-                <div class="number center">{{datacenter.info.redis.connected}}</div>
+                <div class="number center">{{datacenter.redis}}</div>
               </div>
             </div>
           </div>

@@ -3,15 +3,16 @@
 angular.module('uchiwa', [
   'uchiwa.controllers',
   'uchiwa.constants',
-  'uchiwa.filters',
-  'uchiwa.services',
   'uchiwa.directives',
+  'uchiwa.factories',
+  'uchiwa.filters',
+  'uchiwa.providers',
+  'uchiwa.services',
   // Angular dependencies
   'ngCookies',
   'ngRoute',
   'ngSanitize',
   // 3rd party dependencies
-  'btford.socket-io',
   'imagey',
   'toastr',
   'ui.bootstrap'
