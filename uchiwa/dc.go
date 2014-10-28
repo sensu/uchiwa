@@ -106,17 +106,6 @@ func Build(dcSlice *[]sensu.Sensu) {
 	*Results = *tmpResults
 }
 
-func buildPublicConfig(c *Config) {
-	p := *c
-	p.Uchiwa.User = "*****"
-	p.Uchiwa.Pass = "*****"
-	for i := range p.Sensu {
-		p.Sensu[i].User = "*****"
-		p.Sensu[i].Pass = "*****"
-	}
-	PublicConfig = &p
-}
-
 // Fetch retrieves data from each API every t seconds
 func Fetch(t int) {
 	Build(&datacenters)
