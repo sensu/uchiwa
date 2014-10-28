@@ -76,6 +76,20 @@ func (c *Config) initGlobal() {
 	}
 }
 
+func buildPublicConfig(c *Config) {
+	p := new(Config)
+	p.Uchiwa = c.Uchiwa
+	p.Uchiwa.User = "*****"
+	p.Uchiwa.Pass = "*****"
+	p.Sensu = make([]SensuConfig, len(c.Sensu))
+	for i := range c.Sensu {
+		p.Sensu[i] = c.Sensu[i]
+		p.Sensu[i].User = "*****"
+		p.Sensu[i].Pass = "*****"
+	}
+	PublicConfig = p
+}
+
 // LoadConfig function loads a specified configuration file and return a Config struct
 func LoadConfig(path string) (*Config, error) {
 	logger.Infof("Loading configuration file %s", path)
