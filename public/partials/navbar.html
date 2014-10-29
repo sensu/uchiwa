@@ -19,7 +19,7 @@
                   <span class="category"><ng-pluralize count="alerts.length" when="{'0': 'alert', '1': 'alert', 'other': 'alerts'}"></ng-pluralize></span>
                 </div>
                 <div class="panel panel-body panel-default" ng-repeat="alert in alerts">
-                  <span> <i class="fa fa-cloud"></i> {{alert}}</span>
+                  <span> <i class="fa fa-cloud"></i> <span ng-bind-html="alert"></span></span>
                 </div>
               </div>
             </div>
