@@ -1,11 +1,25 @@
-FROM centos:centos6
+FROM golang:1.3.3
 
-RUN rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
-RUN yum --enablerepo centosplus install -y npm git
+# install debian packages
+RUN apt-get update && apt-get install -yq nodejs npm git wget
+
+RUN /usr/src/go/bin/go get github.com/tools/godep
+
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 ADD . /src
-RUN cd /src && npm install --production --unsafe-perm && mkdir /config && cp /src/docker/config.js /config && mv /src/docker/start /start && chmod 755 /start
+
+WORKDIR /src
+
+RUN npm install --production --unsafe-perm
+
+RUN mv /src/docker/start /start && chmod 0755 /start
+
+RUN go get -d -v
+
+RUN go build -o uchiwa_binary uchiwa.go
+
+VOLUME /config
 
 EXPOSE 3000
 CMD ["/start"]
-
