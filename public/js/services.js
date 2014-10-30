@@ -114,7 +114,7 @@ serviceModule.service('navbarServices', ['$rootScope', function ($rootScope) {
     var alerts = [];
     angular.forEach($rootScope.health, function(value, key) {
       if (value.output !== 'ok') {
-        alerts.push('DC ' + key + ' returned ' + value.output);
+        alerts.push('Datacenter <strong>' + key + '</strong> returned: <em>' + value.output + '</em>');
       }
     });
     $rootScope.alerts = alerts;
