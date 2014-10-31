@@ -5,4 +5,4 @@ export UCHIWA_REFRESH=${UCHIWA_REFRESH:-10000}
 export UCHIWA_USER=${UCHIWA_USER:-}
 export UCHIWA_PASS=${UCHIWA_PASS:-}
 
-/src/uchiwa_binary -c /config/config.json
+/go/bin/app -c /config/config.json
