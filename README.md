@@ -52,6 +52,7 @@ See [Sensu documentation](http://sensuapp.org/docs/0.13/dashboards_uchiwa)
 - `host` - String: The address of the Sensu API. **Required**.
 - `port` - Integer: The port of the Sensu API. The default value is *4567*. **Required**
 - `ssl` - Boolean: Determines whether or not to use the *HTTPS* protocol. The default value is *false*.
+- `insecure` - Boolean: Determines whether or not to accept an insecure SSL certificate. The default value is *false*.
 - `path` - String: The path of the Sensu API. Leave empty in case of doubt
 - `user` - String: The username of the Sensu API. Leave empty for none.
 - `pass` - String: The password of the Sensu API. Leave empty for none.
