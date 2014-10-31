@@ -69,10 +69,6 @@ See [Sensu documentation](http://sensuapp.org/docs/0.13/dashboards_uchiwa)
 
 This application comes pre-packaged in a docker container for easy deployment.
 
-There are two ways of running this container:
-
-### Docker with a config file.
-
 Make a config.json file for the application, and then launch the uchiwa container with the config mounted as a volume.
 
     # Create a folder that will be mount as a volume to the Docker container
@@ -80,39 +76,7 @@ Make a config.json file for the application, and then launch the uchiwa containe
     # Copy your uchiwa config into this last folder
     cp ~/uchiwa/config.json ~/uchiwa-config/config.json
     # Start Docker container. It will listen on port 3000 by default
-    docker run -v ~/uchiwa-config:/config uchiwa/uchiwa
-
-### Docker with environment variables
-
-You can instead use environment variables to configure the application. Host is fixed to 0.0.0.0 and port to 3000,
-but the other settings can be set:
-
-- `UCHIWA_USER`
-- `UCHIWA_PASS`
-- `UCHIWA_REFRESH`
-
-And configuring an API is done with other environment variables which are designed to fit into Docker's
-container links (allowing you to point uchiwa at an API just be --linking it to that container)
-
-You can link multiple APIs by providing multiple sets of environment variables with different prefixes.
-
-These variables are mandatory.
-
-- `API1_PORT_4567_TCP_PORT` - The port for the API, usually 4567
-- `API1_PORT_4567_TCP_ADDR` - The hostname or IP for the API
-
-These variables are optional
-
-- `API1_UCHIWA_NAME`
-- `API1_UCHIWA_SSL`
-- `API1_UCHIWA_USER`
-- `API1_UCHIWA_PASS`
-- `API1_UCHIWA_PATH`
-- `API1_UCHIWA_TIMEOUT`
-
-An example of starting the container with the minimum set of environment needed would be:
-
-`docker run -i -t -p 3000 -e API1_PORT_4567_TCP_PORT=3000 -e API1_PORT_4567_TCP_ADDR="1.1.1.1" uchiwa/uchiwa`
+    docker run -d -p 3000:3000 -v ~/uchiwa-config:/config uchiwa/uchiwa
 
 ## Health
 You may easily monitor Uchiwa and the Sensu API endpoints with the **/health** page.

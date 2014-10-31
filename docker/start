@@ -1,8 +1,3 @@
 #!/bin/bash
 
-export UCHIWA_STATS=${UCHIWA_STATS:-10}
-export UCHIWA_REFRESH=${UCHIWA_REFRESH:-10000}
-export UCHIWA_USER=${UCHIWA_USER:-}
-export UCHIWA_PASS=${UCHIWA_PASS:-}
-
-node /src/app.js -c /config/config.js
+/go/bin/app -c /config/config.json

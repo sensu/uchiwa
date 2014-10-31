@@ -1,11 +1,16 @@
-FROM centos:centos6
+FROM golang:1.3.3-onbuild
 
-RUN rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
-RUN yum --enablerepo centosplus install -y npm git
+# install debian packages
+RUN apt-get update && apt-get install -yq nodejs npm git wget
 
-ADD . /src
-RUN cd /src && npm install --production --unsafe-perm && mkdir /config && cp /src/docker/config.js /config && mv /src/docker/start /start && chmod 755 /start
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 
-EXPOSE 3000
+RUN npm install --production --unsafe-perm
+
+RUN mv ./docker/start /start && chmod 0755 /start
+
+VOLUME /config
+
 CMD ["/start"]
 
+EXPOSE 3000
