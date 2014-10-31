@@ -17,15 +17,16 @@ type Config struct {
 
 // SensuConfig struct contains conf about a Sensu API
 type SensuConfig struct {
-	Name    string
-	Host    string
-	Port    int
-	Ssl     bool
-	URL     string
-	User    string
-	Path    string
-	Pass    string
-	Timeout int
+	Name     string
+	Host     string
+	Port     int
+	Ssl      bool
+	Insecure bool
+	URL      string
+	User     string
+	Path     string
+	Pass     string
+	Timeout  int
 }
 
 // GlobalConfig struct contains conf about Uchiwa

@@ -3,14 +3,14 @@
     {
       "name": "Site 1",
       "host": "api1.example.com",
-      "port": 4567,
-      "timeout": 5
+      "port": 4567
     },
     {
       "name": "Site 2",
       "host": "api2.example.com",
       "port": 4567,
       "ssl": false,
+      "insecure": false,
       "user": "",
       "pass": "",
       "path": "",

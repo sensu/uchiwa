@@ -127,7 +127,7 @@ func New(c *Config) *[]sensu.Sensu {
 	buildPublicConfig(c)
 	datacenters = make([]sensu.Sensu, len(c.Sensu))
 	for i, apiConf := range c.Sensu {
-		api := sensu.New(apiConf.Name, apiConf.Path, apiConf.URL, apiConf.Timeout, apiConf.User, apiConf.Pass)
+		api := sensu.New(apiConf.Name, apiConf.Path, apiConf.URL, apiConf.Timeout, apiConf.User, apiConf.Pass, apiConf.Insecure)
 		datacenters[i] = *api
 		name := apiConf.Name
 		Health.Sensu[name] = map[string]string{"output": "ok"}
