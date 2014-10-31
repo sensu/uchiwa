@@ -5,7 +5,7 @@
 The dashboard is under active development, and major changes are not uncommon.
 
 [![Build Status](https://travis-ci.org/sensu/uchiwa.svg?branch=master)](https://travis-ci.org/sensu/uchiwa)
-[![Code   Climate](https://codeclimate.com/github/sensu/uchiwa/badges/gpa.svg)](https://codeclimate.com/github/sensu/uchiwa)
+[![Code Climate](https://codeclimate.com/github/sensu/uchiwa/badges/gpa.svg)](https://codeclimate.com/github/sensu/uchiwa)
 
 ## Features
 
@@ -27,7 +27,7 @@ The dashboard is under active development, and major changes are not uncommon.
 ### With packages
 
 ##### Using Sensu repositories
-See [Sensu documentation](http://sensuapp.org/docs/0.13/dashboards_uchiwa)
+See [Sensu documentation](http://sensuapp.org/docs/latest/dashboards_uchiwa)
 
 ### From source
 
@@ -45,6 +45,18 @@ See [Sensu documentation](http://sensuapp.org/docs/0.13/dashboards_uchiwa)
 * Start the dashboard: `go run uchiwa.go`
 * Open your browser: `http://localhost:3000/`
 
+### Docker
+
+This application comes pre-packaged in a docker container for easy deployment.
+
+Make a config.json file for the application, and then launch the uchiwa container with the config mounted as a volume.
+
+    # Create a folder that will be mount as a volume to the Docker container
+    mkdir ~/uchiwa-config
+    # Copy your uchiwa config into this last folder
+    cp ~/uchiwa/config.json ~/uchiwa-config/config.json
+    # Start Docker container. It will listen on port 3000 by default
+    docker run -d -p 3000:3000 -v ~/uchiwa-config:/config uchiwa/uchiwa
 
 ## Configuration
 ### sensu
@@ -64,19 +76,6 @@ See [Sensu documentation](http://sensuapp.org/docs/0.13/dashboards_uchiwa)
 - `user` - String: The username of the Uchiwa dashboard. Leave empty for none.
 - `pass` - String: The password of the Uchiwa dashboard. Leave empty for none.
 - `refresh` - Integer: Determines the interval to pull the Sensu APIs, in seconds. The default value is *5*.
-
-## Docker
-
-This application comes pre-packaged in a docker container for easy deployment.
-
-Make a config.json file for the application, and then launch the uchiwa container with the config mounted as a volume.
-
-    # Create a folder that will be mount as a volume to the Docker container
-    mkdir ~/uchiwa-config
-    # Copy your uchiwa config into this last folder
-    cp ~/uchiwa/config.json ~/uchiwa-config/config.json
-    # Start Docker container. It will listen on port 3000 by default
-    docker run -d -p 3000:3000 -v ~/uchiwa-config:/config uchiwa/uchiwa
 
 ## Health
 You may easily monitor Uchiwa and the Sensu API endpoints with the **/health** page.
