@@ -6,12 +6,6 @@ import (
 	"github.com/palourde/logger"
 )
 
-func count() (int, int, int, int) {
-	var c, e, k, s int
-	//c =
-	return c, e, k, s
-}
-
 func getRedisStatus(info map[string]interface{}) string {
 	redis, ok := info["redis"].(map[string]interface{})
 	if !ok {
