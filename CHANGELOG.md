@@ -1,4 +1,4 @@
-### 0.3.0 (TBD)
+### 0.3.0 (2014-11-02)
 
 #### Features
 - Remove all WebSocket dependency (Issue #127)
