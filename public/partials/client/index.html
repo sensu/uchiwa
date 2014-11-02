@@ -149,7 +149,7 @@
                     <span class="key pull-right">{{key}}</span>
                   </div>
                   <div class="col-sm-10">
-                    <span class="value">{{value}}</span>
+                    <span class="value" ng-bind-html="value | displayObject | richOutput"></span>
                   </div>
                 </div>
               </span>

@@ -47,7 +47,7 @@ func findModel(id string, dc string) map[string]interface{} {
 			logger.Warningf("Could not assert check interface %+v", k)
 			continue
 		}
-		if m["name"] == id {
+		if m["name"] == id && m["dc"] == dc {
 			return m
 		}
 	}
