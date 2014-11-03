@@ -1,0 +1,7 @@
+@mixin context-colors($property: background-color) {
+  &-success { #{$property}: $success-color; }
+  &-warning { #{$property}: $warning-color; }
+  &-critical { #{$property}: $critical-color; }
+  &-unknown { #{$property}: $unknown-color; }
+  &-default, &-blue { #{$property}: $secondary-color; }
+}

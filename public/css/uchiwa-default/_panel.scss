@@ -1,5 +1,9 @@
 @import "variables";
 
+.panel {
+  @include context-colors;
+}
+
 .panel-heading {
   font-weight: 700;
 }
@@ -18,24 +22,4 @@
   background-color: $panel-default-heading-background-color;
   color: $panel-text-color;
   border-color: $panel-border-color;
-}
-
-.panel-blue {
-  background-color: $panel-blue-background-color;
-}
-
-.panel-critical {
-  background-color: $panel-critical-background-color;
-}
-
-.panel-warning {
-  background-color: $panel-warning-background-color;
-}
-
-.panel-success {
-  background-color: $panel-success-background-color;
-}
-
-.panel-unknown {
-  background-color: $panel-unknown-background-color;
 }
