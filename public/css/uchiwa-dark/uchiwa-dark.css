@@ -121,21 +121,16 @@ pre.hljs .hljs-string {
   color: #FFFFFF;
   font-weight: 700;
   padding: 2px 5px; }
-
-.badge-critical {
-  background-color: #EA5443; }
-
-.badge-warning {
-  background-color: #F9BA46; }
-
-.badge-success {
-  background-color: #43ac6a; }
-
-.badge-unknown {
-  background-color: #9C9990; }
-
-.badge-default {
-  background-color: #22222D; }
+  .badge-success {
+    background-color: #43ac6a; }
+  .badge-warning {
+    background-color: #F9BA46; }
+  .badge-critical {
+    background-color: #EA5443; }
+  .badge-unknown {
+    background-color: #9C9990; }
+  .badge-default, .badge-blue {
+    background-color: #22222D; }
 
 /* Colors */
 /* Body, Sections and Headers */
@@ -462,6 +457,17 @@ pre.hljs .hljs-string {
 /* Tables */
 /* Timestamp */
 /* Wells */
+.panel-success {
+  background-color: #43ac6a; }
+.panel-warning {
+  background-color: #F9BA46; }
+.panel-critical {
+  background-color: #EA5443; }
+.panel-unknown {
+  background-color: #9C9990; }
+.panel-default, .panel-blue {
+  background-color: #22222D; }
+
 .panel-heading {
   font-weight: 700; }
 
@@ -477,21 +483,6 @@ pre.hljs .hljs-string {
   background-color: #373747;
   color: #FFFFFF;
   border-color: #21212b; }
-
-.panel-blue {
-  background-color: #22222D; }
-
-.panel-critical {
-  background-color: #EA5443; }
-
-.panel-warning {
-  background-color: #F9BA46; }
-
-.panel-success {
-  background-color: #43ac6a; }
-
-.panel-unknown {
-  background-color: #9C9990; }
 
 /* Colors */
 /* Body, Sections and Headers */
