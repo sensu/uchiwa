@@ -172,18 +172,6 @@ pre.hljs .hljs-string {
 .btn {
   font-family: 'Roboto', sans-serif; }
 
-.circle-critical {
-  background-color: #EA5443; }
-
-.circle-warning {
-  background-color: #F9BA46; }
-
-.circle-success {
-  background-color: #43ac6a; }
-
-.circle-unknown {
-  background-color: #9C9990; }
-
 .circle {
   width: 10px;
   height: 10px;
@@ -193,6 +181,16 @@ pre.hljs .hljs-string {
   outline: none !important;
   margin-right: 7px;
   display: inline-block; }
+  .circle-success {
+    background-color: #43ac6a; }
+  .circle-warning {
+    background-color: #F9BA46; }
+  .circle-critical {
+    background-color: #EA5443; }
+  .circle-unknown {
+    background-color: #9C9990; }
+  .circle-default, .circle-blue {
+    background-color: #22222D; }
 
 /* Colors */
 /* Body, Sections and Headers */
