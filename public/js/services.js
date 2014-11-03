@@ -218,29 +218,34 @@ serviceModule.service('stashesService', ['$rootScope', '$modal', 'notification',
     return path;
   };
   this.stash = function (e, i) {
+    var items = _.isArray(i) ? i : new Array(i);
     var event = e || window.event;
     event.stopPropagation();
-    var item = i;
-    var modalInstance = $modal.open({ // jshint ignore:line
-      templateUrl: 'partials/stash-modal.html',
-      controller: 'StashModalCtrl',
-      resolve: {
-        item: function () {
-          return item;
+
+    if (items.length === 0) {
+      notification('error', 'No items selected');
+    } else {
+      var modalInstance = $modal.open({ // jshint ignore:line
+        templateUrl: 'partials/stash-modal.html',
+        controller: 'StashModalCtrl',
+        resolve: {
+          items: function () {
+            return items;
+          }
         }
-      }
-    });
+      });
+    }
   };
   this.submit = function (element, item) {
     var isAcknowledged = item.acknowledged;
-    if (item.path[1] !== '') {
-      item.path[1] = '/' + item.path[1];
+    if (item[element._id].path[1] !== '') {
+      item[element._id].path[1] = '/' + item[element._id].path[1];
     }
     if (angular.isUndefined(item.reason)) {
       item.reason = '';
     }
-    var path = 'silence/' + item.path[0] + item.path[1];
-    var data = {dc: item.dc, payload: {}};
+    var path = 'silence/' + item[element._id].path[0] + item[element._id].path[1];
+    var data = {dc: item[element._id].dc, payload: {}};
 
     $rootScope.skipRefresh = true;
     if (isAcknowledged) {
@@ -295,6 +300,5 @@ serviceModule.service('stashesService', ['$rootScope', '$modal', 'notification',
         console.error(error);
         return false;
       });
-
   };
 }]);

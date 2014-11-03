@@ -10,6 +10,7 @@ controllerModule.controller('init', ['$rootScope', '$scope', 'notification', 'po
     $scope.Page = Page;
     $rootScope.skipRefresh = false;
     $rootScope.alerts = [];
+    $rootScope.events = [];
 
     uchiwaBackend.getConfig()
       .success(function (data) {
@@ -38,7 +39,16 @@ controllerModule.controller('init', ['$rootScope', '$scope', 'notification', 'po
           $rootScope.checks = data.Checks;
           $rootScope.clients = data.Clients;
           $rootScope.dc = data.Dc;
-          $rootScope.events = data.Events;
+
+          $rootScope.events = _.map(data.Events, function(event) {
+            event._id = event.dc + '/' + event.client.name + '/' + event.check.name;
+            var existingEvent = _.findWhere($rootScope.events, {_id: event._id});
+            if (existingEvent !== undefined) {
+              event = angular.extend(existingEvent, event);
+            }
+            return existingEvent || event;
+          });
+
           $rootScope.stashes = data.Stashes;
           $rootScope.subscriptions = data.Subscriptions;
           $scope.$broadcast('sensu');
@@ -217,6 +227,13 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams',
     $scope.$watch('filters.silenced', function () {
       $cookieStore.put('hideSilenced', $scope.filters.silenced);
     });
+
+    // Helpers
+    $scope.selectedEvents = function(events) {
+      return _.filter(events, function(event) {
+        return event.selected === true;
+      });
+    };
   }
 ]);
 
@@ -325,24 +342,38 @@ controllerModule.controller('stashes', ['$scope', '$routeParams', 'routingServic
 /**
 * Stash Modal
 */
-controllerModule.controller('StashModalCtrl', ['$scope', '$modalInstance', 'item', 'stashesService',
-  function ($scope, $modalInstance, item, stashesService) {
-    $scope.item = item;
+controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInstance', 'items', 'stashesService',
+  function ($scope, $filter, $modalInstance, items, stashesService) {
+    $scope.items = items;
+    $scope.acknowledged = $filter('filter')(items, {acknowledged: true}).length;
     $scope.stash = {};
-    $scope.stash.acknowledged = item.acknowledged;
-    $scope.stash.dc = item.dc;
-    $scope.stash.reason = '';
     $scope.stash.expirations = {
       '900': 900,
       '3600': 3600,
       '86400': 86400,
       'none': -1
     };
+    $scope.stash.reason = '';
     $scope.stash.expiration = 900;
-    $scope.stash.path = stashesService.construct(item);
+
+    _.each(items, function(item) {
+      $scope.stash[item._id] = {
+        dc: item.dc,
+        path: stashesService.construct(item)
+      };
+    });
+
+    $scope.stashForEvent = function(stashes, event) {
+      return _.findWhere(stashes, {
+        dc: event.dc,
+        path: 'silence/' + event.client.name + '/' + event.check.name
+      });
+    };
 
     $scope.ok = function () {
-      stashesService.submit(item, $scope.stash);
+      _.each(items, function(item) {
+        stashesService.submit(item, $scope.stash);
+      });
       $modalInstance.close();
     };
     $scope.cancel = function () {
