@@ -1,3 +1,9 @@
+### 0.3.1 (2014-11-03)
+
+#### Bug Fixes
+- Display the right check model and rich output when check returns 0
+- Support API authentication for stash and client deletion
+
 ### 0.3.0 (2014-11-02)
 
 #### Features
@@ -22,7 +28,7 @@
 #### Features
 - Allow client checks to be ordered by history, name, output and time (PR #149)
 
-### Bug Fixes
+#### Bug Fixes
 - Force toastr position when cookie is missing
 - Remove HTML tags from toastr notifications
 
