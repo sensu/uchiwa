@@ -3,6 +3,12 @@
 .dropdown-menu {
   background-color: $dropdown-background-color;
   color: $dropdown-text-color;
+  min-width: 250px;
+}
+
+.dropdown-menu-item {
+  padding: 8px 0 8px 8px;
+  font-weight: 400;
 }
 
 .dropdown-menu > li > a {
@@ -15,15 +21,7 @@
 }
 
 .show-on-hover:hover > div.dropdown-menu {
-    display: block;    
-}
-
-.navbar .dropdown-menu {
-  min-width: 250px;
-}
-
-.navbar .dropdown-menu > li > a, .navbar .dropdown-menu > li > a:focus {
-  font-weight: 400;
+    display: block;
 }
 
 .navbar .dropdown-menu {

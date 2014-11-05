@@ -23,6 +23,21 @@
                 </div>
               </div>
               <div class="nav-filter pull-right dropdown">
+                <span dropdown-toggle>
+                  Hide <i class="fa fa-caret-down"></i>
+                </span>
+                <div class="dropdown-menu">
+                  <div class="dropdown-menu-item" ng-click="filters.silenced = !filters.silenced">
+                    <div class="row">
+                      <div class="col-xs-1">
+                        <i class="fa fa-check" ng-show="filters.silenced"></i>
+                      </div>
+                      <div class="col-xs-10">
+                        Silenced Checks
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <select class="form-control" ng-init="limit=50" ng-model="filters.limit" ng-change="permalink($event, 'limit', filters.limit)">
                   <option value="50">Show 50</option>
                   <option value="100">Show 100</option>
@@ -48,7 +63,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="event in events | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | limitTo:filters.limit | buildEvents" ng-click="go('/client/'+event.dc+'/'+event.client.name+'?check='+event.check.name)">
+              <tr ng-repeat="event in events | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | hideSilenced:filters.silenced | limitTo:filters.limit | buildEvents" ng-click="go('/client/'+event.dc+'/'+event.client.name+'?check='+event.check.name)">
                 <td class="well-{{ event.check.status | getStatusClass }}" ng-click="stash($event, event)">
                   <i class="fa {{ event.acknowledged | getAckClass }}"></i>
                 </td>

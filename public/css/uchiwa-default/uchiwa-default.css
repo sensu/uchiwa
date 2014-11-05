@@ -247,7 +247,12 @@ pre.hljs .hljs-string {
 /* Wells */
 .dropdown-menu {
   background-color: #FFFFFF;
-  color: #4D4D4D; }
+  color: #4D4D4D;
+  min-width: 250px; }
+
+.dropdown-menu-item {
+  padding: 8px 0 8px 8px;
+  font-weight: 400; }
 
 .dropdown-menu > li > a {
   color: #4D4D4D;
@@ -258,12 +263,6 @@ pre.hljs .hljs-string {
 
 .show-on-hover:hover > div.dropdown-menu {
   display: block; }
-
-.navbar .dropdown-menu {
-  min-width: 250px; }
-
-.navbar .dropdown-menu > li > a, .navbar .dropdown-menu > li > a:focus {
-  font-weight: 400; }
 
 .navbar .dropdown-menu {
   top: 85%; }
@@ -345,6 +344,10 @@ pre.hljs .hljs-string {
 
 .nav-filter .form-control.subscriptions {
   width: 140px; }
+
+.nav-filter span {
+  padding-right: 15px;
+  padding-left: 15px; }
 
 .nav-dc {
   text-transform: uppercase; }

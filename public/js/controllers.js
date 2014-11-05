@@ -194,14 +194,14 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
 /**
 * Events
 */
-controllerModule.controller('events', ['$scope', '$routeParams','routingService', 'stashesService', 'Page',
-  function ($scope, $routeParams, routingService, stashesService, Page) {
+controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams','routingService', 'settings', 'stashesService', 'Page',
+  function ($cookieStore, $scope, $routeParams, routingService, settings, stashesService, Page) {
     Page.setTitle('Events');
     $scope.pageHeaderText = 'Events';
     $scope.predicate = '-check.status';
+    $scope.filters = {};
 
     // Routing
-    $scope.filters = {};
     routingService.initFilters($routeParams, $scope.filters, ['dc', 'limit', 'q']);
     $scope.$on('$locationChangeSuccess', function(){
       routingService.updateFilters($routeParams, $scope.filters);
@@ -211,6 +211,12 @@ controllerModule.controller('events', ['$scope', '$routeParams','routingService'
     $scope.go = routingService.go;
     $scope.permalink = routingService.permalink;
     $scope.stash = stashesService.stash;
+
+    // Hide silenced
+    $scope.filters.silenced = $cookieStore.get('hideSilenced') || settings.hideSilenced;
+    $scope.$watch('filters.silenced', function () {
+      $cookieStore.put('hideSilenced', $scope.filters.silenced);
+    });
   }
 ]);
 
