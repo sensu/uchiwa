@@ -173,6 +173,22 @@ describe('filters', function () {
 
   });
 
+  describe('hideSilenced', function () {
+
+    it('should only hide silenced events when hideSilenced is true', inject(function (hideSilencedFilter) {
+      var events = [
+        {id: 'foo', acknowledged: true},
+        {id: 'bar', acknowledged: false}
+      ];
+      var expectedEvents = [
+        {id: 'bar', acknowledged: false}
+      ];
+      expect(hideSilencedFilter(events, false)).toEqual(events);
+      expect(hideSilencedFilter(events, true)).toEqual(expectedEvents);
+    }));
+
+  });
+
   describe('richOutput', function () {
 
     it('should convert an object to JSON string', inject(function (richOutputFilter) {

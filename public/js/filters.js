@@ -125,6 +125,20 @@ filterModule.filter('getTimestamp', ['$filter', 'settings', function ($filter, s
   };
 }]);
 
+filterModule.filter('hideSilenced', function() {
+  return function(events, hideSilenced) {
+    if (Object.prototype.toString.call(events) !== '[object Array]') {
+      return events;
+    }
+    if (events && hideSilenced) {
+      return events.filter(function (item) {
+        return item.acknowledged === false;
+      });
+    }
+    return events;
+  };
+});
+
 filterModule.filter('setMissingProperty', function() {
   return function(property) {
     return property || false;
