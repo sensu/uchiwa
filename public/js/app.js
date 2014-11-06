@@ -13,7 +13,6 @@ angular.module('uchiwa', [
   'ngRoute',
   'ngSanitize',
   // 3rd party dependencies
-  'imagey',
   'toastr',
   'ui.bootstrap'
 ]);
