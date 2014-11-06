@@ -194,7 +194,7 @@ describe('filters', function () {
     it('should only hide silenced events when hideSilenced is true', inject(function (imageyFilter) {
       expect(imageyFilter(false)).toBe(false);
       expect(imageyFilter('http://foo.bar')).toEqual('http://foo.bar');
-      expect(imageyFilter('http://foo.bar/qux.gif')).toEqual('<img src="http://foo.bar/qux.gif"');
+      expect(imageyFilter('http://foo.bar/qux.gif')).toEqual('<img src="http://foo.bar/qux.gif">');
     }));
 
   });
