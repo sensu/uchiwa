@@ -22,7 +22,6 @@
     "bootstrap-sass-official": "3.1.1",
     "fontawesome": "4.1.0",
     "highlightjs": "~8.3.0",
-    "imagey-filter": "~1.0.1",
     "toastr": "~2.0.3",
     "underscore": "~1.6.0"
   },

@@ -139,6 +139,18 @@ filterModule.filter('hideSilenced', function() {
   };
 });
 
+filterModule.filter('imagey', function() {
+  return function(url) {
+    if (!url) {
+      return url;
+    }
+    var IMG_URL_REGEX = /(href=['"]?)?https?:\/\/(?:[0-9a-z\-]+\.)+[a-z]{2,6}\/(?:[^'"]+)\.(?:jpe?g|gif|png)/g;
+    return url.replace(IMG_URL_REGEX, function(match, href) {
+      return (href) ? match : '<img src="' + match + '">';
+    });
+  };
+});
+
 filterModule.filter('setMissingProperty', function() {
   return function(property) {
     return property || false;
