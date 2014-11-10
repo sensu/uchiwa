@@ -157,7 +157,7 @@ filterModule.filter('setMissingProperty', function() {
   };
 });
 
-filterModule.filter('richOutput', ['$filter', function($filter) {
+filterModule.filter('richOutput', ['$filter', '$sce', function($filter, $sce) {
   return function(text) {
     var output = '';
     if(typeof text === 'object') {
@@ -170,8 +170,12 @@ filterModule.filter('richOutput', ['$filter', function($filter) {
     } else if (typeof text === 'number') {
       output = text.toString();
     } else {
-      var linkified = $filter('linky')(text, '_blank');
-      output = $filter('imagey')(linkified);
+      if (/^<iframe/.test(text)) {
+        output = $sce.trustAsHtml(text);
+      } else {
+        var linkified = $filter('linky')(text, '_blank');
+        output = $filter('imagey')(linkified);
+      }
     }
     return output;
   };
