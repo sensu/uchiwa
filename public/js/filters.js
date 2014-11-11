@@ -157,7 +157,7 @@ filterModule.filter('setMissingProperty', function() {
   };
 });
 
-filterModule.filter('richOutput', ['$filter', '$sce', function($filter, $sce) {
+filterModule.filter('richOutput', ['$filter', '$sce', '$sanitize', '$interpolate', function($filter, $sce, $sanitize, $interpolate) {
   return function(text) {
     var output = '';
     if(typeof text === 'object') {
@@ -170,8 +170,9 @@ filterModule.filter('richOutput', ['$filter', '$sce', function($filter, $sce) {
     } else if (typeof text === 'number') {
       output = text.toString();
     } else {
-      if (/^<iframe/.test(text)) {
-        output = $sce.trustAsHtml(text);
+      if (/^iframe:/.test(text)) {
+        var iframeSrc = $sanitize(text.replace(/^iframe:/, ''));
+        output = $sce.trustAsHtml($interpolate('<iframe width="100%" src="{{iframeSrc}}"></iframe>')({ 'iframeSrc': iframeSrc }));
       } else {
         var linkified = $filter('linky')(text, '_blank');
         output = $filter('imagey')(linkified);
