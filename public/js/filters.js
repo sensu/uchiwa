@@ -144,7 +144,7 @@ filterModule.filter('imagey', function() {
     if (!url) {
       return url;
     }
-    var IMG_URL_REGEX = /(href=['"]?)?https?:\/\/(?:[0-9a-z\-]+\.)+[a-z]{2,6}\/(?:[^'"]+)\.(?:jpe?g|gif|png)/g;
+    var IMG_URL_REGEX = /(href=['"]?)?https?:\/\/(?:[0-9a-zA-Z_\-\.]+)\/(?:[^'"]+)\.(?:jpe?g|gif|png)/g;
     return url.replace(IMG_URL_REGEX, function(match, href) {
       return (href) ? match : '<img src="' + match + '">';
     });
