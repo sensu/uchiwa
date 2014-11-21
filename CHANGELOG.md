@@ -1,3 +1,8 @@
+### 0.3.3 (2014-11-21)
+
+#### Features
+- Remove imagey-filter so http images do not use Google images proxy
+
 ### 0.3.2 (2014-11-04)
 
 #### Features
