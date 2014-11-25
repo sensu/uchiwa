@@ -60,7 +60,7 @@
             <td>{{item.dc}}</td>
             <td>{{item.client.name}}</td>
             <td>{{item.check.name}}</td>
-            <td>{{itemStash.expiration}}</td>
+            <td>{{itemStash.expire}}</td>
             <td>{{itemStash.content.reason}}</td>
           </tr>
         </tbody>
@@ -97,10 +97,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="item in items | filter:{acknowledged: true}">
+        <tr ng-repeat="item in items | filter:{acknowledged: true}" ng-init="itemStash = stashForEvent(stashes, item)">
           <td>{{item.dc}}</td>
           <td>{{item.client.name}}</td>
           <td>{{item.check.name}}</td>
+          <td>{{itemStash.expire}}</td>
+          <td>{{itemStash.content.reason}}</td>
         </tr>
       </tbody>
     </table>
