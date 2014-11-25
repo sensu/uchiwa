@@ -346,6 +346,7 @@ controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInsta
   function ($scope, $filter, $modalInstance, items, stashesService) {
     $scope.items = items;
     $scope.acknowledged = $filter('filter')(items, {acknowledged: true}).length;
+    $scope.itemType = items[0].hasOwnProperty('client') ? 'check' : 'client'
     $scope.stash = {};
     $scope.stash.expirations = {
       '900': 900,
@@ -356,10 +357,18 @@ controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInsta
     $scope.stash.reason = '';
     $scope.stash.expiration = 900;
 
-    $scope.stashForEvent = function(stashes, event) {
+    $scope.stashForItem = function(stashes, item) {
+      var path = 'silence/';
+
+      if ($scope.itemType == 'client') {
+        path = path + item.name;
+      } else if ($scope.itemType == 'check') {
+        path = path + item.client.name + '/' + item.check.name
+      }
+
       return _.findWhere(stashes, {
-        dc: event.dc,
-        path: 'silence/' + event.client.name + '/' + event.check.name
+        dc: item.dc,
+        path: path
       });
     };
 

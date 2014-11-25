@@ -15,8 +15,8 @@
 <div class="modal-body">
   <p class="lead">
     <ng-pluralize count="items.length"
-                  when="{'one': 'for the following check:',
-                        'other': 'for the following checks:'}">
+                  when="{'one': 'for the following {{itemType}}s:',
+                        'other': 'for the following {{itemType}}s:'}">
     </ng-pluralize>
   </p>
   <div ng-if="acknowledged != items.length">
@@ -25,14 +25,14 @@
         <tr>
           <th>Data Center</th>
           <th>Client</th>
-          <th>Check</th>
+          <th ng-if="itemType == 'check'">Check</th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="item in items | filter:{acknowledged: false}">
           <td>{{item.dc}}</td>
-          <td>{{item.client.name}}</td>
-          <td>{{item.check.name}}</td>
+          <td>{{item.name || item.client.name}}</td>
+          <td ng-if="itemType == 'check'">{{item.check.name}}</td>
         </tr>
       </tbody>
     </table>
@@ -41,8 +41,8 @@
       <hr/>
       <p class="lead" ng-if="acknowledged != items.length">
         <ng-pluralize count="acknowledged"
-                      when="{'one': 'the following check is already silenced:',
-                            'other': 'the following checks are already silenced:'}">
+                      when="{'one': 'the following {{itemType}} is already silenced:',
+                            'other': 'the following {{itemType}}s are already silenced:'}">
         </ng-pluralize>
       </p>
       <table class="table">
@@ -50,16 +50,16 @@
           <tr>
             <th>Data Center</th>
             <th>Client</th>
-            <th>Check</th>
+            <th ng-if="itemType == 'check'">Check</th>
             <th>Expiration</th>
             <th>Reason</th>
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="item in items | filter:{acknowledged: true}" ng-init="itemStash = stashForEvent(stashes, item)">
+          <tr ng-repeat="item in items | filter:{acknowledged: true}" ng-init="itemStash = stashForItem(stashes, item)">
             <td>{{item.dc}}</td>
-            <td>{{item.client.name}}</td>
-            <td>{{item.check.name}}</td>
+            <td>{{item.name || item.client.name}}</td>
+            <td ng-if="itemType == 'check'">{{item.check.name}}</td>
             <td>{{itemStash.expire}}</td>
             <td>{{itemStash.content.reason}}</td>
           </tr>
@@ -67,7 +67,7 @@
       </table>
       <div class="checkbox">
         <label>
-          <input type="checkbox"> Overwrite silenced checks' expiration & reason
+          <input type="checkbox"> Overwrite silenced {{itemType}}s' expiration & reason
         </label>
       </div>
     </div>
@@ -91,16 +91,16 @@
         <tr>
           <th>Data Center</th>
           <th>Client</th>
-          <th>Check</th>
+          <th ng-if="itemType == 'check'">Check</th>
           <th>Expiration</th>
           <th>Reason</th>
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="item in items | filter:{acknowledged: true}" ng-init="itemStash = stashForEvent(stashes, item)">
+        <tr ng-repeat="item in items | filter:{acknowledged: true}" ng-init="itemStash = stashForItem(stashes, item)">
           <td>{{item.dc}}</td>
-          <td>{{item.client.name}}</td>
-          <td>{{item.check.name}}</td>
+          <td>{{item.name || item.client.name}}</td>
+          <td ng-if="itemType == 'check'">{{item.check.name}}</td>
           <td>{{itemStash.expire}}</td>
           <td>{{itemStash.content.reason}}</td>
         </tr>
