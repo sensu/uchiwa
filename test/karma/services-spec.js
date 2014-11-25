@@ -58,7 +58,7 @@ describe('services', function () {
         spyOn(uchiwaBackend, 'createStash').and.callThrough();
         var timestamp = Math.floor(new Date()/1000);
         var expectedPayload = {dc: 'foo', payload: {path: 'silence/bar', content: {reason: '', source: 'uchiwa', timestamp: timestamp}}};
-        stashesService.submit({acknowledged: true}, {dc: 'foo', path: ['bar', ''], acknowledged: false});
+        stashesService.submit({name: 'bar', acknowledged: true, dc: 'foo'}, {path: ['bar', ''], acknowledged: false});
         expect(uchiwaBackend.createStash).toHaveBeenCalledWith(expectedPayload);
       }));
 
@@ -66,7 +66,7 @@ describe('services', function () {
         spyOn(uchiwaBackend, 'createStash').and.callThrough();
         var timestamp = Math.floor(new Date()/1000);
         var expectedPayload = {dc: 'foo', payload: {path: 'silence/bar/qux', content: {reason: '', source: 'uchiwa', timestamp: timestamp}}};
-        stashesService.submit({acknowledged: true}, {dc: 'foo', path: ['bar', 'qux'], acknowledged: false});
+        stashesService.submit({client: {name: 'bar'}, check: {name: 'qux'}, acknowledged: true, dc: 'foo'}, {path: ['bar', 'qux'], acknowledged: false});
         expect(uchiwaBackend.createStash).toHaveBeenCalledWith(expectedPayload);
       }));
 

@@ -356,13 +356,6 @@ controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInsta
     $scope.stash.reason = '';
     $scope.stash.expiration = 900;
 
-    _.each(items, function(item) {
-      $scope.stash[item._id] = {
-        dc: item.dc,
-        path: stashesService.construct(item)
-      };
-    });
-
     $scope.stashForEvent = function(stashes, event) {
       return _.findWhere(stashes, {
         dc: event.dc,

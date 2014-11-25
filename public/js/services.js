@@ -238,14 +238,15 @@ serviceModule.service('stashesService', ['$rootScope', '$modal', 'notification',
   };
   this.submit = function (element, item) {
     var isAcknowledged = item.acknowledged;
-    if (item[element._id].path[1] !== '') {
-      item[element._id].path[1] = '/' + item[element._id].path[1];
+    var path = this.construct(element);
+    if (path[1] !== '') {
+      path[1] = '/' + path[1];
     }
     if (angular.isUndefined(item.reason)) {
       item.reason = '';
     }
-    var path = 'silence/' + item[element._id].path[0] + item[element._id].path[1];
-    var data = {dc: item[element._id].dc, payload: {}};
+    path = 'silence/' + path[0] + path[1];
+    var data = {dc: element.dc, payload: {}};
 
     $rootScope.skipRefresh = true;
     if (isAcknowledged) {
