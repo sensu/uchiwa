@@ -237,7 +237,7 @@ serviceModule.service('stashesService', ['$rootScope', '$modal', 'notification',
     }
   };
   this.submit = function (element, item) {
-    var isAcknowledged = item.acknowledged;
+    var isAcknowledged = element.acknowledged;
     var path = this.construct(element);
     if (path[1] !== '') {
       path[1] = '/' + path[1];
