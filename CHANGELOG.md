@@ -1,3 +1,9 @@
+### 0.3.4 (2014-11-25)
+
+#### Bug Fixes
+- favicon.ico was empty or corrupt
+- Imagey regex won't match hostnames or IP addresses
+
 ### 0.3.3 (2014-11-21)
 
 #### Features

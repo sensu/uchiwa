@@ -9,5 +9,5 @@ constantModule.constant('settings', {
 
 // Version
 constantModule.constant('version', {
-  uchiwa: '0.3.3'
+  uchiwa: '0.3.4'
 });
