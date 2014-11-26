@@ -224,8 +224,8 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
 /**
 * Events
 */
-controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams','routingService', 'settings', 'stashesService', 'Page',
-  function ($cookieStore, $scope, $routeParams, routingService, settings, stashesService, Page) {
+controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams','routingService', 'settings', 'stashesService', 'clientsService', 'Page',
+  function ($cookieStore, $scope, $routeParams, routingService, settings, stashesService, clientsService, Page) {
     Page.setTitle('Events');
     $scope.pageHeaderText = 'Events';
     $scope.predicate = '-check.status';
@@ -241,6 +241,7 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams',
     $scope.go = routingService.go;
     $scope.permalink = routingService.permalink;
     $scope.stash = stashesService.stash;
+    $scope.resolveEvent = clientsService.resolveEvent;
 
     // Hide silenced
     $scope.filters.silenced = $cookieStore.get('hideSilenced') || settings.hideSilenced;
@@ -258,6 +259,12 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams',
     $scope.selectEvents = function(selectModel) {
       _.each($scope.events, function(event) {
         event.selected = selectModel.selected;
+      });
+    };
+
+    $scope.resolveEvents = function(events) {
+      _.each(events, function(event) {
+        $scope.resolveEvent(event.dc, event.client, event.check);
       });
     };
   }

@@ -56,7 +56,8 @@ serviceModule.service('clientsService', ['$location', 'notification', 'uchiwaBac
       return false;
     }
 
-    var payload = {dc: dc, payload: {client: client.name, check: check.check}};
+    var checkName = check.name || check.check;
+    var payload = {dc: dc, payload: {client: client.name, check: checkName}};
 
     uchiwaBackend.resolveEvent(payload)
       .success(function () {
