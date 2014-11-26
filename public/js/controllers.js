@@ -188,8 +188,8 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'clientsService
 /**
 * Clients
 */
-controllerModule.controller('clients', ['$scope', '$routeParams', 'routingService', 'stashesService', 'Page',
-  function ($scope, $routeParams, routingService, stashesService, Page) {
+controllerModule.controller('clients', ['$scope', '$routeParams', 'routingService', 'stashesService', 'clientsService', 'Page',
+  function ($scope, $routeParams, routingService, stashesService, clientsService, Page) {
     Page.setTitle('Clients');
     $scope.pageHeaderText = 'Clients';
     $scope.predicate = '-status';
@@ -205,6 +205,7 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
     $scope.go = routingService.go;
     $scope.permalink = routingService.permalink;
     $scope.stash = stashesService.stash;
+    $scope.deleteClient = clientsService.deleteClient;
 
     // Helpers
     $scope.selectedClients = function(clients) {
@@ -216,6 +217,12 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
     $scope.selectClients = function(selectModel) {
       _.each($scope.clients, function(client) {
         client.selected = selectModel.selected;
+      });
+    };
+
+    $scope.deleteClients = function(clients) {
+      _.each(clients, function(client) {
+        $scope.deleteClient(client.dc, client.name);
       });
     };
   }

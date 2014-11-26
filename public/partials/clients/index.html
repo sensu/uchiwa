@@ -29,6 +29,12 @@
                   </span>
                   <ul class="dropdown-menu">
                     <li>
+                      <a href="" ng-click="deleteClients(selectedClients(clients))">
+                        <i class="fa fa-times fa-fw"></i>
+                        Delete
+                      </a>
+                    </li>
+                    <li>
                       <a href="" ng-click="stash($event, selectedClients(clients))">
                         <i class="fa fa-volume-up fa-fw"></i>
                         Silence/Unsilence
