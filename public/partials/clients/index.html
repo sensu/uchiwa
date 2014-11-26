@@ -55,7 +55,9 @@
           <table class="table table-hover table-condensed" style="table-layout: fixed;">
             <thead>
               <tr>
-                <th class="col-min"></th>
+                <th class="col-min">
+                  <input type="checkbox" ng-model="selectModel.selected" ng-change="selectClients(selectModel)"></input>
+                </th>
                 <th class="col-min" ng-click="predicate = '-status'; reverse=!reverse"><i class="fa fa-sort"></i></th>
                 <th class="col-sm-2" ng-click="predicate = 'name'; reverse=!reverse">Name <i class="fa fa-sort"></i></th>
                 <th class="col-sm-1" ng-click="predicate = 'address'; reverse=!reverse">IP <i class="fa fa-sort"></i></th>

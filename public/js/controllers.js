@@ -212,6 +212,12 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
         return client.selected === true;
       });
     };
+
+    $scope.selectClients = function(selectModel) {
+      _.each($scope.clients, function(client) {
+        client.selected = selectModel.selected;
+      });
+    };
   }
 ]);
 
@@ -246,6 +252,12 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams',
     $scope.selectedEvents = function(events) {
       return _.filter(events, function(event) {
         return event.selected === true;
+      });
+    };
+
+    $scope.selectEvents = function(selectModel) {
+      _.each($scope.events, function(event) {
+        event.selected = selectModel.selected;
       });
     };
   }

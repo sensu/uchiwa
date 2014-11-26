@@ -74,7 +74,9 @@
           <table class="table table-hover table-condensed" style="table-layout: fixed;">
             <thead>
               <tr>
-                <th class="col-min"></th>
+                <th class="col-min">
+                  <input type="checkbox" ng-model="selectModel.selected" ng-change="selectEvents(selectModel)"></input>
+                </th>
                 <th class="col-min" ng-click="predicate = '-check.status'; reverse=!reverse"><i class="fa fa-sort"></i></th>
                 <th class="col-sm-2" ng-click="predicate = 'sourceName'; reverse=!reverse">Source <i class="fa fa-sort"></i></th>
                 <th class="col-sm-2" ng-click="predicate = 'check.name'; reverse=!reverse">Check <i class="fa fa-sort"></i></th>
