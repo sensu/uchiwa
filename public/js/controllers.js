@@ -40,7 +40,7 @@ controllerModule.controller('init', ['$rootScope', '$scope', 'notification', 'po
           $rootScope.dc = data.Dc;
 
           $rootScope.clients = _.map(data.Clients, function(client) {
-            var existingClient = _.findWhere($rootScope.clients, {name: client.name});
+            var existingClient = _.findWhere($rootScope.clients, {name: client.name, dc: client.dc});
             if (existingClient !== undefined) {
               client = angular.extend(existingClient, client);
             }
