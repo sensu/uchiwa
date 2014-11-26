@@ -23,6 +23,19 @@
                 </div>
               </div>
               <div class="nav-filter pull-right dropdown">
+                <div class="dropdown">
+                  <span dropdown-toggle>
+                    Actions <i class="fa fa-caret-down"></i>
+                  </span>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="" ng-click="stash($event, selectedClients(clients))">
+                        <i class="fa fa-volume-up fa-fw"></i>
+                        Silence/Unsilence
+                      </a>
+                    </li>
+                  </ul>
+                </div>
                 <select class="form-control subscriptions" ng-model="filters.subscription" ng-change="permalink($event, 'subscription', filters.subscription)">
                   <option value="">Subscriptions</option>
                   <option ng-repeat="subscription in subscriptions | orderBy:'toString()'" value="{{subscription}}" ng-selected="filters.subscription == subscription">{{subscription}}</option>
@@ -42,6 +55,7 @@
           <table class="table table-hover table-condensed" style="table-layout: fixed;">
             <thead>
               <tr>
+                <th class="col-min"></th>
                 <th class="col-min" ng-click="predicate = '-status'; reverse=!reverse"><i class="fa fa-sort"></i></th>
                 <th class="col-sm-2" ng-click="predicate = 'name'; reverse=!reverse">Name <i class="fa fa-sort"></i></th>
                 <th class="col-sm-1" ng-click="predicate = 'address'; reverse=!reverse">IP <i class="fa fa-sort"></i></th>
@@ -52,8 +66,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="client in clients | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | filterSubscriptions:filters.subscription | limitTo:filters.limit" ng-click="go('/client/'+client.dc+'/'+client.name)">
-                <td class="well-{{ client.status | getStatusClass }} dropdown" ng-click="stash($event, client)">
+              <tr ng-repeat="client in clients | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | filterSubscriptions:filters.subscription | limitTo:filters.limit track by client.name" ng-click="go('/client/'+client.dc+'/'+client.name)">
+                <td class="well-{{ client.status | getStatusClass }}" ng-click="$event.stopPropagation()">
+                  <input type="checkbox" ng-model="client.selected"></input>
+                </td>
+                <td ng-click="stash($event, client)">
                   <i class="fa {{ client.acknowledged | getAckClass }}"></i>
                 </td>
                 <td class="main">{{ client.name }}</td>

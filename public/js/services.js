@@ -45,7 +45,7 @@ serviceModule.service('clientsService', ['$location', 'notification', 'uchiwaBac
   };
   this.getEvent = function (client, check, events) {
     if (!client || !check || events.constructor.toString().indexOf('Array') === -1) { return null; }
-    return  events.filter(function (item) {
+    return events.filter(function (item) {
       return (item.client.name === client && item.check.name === check);
     })[0];
   };

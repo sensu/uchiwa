@@ -37,8 +37,15 @@ controllerModule.controller('init', ['$rootScope', '$scope', 'notification', 'po
             }
           });
           $rootScope.checks = data.Checks;
-          $rootScope.clients = data.Clients;
           $rootScope.dc = data.Dc;
+
+          $rootScope.clients = _.map(data.Clients, function(client) {
+            var existingClient = _.findWhere($rootScope.clients, {name: client.name});
+            if (existingClient !== undefined) {
+              client = angular.extend(existingClient, client);
+            }
+            return existingClient || client;
+          });
 
           $rootScope.events = _.map(data.Events, function(event) {
             event._id = event.dc + '/' + event.client.name + '/' + event.check.name;
@@ -198,6 +205,13 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
     $scope.go = routingService.go;
     $scope.permalink = routingService.permalink;
     $scope.stash = stashesService.stash;
+
+    // Helpers
+    $scope.selectedClients = function(clients) {
+      return _.filter(clients, function(client) {
+        return client.selected === true;
+      });
+    };
   }
 ]);
 
