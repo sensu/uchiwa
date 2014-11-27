@@ -60,7 +60,7 @@
             <td>{{item.dc}}</td>
             <td>{{item.name || item.client.name}}</td>
             <td ng-if="itemType == 'check'">{{item.check.name}}</td>
-            <td>{{itemStash.expire}}</td>
+            <td>{{itemStash.expire | getExpireTimestamp}}</td>
             <td>{{itemStash.content.reason}}</td>
           </tr>
         </tbody>
@@ -101,7 +101,7 @@
           <td>{{item.dc}}</td>
           <td>{{item.name || item.client.name}}</td>
           <td ng-if="itemType == 'check'">{{item.check.name}}</td>
-          <td>{{itemStash.expire}}</td>
+          <td>{{itemStash.expire | getExpireTimestamp}}</td>
           <td>{{itemStash.content.reason}}</td>
         </tr>
       </tbody>
