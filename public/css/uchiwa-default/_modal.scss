@@ -1,0 +1,14 @@
+@import "variables";
+
+.modal-header {
+  border-bottom: 1px solid $modal-header-border;
+}
+
+.modal-content {
+  background-color: $modal-content-bg;
+  color: #6f6f6f;
+}
+
+.modal-footer {
+  border-top: 1px solid $modal-header-border;
+}
