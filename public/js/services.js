@@ -37,7 +37,7 @@ serviceModule.service('uchiwaBackend', ['$http',
 /**
 * Clients
 */
-serviceModule.service('clientsService', ['$location', 'notification', 'uchiwaBackend', function ($location, notification, uchiwaBackend) {
+serviceModule.service('clientsService', ['$location', '$rootScope', 'notification', 'uchiwaBackend', function ($location, $rootScope, notification, uchiwaBackend) {
   this.getCheck = function (id, history) {
     return history.filter(function (item) {
       return item.check === id;
@@ -62,7 +62,14 @@ serviceModule.service('clientsService', ['$location', 'notification', 'uchiwaBac
     uchiwaBackend.resolveEvent(payload)
       .success(function () {
         notification('success', 'The event has been resolved.');
-        $location.url(encodeURI('/client/' + dc + '/' + client.name));
+        if ($location.url() !== '/events') {
+          $location.url(encodeURI('/client/' + dc + '/' + client.name));
+        } else {
+          var _id = dc + '/' + client.name + '/' + checkName;
+          var event = _.findWhere($rootScope.events, {_id: _id});
+          var eventPosition = $rootScope.events.indexOf(event);
+          $rootScope.events.splice(eventPosition, 1);
+        }
       })
       .error(function (error) {
         notification('error', 'The event was not resolved. ' + error);
