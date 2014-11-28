@@ -7,6 +7,7 @@ $quinary-color: #5F97FB !default;
 $senary-color: #4d4d64 !default;
 
 $danger-color: #D9322A;
+$border-color: #21212b;
 
 /* Body, Sections, and Headers */
 $body-background-color: $primary-color !default;
@@ -16,7 +17,7 @@ $section-header-border-bottom: 1px solid $quaternary-color !default;
 
 /* Breadcrumb */
 $breadcrumb-background-color: #424256 !default;
-$breadcrumb-border-color: #21212b !default;
+$breadcrumb-border-color: $border-color !default;
 $breadcrumb-text-color: $body-text-color !default;
 
 /* Code */
@@ -29,6 +30,10 @@ $code-string-color: #718c00 !default;
 /* Dropdown */
 $dropdown-background-color: $body-background-color !default;
 $dropdown-text-color: $body-text-color !default;
+
+/* Modal */
+$modal-header-border: $border-color !default;
+$modal-content-bg: $primary-color !default;
 
 /* Nav */
 $nav-text-color: $body-text-color !default;
