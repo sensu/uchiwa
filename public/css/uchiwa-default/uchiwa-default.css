@@ -646,7 +646,10 @@ pre.hljs .hljs-string {
   padding-left: 3px; }
 
 .table td.main {
-  font-weight: 700; }
+  font-weight: 700;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; }
 
 .table td.output {
   text-overflow: ellipsis;
