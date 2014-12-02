@@ -94,6 +94,7 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'clientsService
   function ($scope, $routeParams, clientsService, notification, Page, routingService, stashesService, uchiwaBackend) {
 
     $scope.predicate = '-last_status';
+    $scope.missingClient = false;
 
     // Retrieve client
     $scope.clientId = decodeURI($routeParams.clientId);
@@ -104,7 +105,9 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'clientsService
           $scope.$emit('client', data);
         })
         .error(function (error) {
-          notification('error', 'Could not retrieve the client '+ $scope.clientId +'. Is Sensu API running on '+ $scope.dcId +'?');
+          // Stop the pulling interval and set scope to display an error message
+          clearTimeout(timer);
+          $scope.missingClient = true;
           console.error('Error: '+ JSON.stringify(error));
         });
     };

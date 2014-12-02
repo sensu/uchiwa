@@ -2,7 +2,7 @@
   <div class="row-fluid">
     <div class="col-lg-12">
       <ol class="breadcrumb" ng-if="!selectedCheck">
-        <li><a href="/#/clients">Clients</a></li>
+        <li><a href="#clients">Clients</a></li>
         <li class="active">{{client.name}}</li>
       </ol>
       <ol class="breadcrumb" ng-if="selectedCheck">
@@ -12,7 +12,17 @@
       </ol>
     </div>
   </div>
-  <div class="row-fluid">
+  <div class="row-fluid" ng-if='missingClient'>
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <p class="lead text-center">Could not retrieve the client <strong>{{clientId}}</strong> from the datacenter <strong>{{dcId}}</strong>!</p>
+          <p class="lead text-center">Take me back to the <a href="#clients"> clients</a> page.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row-fluid" ng-if='!missingClient'>
     <div class="col-lg-4">
       <div class="panel panel-default client-info">
         <div class="panel-heading">
