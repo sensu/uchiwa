@@ -1,23 +1,114 @@
 <div class="modal-header">
-    <h3 class="modal-title" ng-if="item.acknowledged">Delete the stash...</h3>
-    <h3 class="modal-title" ng-if="!item.acknowledged">Create a stash...</h3>
+  <h3 class="modal-title" ng-if="acknowledged == items.length">
+    <ng-pluralize count="items.length"
+                  when="{'one': 'Delete the stash...',
+                        'other': 'Delete the stashes...'}">
+    </ng-pluralize>
+  </h3>
+  <h3 class="modal-title" ng-if="acknowledged != items.length">
+    <ng-pluralize count="items.length"
+                  when="{'one': 'Create a stash...',
+                        'other': 'Create stashes...'}">
+    </ng-pluralize>
+  </h3>
 </div>
-<div class="modal-body" >
-  <p class="lead">for the client <strong>{{stash.path[0]}}</strong> <span ng-if="stash.path[1] !== ''">on the check <strong>{{stash.path[1]}}</strong></span></p>
-  <span ng-if="!item.acknowledged">
-    <h5>Expiration</h5>
-    <div class="btn-group">
-      <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="900">15 minutes</label>
-      <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="3600">1 hour</label>
-      <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="86400">24 hours</label>
-      <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="-1">No expiration</label>
-    </div>
+<div class="modal-body">
+  <p class="lead">
+    <ng-pluralize count="items.length"
+                  when="{'one': 'for the following {{itemType}}s:',
+                        'other': 'for the following {{itemType}}s:'}">
+    </ng-pluralize>
+  </p>
+  <div ng-if="acknowledged != items.length">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Data Center</th>
+          <th>Client</th>
+          <th ng-if="itemType == 'check'">Check</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in items | filter:{acknowledged: false}">
+          <td>{{item.dc}}</td>
+          <td>{{item.name || item.client.name}}</td>
+          <td ng-if="itemType == 'check'">{{item.check.name}}</td>
+        </tr>
+      </tbody>
+    </table>
 
-    <h5>Reason</h5>
-    <input type="text" placeholder="Enter a reason" ng-model="stash.reason">
-  </span>
+    <div ng-if="acknowledged != 0">
+      <hr/>
+      <p class="lead" ng-if="acknowledged != items.length">
+        <ng-pluralize count="acknowledged"
+                      when="{'one': 'the following {{itemType}} is already silenced:',
+                            'other': 'the following {{itemType}}s are already silenced:'}">
+        </ng-pluralize>
+      </p>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Data Center</th>
+            <th>Client</th>
+            <th ng-if="itemType == 'check'">Check</th>
+            <th>Expiration</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in items | filter:{acknowledged: true}" ng-init="itemStash = stashForItem(stashes, item)">
+            <td>{{item.dc}}</td>
+            <td>{{item.name || item.client.name}}</td>
+            <td ng-if="itemType == 'check'">{{item.check.name}}</td>
+            <td>{{itemStash.expire | getExpireTimestamp}}</td>
+            <td>{{itemStash.content.reason}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <!--<div class="checkbox">
+        <label>
+          <input type="checkbox"> Overwrite silenced {{itemType}}s' expiration & reason
+        </label>
+      </div>-->
+    </div>
+    <hr/>
+    <span>
+      <h5>Expiration</h5>
+      <div class="btn-group">
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="900">15 minutes</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="3600">1 hour</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="86400">24 hours</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="-1">No expiration</label>
+      </div>
+
+      <h5>Reason</h5>
+      <input type="text" placeholder="Enter a reason" ng-model="stash.reason">
+    </span>
+  </div>
+  <div ng-if="acknowledged == items.length">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Data Center</th>
+          <th>Client</th>
+          <th ng-if="itemType == 'check'">Check</th>
+          <th>Expiration</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in items | filter:{acknowledged: true}" ng-init="itemStash = stashForItem(stashes, item)">
+          <td>{{item.dc}}</td>
+          <td>{{item.name || item.client.name}}</td>
+          <td ng-if="itemType == 'check'">{{item.check.name}}</td>
+          <td>{{itemStash.expire | getExpireTimestamp}}</td>
+          <td>{{itemStash.content.reason}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-sm btn-success" ng-click="ok()">Submit</button>
-    <button class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</button>
+  <button class="btn btn-sm btn-success" ng-click="ok()">Submit</button>
+  <button class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</button>
 </div>
