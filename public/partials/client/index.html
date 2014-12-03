@@ -2,12 +2,12 @@
   <div class="row-fluid">
     <div class="col-lg-12">
       <ol class="breadcrumb" ng-if="!selectedCheck">
-        <li><a href="#clients">Clients</a></li>
+        <li><a href="#/clients">Clients</a></li>
         <li class="active">{{client.name}}</li>
       </ol>
       <ol class="breadcrumb" ng-if="selectedCheck">
-        <li><a href="/">Events</a></li>
-        <li><a ng-href="/#/client/{{client.dc | encodeURIComponent}}/{{client.name | encodeURIComponent}}">{{client.name}}</a></li>
+        <li><a href="#/events">Events</a></li>
+        <li><a ng-href="#/client/{{client.dc | encodeURIComponent}}/{{client.name | encodeURIComponent}}">{{client.name}}</a></li>
         <li class="active">{{selectedCheck.check}}</li>
       </ol>
     </div>

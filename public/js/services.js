@@ -8,28 +8,28 @@ var serviceModule = angular.module('uchiwa.services', []);
 serviceModule.service('uchiwaBackend', ['$http',
   function($http){
     this.createStash = function (payload) {
-      return $http.post('/post_stash', payload);
+      return $http.post('post_stash', payload);
     };
     this.deleteClient = function (client, dc) {
-      return $http.get('/delete_client?id=' + client + '&dc=' + dc );
+      return $http.get('delete_client?id=' + client + '&dc=' + dc );
     };
     this.deleteStash = function (payload) {
-      return $http.post('/delete_stash', payload);
+      return $http.post('delete_stash', payload);
     };
     this.getClient = function (client, dc) {
-      return $http.get('/get_client?id=' + client + '&dc=' + dc );
+      return $http.get('get_client?id=' + client + '&dc=' + dc );
     };
     this.getConfig = function () {
-      return $http.get('/get_config');
+      return $http.get('get_config');
     };
     this.getHealth = function () {
-      return $http.get('/health/sensu');
+      return $http.get('health/sensu');
     };
     this.getSensu = function () {
-      return $http.get('/get_sensu');
+      return $http.get('get_sensu');
     };
     this.resolveEvent = function (payload) {
-      return $http.post('/post_event', payload);
+      return $http.post('post_event', payload);
     };
   }
 ]);
