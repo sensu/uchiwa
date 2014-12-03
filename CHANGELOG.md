@@ -1,3 +1,15 @@
+### 0.4.0 (TBD)
+
+#### Features
+- Bulk actions support for events & clients (PR #201)
+- Display an error page if a client is not found (Issue #200)
+
+#### Bug Fixes
+- Make sure to always close the connection to Sensu APIs (Issue #211)
+- Hide clients name overflow in clients view (Issue #210)
+- Fix design of modal window with dark theme (Issue #206)
+- Allow Uchiwa to be ran behind a reverse proxy with a location (Issue #197)
+
 ### 0.3.4 (2014-11-25)
 
 #### Bug Fixes
