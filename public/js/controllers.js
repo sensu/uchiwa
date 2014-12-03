@@ -10,6 +10,7 @@ controllerModule.controller('init', ['$rootScope', '$scope', 'notification', 'po
     $scope.Page = Page;
     $rootScope.skipRefresh = false;
     $rootScope.alerts = [];
+    $rootScope.events = [];
 
     uchiwaBackend.getConfig()
       .success(function (data) {
@@ -36,9 +37,25 @@ controllerModule.controller('init', ['$rootScope', '$scope', 'notification', 'po
             }
           });
           $rootScope.checks = data.Checks;
-          $rootScope.clients = data.Clients;
           $rootScope.dc = data.Dc;
-          $rootScope.events = data.Events;
+
+          $rootScope.clients = _.map(data.Clients, function(client) {
+            var existingClient = _.findWhere($rootScope.clients, {name: client.name, dc: client.dc});
+            if (existingClient !== undefined) {
+              client = angular.extend(existingClient, client);
+            }
+            return existingClient || client;
+          });
+
+          $rootScope.events = _.map(data.Events, function(event) {
+            event._id = event.dc + '/' + event.client.name + '/' + event.check.name;
+            var existingEvent = _.findWhere($rootScope.events, {_id: event._id});
+            if (existingEvent !== undefined) {
+              event = angular.extend(existingEvent, event);
+            }
+            return existingEvent || event;
+          });
+
           $rootScope.stashes = data.Stashes;
           $rootScope.subscriptions = data.Subscriptions;
           $scope.$broadcast('sensu');
@@ -174,8 +191,8 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'clientsService
 /**
 * Clients
 */
-controllerModule.controller('clients', ['$scope', '$routeParams', 'routingService', 'stashesService', 'Page',
-  function ($scope, $routeParams, routingService, stashesService, Page) {
+controllerModule.controller('clients', ['$scope', '$routeParams', 'routingService', 'stashesService', 'clientsService', 'Page',
+  function ($scope, $routeParams, routingService, stashesService, clientsService, Page) {
     Page.setTitle('Clients');
     $scope.pageHeaderText = 'Clients';
     $scope.predicate = '-status';
@@ -191,14 +208,34 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
     $scope.go = routingService.go;
     $scope.permalink = routingService.permalink;
     $scope.stash = stashesService.stash;
+    $scope.deleteClient = clientsService.deleteClient;
+
+    // Helpers
+    $scope.selectedClients = function(clients) {
+      return _.filter(clients, function(client) {
+        return client.selected === true;
+      });
+    };
+
+    $scope.selectClients = function(selectModel) {
+      _.each($scope.clients, function(client) {
+        client.selected = selectModel.selected;
+      });
+    };
+
+    $scope.deleteClients = function(clients) {
+      _.each(clients, function(client) {
+        $scope.deleteClient(client.dc, client.name);
+      });
+    };
   }
 ]);
 
 /**
 * Events
 */
-controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams','routingService', 'settings', 'stashesService', 'Page',
-  function ($cookieStore, $scope, $routeParams, routingService, settings, stashesService, Page) {
+controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams','routingService', 'settings', 'stashesService', 'clientsService', 'Page',
+  function ($cookieStore, $scope, $routeParams, routingService, settings, stashesService, clientsService, Page) {
     Page.setTitle('Events');
     $scope.pageHeaderText = 'Events';
     $scope.predicate = '-check.status';
@@ -214,12 +251,32 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams',
     $scope.go = routingService.go;
     $scope.permalink = routingService.permalink;
     $scope.stash = stashesService.stash;
+    $scope.resolveEvent = clientsService.resolveEvent;
 
     // Hide silenced
     $scope.filters.silenced = $cookieStore.get('hideSilenced') || settings.hideSilenced;
     $scope.$watch('filters.silenced', function () {
       $cookieStore.put('hideSilenced', $scope.filters.silenced);
     });
+
+    // Helpers
+    $scope.selectedEvents = function(events) {
+      return _.filter(events, function(event) {
+        return event.selected === true;
+      });
+    };
+
+    $scope.selectEvents = function(selectModel) {
+      _.each($scope.events, function(event) {
+        event.selected = selectModel.selected;
+      });
+    };
+
+    $scope.resolveEvents = function(events) {
+      _.each(events, function(event) {
+        $scope.resolveEvent(event.dc, event.client, event.check);
+      });
+    };
   }
 ]);
 
@@ -328,24 +385,40 @@ controllerModule.controller('stashes', ['$scope', '$routeParams', 'routingServic
 /**
 * Stash Modal
 */
-controllerModule.controller('StashModalCtrl', ['$scope', '$modalInstance', 'item', 'stashesService',
-  function ($scope, $modalInstance, item, stashesService) {
-    $scope.item = item;
+controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInstance', 'items', 'stashesService',
+  function ($scope, $filter, $modalInstance, items, stashesService) {
+    $scope.items = items;
+    $scope.acknowledged = $filter('filter')(items, {acknowledged: true}).length;
+    $scope.itemType = items[0].hasOwnProperty('client') ? 'check' : 'client';
     $scope.stash = {};
-    $scope.stash.acknowledged = item.acknowledged;
-    $scope.stash.dc = item.dc;
-    $scope.stash.reason = '';
     $scope.stash.expirations = {
       '900': 900,
       '3600': 3600,
       '86400': 86400,
       'none': -1
     };
+    $scope.stash.reason = '';
     $scope.stash.expiration = 900;
-    $scope.stash.path = stashesService.construct(item);
+
+    $scope.stashForItem = function(stashes, item) {
+      var path = 'silence/';
+
+      if ($scope.itemType === 'client') {
+        path = path + item.name;
+      } else if ($scope.itemType === 'check') {
+        path = path + item.client.name + '/' + item.check.name;
+      }
+
+      return _.findWhere(stashes, {
+        dc: item.dc,
+        path: path
+      });
+    };
 
     $scope.ok = function () {
-      stashesService.submit(item, $scope.stash);
+      _.each(items, function(item) {
+        stashesService.submit(item, $scope.stash);
+      });
       $modalInstance.close();
     };
     $scope.cancel = function () {

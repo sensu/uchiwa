@@ -1,9 +1,13 @@
 @import "variables";
 
+.dropdown {
+  display: inline;
+  cursor: pointer;
+}
+
 .dropdown-menu {
   background-color: $dropdown-background-color;
   color: $dropdown-text-color;
-  min-width: 250px;
 }
 
 .dropdown-menu-item {
@@ -13,7 +17,11 @@
 
 .dropdown-menu > li > a {
   color: $dropdown-text-color;
-  padding: 3px 20px;
+  padding: 7px 20px;
+}
+
+.dropdown-menu > li > a > i.fa {
+  padding-right: 7px;
 }
 
 .dropdown-menu.left {

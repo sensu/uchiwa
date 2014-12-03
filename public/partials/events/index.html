@@ -22,18 +22,39 @@
                   </div>
                 </div>
               </div>
-              <div class="nav-filter pull-right dropdown">
-                <span dropdown-toggle>
-                  Hide <i class="fa fa-caret-down"></i>
-                </span>
-                <div class="dropdown-menu">
-                  <div class="dropdown-menu-item" ng-click="filters.silenced = !filters.silenced">
-                    <div class="row">
-                      <div class="col-xs-1">
-                        <i class="fa fa-check" ng-show="filters.silenced"></i>
-                      </div>
-                      <div class="col-xs-10">
-                        Silenced Checks
+              <div class="nav-filter pull-right">
+                <div class="dropdown">
+                  <span dropdown-toggle>
+                    Actions <i class="fa fa-caret-down"></i>
+                  </span>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="" ng-click="resolveEvents(selectedEvents(events))">
+                        <i class="fa fa-check fa-fw"></i>
+                        Resolve
+                      </a>
+                    </li>
+                    <li>
+                      <a href="" ng-click="stash($event, selectedEvents(events))">
+                        <i class="fa fa-volume-up fa-fw"></i>
+                        Silence/Unsilence
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="dropdown">
+                  <span dropdown-toggle>
+                    Hide <i class="fa fa-caret-down"></i>
+                  </span>
+                  <div class="dropdown-menu">
+                    <div class="dropdown-menu-item" ng-click="filters.silenced = !filters.silenced">
+                      <div class="row">
+                        <div class="col-xs-1">
+                          <i class="fa fa-check" ng-show="filters.silenced"></i>
+                        </div>
+                        <div class="col-xs-10">
+                          Silenced Checks
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -53,6 +74,9 @@
           <table class="table table-hover table-condensed" style="table-layout: fixed;">
             <thead>
               <tr>
+                <th class="col-min">
+                  <input type="checkbox" ng-model="selectModel.selected" ng-change="selectEvents(selectModel)"></input>
+                </th>
                 <th class="col-min" ng-click="predicate = '-check.status'; reverse=!reverse"><i class="fa fa-sort"></i></th>
                 <th class="col-sm-2" ng-click="predicate = 'sourceName'; reverse=!reverse">Source <i class="fa fa-sort"></i></th>
                 <th class="col-sm-2" ng-click="predicate = 'check.name'; reverse=!reverse">Check <i class="fa fa-sort"></i></th>
@@ -63,8 +87,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="event in events | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | hideSilenced:filters.silenced | limitTo:filters.limit | buildEvents" ng-click="go('/client/'+event.dc+'/'+event.client.name+'?check='+event.check.name)">
-                <td class="well-{{ event.check.status | getStatusClass }}" ng-click="stash($event, event)">
+              <tr ng-repeat="event in events | orderBy:predicate:reverse | filter:filters.q | filter:{dc:filters.dc} | hideSilenced:filters.silenced | limitTo:filters.limit | buildEvents track by event._id" ng-click="go('/client/'+event.dc+'/'+event.client.name+'?check='+event.check.name)">
+                <td class="well-{{ event.check.status | getStatusClass }}" ng-click="$event.stopPropagation()">
+                  <input type="checkbox" ng-model="event.selected"></input>
+                </td>
+                <td ng-click="stash($event, event)">
                   <i class="fa {{ event.acknowledged | getAckClass }}"></i>
                 </td>
                 <td class="dropdown-toggle" >{{ event.sourceName }}</td>

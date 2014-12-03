@@ -37,7 +37,7 @@ serviceModule.service('uchiwaBackend', ['$http',
 /**
 * Clients
 */
-serviceModule.service('clientsService', ['$location', 'notification', 'uchiwaBackend', function ($location, notification, uchiwaBackend) {
+serviceModule.service('clientsService', ['$location', '$rootScope', 'notification', 'uchiwaBackend', function ($location, $rootScope, notification, uchiwaBackend) {
   this.getCheck = function (id, history) {
     return history.filter(function (item) {
       return item.check === id;
@@ -45,7 +45,7 @@ serviceModule.service('clientsService', ['$location', 'notification', 'uchiwaBac
   };
   this.getEvent = function (client, check, events) {
     if (!client || !check || events.constructor.toString().indexOf('Array') === -1) { return null; }
-    return  events.filter(function (item) {
+    return events.filter(function (item) {
       return (item.client.name === client && item.check.name === check);
     })[0];
   };
@@ -56,12 +56,20 @@ serviceModule.service('clientsService', ['$location', 'notification', 'uchiwaBac
       return false;
     }
 
-    var payload = {dc: dc, payload: {client: client.name, check: check.check}};
+    var checkName = check.name || check.check;
+    var payload = {dc: dc, payload: {client: client.name, check: checkName}};
 
     uchiwaBackend.resolveEvent(payload)
       .success(function () {
         notification('success', 'The event has been resolved.');
-        $location.url(encodeURI('/client/' + dc + '/' + client.name));
+        if ($location.url() !== '/events') {
+          $location.url(encodeURI('/client/' + dc + '/' + client.name));
+        } else {
+          var _id = dc + '/' + client.name + '/' + checkName;
+          var event = _.findWhere($rootScope.events, {_id: _id});
+          var eventPosition = $rootScope.events.indexOf(event);
+          $rootScope.events.splice(eventPosition, 1);
+        }
       })
       .error(function (error) {
         notification('error', 'The event was not resolved. ' + error);
@@ -218,29 +226,35 @@ serviceModule.service('stashesService', ['$rootScope', '$modal', 'notification',
     return path;
   };
   this.stash = function (e, i) {
+    var items = _.isArray(i) ? i : new Array(i);
     var event = e || window.event;
     event.stopPropagation();
-    var item = i;
-    var modalInstance = $modal.open({ // jshint ignore:line
-      templateUrl: 'partials/stash-modal.html',
-      controller: 'StashModalCtrl',
-      resolve: {
-        item: function () {
-          return item;
+
+    if (items.length === 0) {
+      notification('error', 'No items selected');
+    } else {
+      var modalInstance = $modal.open({ // jshint ignore:line
+        templateUrl: 'partials/stash-modal.html',
+        controller: 'StashModalCtrl',
+        resolve: {
+          items: function () {
+            return items;
+          }
         }
-      }
-    });
+      });
+    }
   };
   this.submit = function (element, item) {
-    var isAcknowledged = item.acknowledged;
-    if (item.path[1] !== '') {
-      item.path[1] = '/' + item.path[1];
+    var isAcknowledged = element.acknowledged;
+    var path = this.construct(element);
+    if (path[1] !== '') {
+      path[1] = '/' + path[1];
     }
     if (angular.isUndefined(item.reason)) {
       item.reason = '';
     }
-    var path = 'silence/' + item.path[0] + item.path[1];
-    var data = {dc: item.dc, payload: {}};
+    path = 'silence/' + path[0] + path[1];
+    var data = {dc: element.dc, payload: {}};
 
     $rootScope.skipRefresh = true;
     if (isAcknowledged) {
@@ -295,6 +309,5 @@ serviceModule.service('stashesService', ['$rootScope', '$modal', 'notification',
         console.error(error);
         return false;
       });
-
   };
 }]);

@@ -251,10 +251,13 @@ pre.hljs .hljs-string {
 /* Tables */
 /* Timestamp */
 /* Wells */
+.dropdown {
+  display: inline;
+  cursor: pointer; }
+
 .dropdown-menu {
   background-color: #FFFFFF;
-  color: #4D4D4D;
-  min-width: 250px; }
+  color: #4D4D4D; }
 
 .dropdown-menu-item {
   padding: 8px 0 8px 8px;
@@ -262,7 +265,10 @@ pre.hljs .hljs-string {
 
 .dropdown-menu > li > a {
   color: #4D4D4D;
-  padding: 3px 20px; }
+  padding: 7px 20px; }
+
+.dropdown-menu > li > a > i.fa {
+  padding-right: 7px; }
 
 .dropdown-menu.left {
   left: -275%; }
@@ -727,5 +733,22 @@ pre.hljs .hljs-string {
 
 .well:hover {
   background-color: #FFFFCC; }
+
+/* Colors */
+/* Body, Sections and Headers */
+/* Breadcrumb */
+/* Buttons */
+/* Code */
+/* Dropdown */
+/* Modal */
+/* Nav */
+/* Navbar */
+/* Sidebar */
+/* Panels */
+/* Tables */
+/* Timestamp */
+/* Wells */
+.lead {
+  margin-bottom: 5px; }
 
 /*# sourceMappingURL=uchiwa-default.css.map */
