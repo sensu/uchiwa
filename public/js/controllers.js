@@ -191,8 +191,8 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'clientsService
 /**
 * Clients
 */
-controllerModule.controller('clients', ['$scope', '$routeParams', 'routingService', 'stashesService', 'clientsService', 'Page',
-  function ($scope, $routeParams, routingService, stashesService, clientsService, Page) {
+controllerModule.controller('clients', ['$scope', '$rootScope', '$routeParams', 'routingService', 'stashesService', 'clientsService', '$filter', 'Page',
+  function ($scope, $rootScope, $routeParams, routingService, stashesService, clientsService, $filter, Page) {
     Page.setTitle('Clients');
     $scope.pageHeaderText = 'Clients';
     $scope.predicate = '-status';
@@ -218,7 +218,10 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
     };
 
     $scope.selectClients = function(selectModel) {
-      _.each($scope.clients, function(client) {
+      var filteredClients = $filter('filter')($rootScope.clients, $scope.filters.q);
+      filteredClients = $filter('filter')(filteredClients, {dc: $scope.filters.dc});
+      filteredClients = $filter('hideSilenced')(filteredClients, $scope.filters.silenced);
+      _.each(filteredClients, function(client) {
         client.selected = selectModel.selected;
       });
     };
@@ -228,14 +231,35 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
         $scope.deleteClient(client.dc, client.name);
       });
     };
+
+    $scope.$watch('filters.q', function(newVal) {
+      var matched = $filter('filter')($rootScope.clients, '!'+newVal);
+      _.each(matched, function(match) {
+        match.selected = false;
+      });
+    });
+
+    $scope.$watch('filters.dc', function(newVal) {
+      var matched = $filter('filter')($rootScope.clients, {dc: '!'+newVal});
+      _.each(matched, function(match) {
+        match.selected = false;
+      });
+    });
+
+    $scope.$watch('filters.silenced', function() {
+      var matched = $filter('filter')($rootScope.clients, {acknowledged: true});
+      _.each(matched, function(match) {
+        match.selected = false;
+      });
+    });
   }
 ]);
 
 /**
 * Events
 */
-controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams','routingService', 'settings', 'stashesService', 'clientsService', 'Page',
-  function ($cookieStore, $scope, $routeParams, routingService, settings, stashesService, clientsService, Page) {
+controllerModule.controller('events', ['$cookieStore', '$scope', '$rootScope', '$routeParams','routingService', 'settings', 'stashesService', 'clientsService', '$filter', 'Page',
+  function ($cookieStore, $scope, $rootScope, $routeParams, routingService, settings, stashesService, clientsService, $filter, Page) {
     Page.setTitle('Events');
     $scope.pageHeaderText = 'Events';
     $scope.predicate = '-check.status';
@@ -267,7 +291,10 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams',
     };
 
     $scope.selectEvents = function(selectModel) {
-      _.each($scope.events, function(event) {
+      var filteredEvents = $filter('filter')($rootScope.events, $scope.filters.q);
+      filteredEvents = $filter('filter')(filteredEvents, {dc: $scope.filters.dc});
+      filteredEvents = $filter('hideSilenced')(filteredEvents, $scope.filters.silenced);
+      _.each(filteredEvents, function(event) {
         event.selected = selectModel.selected;
       });
     };
@@ -277,6 +304,27 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$routeParams',
         $scope.resolveEvent(event.dc, event.client, event.check);
       });
     };
+
+    $scope.$watch('filters.q', function(newVal) {
+      var matched = $filter('filter')($rootScope.events, '!'+newVal);
+      _.each(matched, function(match) {
+        match.selected = false;
+      });
+    });
+
+    $scope.$watch('filters.dc', function(newVal) {
+      var matched = $filter('filter')($rootScope.events, {dc: '!'+newVal});
+      _.each(matched, function(match) {
+        match.selected = false;
+      });
+    });
+
+    $scope.$watch('filters.silenced', function() {
+      var matched = $filter('filter')($rootScope.events, {acknowledged: true});
+      _.each(matched, function(match) {
+        match.selected = false;
+      });
+    });
   }
 ]);
 
