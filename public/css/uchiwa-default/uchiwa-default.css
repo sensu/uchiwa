@@ -277,7 +277,8 @@ pre.hljs .hljs-string {
   display: block; }
 
 .navbar .dropdown-menu {
-  top: 85%; }
+  top: 85%;
+  min-width: 250px; }
 
 .navbar .dropdown-menu .heading {
   padding: 40px; }
