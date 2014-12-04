@@ -281,21 +281,21 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$rootScope', '
       });
     };
 
-    $scope.$watch('filters.q', function(newVal, oldVal) {
+    $scope.$watch('filters.q', function(newVal) {
       var matched = $filter('filter')($rootScope.events, '!'+newVal);
       _.each(matched, function(match) {
         match.selected = false;
       });
     });
 
-    $scope.$watch('filters.dc', function(newVal, oldVal) {
+    $scope.$watch('filters.dc', function(newVal) {
       var matched = $filter('filter')($rootScope.events, {dc: '!'+newVal});
       _.each(matched, function(match) {
         match.selected = false;
       });
     });
 
-    $scope.$watch('filters.silenced', function(newVal, oldVal) {
+    $scope.$watch('filters.silenced', function() {
       var matched = $filter('filter')($rootScope.events, {acknowledged: true});
       _.each(matched, function(match) {
         match.selected = false;
