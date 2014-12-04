@@ -191,8 +191,8 @@ controllerModule.controller('client', ['$scope', '$routeParams', 'clientsService
 /**
 * Clients
 */
-controllerModule.controller('clients', ['$scope', '$routeParams', 'routingService', 'stashesService', 'clientsService', 'Page',
-  function ($scope, $routeParams, routingService, stashesService, clientsService, Page) {
+controllerModule.controller('clients', ['$scope', '$rootScope', '$routeParams', 'routingService', 'stashesService', 'clientsService', '$filter', 'Page',
+  function ($scope, $rootScope, $routeParams, routingService, stashesService, clientsService, $filter, Page) {
     Page.setTitle('Clients');
     $scope.pageHeaderText = 'Clients';
     $scope.predicate = '-status';
@@ -218,7 +218,10 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
     };
 
     $scope.selectClients = function(selectModel) {
-      _.each($scope.clients, function(client) {
+      var filteredClients = $filter('filter')($rootScope.clients, $scope.filters.q);
+      filteredClients = $filter('filter')(filteredClients, {dc: $scope.filters.dc});
+      filteredClients = $filter('hideSilenced')(filteredClients, $scope.filters.silenced);
+      _.each(filteredClients, function(client) {
         client.selected = selectModel.selected;
       });
     };
@@ -228,6 +231,27 @@ controllerModule.controller('clients', ['$scope', '$routeParams', 'routingServic
         $scope.deleteClient(client.dc, client.name);
       });
     };
+
+    $scope.$watch('filters.q', function(newVal) {
+      var matched = $filter('filter')($rootScope.clients, '!'+newVal);
+      _.each(matched, function(match) {
+        match.selected = false;
+      });
+    });
+
+    $scope.$watch('filters.dc', function(newVal) {
+      var matched = $filter('filter')($rootScope.clients, {dc: '!'+newVal});
+      _.each(matched, function(match) {
+        match.selected = false;
+      });
+    });
+
+    $scope.$watch('filters.silenced', function() {
+      var matched = $filter('filter')($rootScope.clients, {acknowledged: true});
+      _.each(matched, function(match) {
+        match.selected = false;
+      });
+    });
   }
 ]);
 
