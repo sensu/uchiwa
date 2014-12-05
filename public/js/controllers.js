@@ -5,8 +5,8 @@ var controllerModule = angular.module('uchiwa.controllers', []);
 /**
 * Init
 */
-controllerModule.controller('init', ['$rootScope', '$scope', 'notification', 'pollingFactory', 'Page', 'uchiwaBackend',
-  function ($rootScope, $scope, notification, pollingFactory, Page, uchiwaBackend) {
+controllerModule.controller('init', ['$rootScope', '$scope', '$interval', 'notification', 'Page', 'uchiwaBackend',
+  function ($rootScope, $scope, $interval, notification, Page, uchiwaBackend) {
     $scope.Page = Page;
     $rootScope.skipRefresh = false;
     $rootScope.alerts = [];
@@ -14,10 +14,10 @@ controllerModule.controller('init', ['$rootScope', '$scope', 'notification', 'po
 
     uchiwaBackend.getConfig()
       .success(function (data) {
-        pollingFactory.callFnOnInterval(function () { $rootScope.getSensu(); }, data.Uchiwa.Refresh);
+        $interval($rootScope.getSensu, data.Uchiwa.Refresh * 1000);
       })
       .error(function () {
-        pollingFactory.callFnOnInterval(function () { $rootScope.getSensu(); }, 10);
+        $interval($rootScope.getSensu, 10000);
       });
 
     $rootScope.getSensu = function () {
