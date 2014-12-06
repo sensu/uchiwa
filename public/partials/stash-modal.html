@@ -31,8 +31,8 @@
       <tbody>
         <tr ng-repeat="item in items | filter:{acknowledged: false}">
           <td>{{item.dc}}</td>
-          <td>{{item.name || item.client.name}}</td>
-          <td ng-if="itemType == 'check'">{{item.check.name}}</td>
+          <td>{{item.name || item.client.name || item.client}}</td>
+          <td ng-if="itemType == 'check'">{{item.check.name || item.check}}</td>
         </tr>
       </tbody>
     </table>
@@ -99,8 +99,8 @@
       <tbody>
         <tr ng-repeat="item in items | filter:{acknowledged: true}" ng-init="itemStash = stashForItem(stashes, item)">
           <td>{{item.dc}}</td>
-          <td>{{item.name || item.client.name}}</td>
-          <td ng-if="itemType == 'check'">{{item.check.name}}</td>
+          <td>{{item.name || item.client.name || item.client}}</td>
+          <td ng-if="itemType == 'check'">{{item.check.name || item.check}}</td>
           <td>{{itemStash.expire | getExpireTimestamp}}</td>
           <td>{{itemStash.content.reason}}</td>
         </tr>
