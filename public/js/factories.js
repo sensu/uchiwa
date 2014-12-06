@@ -14,22 +14,6 @@ factoryModule.factory('Page', function() {
 });
 
 /**
-* Polling
-*/
-factoryModule.factory('pollingFactory', function($rootScope, $timeout) {
-  function callFnOnInterval(fn, timeInterval) {
-    var promise = $timeout(fn, timeInterval*1000);
-    return promise.then(function(){
-      callFnOnInterval(fn, timeInterval);
-    });
-  }
-
-  return {
-    callFnOnInterval: callFnOnInterval
-  };
-});
-
-/**
 * Underscore.js
 */
 factoryModule.factory('underscore', function () {
