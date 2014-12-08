@@ -1,14 +1,17 @@
-### 0.4.0 (TBD)
+### 0.4.0 (2014-12-08)
 
 #### Features
 - Bulk actions support for events & clients (PR #201)
 - Display an error page if a client is not found (Issue #200)
+- Use `$interval` instead of `pollingFactory` (PR #215)
 
 #### Bug Fixes
 - Make sure to always close the connection to Sensu APIs (Issue #211)
 - Hide clients name overflow in clients view (Issue #210)
 - Fix design of modal window with dark theme (Issue #206)
 - Allow Uchiwa to be ran behind a reverse proxy with a location (Issue #197)
+- Display missing stash info from client view (PR #218)
+- Apply filters to clients & events with bulk selections (PR #214)
 
 ### 0.3.4 (2014-11-25)
 
