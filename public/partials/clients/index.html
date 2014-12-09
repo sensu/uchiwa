@@ -83,7 +83,7 @@
                 </td>
                 <td class="main">{{ client.name }}</td>
                 <td>{{ client.address }}</td>
-                <td class="output">{{ client.output }}</td>
+                <td class="output" ng-bind-html="client.output | linky" ng-click="helpers.openLink($event)"></td>
                 <td>{{ client.dc }}</td>
                 <td>{{ client.version }}</td>
                 <td>{{ client.timestamp | getTimestamp }}</td>

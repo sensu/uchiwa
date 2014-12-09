@@ -50,7 +50,7 @@
                 <td class="main">{{ stash.client }}</td>
                 <td>{{ stash.check }}</td>
                 <td>{{ stash.content.source }}</td>
-                <td>{{ stash.content.reason }}</td>
+                <td ng-bind-html="stash.content.reason | linky"></td>
                 <td>{{ stash.dc }}</td>
                 <td>{{ stash.content.timestamp | getTimestamp }}</td>
                 <td>{{ stash.expire | getExpireTimestamp }}</td>

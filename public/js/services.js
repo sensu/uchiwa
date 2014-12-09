@@ -311,3 +311,15 @@ serviceModule.service('stashesService', ['$rootScope', '$modal', 'notification',
       });
   };
 }]);
+
+/**
+* Helpers service
+*/
+serviceModule.service('helpers', function() {
+  // Stop event propagation if an A tag is clicked
+  this.openLink = function($event) {
+    if($event.srcElement.tagName === 'A'){
+      $event.stopPropagation();
+    }
+  };
+});
