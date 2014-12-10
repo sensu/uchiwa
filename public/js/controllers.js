@@ -5,12 +5,13 @@ var controllerModule = angular.module('uchiwa.controllers', []);
 /**
 * Init
 */
-controllerModule.controller('init', ['$rootScope', '$scope', '$interval', 'notification', 'Page', 'uchiwaBackend',
-  function ($rootScope, $scope, $interval, notification, Page, uchiwaBackend) {
+controllerModule.controller('init', ['$rootScope', '$scope', '$interval', 'notification', 'Page', 'uchiwaBackend', 'helpers',
+  function ($rootScope, $scope, $interval, notification, Page, uchiwaBackend, helpers) {
     $scope.Page = Page;
     $rootScope.skipRefresh = false;
     $rootScope.alerts = [];
     $rootScope.events = [];
+    $rootScope.helpers = helpers;
 
     uchiwaBackend.getConfig()
       .success(function (data) {

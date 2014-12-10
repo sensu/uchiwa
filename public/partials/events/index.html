@@ -96,7 +96,7 @@
                 </td>
                 <td class="dropdown-toggle" >{{ event.sourceName }}</td>
                 <td class="main check-name">{{ event.check.name }}</td>
-                <td class="output">{{ event.check.output }}</td>
+                <td class="output" ng-bind-html="event.check.output | linky" ng-click="helpers.openLink($event)"></td>
                 <td>{{ event.occurrences }}</td>
                 <td>{{ event.dc }}</td>
                 <td>{{ event.check.issued | getTimestamp }}</td>

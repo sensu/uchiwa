@@ -92,7 +92,7 @@
                 <i class="fa {{check.acknowledged | getAckClass }}"></i>
               </td>
               <td class="main" >{{ check.check }}</td>
-              <td class="check-output">{{ check.output }}</td>
+              <td class="check-output" ng-bind-html="check.output | linky" ng-click="helpers.openLink($event)"></td>
               <td>{{ check.last_execution | getTimestamp }}</td>
               <td><i class="fa fa-check" tooltip-placement="top" tooltip="Resolve" ng-click="resolveEvent(client.dc, client, check)" ng-if="check.event"></i></td>
             </tr>
