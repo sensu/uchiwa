@@ -340,7 +340,7 @@ controllerModule.controller('info', ['$scope', 'notification', 'Page', 'version'
 
     uchiwaBackend.getConfig()
       .success(function (data) {
-        $scope.uchiwa.config = JSON.stringify(data, null, 2);
+        $scope.uchiwa.config = data;
       })
       .error(function (error) {
         notification('error', 'Could not fetch Uchiwa config. Is Uchiwa running?');

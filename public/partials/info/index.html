@@ -15,7 +15,7 @@
                   <div class="number center">{{uchiwa.version}}</div>
                   <hr>
                   <div class="title center">Config</div>
-                  <div><XMP>{{uchiwa.config}}</XMP></div>
+                  <div ng-bind-html="uchiwa.config | richOutput"></div>
                 </div>
               </div>
             </div>
