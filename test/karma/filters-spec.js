@@ -202,6 +202,20 @@ describe('filters', function () {
       expect(hideOccurrencesFilter(events, false)).toEqual(events);
       expect(hideOccurrencesFilter(events, true)).toEqual(expectedEvents);
     }));
+    
+    it('should not hide events when there is no check.occurrences parameter or where check.occurrences is NaN', inject(function (hideOccurrencesFilter) {
+      var events = [
+        {id: 'foo', occurrences: 2, check: {occurrences: 2}},
+        {id: 'bar', occurrences: 1, check: { }},
+        {id: 'baz', occurrences: 1, check: {occurrences: 'foo'}}
+      ];
+      var expectedEvents = [
+        {id: 'foo', occurrences: 2, check: {occurrences: 2}},
+        {id: 'bar', occurrences: 1, check: { }},
+        {id: 'baz', occurrences: 1, check: {occurrences: 'foo'}}
+      ];
+      expect(hideOccurrencesFilter(events, true)).toEqual(expectedEvents);
+    }));
 
   });
 

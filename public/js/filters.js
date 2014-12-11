@@ -146,7 +146,11 @@ filterModule.filter('hideOccurrences', function() {
     }
     if (events && hideOccurrences) {
       return events.filter(function (item) {
-        return item.occurrences >= item.check.occurrences;
+        if (('occurrences' in item.check) && !isNaN(item.check.occurrences)) {
+          return item.occurrences >= item.check.occurrences;
+        } else {
+          return true;
+        }
       });
     }
     return events;
