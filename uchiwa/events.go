@@ -18,7 +18,7 @@ func BuildEvents() {
 			// build check object
 			c = m["check"]
 			delete(m, "check")
-			m["check"] = map[string]interface{}{"name": c, "issued": m["issued"], "output": m["output"], "status": m["status"], "occurrences": m["occurrences"]}
+			m["check"] = map[string]interface{}{"name": c, "issued": m["issued"], "output": m["output"], "status": m["status"]}
 
 			// is flapping?
 			if m["action"] == false {
