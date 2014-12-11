@@ -335,7 +335,7 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$rootScope', '
 
     $scope.$watch('filters.occurrences', function() {
       var matched = $filter('filter')($rootScope.events, function(event) {
-        event.occurrences >= event.check.occurrences
+        return event.occurrences >= event.check.occurrences;
       });
       _.each(matched, function(match) {
         match.selected = false;
