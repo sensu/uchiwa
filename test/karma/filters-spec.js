@@ -189,6 +189,23 @@ describe('filters', function () {
 
   });
 
+  describe('hideOccurrences', function () {
+
+    it('should only hide events when the number occurrences are less than the check occurrences parameter and hideOccurrences is true', inject(function (hideOccurrencesFilter) {
+      var events = [
+        {id: 'foo', occurrences: 2, check: {occurrences: 2}},
+        {id: 'bar', occurrences: 1, check: {occurrences: 2}}
+      ];
+      var expectedEvents = [
+        {id: 'foo', occurrences: 2, check: {occurrences: 2}}
+      ];
+      expect(hideOccurrencesFilter(events, false)).toEqual(events);
+      expect(hideOccurrencesFilter(events, true)).toEqual(expectedEvents);
+    }));
+
+  });
+
+
   describe('imagey', function () {
 
     it('should find an image and display it', inject(function (imageyFilter) {
