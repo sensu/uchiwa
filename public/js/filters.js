@@ -146,7 +146,7 @@ filterModule.filter('hideOccurrences', function() {
     }
     if (events && hideOccurrences) {
       return events.filter(function (item) {
-        return item.occurrences > item.check.occurrences;
+        return item.occurrences >= item.check.occurrences;
       });
     }
     return events;
