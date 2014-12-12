@@ -214,6 +214,7 @@ describe('filters', function () {
         {id: 'bar', occurrences: 1, check: { }},
         {id: 'baz', occurrences: 1, check: {occurrences: 'foo'}}
       ];
+      expect(hideOccurrencesFilter(events, false)).toEqual(events);
       expect(hideOccurrencesFilter(events, true)).toEqual(expectedEvents);
     }));
 
