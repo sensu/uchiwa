@@ -284,6 +284,12 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$rootScope', '
       $cookieStore.put('hideSilenced', $scope.filters.silenced);
     });
 
+    // Hide occurrences
+    $scope.filters.occurrences = $cookieStore.get('hideOccurrences') || settings.hideOccurrences;
+    $scope.$watch('filters.occurrences', function () {
+      $cookieStore.put('hideOccurrences', $scope.filters.occurrences);
+    });
+
     // Helpers
     $scope.selectedEvents = function(events) {
       return _.filter(events, function(event) {
@@ -295,6 +301,7 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$rootScope', '
       var filteredEvents = $filter('filter')($rootScope.events, $scope.filters.q);
       filteredEvents = $filter('filter')(filteredEvents, {dc: $scope.filters.dc});
       filteredEvents = $filter('hideSilenced')(filteredEvents, $scope.filters.silenced);
+      filteredEvents = $filter('hideOccurrences')(filteredEvents, $scope.filters.occurrences);
       _.each(filteredEvents, function(event) {
         event.selected = selectModel.selected;
       });
@@ -322,6 +329,19 @@ controllerModule.controller('events', ['$cookieStore', '$scope', '$rootScope', '
 
     $scope.$watch('filters.silenced', function() {
       var matched = $filter('filter')($rootScope.events, {acknowledged: true});
+      _.each(matched, function(match) {
+        match.selected = false;
+      });
+    });
+
+    $scope.$watch('filters.occurrences', function() {
+      var matched = $filter('filter')($rootScope.events, function(event) {
+        if (('occurrences' in event.check) && !isNaN(event.check.occurrences)) {
+          return event.occurrences >= event.check.occurrences;
+        } else {
+          return true;
+        }
+      });
       _.each(matched, function(match) {
         match.selected = false;
       });

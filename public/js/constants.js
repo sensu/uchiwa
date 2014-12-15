@@ -4,6 +4,7 @@ var constantModule = angular.module('uchiwa.constants', []);
 constantModule.constant('settings', {
   date: 'yyyy-MM-dd HH:mm:ss',
   hideSilenced: false,
+  hideOccurrences: false,
   theme: 'default'
 });
 
