@@ -33,32 +33,54 @@ func BuildEvents() {
 			delete(m, "status")
 		}
 
+		// we assume the event isn't acknowledged in case we can't assert the following values
+		m["acknowledged"] = false
+
+		// get client name
 		c, ok := m["client"].(map[string]interface{})
 		if !ok {
-			logger.Warningf("Could not assert event's client interface: %+v", c)
+			logger.Warningf("Could not assert event's client interface from %+v", c)
 			continue
 		}
 
+		clientName, ok := c["name"].(string)
+		if !ok {
+			logger.Warningf("Could not assert event's client name from %+v", c)
+			continue
+		}
+
+		// get check name
 		k := m["check"].(map[string]interface{})
 		if !ok {
-			logger.Warningf("Could not assert event's check interface: %+v", k)
+			logger.Warningf("Could not assert event's check interface from %+v", k)
 			continue
 		}
 
-		m["acknowledged"] = isAcknowledged(c["name"].(string), k["name"].(string), m["dc"].(string))
+		checkName, ok := k["name"].(string)
+		if !ok {
+			logger.Warningf("Could not assert event's check name from %+v", k)
+			continue
+		}
+
+		// get dc name
+		dcName, ok := m["dc"].(string)
+		if !ok {
+			logger.Warningf("Could not assert event's datacenter name from %+v", m)
+			continue
+		}
+
+		// determine if the event is acknowledged
+		m["acknowledged"] = isAcknowledged(clientName, checkName, dcName)
 	}
 }
 
 // ResolveEvent send a POST request to the /resolve endpoint in order to resolve an event
 func ResolveEvent(data interface{}) error {
-
 	api, m, err := findDcFromInterface(data)
-
 	_, err = api.ResolveEvent(m["payload"])
 	if err != nil {
 		logger.Warning(err)
 		return err
 	}
-
 	return nil
 }
