@@ -37,6 +37,7 @@
                 <th></th>
                 <th ng-click="predicate = 'client'; reverse=!reverse">Name <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'check'; reverse=!reverse">Check <i class="fa fa-sort"></i></th>
+                <th ng-click="predicate = 'type'; reverse=!reverse">Type <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'content.source'; reverse=!reverse">Source <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'content.reason'; reverse=!reverse">Reason <i class="fa fa-sort"></i></th>
                 <th ng-click="predicate = 'dc'; reverse=!reverse"><i class="fa fa-cloud" tooltip-placement="top" tooltip="Datacenter"></i> <i class="fa fa-sort"></i></th>
@@ -49,6 +50,7 @@
                 <td><i class="fa fa-times" ng-click="deleteStash(stash);"></i></td>
                 <td class="main">{{ stash.client }}</td>
                 <td>{{ stash.check }}</td>
+                <td>{{ stash.type }}</td>
                 <td>{{ stash.content.source }}</td>
                 <td ng-bind-html="stash.content.reason | linky"></td>
                 <td>{{ stash.dc }}</td>
