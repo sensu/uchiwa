@@ -93,12 +93,12 @@ describe('filters', function () {
       var stashes = [
         {path: 'silence/foo/bar'},
         {path: 'silence/'},
-        {path: 'silence/baz'}
+        {path: 'watchdog/baz'}
       ];
       var expectedStashes = [
-        {client: 'foo', check: 'bar', path: 'silence/foo/bar'},
-        {client: null, check: null, path: 'silence/'},
-        {client: 'baz', check: null, path: 'silence/baz'}
+        {type: 'silence', client: 'foo', check: 'bar', path: 'silence/foo/bar'},
+        {type: 'silence', client: null, check: null, path: 'silence/'},
+        {type: 'watchdog', client: 'baz', check: null, path: 'watchdog/baz'}
       ];
       expect(buildStashesFilter(stashes)).toEqual(expectedStashes);
     }));
