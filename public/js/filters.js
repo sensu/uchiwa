@@ -186,7 +186,7 @@ filterModule.filter('richOutput', ['$filter', function($filter) {
         var code = hljs.highlight('json', angular.toJson(text, true)).value;
         output = '<pre class=\"hljs\">' + code + '</pre>';
       }
-    } else if (typeof text === 'number') {
+    } else if (typeof text === 'number' || typeof text === 'boolean') {
       output = text.toString();
     } else {
       var linkified = $filter('linky')(text, '_blank');
