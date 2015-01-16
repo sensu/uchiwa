@@ -6,12 +6,12 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="icon" type="image/png" href="bower_components/uchiwa-ui/img/favicon.png">
 
-  <title ng-bind="Page.title()">uchiwa</title>
+  <title ng-bind="titleFactory.get()">uchiwa</title>
 
   <!-- Customized Bootstrap -->
-  <link href="css/bootstrap-uchiwa/bootstrap-uchiwa.css" rel="stylesheet">
+  <link href="bower_components/uchiwa-ui/css/bootstrap-uchiwa/bootstrap-uchiwa.css" rel="stylesheet">
 
   <!-- 3rd Party CSS -->
   <link href="bower_components/fontawesome/css/font-awesome.min.css" rel="stylesheet">
@@ -20,14 +20,14 @@
   <link href="//fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet" type="text/css">
 
   <!-- Uchiwa CSS -->
-  <link href="css/uchiwa-default/uchiwa-default.css" rel="stylesheet" site-theme>
+  <link href="bower_components/uchiwa-ui/css/uchiwa-default/uchiwa-default.css" rel="stylesheet" site-theme>
 </head>
 
 <body ng-cloak>
 
 <div>
-  <div ng-include="'partials/navbar.html'"></div>
-  <div ng-include="'partials/sidebar.html'"></div>
+  <div ng-include="'bower_components/uchiwa-ui/partials/navbar.html'"></div>
+  <div ng-include="'bower_components/uchiwa-ui/partials/sidebar.html'"></div>
   <div ng-view></div>
 </div>
 
@@ -43,13 +43,13 @@
 <script src="bower_components/highlightjs/highlight.pack.js"></script>
 
 <!-- Uchiwa JS -->
-<script src="js/app.js"></script>
-<script src="js/constants.js"></script>
-<script src="js/controllers.js"></script>
-<script src="js/directives.js"></script>
-<script src="js/factories.js"></script>
-<script src="js/filters.js"></script>
-<script src="js/providers.js"></script>
-<script src="js/services.js"></script>
+<script src="bower_components/uchiwa-ui/js/app.js"></script>
+<script src="bower_components/uchiwa-ui/js/constants.js"></script>
+<script src="bower_components/uchiwa-ui/js/controllers.js"></script>
+<script src="bower_components/uchiwa-ui/js/directives.js"></script>
+<script src="bower_components/uchiwa-ui/js/factories.js"></script>
+<script src="bower_components/uchiwa-ui/js/filters.js"></script>
+<script src="bower_components/uchiwa-ui/js/providers.js"></script>
+<script src="bower_components/uchiwa-ui/js/services.js"></script>
 </body>
 </html>
