@@ -18,7 +18,7 @@ func main() {
 	}
 
 	uchiwa.New(config)
-	go uchiwa.Fetch(config.Uchiwa.Refresh)
+	go uchiwa.Fetch(config.Uchiwa.Refresh, func() {})
 
 	uchiwa.WebServer(config, publicPath)
 }
