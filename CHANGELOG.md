@@ -1,3 +1,13 @@
+### 0.4.1 (2015-01-16)
+
+#### Features
+- Display the stash type on the stashes view (PR #249)
+
+#### Bug Fixes
+- Catch any error while asserting event attributes (Issue #236)
+- Reuse http.Client on gosensu library (Issue #239)
+- Verify the boolean type on richOutput function (Issue #247)
+
 ### 0.4.0 (2014-12-08)
 
 #### Features
