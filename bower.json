@@ -1,34 +1,7 @@
 {
   "name": "uchiwa",
   "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "public/bower_components",
-    "test",
-    "tests"
-  ],
   "dependencies": {
-    "angular": "~1.2.26",
-    "angular-bootstrap": "0.11.0",
-    "angular-cookies": "~1.2.26",
-    "angular-route": "~1.2.26",
-    "angular-sanitize": "~1.2.26",
-    "angular-socket-io": "~0.6.0",
-    "angular-toastr": "~0.3.0",
-    "async": "~0.9.0",
-    "bootstrap": "3.1.1",
-    "bootstrap-sass-official": "3.1.1",
-    "fontawesome": "4.1.0",
-    "highlightjs": "~8.3.0",
-    "toastr": "~2.0.3",
-    "underscore": "~1.6.0"
-  },
-  "devDependencies": {
-    "jasmine": "~2.0.0",
-    "angular-mocks": "~1.2.26",
-    "angular-socket.io-mock": "~0.0.2",
-    "moment": "~2.8.3"
+    "uchiwa-ui": "*"
   }
 }
