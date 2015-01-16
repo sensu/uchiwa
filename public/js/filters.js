@@ -44,6 +44,7 @@ filterModule.filter('buildStashes', function() {
     }
     angular.forEach(stashes, function(stash) {
       var path = stash.path.split('/');
+      stash.type = path[0] || 'silence';
       stash.client = path[1] || null;
       stash.check = path[2] || null;
     });
