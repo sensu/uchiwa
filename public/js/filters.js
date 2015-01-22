@@ -94,7 +94,6 @@ filterModule.filter('getExpireTimestamp', ['$filter', 'settings', function ($fil
     if (stash.expire === -1) {
       return 'Never';
     }
-    
     var expiration = (stash.content.timestamp + stash.expire) * 1000;
     return $filter('date')(expiration, settings.date);
   };
