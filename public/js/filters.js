@@ -87,15 +87,15 @@ filterModule.filter('getAckClass', function() {
 });
 
 filterModule.filter('getExpireTimestamp', ['$filter', 'settings', function ($filter, settings) {
-  return function(expire) {
-    if (isNaN(expire)) {
+  return function(stash) {
+    if (isNaN(stash.expire)) {
       return 'Unknown';
     }
-    if (expire === -1) {
+    if (stash.expire === -1) {
       return 'Never';
     }
-    var now = Math.floor(new Date()/1000);
-    var expiration = (expire + now) * 1000;
+    
+    var expiration = (stash.content.timestamp + stash.expire) * 1000;
     return $filter('date')(expiration, settings.date);
   };
 }]);

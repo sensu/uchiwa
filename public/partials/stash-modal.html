@@ -60,7 +60,7 @@
             <td>{{item.dc}}</td>
             <td>{{item.name || item.client.name}}</td>
             <td ng-if="itemType == 'check'">{{item.check.name}}</td>
-            <td>{{itemStash.expire | getExpireTimestamp}}</td>
+            <td>{{itemStash | getExpireTimestamp}}</td>
             <td ng-bind-html="itemStash.content.reason | linky"></td>
           </tr>
         </tbody>
@@ -75,14 +75,27 @@
     <span>
       <h5>Expiration</h5>
       <div class="btn-group">
-        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="900">15 minutes</label>
-        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="3600">1 hour</label>
-        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="86400">24 hours</label>
-        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="-1">No expiration</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="900" ng-click="stash.custom = false">15 minutes</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="3600" ng-click="stash.custom = false">1 hour</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="86400" ng-click="stash.custom = false">24 hours</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" ng-click="stash.custom = true" btn-radio="null">Custom</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="-1" ng-click="stash.custom = false">No expiration</label>
       </div>
 
-      <h5>Reason</h5>
-      <textarea class="form-control" rows="3" placeholder="Enter a reason" ng-model="stash.reason"></textarea>
+      <div ng-show="stash.custom">
+        <div style="float:left">
+          <h5>From</h5>
+          <input type="text" ng-model="stash.content.from" placeholder="yyyy/mm/dd hh:mm:ss"/>
+        </div>
+        <div style="float:left">
+          <h5>To</h5>
+          <input type="text" ng-model="stash.content.to" placeholder="yyyy/mm/dd hh:mm:ss">
+        </div>
+      </div>
+      <div style="clear:both">
+        <h5>Reason</h5>
+        <textarea class="form-control" rows="3" placeholder="Enter a reason" ng-model="stash.reason"></textarea>
+      </div>
     </span>
   </div>
   <div ng-if="acknowledged == items.length">
