@@ -128,9 +128,9 @@ describe('filters', function () {
   describe('getExpireTimestamp', function () {
 
     it('should convert epoch to human readable date', inject(function (getExpireTimestampFilter) {
-      expect(getExpireTimestampFilter('test')).toBe('Unknown');
-      expect(getExpireTimestampFilter(900)).toMatch('\\d\\d\\d\\d-\\d\\d-');
-      expect(getExpireTimestampFilter(-1)).toBe('Never');
+      expect(getExpireTimestampFilter({content: { timestamp: new Date().getTime() }, expire: 'test'})).toBe('Unknown');
+      expect(getExpireTimestampFilter({content: { timestamp: new Date().getTime() }, expire: 900})).toMatch('\\d\\d\\d\\d-\\d\\d-');
+      expect(getExpireTimestampFilter({content: { timestamp: new Date().getTime() }, expire: -1})).toBe('Never');
     }));
 
   });
