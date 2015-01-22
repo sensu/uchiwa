@@ -75,14 +75,14 @@
     <span>
       <h5>Expiration</h5>
       <div class="btn-group">
-        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="900" ng-click="stash.custom = false">15 minutes</label>
-        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="3600" ng-click="stash.custom = false">1 hour</label>
-        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="86400" ng-click="stash.custom = false">24 hours</label>
-        <label class="btn btn-xs btn-default" ng-model="stash.expiration" ng-click="stash.custom = true" btn-radio="null">Custom</label>
-        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="-1" ng-click="stash.custom = false">No expiration</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="900">15 minutes</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="3600">1 hour</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="86400">24 hours</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="'custom'">Custom</label>
+        <label class="btn btn-xs btn-default" ng-model="stash.expiration" btn-radio="-1">No expiration</label>
       </div>
 
-      <div ng-show="stash.custom">
+      <div ng-show="stash.expiration === 'custom'">
         <div style="float:left">
           <h5>From</h5>
           <input type="text" ng-model="stash.content.from" placeholder="yyyy/mm/dd hh:mm:ss"/>

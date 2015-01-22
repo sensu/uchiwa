@@ -1,3 +1,5 @@
+/* global moment */
+
 'use strict';
 
 var controllerModule = angular.module('uchiwa.controllers', []);
@@ -465,7 +467,8 @@ controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInsta
       '900': 900,
       '3600': 3600,
       '86400': 86400,
-      'none': -1
+      'none': -1,
+      'custom': 'custom'
     };
     $scope.stash.reason = '';
     $scope.stash.expiration = 900;
@@ -500,7 +503,7 @@ controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInsta
 
     $scope.ok = function () {
 
-    if ($scope.stash.custom && !calculateToFrom()) {
+    if ($scope.stash.expiration === 'custom' && !calculateToFrom()) {
       notification('error', 'Please enter both from and to values.');
       return false;
     }
