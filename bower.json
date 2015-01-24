@@ -22,13 +22,13 @@
     "bootstrap-sass-official": "3.1.1",
     "fontawesome": "4.1.0",
     "highlightjs": "~8.3.0",
+    "moment": "~2.8.3",
     "toastr": "~2.0.3",
     "underscore": "~1.6.0"
   },
   "devDependencies": {
     "jasmine": "~2.0.0",
     "angular-mocks": "~1.2.26",
-    "angular-socket.io-mock": "~0.0.2",
-    "moment": "~2.8.3"
+    "angular-socket.io-mock": "~0.0.2"
   }
 }
