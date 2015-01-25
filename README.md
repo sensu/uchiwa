@@ -33,7 +33,7 @@ See [Uchiwa Docs](https://uchiwa.io/#/docs/contributing)
 MIT (see [LICENSE][license])
 
 [author]:                 https://github.com/palourde
-[license]:                https://github.com/palourde/uchiwa/blob/master/LICENSE
+[license]:                https://github.com/sensu/uchiwa/blob/master/LICENSE
 [ethanhann]:              https://github.com/ethanhann
 [ayan4m1]:                https://github.com/ayan4m1
 [amdprophet]:             https://github.com/amdprophet
