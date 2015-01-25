@@ -114,7 +114,7 @@
           <td>{{item.dc}}</td>
           <td>{{item.name || item.client.name || item.client}}</td>
           <td ng-if="itemType == 'check'">{{item.check.name || item.check}}</td>
-          <td>{{itemStash.expire | getExpireTimestamp}}</td>
+          <td>{{itemStash | getExpireTimestamp}}</td>
           <td ng-bind-html="itemStash.content.reason | linky"></td>
         </tr>
       </tbody>

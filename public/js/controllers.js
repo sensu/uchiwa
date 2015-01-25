@@ -1,5 +1,3 @@
-/* global moment */
-
 'use strict';
 
 var controllerModule = angular.module('uchiwa.controllers', []);
@@ -456,8 +454,8 @@ controllerModule.controller('stashes', ['$scope', '$routeParams', 'routingServic
 /**
 * Stash Modal
 */
-controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInstance', 'items', 'stashesService', 'notification',
-  function ($scope, $filter, $modalInstance, items, stashesService, notification) {
+controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInstance', 'items', 'notification', 'settings', 'stashesService',
+  function ($scope, $filter, $modalInstance, items, notification, settings, stashesService) {
     $scope.items = items;
     $scope.acknowledged = $filter('filter')(items, {acknowledged: true}).length;
     $scope.itemType = items[0].hasOwnProperty('client') ? 'check' : 'client';
@@ -472,7 +470,7 @@ controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInsta
     };
     $scope.stash.reason = '';
     $scope.stash.expiration = 900;
-    $scope.stash.content.from = moment().format('YYYY/MM/DD hh:mm:ss');
+    $scope.stash.content.from = moment().format(settings.date);
 
     function calculateToFrom() {
       if ($scope.stash.content && ($scope.stash.content.to && $scope.stash.content.from)) {
