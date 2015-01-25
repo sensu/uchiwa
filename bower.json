@@ -2,6 +2,6 @@
   "name": "uchiwa",
   "private": true,
   "dependencies": {
-    "uchiwa-web": "palourde/uchiwa-web#*"
+    "uchiwa-web": "sensu/uchiwa-web#*"
   }
 }
