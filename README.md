@@ -6,7 +6,6 @@ This repository contains the backend, written in Go.
 See [uchiwa-web](https://github.com/sensu/uchiwa-web) for the AngularJS web frontend.
 
 [![Build Status](https://travis-ci.org/sensu/uchiwa.svg?branch=master)](https://travis-ci.org/sensu/uchiwa)
-[![Code Climate](https://codeclimate.com/github/sensu/uchiwa/badges/gpa.svg)](https://codeclimate.com/github/sensu/uchiwa)
 
 ## Getting Started
 
