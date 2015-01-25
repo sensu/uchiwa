@@ -454,20 +454,35 @@ controllerModule.controller('stashes', ['$scope', '$routeParams', 'routingServic
 /**
 * Stash Modal
 */
-controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInstance', 'items', 'stashesService',
-  function ($scope, $filter, $modalInstance, items, stashesService) {
+controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInstance', 'items', 'notification', 'settings', 'stashesService',
+  function ($scope, $filter, $modalInstance, items, notification, settings, stashesService) {
     $scope.items = items;
     $scope.acknowledged = $filter('filter')(items, {acknowledged: true}).length;
     $scope.itemType = items[0].hasOwnProperty('client') ? 'check' : 'client';
     $scope.stash = {};
+    $scope.stash.content = {};
     $scope.stash.expirations = {
       '900': 900,
       '3600': 3600,
       '86400': 86400,
-      'none': -1
+      'none': -1,
+      'custom': 'custom'
     };
     $scope.stash.reason = '';
     $scope.stash.expiration = 900;
+    $scope.stash.content.from = moment().format(settings.date);
+
+    function calculateToFrom() {
+      if ($scope.stash.content && ($scope.stash.content.to && $scope.stash.content.from)) {
+        $scope.stash.content.timestamp = new Date($scope.stash.content.from).getTime() / 1000;
+        $scope.stash.expiration = (new Date($scope.stash.content.to).getTime() -
+        new Date($scope.stash.content.from).getTime()) / 1000;
+        $scope.stash.content.to = null;
+        return true;
+      }else{
+        return false;
+      }
+    }
 
     $scope.stashForItem = function(stashes, item) {
       var path = 'silence/';
@@ -485,10 +500,16 @@ controllerModule.controller('StashModalCtrl', ['$scope', '$filter', '$modalInsta
     };
 
     $scope.ok = function () {
-      _.each(items, function(item) {
-        stashesService.submit(item, $scope.stash);
-      });
-      $modalInstance.close();
+
+    if ($scope.stash.expiration === 'custom' && !calculateToFrom()) {
+      notification('error', 'Please enter both from and to values.');
+      return false;
+    }
+
+    _.each(items, function(item) {
+      stashesService.submit(item, $scope.stash);
+    });
+    $modalInstance.close();
     };
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');

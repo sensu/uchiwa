@@ -276,7 +276,11 @@ serviceModule.service('stashesService', ['$rootScope', '$modal', 'notification',
       if (item.expiration && item.expiration !== -1){
         data.payload.expire = item.expiration;
       }
-      data.payload.content.timestamp = Math.floor(new Date()/1000);
+      if (item.content && item.content.timestamp) {
+        data.payload.content.timestamp = item.content.timestamp;
+      }else{
+        data.payload.content.timestamp = Math.floor(new Date()/1000);
+      }
       uchiwaBackend.createStash(data)
         .success(function () {
           notification('success', 'The stash has been created.');
