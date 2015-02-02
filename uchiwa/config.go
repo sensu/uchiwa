@@ -9,11 +9,6 @@ import (
 	"github.com/palourde/logger"
 )
 
-const (
-	rsaPath = "./uchiwa.rsa"
-	pubPath = "./uchiwa.rsa.pub"
-)
-
 // Config struct contains []SensuConfig and UchiwaConfig structs
 type Config struct {
 	Sensu  []SensuConfig
