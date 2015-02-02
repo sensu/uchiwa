@@ -9,8 +9,8 @@ import (
 	"github.com/palourde/logger"
 )
 
-// PostFetch ...
-type PostFetch func()
+// EnterpriseFn ...
+type EnterpriseFn func()
 
 type results struct {
 	Checks        []interface{}
@@ -116,7 +116,7 @@ func Build(dcSlice *[]sensu.Sensu) {
 }
 
 // Fetch retrieves data from each API every t seconds
-func Fetch(t int, fn PostFetch) {
+func Fetch(t int, fn EnterpriseFn) {
 	Build(&datacenters)
 	duration := time.Duration(t) * time.Second
 	for _ = range time.Tick(duration) {

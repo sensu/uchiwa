@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/goji/httpauth"
+	"github.com/palourde/auth"
 	"github.com/palourde/logger"
 )
 
@@ -15,12 +15,12 @@ func deleteClientHandler(w http.ResponseWriter, r *http.Request) {
 	i := u.Query().Get("id")
 	d := u.Query().Get("dc")
 	if i == "" || d == "" {
-		http.Error(w, fmt.Sprint("Parameters 'id' and 'dc' are required"), 500)
+		http.Error(w, fmt.Sprint("Parameters 'id' and 'dc' are required"), http.StatusInternalServerError)
 	}
 
 	err := DeleteClient(i, d)
 	if err != nil {
-		http.Error(w, fmt.Sprint(err), 500)
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 	}
 }
 
@@ -29,12 +29,12 @@ func deleteStashHandler(w http.ResponseWriter, r *http.Request) {
 	var data interface{}
 	err := decoder.Decode(&data)
 	if err != nil {
-		http.Error(w, fmt.Sprint("Could not decode body"), 500)
+		http.Error(w, fmt.Sprint("Could not decode body"), http.StatusInternalServerError)
 	}
 
 	err = DeleteStash(data)
 	if err != nil {
-		http.Error(w, fmt.Sprint(err), 500)
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 	}
 }
 
@@ -43,16 +43,16 @@ func getClientHandler(w http.ResponseWriter, r *http.Request) {
 	i := u.Query().Get("id")
 	d := u.Query().Get("dc")
 	if i == "" || d == "" {
-		http.Error(w, fmt.Sprint("Parameters 'id' and 'dc' are required"), 500)
+		http.Error(w, fmt.Sprint("Parameters 'id' and 'dc' are required"), http.StatusInternalServerError)
 	}
 
 	c, err := GetClient(i, d)
 	if err != nil {
-		http.Error(w, fmt.Sprint(err), 500)
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 	} else {
 		encoder := json.NewEncoder(w)
 		if err := encoder.Encode(c); err != nil {
-			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), 500)
+			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 		}
 	}
 }
@@ -60,14 +60,14 @@ func getClientHandler(w http.ResponseWriter, r *http.Request) {
 func getConfigHandler(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(PublicConfig); err != nil {
-		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), 500)
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 	}
 }
 
 func getSensuHandler(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(Results.Get()); err != nil {
-		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), 500)
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 	}
 }
 
@@ -83,7 +83,7 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), 500)
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 	}
 }
 
@@ -92,13 +92,13 @@ func postEventHandler(w http.ResponseWriter, r *http.Request) {
 	var data interface{}
 	err := decoder.Decode(&data)
 	if err != nil {
-		http.Error(w, fmt.Sprint("Could not decode body"), 500)
+		http.Error(w, fmt.Sprint("Could not decode body"), http.StatusInternalServerError)
 	}
 
 	err = ResolveEvent(data)
 
 	if err != nil {
-		http.Error(w, fmt.Sprint(err), 500)
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 	}
 }
 
@@ -107,40 +107,40 @@ func postStashHandler(w http.ResponseWriter, r *http.Request) {
 	var data interface{}
 	err := decoder.Decode(&data)
 	if err != nil {
-		http.Error(w, fmt.Sprint("Could not decode body"), 500)
+		http.Error(w, fmt.Sprint("Could not decode body"), http.StatusInternalServerError)
 	}
 
 	err = CreateStash(data)
 
 	if err != nil {
-		http.Error(w, fmt.Sprint(err), 500)
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 	}
 }
 
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
 // WebServer starts the web server and serves GET & POST requests
-func WebServer(config *Config, publicPath *string) {
-	if config.Uchiwa.User != "" && config.Uchiwa.Pass != "" {
-		http.Handle("/delete_client", httpauth.SimpleBasicAuth(config.Uchiwa.User, config.Uchiwa.Pass)(http.HandlerFunc(deleteClientHandler)))
-		http.Handle("/delete_stash", httpauth.SimpleBasicAuth(config.Uchiwa.User, config.Uchiwa.Pass)(http.HandlerFunc(deleteStashHandler)))
-		http.Handle("/get_client", httpauth.SimpleBasicAuth(config.Uchiwa.User, config.Uchiwa.Pass)(http.HandlerFunc(getClientHandler)))
-		http.Handle("/get_config", httpauth.SimpleBasicAuth(config.Uchiwa.User, config.Uchiwa.Pass)(http.HandlerFunc(getConfigHandler)))
-		http.Handle("/get_sensu", httpauth.SimpleBasicAuth(config.Uchiwa.User, config.Uchiwa.Pass)(http.HandlerFunc(getSensuHandler)))
-		http.Handle("/post_event", httpauth.SimpleBasicAuth(config.Uchiwa.User, config.Uchiwa.Pass)(http.HandlerFunc(postEventHandler)))
-		http.Handle("/post_stash", httpauth.SimpleBasicAuth(config.Uchiwa.User, config.Uchiwa.Pass)(http.HandlerFunc(postStashHandler)))
-		http.Handle("/", httpauth.SimpleBasicAuth(config.Uchiwa.User, config.Uchiwa.Pass)(http.FileServer(http.Dir(*publicPath))))
+func WebServer(config *Config, publicPath *string, auth auth.Config) {
+
+	if config.Uchiwa.Auth != "" {
+		http.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusOK) })
 	} else {
-		http.Handle("/delete_client", http.HandlerFunc(deleteClientHandler))
-		http.Handle("/delete_stash", http.HandlerFunc(deleteStashHandler))
-		http.Handle("/get_client", http.HandlerFunc(getClientHandler))
-		http.Handle("/get_config", http.HandlerFunc(getConfigHandler))
-		http.Handle("/get_sensu", http.HandlerFunc(getSensuHandler))
-		http.Handle("/post_event", http.HandlerFunc(postEventHandler))
-		http.Handle("/post_stash", http.HandlerFunc(postStashHandler))
-		http.Handle("/", http.FileServer(http.Dir(*publicPath)))
+		http.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusNotFound) })
 	}
 
+	http.Handle("/delete_client", auth.Authenticate(http.HandlerFunc(deleteClientHandler)))
+	http.Handle("/delete_stash", auth.Authenticate(http.HandlerFunc(deleteStashHandler)))
+	http.Handle("/get_client", auth.Authenticate(http.HandlerFunc(getClientHandler)))
+	http.Handle("/get_config", auth.Authenticate(http.HandlerFunc(getConfigHandler)))
+	http.Handle("/get_sensu", auth.Authenticate(http.HandlerFunc(getSensuHandler)))
+	http.Handle("/post_event", auth.Authenticate(http.HandlerFunc(postEventHandler)))
+	http.Handle("/post_stash", auth.Authenticate(http.HandlerFunc(postStashHandler)))
+	http.Handle("/", http.FileServer(http.Dir(*publicPath)))
 	http.Handle("/health", http.HandlerFunc(healthHandler))
 	http.Handle("/health/", http.HandlerFunc(healthHandler))
+	http.Handle("/login", auth.GetIdentification())
 
 	listen := fmt.Sprintf("%s:%d", config.Uchiwa.Host, config.Uchiwa.Port)
 	logger.Infof("Uchiwa is now listening on %s", listen)
