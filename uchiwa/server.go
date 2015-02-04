@@ -124,12 +124,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 // WebServer starts the web server and serves GET & POST requests
 func WebServer(config *Config, publicPath *string, auth auth.Config) {
 
-	if config.Uchiwa.Auth != "" {
-		http.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusOK) })
-	} else {
-		http.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusNotFound) })
-	}
-
 	http.Handle("/delete_client", auth.Authenticate(http.HandlerFunc(deleteClientHandler)))
 	http.Handle("/delete_stash", auth.Authenticate(http.HandlerFunc(deleteStashHandler)))
 	http.Handle("/get_client", auth.Authenticate(http.HandlerFunc(getClientHandler)))
