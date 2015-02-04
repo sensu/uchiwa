@@ -14,3 +14,4 @@ build
 .idea/
 coverage.out
 *.swp
+keys/

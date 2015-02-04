@@ -36,6 +36,7 @@ type GlobalConfig struct {
 	Refresh int
 	Pass    string
 	User    string
+	Auth    string
 }
 
 func (c *Config) initSensu() {
@@ -74,6 +75,9 @@ func (c *Config) initGlobal() {
 		c.Uchiwa.Refresh = 10
 	} else if c.Uchiwa.Refresh >= 1000 { // backward compatibility with < 0.3.0 version
 		c.Uchiwa.Refresh = c.Uchiwa.Refresh / 1000
+	}
+	if c.Uchiwa.User != "" && c.Uchiwa.Pass != "" {
+		c.Uchiwa.Auth = "simple"
 	}
 }
 

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 
+	"github.com/palourde/auth"
 	"github.com/palourde/logger"
 	"github.com/sensu/uchiwa/uchiwa"
 )
@@ -20,5 +21,13 @@ func main() {
 	uchiwa.New(config)
 	go uchiwa.Fetch(config.Uchiwa.Refresh, func() {})
 
-	uchiwa.WebServer(config, publicPath)
+	authentication := auth.New()
+
+	if config.Uchiwa.Auth == "" {
+		authentication.None()
+	} else {
+		authentication.Simple(config.Uchiwa.User, config.Uchiwa.Pass)
+	}
+
+	uchiwa.WebServer(config, publicPath, authentication)
 }
