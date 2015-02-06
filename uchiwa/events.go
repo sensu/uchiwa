@@ -50,7 +50,7 @@ func BuildEvents() {
 		}
 
 		// get check name
-		k := m["check"].(map[string]interface{})
+		k, ok := m["check"].(map[string]interface{})
 		if !ok {
 			logger.Warningf("Could not assert event's check interface from %+v", k)
 			continue
