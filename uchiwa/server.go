@@ -161,6 +161,8 @@ func WebServer(config *Config, publicPath *string, auth auth.Config) {
 
 	http.Handle("/delete_client", auth.Authenticate(http.HandlerFunc(deleteClientHandler)))
 	http.Handle("/delete_stash", auth.Authenticate(http.HandlerFunc(deleteStashHandler)))
+	http.Handle("/get_aggregate", auth.Authenticate(http.HandlerFunc(getAggregateHandler)))
+	http.Handle("/get_aggregate_by_issued", auth.Authenticate(http.HandlerFunc(getAggregateByIssuedHandler)))
 	http.Handle("/get_client", auth.Authenticate(http.HandlerFunc(getClientHandler)))
 	http.Handle("/get_config", auth.Authenticate(http.HandlerFunc(getConfigHandler)))
 	http.Handle("/get_sensu", auth.Authenticate(http.HandlerFunc(getSensuHandler)))
