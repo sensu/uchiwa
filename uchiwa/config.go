@@ -36,7 +36,14 @@ type GlobalConfig struct {
 	Refresh int
 	Pass    string
 	User    string
+	Db      Db
 	Auth    string
+}
+
+// Db struct contains the DB configuration
+type Db struct {
+	Driver string
+	Scheme string
 }
 
 func (c *Config) initSensu() {
@@ -79,6 +86,9 @@ func (c *Config) initGlobal() {
 	if c.Uchiwa.User != "" && c.Uchiwa.Pass != "" {
 		c.Uchiwa.Auth = "simple"
 	}
+	if c.Uchiwa.Db.Driver != "" && c.Uchiwa.Db.Scheme != "" {
+		c.Uchiwa.Auth = "sql"
+	}
 }
 
 func buildPublicConfig(c *Config) {
@@ -86,6 +96,7 @@ func buildPublicConfig(c *Config) {
 	p.Uchiwa = c.Uchiwa
 	p.Uchiwa.User = "*****"
 	p.Uchiwa.Pass = "*****"
+	p.Uchiwa.Db.Scheme = "*****"
 	p.Sensu = make([]SensuConfig, len(c.Sensu))
 	for i := range c.Sensu {
 		p.Sensu[i] = c.Sensu[i]
