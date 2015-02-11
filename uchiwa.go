@@ -23,10 +23,10 @@ func main() {
 
 	authentication := auth.New()
 
-	if config.Uchiwa.Auth == "" {
-		authentication.None()
-	} else {
+	if config.Uchiwa.Auth == "simple" {
 		authentication.Simple(config.Uchiwa.User, config.Uchiwa.Pass)
+	} else {
+		authentication.None()
 	}
 
 	uchiwa.WebServer(config, publicPath, authentication)

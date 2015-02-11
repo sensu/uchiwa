@@ -13,6 +13,7 @@ import (
 type EnterpriseFn func()
 
 type results struct {
+	Aggregates    []interface{}
 	Checks        []interface{}
 	Clients       []interface{}
 	Dc            []map[string]string
@@ -76,6 +77,12 @@ func Build(dcSlice *[]sensu.Sensu) {
 			logger.Warning(err)
 			continue
 		}
+		aggregates, err := api.GetAggregates()
+		if err != nil {
+			Health.Sensu[api.Name] = map[string]string{"output": errorString}
+			logger.Warning(err)
+			continue
+		}
 
 		Health.Sensu[api.Name] = map[string]string{"output": "ok"}
 
@@ -96,9 +103,14 @@ func Build(dcSlice *[]sensu.Sensu) {
 			setDc(v, api.Name)
 			tmpResults.Events = append(tmpResults.Events, v)
 		}
+		for _, v := range aggregates {
+			setDc(v, api.Name)
+			tmpResults.Aggregates = append(tmpResults.Aggregates, v)
+		}
 
 		// build dc status
 		d := Status(info, api.Name)
+		d["aggregates"] = fmt.Sprintf("%d", len(aggregates))
 		d["checks"] = fmt.Sprintf("%d", len(checks))
 		d["clients"] = fmt.Sprintf("%d", len(clients))
 		d["events"] = fmt.Sprintf("%d", len(events))

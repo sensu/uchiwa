@@ -38,6 +38,45 @@ func deleteStashHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getAggregateHandler(w http.ResponseWriter, r *http.Request) {
+	u, _ := url.Parse(r.URL.String())
+	c := u.Query().Get("check")
+	d := u.Query().Get("dc")
+	if c == "" || d == "" {
+		http.Error(w, fmt.Sprint("Parameters 'check' and 'dc' are required"), 500)
+	}
+
+	a, err := GetAggregate(c, d)
+	if err != nil {
+		http.Error(w, fmt.Sprint(err), 500)
+	} else {
+		encoder := json.NewEncoder(w)
+		if err := encoder.Encode(a); err != nil {
+			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), 500)
+		}
+	}
+}
+
+func getAggregateByIssuedHandler(w http.ResponseWriter, r *http.Request) {
+	u, _ := url.Parse(r.URL.String())
+	c := u.Query().Get("check")
+	i := u.Query().Get("issued")
+	d := u.Query().Get("dc")
+	if c == "" || i == "" || d == "" {
+		http.Error(w, fmt.Sprint("Parameters 'check', 'issued' and 'dc' are required"), 500)
+	}
+
+	a, err := GetAggregateByIssued(c, i, d)
+	if err != nil {
+		http.Error(w, fmt.Sprint(err), 500)
+	} else {
+		encoder := json.NewEncoder(w)
+		if err := encoder.Encode(a); err != nil {
+			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), 500)
+		}
+	}
+}
+
 func getClientHandler(w http.ResponseWriter, r *http.Request) {
 	u, _ := url.Parse(r.URL.String())
 	i := u.Query().Get("id")
@@ -117,15 +156,13 @@ func postStashHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-
-}
-
 // WebServer starts the web server and serves GET & POST requests
 func WebServer(config *Config, publicPath *string, auth auth.Config) {
 
 	http.Handle("/delete_client", auth.Authenticate(http.HandlerFunc(deleteClientHandler)))
 	http.Handle("/delete_stash", auth.Authenticate(http.HandlerFunc(deleteStashHandler)))
+	http.Handle("/get_aggregate", auth.Authenticate(http.HandlerFunc(getAggregateHandler)))
+	http.Handle("/get_aggregate_by_issued", auth.Authenticate(http.HandlerFunc(getAggregateByIssuedHandler)))
 	http.Handle("/get_client", auth.Authenticate(http.HandlerFunc(getClientHandler)))
 	http.Handle("/get_config", auth.Authenticate(http.HandlerFunc(getConfigHandler)))
 	http.Handle("/get_sensu", auth.Authenticate(http.HandlerFunc(getSensuHandler)))
