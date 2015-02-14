@@ -1,4 +1,4 @@
-### 0.5.0 (TBD)
+### 0.5.0 (2015-02-14)
 
 #### Features
 - Add custom date functionality for stashes - [Issue #251](https://github.com/sensu/uchiwa/pull/251)
