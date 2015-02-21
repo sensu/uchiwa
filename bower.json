@@ -1,7 +1,6 @@
 {
   "name": "uchiwa",
-  "private": true,
   "dependencies": {
-    "uchiwa-web": "sensu/uchiwa-web#*"
+    "uchiwa-web": "0.5.1"
   }
 }
