@@ -71,6 +71,9 @@ func BuildEvents() {
 
 		// determine if the event is acknowledged
 		m["acknowledged"] = isAcknowledged(clientName, checkName, dcName)
+        
+		// detertermine if the client is acknowledged
+		m["client"].(map[string]interface{})["acknowledged"] = isAcknowledged(clientName, "", dcName)
 	}
 }
 
