@@ -1,3 +1,12 @@
+### 0.5.1 (2015-02-21)
+
+#### Features
+- Add *Silenced Clients* option to the Hide menu and show the acknowledgment status of the client in the events view - [Issue #12](https://github.com/sensu/uchiwa-web/pull/12)
+
+#### Bug Fixes
+- Register *uchiwa-web* as a bower package to prevent dependencies issues - [Issue #272](https://github.com/sensu/uchiwa/issues/272)
+- Fix build issue with 0.5.0 release - [Issue #273](https://github.com/sensu/uchiwa/issues/273)
+
 ### 0.5.0 (2015-02-14)
 
 #### Features
