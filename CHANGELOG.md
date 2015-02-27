@@ -1,3 +1,7 @@
+### 0.6.0 (2015-02-26)
+#### Features
+- Upgrade to AngularJS 1.3 - [Issue #160](https://github.com/sensu/uchiwa/issues/160)
+
 ### 0.5.1 (2015-02-21)
 
 #### Features
