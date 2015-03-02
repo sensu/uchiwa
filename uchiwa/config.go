@@ -11,8 +11,9 @@ import (
 
 // Config struct contains []SensuConfig and UchiwaConfig structs
 type Config struct {
-	Sensu  []SensuConfig
-	Uchiwa GlobalConfig
+	Dashboard *GlobalConfig `json:",omitempty"`
+	Sensu     []SensuConfig
+	Uchiwa    GlobalConfig
 }
 
 // SensuConfig struct contains conf about a Sensu API
@@ -72,6 +73,9 @@ func (c *Config) initSensu() {
 }
 
 func (c *Config) initGlobal() {
+	if c.Dashboard != nil {
+		c.Uchiwa = *c.Dashboard
+	}
 	if c.Uchiwa.Host == "" {
 		c.Uchiwa.Host = "0.0.0.0"
 	}
