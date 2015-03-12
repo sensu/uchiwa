@@ -1,13 +1,11 @@
 FROM golang:1.3.3-onbuild
 
 # install debian packages
-RUN apt-get update && apt-get install -yq nodejs npm git wget
-
-RUN ln -s /usr/bin/nodejs /usr/bin/node
-
-RUN npm install --production --unsafe-perm
-
-RUN mv ./docker/start /start && chmod 0755 /start
+RUN apt-get update \
+&& apt-get install -yq nodejs npm git wget \
+&& ln -s /usr/bin/nodejs /usr/bin/node \
+&& npm install --production --unsafe-perm \
+&& mv ./docker/start /start && chmod 0755 /start
 
 VOLUME /config
 
