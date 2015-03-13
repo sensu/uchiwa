@@ -1,3 +1,13 @@
+### 0.7.0 (2015-03-13)
+#### Features
+- Reorganize the navbar and sidebar - [Issue #22](https://github.com/sensu/uchiwa-web/pull/22)
+- Panels styling - [Issue #23](https://github.com/sensu/uchiwa-web/pull/23)
+- Improvements to the aggregates view - [Issue #23](https://github.com/sensu/uchiwa-web/pull/23)
+
+#### Bug Fixes
+- Unselect events after action in events view - [Issue #20](https://github.com/sensu/uchiwa-web/pull/20)
+- Fix stash expiration timestamp in stashes view - [Issue #25](https://github.com/sensu/uchiwa-web/pull/25)
+
 ### 0.6.0 (2015-02-26)
 #### Features
 - Upgrade to AngularJS 1.3 - [Issue #160](https://github.com/sensu/uchiwa/issues/160)
