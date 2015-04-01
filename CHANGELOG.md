@@ -1,3 +1,14 @@
+### 0.7.1 (2015-04-01)
+#### Features
+- Show relative times for events - [Issue #28](https://github.com/sensu/uchiwa-web/pull/28)
+- Add datacenters view - [Issue #30](https://github.com/sensu/uchiwa-web/pull/30)
+- Order events by status, then by most recent - [Issue #33](https://github.com/sensu/uchiwa-web/pull/33)
+
+#### Bug Fixes
+- Remove *standalone* property from checks view - [Issue #29](https://github.com/sensu/uchiwa-web/pull/29)
+- Show logout button when authentication is enabled - [Issue #29](https://github.com/sensu/uchiwa-web/pull/29)
+- Ship Google fonts with Uchiwa - [Issue #35](https://github.com/sensu/uchiwa-web/pull/35)
+
 ### 0.7.0 (2015-03-13)
 #### Features
 - Reorganize the navbar and sidebar - [Issue #22](https://github.com/sensu/uchiwa-web/pull/22)
