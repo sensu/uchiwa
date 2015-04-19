@@ -128,13 +128,12 @@ func Build(dcSlice *[]sensu.Sensu) {
 }
 
 // Fetch retrieves data from each API every t seconds
-func Fetch(t int, fn EnterpriseFn) {
+func Fetch(t int) {
 	Build(&datacenters)
 	duration := time.Duration(t) * time.Second
 	for _ = range time.Tick(duration) {
 		reset()
 		Build(&datacenters)
-		fn()
 	}
 }
 
