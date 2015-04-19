@@ -92,7 +92,7 @@ func (a *Config) GetIdentification() http.Handler {
 		user.PasswordHash = ""
 		user.PasswordSalt = ""
 
-		role, err := getRole(user.Role)
+		role, err := GetRole(user.Role)
 		if err != nil {
 			logger.Infof("%s", err)
 			http.Error(w, "", http.StatusUnauthorized)

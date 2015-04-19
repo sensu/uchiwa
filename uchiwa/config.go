@@ -119,6 +119,8 @@ func buildPublicConfig(c *Config) {
 	p.Uchiwa.User = "*****"
 	p.Uchiwa.Pass = "*****"
 	p.Uchiwa.Db.Scheme = "*****"
+	p.Uchiwa.Github.ClientID = "*****"
+	p.Uchiwa.Github.ClientSecret = "*****"
 	p.Sensu = make([]SensuConfig, len(c.Sensu))
 	for i := range c.Sensu {
 		p.Sensu[i] = c.Sensu[i]

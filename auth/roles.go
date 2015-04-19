@@ -8,7 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// Role ...
+// Role struct is used to define the access of a role
 type Role struct {
 	Get   bool
 	Post  bool
@@ -19,16 +19,17 @@ var adminRole = Role{Get: true, Post: true, Admin: true}
 var operatorRole = Role{Get: true, Post: true, Admin: false}
 var guestRole = Role{Get: true, Post: false, Admin: false}
 
-func getRole(r string) (Role, error) {
-	if r == "admin" {
+// GetRole returns the proper struct based on the role string
+func GetRole(role string) (Role, error) {
+	if role == "admin" {
 		return adminRole, nil
-	} else if r == "operator" {
+	} else if role == "operator" {
 		return operatorRole, nil
-	} else if r == "guest" {
+	} else if role == "guest" {
 		return guestRole, nil
 	}
 
-	return Role{}, fmt.Errorf("No role '%s' found", r)
+	return Role{}, fmt.Errorf("No role '%s' found", role)
 }
 
 func hasPermission(t *jwt.Token, r *http.Request) bool {
