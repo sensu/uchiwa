@@ -38,13 +38,28 @@ type GlobalConfig struct {
 	Pass    string
 	User    string
 	Db      Db
+	Github  Github
 	Auth    string
 }
 
-// Db struct contains the DB configuration
+// Db struct contains the SQL driver configuration
 type Db struct {
 	Driver string
 	Scheme string
+}
+
+// Github struct contains the GitHub driver configuration
+type Github struct {
+	ClientID     string
+	ClientSecret string
+	Roles        GithubRoles
+	Server       string
+}
+
+// GithubRoles contains the roles of each GitHub team
+type GithubRoles struct {
+	Guests    []string
+	Operators []string
 }
 
 func (c *Config) initSensu() {
@@ -92,6 +107,9 @@ func (c *Config) initGlobal() {
 	}
 	if c.Uchiwa.Db.Driver != "" && c.Uchiwa.Db.Scheme != "" {
 		c.Uchiwa.Auth = "sql"
+	}
+	if c.Uchiwa.Github.Server != "" {
+		c.Uchiwa.Auth = "github"
 	}
 }
 
