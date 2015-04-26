@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 
-	"github.com/palourde/auth"
 	"github.com/palourde/logger"
+	"github.com/sensu/uchiwa/auth"
 	"github.com/sensu/uchiwa/uchiwa"
 )
 
@@ -19,7 +19,7 @@ func main() {
 	}
 
 	uchiwa.New(config)
-	go uchiwa.Fetch(config.Uchiwa.Refresh, func() {})
+	go uchiwa.Fetch(config.Uchiwa.Refresh)
 
 	authentication := auth.New()
 

@@ -6,9 +6,16 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/palourde/auth"
 	"github.com/palourde/logger"
+	"github.com/sensu/uchiwa/auth"
 )
+
+func configAuthHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "", http.StatusBadRequest)
+	}
+	fmt.Fprintf(w, "%s", PublicConfig.Uchiwa.Auth)
+}
 
 func deleteClientHandler(w http.ResponseWriter, r *http.Request) {
 	u, _ := url.Parse(r.URL.String())
@@ -158,7 +165,7 @@ func postStashHandler(w http.ResponseWriter, r *http.Request) {
 
 // WebServer starts the web server and serves GET & POST requests
 func WebServer(config *Config, publicPath *string, auth auth.Config) {
-
+	// private endpoints
 	http.Handle("/delete_client", auth.Authenticate(http.HandlerFunc(deleteClientHandler)))
 	http.Handle("/delete_stash", auth.Authenticate(http.HandlerFunc(deleteStashHandler)))
 	http.Handle("/get_aggregate", auth.Authenticate(http.HandlerFunc(getAggregateHandler)))
@@ -168,7 +175,12 @@ func WebServer(config *Config, publicPath *string, auth auth.Config) {
 	http.Handle("/get_sensu", auth.Authenticate(http.HandlerFunc(getSensuHandler)))
 	http.Handle("/post_event", auth.Authenticate(http.HandlerFunc(postEventHandler)))
 	http.Handle("/post_stash", auth.Authenticate(http.HandlerFunc(postStashHandler)))
+
+	// static files
 	http.Handle("/", http.FileServer(http.Dir(*publicPath)))
+
+	// public endpoints
+	http.Handle("/config/auth", http.HandlerFunc(configAuthHandler))
 	http.Handle("/health", http.HandlerFunc(healthHandler))
 	http.Handle("/health/", http.HandlerFunc(healthHandler))
 	http.Handle("/login", auth.GetIdentification())
