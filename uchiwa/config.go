@@ -39,6 +39,7 @@ type GlobalConfig struct {
 	User    string
 	Db      Db
 	Github  Github
+	Ldap    Ldap
 	Auth    string
 }
 
@@ -52,12 +53,21 @@ type Db struct {
 type Github struct {
 	ClientID     string
 	ClientSecret string
-	Roles        GithubRoles
+	Roles        Roles
 	Server       string
 }
 
-// GithubRoles contains the roles of each GitHub team
-type GithubRoles struct {
+// Ldap struct contains the LDAP driver configuration
+type Ldap struct {
+	Server   string
+	Port     int
+	BaseDN   string
+	Roles    Roles
+	Security string
+}
+
+// Roles contains the roles of each GitHub team
+type Roles struct {
 	Guests    []string
 	Operators []string
 }
@@ -102,15 +112,24 @@ func (c *Config) initGlobal() {
 	} else if c.Uchiwa.Refresh >= 1000 { // backward compatibility with < 0.3.0 version
 		c.Uchiwa.Refresh = c.Uchiwa.Refresh / 1000
 	}
-	if c.Uchiwa.User != "" && c.Uchiwa.Pass != "" {
-		c.Uchiwa.Auth = "simple"
-	}
-	if c.Uchiwa.Db.Driver != "" && c.Uchiwa.Db.Scheme != "" {
-		c.Uchiwa.Auth = "sql"
-	}
+
+	// authentication
 	if c.Uchiwa.Github.Server != "" {
 		c.Uchiwa.Auth = "github"
+	} else if c.Uchiwa.Ldap.Server != "" {
+		c.Uchiwa.Auth = "ldap"
+		if c.Uchiwa.Ldap.Port == 0 {
+			c.Uchiwa.Ldap.Port = 389
+		}
+		if c.Uchiwa.Ldap.Security == "" {
+			c.Uchiwa.Ldap.Security = "none"
+		}
+	} else if c.Uchiwa.Db.Driver != "" && c.Uchiwa.Db.Scheme != "" {
+		c.Uchiwa.Auth = "sql"
+	} else if c.Uchiwa.User != "" && c.Uchiwa.Pass != "" {
+		c.Uchiwa.Auth = "simple"
 	}
+
 }
 
 func buildPublicConfig(c *Config) {
