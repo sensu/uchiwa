@@ -1,3 +1,16 @@
+### 0.8.0 (2015-04-29)
+#### Features
+- Import the palourde/auth library within the Uchiwa repository - [Issue #314](https://github.com/sensu/uchiwa/pull/314)
+- Refactoring of the stashes API endpoints - [Issue #317](https://github.com/sensu/uchiwa/pull/317)
+- Add relative times to stashes and clients views - [Issue #38](https://github.com/sensu/uchiwa-web/pull/38)
+- Add support for Github authentication driver (Sensu Enterprise)
+- Add support for LDAP authentication driver (Sensu Enterprise)
+
+#### Bug Fixes
+- Allow stash creation with expiration longer than a few days - [Issue #301](https://github.com/sensu/uchiwa/issues/301)
+- Datacenter filter now performs a strict comparison - [Issue #307](https://github.com/sensu/uchiwa/issues/307)
+- Resolved events are now cleared from the clients view - [Issue #309](https://github.com/sensu/uchiwa/issues/309)
+
 ### 0.7.1 (2015-04-01)
 #### Features
 - Show relative times for events - [Issue #28](https://github.com/sensu/uchiwa-web/pull/28)
