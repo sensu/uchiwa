@@ -4,9 +4,9 @@ import (
 	"github.com/palourde/logger"
 )
 
-// GetAggreate retrieves a list of issued timestamps from a specified DC
-func GetAggregate(check string, dc string) (*[]interface {}, error) {
-	api, err := findDcFromString(&dc)
+// GetAggregate retrieves a list of issued timestamps from a specified DC
+func GetAggregate(check string, dc string) (*[]interface{}, error) {
+	api, err := getAPI(dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
@@ -21,9 +21,9 @@ func GetAggregate(check string, dc string) (*[]interface {}, error) {
 	return &aggregate, nil
 }
 
-// GetAggreateByIssued retrieves aggregate check info from a specified DC
-func GetAggregateByIssued(check string, issued string, dc string) (*map[string]interface {}, error) {
-	api, err := findDcFromString(&dc)
+// GetAggregateByIssued retrieves aggregate check info from a specified DC
+func GetAggregateByIssued(check string, issued string, dc string) (*map[string]interface{}, error) {
+	api, err := getAPI(dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err

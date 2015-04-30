@@ -1,17 +1,23 @@
 package uchiwa
 
-import (
-	"errors"
+import "github.com/palourde/logger"
 
-	"github.com/palourde/logger"
-)
+type stash struct {
+	Dc      string      `json:"dc"`
+	Path    string      `json:"path"`
+	Content interface{} `json:"content"`
+	Expire  int32       `json:"expire"`
+}
 
-// CreateStash send a POST request to the /stashes endpoint in order to create a stash
-func CreateStash(data interface{}) error {
+// PostStash send a POST request to the /stashes endpoint in order to create a stash
+func PostStash(data stash) error {
+	api, err := getAPI(data.Dc)
+	if err != nil {
+		logger.Warning(err)
+		return err
+	}
 
-	api, m, err := findDcFromInterface(data)
-
-	_, err = api.CreateStash(m["payload"])
+	_, err = api.CreateStash(data)
 	if err != nil {
 		logger.Warning(err)
 		return err
@@ -21,16 +27,14 @@ func CreateStash(data interface{}) error {
 }
 
 // DeleteStash send a DELETE request to the /stashes/*path* endpoint in order to delete a stash
-func DeleteStash(data interface{}) error {
-	api, m, err := findDcFromInterface(data)
-
-	p, ok := m["payload"].(map[string]interface{})
-	if !ok {
-		logger.Warningf("Could not assert data interface %+v", data)
-		return errors.New("Could not assert data interface")
+func DeleteStash(data stash) error {
+	api, err := getAPI(data.Dc)
+	if err != nil {
+		logger.Warning(err)
+		return err
 	}
 
-	err = api.DeleteStash(p["path"].(string))
+	err = api.DeleteStash(data.Path)
 	if err != nil {
 		logger.Warning(err)
 		return err
