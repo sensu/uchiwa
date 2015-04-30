@@ -24,7 +24,7 @@ func buildClientHistory(id *string, history *[]interface{}, dc *string) {
 
 // DeleteClient send a DELETE request to the /clients/*client* endpoint in order to delete a client
 func DeleteClient(id string, dc string) error {
-	api, err := findDcFromString(&dc)
+	api, err := getAPI(dc)
 	if err != nil {
 		logger.Warning(err)
 		return err
@@ -97,7 +97,7 @@ func findOutput(id *string, h map[string]interface{}, dc *string) string {
 
 // GetClient retrieves client history from specified DC
 func GetClient(id string, dc string) (map[string]interface{}, error) {
-	api, err := findDcFromString(&dc)
+	api, err := getAPI(dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err

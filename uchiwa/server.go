@@ -31,20 +31,6 @@ func deleteClientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func deleteStashHandler(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	var data interface{}
-	err := decoder.Decode(&data)
-	if err != nil {
-		http.Error(w, fmt.Sprint("Could not decode body"), http.StatusInternalServerError)
-	}
-
-	err = DeleteStash(data)
-	if err != nil {
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-	}
-}
-
 func getAggregateHandler(w http.ResponseWriter, r *http.Request) {
 	u, _ := url.Parse(r.URL.String())
 	c := u.Query().Get("check")
@@ -148,18 +134,43 @@ func postEventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func postStashHandler(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	var data interface{}
-	err := decoder.Decode(&data)
-	if err != nil {
-		http.Error(w, fmt.Sprint("Could not decode body"), http.StatusInternalServerError)
+func stashHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
 	}
 
-	err = CreateStash(data)
-
+	decoder := json.NewDecoder(r.Body)
+	var data stash
+	err := decoder.Decode(&data)
 	if err != nil {
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+		http.Error(w, "Could not decode body", http.StatusInternalServerError)
+		return
+	}
+
+	err = PostStash(data)
+	if err != nil {
+		http.Error(w, "Could not create the stash", http.StatusNotFound)
+	}
+}
+
+func stashDeleteHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	decoder := json.NewDecoder(r.Body)
+	var data stash
+	err := decoder.Decode(&data)
+	if err != nil {
+		http.Error(w, "Could not decode body", http.StatusInternalServerError)
+		return
+	}
+
+	err = DeleteStash(data)
+	if err != nil {
+		http.Error(w, "Could not create the stash", http.StatusNotFound)
 	}
 }
 
@@ -167,14 +178,14 @@ func postStashHandler(w http.ResponseWriter, r *http.Request) {
 func WebServer(config *Config, publicPath *string, auth auth.Config) {
 	// private endpoints
 	http.Handle("/delete_client", auth.Authenticate(http.HandlerFunc(deleteClientHandler)))
-	http.Handle("/delete_stash", auth.Authenticate(http.HandlerFunc(deleteStashHandler)))
 	http.Handle("/get_aggregate", auth.Authenticate(http.HandlerFunc(getAggregateHandler)))
 	http.Handle("/get_aggregate_by_issued", auth.Authenticate(http.HandlerFunc(getAggregateByIssuedHandler)))
 	http.Handle("/get_client", auth.Authenticate(http.HandlerFunc(getClientHandler)))
 	http.Handle("/get_config", auth.Authenticate(http.HandlerFunc(getConfigHandler)))
 	http.Handle("/get_sensu", auth.Authenticate(http.HandlerFunc(getSensuHandler)))
 	http.Handle("/post_event", auth.Authenticate(http.HandlerFunc(postEventHandler)))
-	http.Handle("/post_stash", auth.Authenticate(http.HandlerFunc(postStashHandler)))
+	http.Handle("/stashes", auth.Authenticate(http.HandlerFunc(stashHandler)))
+	http.Handle("/stashes/delete", auth.Authenticate(http.HandlerFunc(stashDeleteHandler)))
 
 	// static files
 	http.Handle("/", http.FileServer(http.Dir(*publicPath)))

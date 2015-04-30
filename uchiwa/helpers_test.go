@@ -3,15 +3,31 @@ package uchiwa
 import (
 	"testing"
 
+	"github.com/bencaron/gosensu"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFindDcFromString(t *testing.T) {
-	dc := "foo"
-	_, err := findDcFromString(&dc)
-	assert.NotNil(t, err, "should return an error when a datacenter cannot be found")
+func mockDatacenters() {
+	datacenters = make([]sensu.Sensu, 2)
+	datacenters[0] = sensu.Sensu{Name: "foo"}
+	datacenters[1] = sensu.Sensu{Name: "bar"}
+}
 
-	dc = "qux"
-	_, err = findDcFromString(&dc)
-	assert.Nil(t, err, "got unexpected error: %s", err)
+func TestGetAPI(t *testing.T) {
+
+	mockDatacenters()
+
+	_, err := getAPI("")
+	assert.NotNil(t, err)
+
+	_, err = getAPI("qux")
+	assert.NotNil(t, err)
+
+	api, err := getAPI("foo")
+	assert.Nil(t, err)
+	assert.Equal(t, &datacenters[0], api)
+
+	api, err = getAPI("foo")
+	assert.Nil(t, err)
+	assert.Equal(t, &datacenters[0], api)
 }

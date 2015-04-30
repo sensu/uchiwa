@@ -31,15 +31,6 @@ func findDcFromInterface(data interface{}) (*sensu.Sensu, map[string]interface{}
 	return nil, nil, fmt.Errorf("Could not find the datacenter %s", id)
 }
 
-func findDcFromString(id *string) (*sensu.Sensu, error) {
-	for _, d := range datacenters {
-		if d.Name == *id {
-			return &d, nil
-		}
-	}
-	return nil, fmt.Errorf("Could not find datacenter %s", *id)
-}
-
 func findModel(id string, dc string) map[string]interface{} {
 	for _, k := range tmpResults.Checks {
 		m, ok := k.(map[string]interface{})
@@ -116,6 +107,20 @@ func findStatus(client map[string]interface{}) {
 			client["output"] = output
 		}
 	}
+}
+
+func getAPI(name string) (*sensu.Sensu, error) {
+	if name == "" {
+		return nil, errors.New("The datacenter name can't be empty")
+	}
+
+	for _, dc := range datacenters {
+		if dc.Name == name {
+			return &dc, nil
+		}
+	}
+
+	return nil, fmt.Errorf("Could not find the datacenter '%s'", name)
 }
 
 func isAcknowledged(c string, k string, dc string) bool {
