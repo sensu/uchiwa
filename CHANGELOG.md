@@ -1,3 +1,11 @@
+### 0.8.1 (2015-05-05)
+#### Features
+- Add profile picture to the navbar when logged - [Issue #44](https://github.com/sensu/uchiwa-web/pull/44)
+
+#### Bug Fixes
+- Allow stash creation with no expiration - [Issue #319](https://github.com/sensu/uchiwa/issues/319)
+- Upgrade to angular-bootstrap 0.13.0 - [Issue #319](https://github.com/sensu/uchiwa/issues/319)
+
 ### 0.8.0 (2015-04-29)
 #### Features
 - Import the palourde/auth library within the Uchiwa repository - [Issue #314](https://github.com/sensu/uchiwa/pull/314)
