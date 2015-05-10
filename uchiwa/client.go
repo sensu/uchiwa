@@ -20,7 +20,7 @@ func buildClientHistory(id *string, history *[]interface{}, dc *string) {
 			lr, _ := last_result.(map[string]interface{})
 			m["output"] = lr["output"]
 		} else {
-			m["output"] = findOutput(id, m, dc, version)
+			m["output"] = findOutput(id, m, dc)
 		}
 		m["acknowledged"] = isAcknowledged(*id, m["check"].(string), *dc)
 		m["model"] = findModel(m["check"].(string), *dc)
