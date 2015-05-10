@@ -7,6 +7,8 @@ results
 node_modules
 config.js
 config.json
+config.json.*
+-config.json.example
 public/bower_components
 .sass-cache
 npm-debug.log
