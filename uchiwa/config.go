@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/palourde/logger"
+	"github.com/sensu/uchiwa/auth"
 )
 
 // Config struct contains []SensuConfig and UchiwaConfig structs
@@ -53,7 +54,7 @@ type Db struct {
 type Github struct {
 	ClientID     string
 	ClientSecret string
-	Roles        Roles
+	Roles        []auth.Role
 	Server       string
 }
 
@@ -62,14 +63,8 @@ type Ldap struct {
 	Server   string
 	Port     int
 	BaseDN   string
-	Roles    Roles
+	Roles    []auth.Role
 	Security string
-}
-
-// Roles contains the roles of each GitHub team
-type Roles struct {
-	Guests    []string
-	Operators []string
 }
 
 func (c *Config) initSensu() {

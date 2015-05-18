@@ -8,15 +8,15 @@ type Config struct {
 
 // User structure
 type User struct {
-	ID           int64  `db:"id"`
-	Username     string `db:"username"`
-	FullName     string `db:"fullName"`
-	Email        string `db:"email"`
-	Password     string `db:"-"`
-	PasswordHash string `db:"passwordHash"`
-	PasswordSalt string `db:"passwordSalt"`
-	Role         string `db:"role"`
-	Token        string `db:"-"`
+	ID           int64
+	Username     string
+	FullName     string
+	Email        string
+	Password     string
+	PasswordHash string
+	PasswordSalt string
+	Role         Role
+	Token        string
 }
 
 type loginFn func(string, string) (*User, error)

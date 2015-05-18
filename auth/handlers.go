@@ -92,14 +92,7 @@ func (a *Config) GetIdentification() http.Handler {
 		user.PasswordHash = ""
 		user.PasswordSalt = ""
 
-		role, err := GetRole(user.Role)
-		if err != nil {
-			logger.Infof("%s", err)
-			http.Error(w, "", http.StatusUnauthorized)
-			return
-		}
-
-		token, err := GetToken(role)
+		token, err := GetToken(&user.Role)
 		if err != nil {
 			logger.Warningf("Authentication failed, could not create the token: %s", err)
 			http.Error(w, "", http.StatusInternalServerError)
