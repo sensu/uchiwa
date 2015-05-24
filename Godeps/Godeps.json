@@ -6,22 +6,18 @@
 	],
 	"Deps": [
 		{
-			"ImportPath": "github.com/bencaron/gosensu",
-			"Rev": "11934645244245e1a0a687a1ce46be2cf6d38d7c"
-		},
-		{
 			"ImportPath": "github.com/dgrijalva/jwt-go",
 			"Comment": "v2.2.0-15-g61124b6",
 			"Rev": "61124b62ad244d655f87d944aefaa2ae5a0d2f16"
 		},
 		{
-			"ImportPath": "github.com/palourde/auth",
-			"Rev": "78dfaaf7a48a1dab0b10e7db216e557eda6afd29"
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
 		},
 		{
 			"ImportPath": "github.com/palourde/logger",
-			"Comment": "0.0.1",
-			"Rev": "ba28bc29f99f4b41f13fc83ecfa3a598a91e5ebb"
+			"Comment": "0.0.1-3-g9a4d423",
+			"Rev": "9a4d423c7f4ec5718dd2ff93580aaa1198b46159"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",

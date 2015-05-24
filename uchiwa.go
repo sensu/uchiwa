@@ -4,8 +4,9 @@ import (
 	"flag"
 
 	"github.com/palourde/logger"
-	"github.com/sensu/uchiwa/auth"
 	"github.com/sensu/uchiwa/uchiwa"
+	"github.com/sensu/uchiwa/uchiwa/auth"
+	"github.com/sensu/uchiwa/uchiwa/config"
 )
 
 func main() {
@@ -13,21 +14,21 @@ func main() {
 	publicPath := flag.String("p", "public", "Full or relative path to the public directory")
 	flag.Parse()
 
-	config, err := uchiwa.LoadConfig(*configFile)
+	config, err := config.Load(*configFile)
 	if err != nil {
 		logger.Fatal(err)
 	}
 
-	uchiwa.New(config)
-	go uchiwa.Fetch(config.Uchiwa.Refresh)
+	logger.Debug("Debug mode enabled")
+
+	u := uchiwa.Init(config)
 
 	authentication := auth.New()
-
 	if config.Uchiwa.Auth == "simple" {
 		authentication.Simple(config.Uchiwa.User, config.Uchiwa.Pass)
 	} else {
 		authentication.None()
 	}
 
-	uchiwa.WebServer(config, publicPath, authentication)
+	u.WebServer(publicPath, authentication)
 }

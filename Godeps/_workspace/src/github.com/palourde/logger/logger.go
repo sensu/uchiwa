@@ -66,6 +66,15 @@ func Info(args ...interface{}) {
 	log.print("info", "%s", s)
 }
 
+// Debug function logs a message using DEBUG as log level if DEBUG environment variable is enabled
+func Debug(args ...interface{}) {
+	debug := os.Getenv("DEBUG")
+	if debug != "" {
+		s := fmt.Sprint(args...)
+		log.print("debug", "%s", s)
+	}
+}
+
 // Warning function logs a message using WARNING as log level
 func Warning(args ...interface{}) {
 	s := fmt.Sprint(args...)
@@ -81,19 +90,28 @@ func Fatal(args ...interface{}) {
 
 // Infof function logs a message with arguments using INFO as log level
 func Infof(format string, args ...interface{}) {
-	s := fmt.Sprint(args...)
-	log.print("info", format, s)
+	s := fmt.Sprintf(format, args...)
+	log.print("info", s)
+}
+
+// Debugf function logs a message with arguments using DEBUG as log level if DEBUG environment variable is enabled
+func Debugf(format string, args ...interface{}) {
+	debug := os.Getenv("DEBUG")
+	if debug != "" {
+		s := fmt.Sprintf(format, args...)
+		log.print("debug", s)
+	}
 }
 
 // Warningf function logs a message with arguments using WARNING as log level
 func Warningf(format string, args ...interface{}) {
-	s := fmt.Sprint(args...)
-	log.print("warning", format, s)
+	s := fmt.Sprintf(format, args...)
+	log.print("warning", s)
 }
 
 // Fatalf function logs a message with arguments using FATAL as log level followed by a call to os.Exit(1)
 func Fatalf(format string, args ...interface{}) {
-	s := fmt.Sprint(args...)
-	log.print("fatal", format, s)
+	s := fmt.Sprintf(format, args...)
+	log.print("fatal", s)
 	os.Exit(1)
 }
