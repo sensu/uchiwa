@@ -8,8 +8,9 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
-// filterSensu
-func filterSensu(token *jwt.Token, data *structs.Data) *structs.Data {
+// filterGetSensu is a function that filters Sensu Data based on
+// the datacenters and subscriptions within the Role struct of the JWT
+func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 	if token == nil {
 		logger.Debug("No token found in the request, returning all data")
 		return data
@@ -17,7 +18,7 @@ func filterSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 
 	r, ok := token.Claims["Role"]
 	if !ok {
-		logger.Warning("Could not retrieve the user role from the token")
+		logger.Warning("Could not retrieve the user Role from the JWT")
 		return &structs.Data{}
 	}
 
@@ -28,13 +29,6 @@ func filterSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 		return &structs.Data{}
 	}
 
-	filteredData := findDatacenter(&role, data)
-
-	//fmt.Println(filteredData)
-	return filteredData
-}
-
-func findDatacenter(role *auth.Role, data *structs.Data) *structs.Data {
 	// return all data if no datacenters are found
 	if len(role.Datacenters) == 0 {
 		logger.Debugf("No datacenters found in the role %s", role.Name)
@@ -52,7 +46,7 @@ func findDatacenter(role *auth.Role, data *structs.Data) *structs.Data {
 		}
 
 		// check if the generic element is part of the datacenters specified within the role
-		if isMemberOfDatacenter(role.Datacenters, generic.Dc) {
+		if inArray(generic.Dc, role.Datacenters) {
 			filteredData.Aggregates = append(filteredData.Aggregates, aggregate)
 		}
 	}
@@ -66,7 +60,7 @@ func findDatacenter(role *auth.Role, data *structs.Data) *structs.Data {
 		}
 
 		// check if the generic element is part of the datacenters specified within the role
-		if isMemberOfDatacenter(role.Datacenters, generic.Dc) {
+		if inArray(generic.Dc, role.Datacenters) {
 			filteredData.Checks = append(filteredData.Checks, check)
 		}
 	}
@@ -80,7 +74,7 @@ func findDatacenter(role *auth.Role, data *structs.Data) *structs.Data {
 		}
 
 		// check if the generic element is part of the datacenters specified within the role
-		if isMemberOfDatacenter(role.Datacenters, generic.Dc) {
+		if inArray(generic.Dc, role.Datacenters) {
 			filteredData.Clients = append(filteredData.Clients, client)
 		}
 	}
@@ -94,7 +88,7 @@ func findDatacenter(role *auth.Role, data *structs.Data) *structs.Data {
 		}
 
 		// check if the generic element is part of the datacenters specified within the role
-		if isMemberOfDatacenter(role.Datacenters, generic.Dc) {
+		if inArray(generic.Dc, role.Datacenters) {
 			filteredData.Events = append(filteredData.Events, event)
 		}
 	}
@@ -108,24 +102,19 @@ func findDatacenter(role *auth.Role, data *structs.Data) *structs.Data {
 		}
 
 		// check if the generic element is part of the datacenters specified within the role
-		if isMemberOfDatacenter(role.Datacenters, generic.Dc) {
+		if inArray(generic.Dc, role.Datacenters) {
 			filteredData.Stashes = append(filteredData.Stashes, stash)
 		}
 	}
 
-	return &filteredData
-}
-
-func isMemberOfDatacenter(datacenters []string, name string) bool {
-	if name == "" {
-		return false
-	}
-
-	for _, datacenter := range datacenters {
-		if datacenter == name {
-			return true
+	// Datacenters
+	for _, datacenter := range data.Dc {
+		// check if the datacenter is part of the datacenters specified within the role
+		if inArray(datacenter.Name, role.Datacenters) {
+			filteredData.Dc = append(filteredData.Dc, datacenter)
 		}
 	}
 
-	return false
+	//fmt.Println(filteredData)
+	return &filteredData
 }

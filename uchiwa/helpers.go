@@ -35,3 +35,23 @@ func findModel(id string, dc string, checks []interface{}) map[string]interface{
 	}
 	return nil
 }
+
+// inArray searches 'array' for 'item'
+// Returns true if 'array' is empty
+func inArray(item string, array []string) bool {
+	if len(array) == 0 {
+		return true
+	}
+
+	if item == "" {
+		return false
+	}
+
+	for _, element := range array {
+		if element == item {
+			return true
+		}
+	}
+
+	return false
+}

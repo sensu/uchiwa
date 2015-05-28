@@ -100,7 +100,7 @@ func (u *Uchiwa) getConfigHandler(w http.ResponseWriter, r *http.Request) {
 
 func (u *Uchiwa) getSensuHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.GetTokenFromContext(r)
-	data := filterSensu(token, u.Data)
+	data := filterGetSensu(token, u.Data)
 
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(data); err != nil {
