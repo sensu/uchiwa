@@ -10,6 +10,8 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/auth"
 )
 
+type sensuFilterFn func()
+
 func (u *Uchiwa) configAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, "", http.StatusBadRequest)
@@ -97,11 +99,11 @@ func (u *Uchiwa) getConfigHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Uchiwa) getSensuHandler(w http.ResponseWriter, r *http.Request) {
-	//test := auth.GetTokenFromContext(r)
-	//fmt.Println(test)
+	token := auth.GetTokenFromContext(r)
+	data := filterSensu(token, u.Data)
 
 	encoder := json.NewEncoder(w)
-	if err := encoder.Encode(u.Data); err != nil {
+	if err := encoder.Encode(data); err != nil {
 		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 	}
 }

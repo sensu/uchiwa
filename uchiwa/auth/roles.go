@@ -9,9 +9,10 @@ import (
 
 // Role contains the roles of each GitHub team
 type Role struct {
-	Name     string
-	Members  []string
-	Readonly bool
+	Datacenters []string
+	Members     []string
+	Name        string
+	Readonly    bool
 }
 
 func hasPermission(t *jwt.Token, r *http.Request) bool {

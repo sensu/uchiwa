@@ -53,6 +53,8 @@ func Init(c *config.Config) *Uchiwa {
 	return u
 }
 
+// listener method listens on the data channel for messages from the daemon
+// and updates the Data structure with results from the Sensu APIs
 func (u *Uchiwa) listener(interval int, data chan *structs.Data) {
 	for {
 		select {
