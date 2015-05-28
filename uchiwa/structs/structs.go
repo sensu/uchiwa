@@ -1,10 +1,5 @@
 package structs
 
-// Generic is a structure for holding a generic element
-type Generic struct {
-	Dc string `json:"dc"`
-}
-
 // Data is a structure for holding public data fetched from the Sensu APIs and exposed by the endpoints
 type Data struct {
 	Aggregates    []interface{}
@@ -22,6 +17,17 @@ type Datacenter struct {
 	Name  string         `json:"name"`
 	Info  Info           `json:"info"`
 	Stats map[string]int `json:"stats"`
+}
+
+// Generic is a structure for holding a generic element
+type Generic struct {
+	Dc string `json:"dc"`
+}
+
+// GenericCheck is a structure for holding a generic check
+type GenericCheck struct {
+	Dc          string   `json:"dc"`
+	Subscribers []string `json:"subscribers"`
 }
 
 // Health is a structure for holding health informaton about Sensu & Uchiwa

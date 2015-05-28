@@ -1,6 +1,8 @@
 package uchiwa
 
 import (
+	"fmt"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/mitchellh/mapstructure"
 	"github.com/palourde/logger"
@@ -30,7 +32,7 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 	}
 
 	// return all data if no datacenters are found
-	if len(role.Datacenters) == 0 {
+	if len(role.Datacenters) == 0 && len(role.Subscriptions) == 0 {
 		logger.Debugf("No datacenters found in the role %s", role.Name)
 		return data
 	}
@@ -45,7 +47,7 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 			continue
 		}
 
-		// check if the generic element is part of the datacenters specified within the role
+		// verify if the generic element is part of the datacenters specified within the role
 		if inArray(generic.Dc, role.Datacenters) {
 			filteredData.Aggregates = append(filteredData.Aggregates, aggregate)
 		}
@@ -53,13 +55,13 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 
 	// Checks
 	for _, check := range data.Checks {
-		var generic structs.Generic
+		var generic structs.GenericCheck
 		err := mapstructure.Decode(check, &generic)
 		if err != nil {
 			continue
 		}
-
-		// check if the generic element is part of the datacenters specified within the role
+		fmt.Println(generic)
+		// verify if the generic element is part of the datacenters specified within the role
 		if inArray(generic.Dc, role.Datacenters) {
 			filteredData.Checks = append(filteredData.Checks, check)
 		}
@@ -73,7 +75,7 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 			continue
 		}
 
-		// check if the generic element is part of the datacenters specified within the role
+		// verify if the generic element is part of the datacenters specified within the role
 		if inArray(generic.Dc, role.Datacenters) {
 			filteredData.Clients = append(filteredData.Clients, client)
 		}
@@ -87,7 +89,7 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 			continue
 		}
 
-		// check if the generic element is part of the datacenters specified within the role
+		// verify if the generic element is part of the datacenters specified within the role
 		if inArray(generic.Dc, role.Datacenters) {
 			filteredData.Events = append(filteredData.Events, event)
 		}
@@ -101,7 +103,7 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 			continue
 		}
 
-		// check if the generic element is part of the datacenters specified within the role
+		// verify if the generic element is part of the datacenters specified within the role
 		if inArray(generic.Dc, role.Datacenters) {
 			filteredData.Stashes = append(filteredData.Stashes, stash)
 		}
@@ -109,7 +111,7 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 
 	// Datacenters
 	for _, datacenter := range data.Dc {
-		// check if the datacenter is part of the datacenters specified within the role
+		// verify if the datacenter is part of the datacenters specified within the role
 		if inArray(datacenter.Name, role.Datacenters) {
 			filteredData.Dc = append(filteredData.Dc, datacenter)
 		}
