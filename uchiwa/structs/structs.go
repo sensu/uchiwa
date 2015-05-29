@@ -30,6 +30,18 @@ type GenericCheck struct {
 	Subscribers []string `json:"subscribers"`
 }
 
+// GenericClient is a structure for holding a generic client
+type GenericClient struct {
+	Dc            string   `json:"dc"`
+	Subscriptions []string `json:"subscriptions"`
+}
+
+// GenericEvent is a structure for holding a generic event
+type GenericEvent struct {
+	Dc    string       `json:"dc"`
+	Check GenericCheck `json:"check"`
+}
+
 // Health is a structure for holding health informaton about Sensu & Uchiwa
 type Health struct {
 	Sensu  map[string]SensuHealth `json:"sensu"`

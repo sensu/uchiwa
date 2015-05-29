@@ -1,8 +1,6 @@
 package uchiwa
 
 import (
-	"fmt"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/mitchellh/mapstructure"
 	"github.com/palourde/logger"
@@ -33,7 +31,7 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 
 	// return all data if no datacenters are found
 	if len(role.Datacenters) == 0 && len(role.Subscriptions) == 0 {
-		logger.Debugf("No datacenters found in the role %s", role.Name)
+		logger.Debugf("No datacenter and subscription filters found in the role %s", role.Name)
 		return data
 	}
 
@@ -48,7 +46,7 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 		}
 
 		// verify if the generic element is part of the datacenters specified within the role
-		if inArray(generic.Dc, role.Datacenters) {
+		if len(role.Datacenters) == 0 || stringInArray(generic.Dc, role.Datacenters) {
 			filteredData.Aggregates = append(filteredData.Aggregates, aggregate)
 		}
 	}
@@ -60,38 +58,45 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 		if err != nil {
 			continue
 		}
-		fmt.Println(generic)
-		// verify if the generic element is part of the datacenters specified within the role
-		if inArray(generic.Dc, role.Datacenters) {
-			filteredData.Checks = append(filteredData.Checks, check)
+
+		// verify if the generic element is part of the datacenters and the subscriptions specified within the role
+		if len(role.Datacenters) == 0 || stringInArray(generic.Dc, role.Datacenters) {
+			if len(role.Subscriptions) == 0 || arrayIntersection(generic.Subscribers, role.Subscriptions) {
+				filteredData.Checks = append(filteredData.Checks, check)
+			}
 		}
+
 	}
 
 	// Clients
 	for _, client := range data.Clients {
-		var generic structs.Generic
+		var generic structs.GenericClient
 		err := mapstructure.Decode(client, &generic)
 		if err != nil {
 			continue
 		}
 
-		// verify if the generic element is part of the datacenters specified within the role
-		if inArray(generic.Dc, role.Datacenters) {
-			filteredData.Clients = append(filteredData.Clients, client)
+		// verify if the generic element is part of the datacenters and the subscriptions specified within the role
+		if len(role.Datacenters) == 0 || stringInArray(generic.Dc, role.Datacenters) {
+			if len(role.Subscriptions) == 0 || arrayIntersection(generic.Subscriptions, role.Subscriptions) {
+				filteredData.Clients = append(filteredData.Clients, client)
+			}
 		}
 	}
 
 	// Events
 	for _, event := range data.Events {
-		var generic structs.Generic
+		var generic structs.GenericEvent
 		err := mapstructure.Decode(event, &generic)
 		if err != nil {
 			continue
 		}
 
-		// verify if the generic element is part of the datacenters specified within the role
-		if inArray(generic.Dc, role.Datacenters) {
-			filteredData.Events = append(filteredData.Events, event)
+		// verify if the generic element is part of the datacenters and the subscriptions specified within the role
+		if len(role.Datacenters) == 0 || stringInArray(generic.Dc, role.Datacenters) {
+			if len(role.Subscriptions) == 0 || arrayIntersection(generic.Check.Subscribers, role.Subscriptions) {
+				filteredData.Events = append(filteredData.Events, event)
+			}
 		}
 	}
 
@@ -104,7 +109,7 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 		}
 
 		// verify if the generic element is part of the datacenters specified within the role
-		if inArray(generic.Dc, role.Datacenters) {
+		if len(role.Datacenters) == 0 || stringInArray(generic.Dc, role.Datacenters) {
 			filteredData.Stashes = append(filteredData.Stashes, stash)
 		}
 	}
@@ -112,11 +117,10 @@ func filterGetSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 	// Datacenters
 	for _, datacenter := range data.Dc {
 		// verify if the datacenter is part of the datacenters specified within the role
-		if inArray(datacenter.Name, role.Datacenters) {
+		if len(role.Datacenters) == 0 || stringInArray(datacenter.Name, role.Datacenters) {
 			filteredData.Dc = append(filteredData.Dc, datacenter)
 		}
 	}
 
-	//fmt.Println(filteredData)
 	return &filteredData
 }

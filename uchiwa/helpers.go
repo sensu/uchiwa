@@ -36,20 +36,34 @@ func findModel(id string, dc string, checks []interface{}) map[string]interface{
 	return nil
 }
 
-// inArray searches 'array' for 'item'
-// Returns true if 'array' is empty
-func inArray(item string, array []string) bool {
-	if len(array) == 0 {
-		return true
-	}
-
-	if item == "" {
+// stringInArray searches 'array' for 'item' string
+// Returns true 'item' is a value of 'array'
+func stringInArray(item string, array []string) bool {
+	if item == "" || len(array) == 0 {
 		return false
 	}
 
 	for _, element := range array {
 		if element == item {
 			return true
+		}
+	}
+
+	return false
+}
+
+// arrayIntersection searches for values in both arrays
+// Returns true if there's at least one intersection
+func arrayIntersection(array1, array2 []string) bool {
+	if len(array1) == 0 || len(array2) == 0 {
+		return false
+	}
+
+	for _, a := range array1 {
+		for _, b := range array2 {
+			if a == b {
+				return true
+			}
 		}
 	}
 
