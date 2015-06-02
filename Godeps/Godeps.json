@@ -15,6 +15,10 @@
 			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
 		},
 		{
+			"ImportPath": "github.com/mitchellh/mapstructure",
+			"Rev": "f7d28d5aeab42b9b95d2e6d6b956f73a290077fc"
+		},
+		{
 			"ImportPath": "github.com/palourde/logger",
 			"Comment": "0.0.1-3-g9a4d423",
 			"Rev": "9a4d423c7f4ec5718dd2ff93580aaa1198b46159"
