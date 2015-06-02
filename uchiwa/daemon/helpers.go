@@ -133,3 +133,19 @@ func setDc(v interface{}, dc string) {
 		m["dc"] = dc
 	}
 }
+
+// StringInArray searches 'array' for 'item' string
+// Returns true 'item' is a value of 'array'
+func StringInArray(item string, array []string) bool {
+	if item == "" || len(array) == 0 {
+		return false
+	}
+
+	for _, element := range array {
+		if element == item {
+			return true
+		}
+	}
+
+	return false
+}

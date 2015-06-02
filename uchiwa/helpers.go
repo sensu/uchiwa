@@ -4,7 +4,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/dgrijalva/jwt-go"
+	"github.com/mitchellh/mapstructure"
 	"github.com/palourde/logger"
+	"github.com/sensu/uchiwa/uchiwa/auth"
 	"github.com/sensu/uchiwa/uchiwa/sensu"
 )
 
@@ -36,20 +39,19 @@ func findModel(id string, dc string, checks []interface{}) map[string]interface{
 	return nil
 }
 
-// stringInArray searches 'array' for 'item' string
-// Returns true 'item' is a value of 'array'
-func stringInArray(item string, array []string) bool {
-	if item == "" || len(array) == 0 {
-		return false
+func getRoleFromToken(token *jwt.Token) (*auth.Role, error) {
+	r, ok := token.Claims["Role"]
+	if !ok {
+		return &auth.Role{}, errors.New("Could not retrieve the user Role from the JWT")
 	}
 
-	for _, element := range array {
-		if element == item {
-			return true
-		}
+	var role auth.Role
+	err := mapstructure.Decode(r, &role)
+	if err != nil {
+		return &auth.Role{}, err
 	}
 
-	return false
+	return &role, nil
 }
 
 // arrayIntersection searches for values in both arrays

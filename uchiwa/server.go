@@ -24,12 +24,23 @@ func (u *Uchiwa) deleteClientHandler(w http.ResponseWriter, r *http.Request) {
 	id := urlStruct.Query().Get("id")
 	dc := urlStruct.Query().Get("dc")
 	if id == "" || dc == "" {
-		http.Error(w, fmt.Sprint("Parameters 'id' and 'dc' are required"), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprint("Parameters 'id' and 'dc' are required"), http.StatusNotFound)
+		return
+	}
+
+	// verify that the authenticated user is authorized to access this resource
+	token := auth.GetTokenFromContext(r)
+	unauthorized := filterGetRequest(dc, token)
+
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
 	}
 
 	err := u.DeleteClient(id, dc)
 	if err != nil {
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -38,7 +49,17 @@ func (u *Uchiwa) getAggregateHandler(w http.ResponseWriter, r *http.Request) {
 	check := urlStruct.Query().Get("check")
 	dc := urlStruct.Query().Get("dc")
 	if check == "" || dc == "" {
-		http.Error(w, fmt.Sprint("Parameters 'check' and 'dc' are required"), 500)
+		http.Error(w, fmt.Sprint("Parameters 'check' and 'dc' are required"), http.StatusNotFound)
+		return
+	}
+
+	// verify that the authenticated user is authorized to access this resource
+	token := auth.GetTokenFromContext(r)
+	unauthorized := filterGetRequest(dc, token)
+
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
 	}
 
 	aggregate, err := u.GetAggregate(check, dc)
@@ -47,7 +68,7 @@ func (u *Uchiwa) getAggregateHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		encoder := json.NewEncoder(w)
 		if err := encoder.Encode(aggregate); err != nil {
-			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), 500)
+			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 		}
 	}
 }
@@ -58,7 +79,17 @@ func (u *Uchiwa) getAggregateByIssuedHandler(w http.ResponseWriter, r *http.Requ
 	issued := urlStruct.Query().Get("issued")
 	dc := urlStruct.Query().Get("dc")
 	if check == "" || issued == "" || dc == "" {
-		http.Error(w, fmt.Sprint("Parameters 'check', 'issued' and 'dc' are required"), 500)
+		http.Error(w, fmt.Sprint("Parameters 'check', 'issued' and 'dc' are required"), http.StatusNotFound)
+		return
+	}
+
+	// verify that the authenticated user is authorized to access this resource
+	token := auth.GetTokenFromContext(r)
+	unauthorized := filterGetRequest(dc, token)
+
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
 	}
 
 	aggregate, err := u.GetAggregateByIssued(check, issued, dc)
@@ -67,7 +98,7 @@ func (u *Uchiwa) getAggregateByIssuedHandler(w http.ResponseWriter, r *http.Requ
 	} else {
 		encoder := json.NewEncoder(w)
 		if err := encoder.Encode(aggregate); err != nil {
-			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), 500)
+			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 		}
 	}
 }
@@ -77,12 +108,22 @@ func (u *Uchiwa) getClientHandler(w http.ResponseWriter, r *http.Request) {
 	id := urlStruct.Query().Get("id")
 	dc := urlStruct.Query().Get("dc")
 	if id == "" || dc == "" {
-		http.Error(w, fmt.Sprint("Parameters 'id' and 'dc' are required"), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprint("Parameters 'id' and 'dc' are required"), http.StatusNotFound)
+		return
+	}
+
+	// verify that the authenticated user is authorized to access this resource
+	token := auth.GetTokenFromContext(r)
+	unauthorized := filterGetRequest(dc, token)
+
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
 	}
 
 	client, err := u.GetClient(id, dc)
 	if err != nil {
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprint(err), http.StatusNotFound)
 	} else {
 		encoder := json.NewEncoder(w)
 		if err := encoder.Encode(client); err != nil {
@@ -100,7 +141,7 @@ func (u *Uchiwa) getConfigHandler(w http.ResponseWriter, r *http.Request) {
 
 func (u *Uchiwa) getSensuHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.GetTokenFromContext(r)
-	data := filterGetSensu(token, u.Data)
+	data := filterSensu(token, u.Data)
 
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(data); err != nil {
@@ -130,6 +171,16 @@ func (u *Uchiwa) postEventHandler(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&data)
 	if err != nil {
 		http.Error(w, fmt.Sprint("Could not decode body"), http.StatusInternalServerError)
+		return
+	}
+
+	// verify that the authenticated user is authorized to access this resource
+	token := auth.GetTokenFromContext(r)
+	unauthorized := filterPostRequest(token, &data)
+
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
 	}
 
 	err = u.ResolveEvent(data)
@@ -153,6 +204,15 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// verify that the authenticated user is authorized to access this resource
+	token := auth.GetTokenFromContext(r)
+	unauthorized := filterGetRequest(data.Dc, token)
+
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
+	}
+
 	err = u.PostStash(data)
 	if err != nil {
 		http.Error(w, "Could not create the stash", http.StatusNotFound)
@@ -170,6 +230,15 @@ func (u *Uchiwa) stashDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&data)
 	if err != nil {
 		http.Error(w, "Could not decode body", http.StatusInternalServerError)
+		return
+	}
+
+	// verify that the authenticated user is authorized to access this resource
+	token := auth.GetTokenFromContext(r)
+	unauthorized := filterGetRequest(data.Dc, token)
+
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
 		return
 	}
 
