@@ -3,31 +3,25 @@ package uchiwa
 import (
 	"testing"
 
-	"github.com/bencaron/gosensu"
 	"github.com/stretchr/testify/assert"
 )
 
-func mockDatacenters() {
-	datacenters = make([]sensu.Sensu, 2)
-	datacenters[0] = sensu.Sensu{Name: "foo"}
-	datacenters[1] = sensu.Sensu{Name: "bar"}
-}
+func TestArrayIntersection(t *testing.T) {
+	var array1 []string
+	var array2 []string
 
-func TestGetAPI(t *testing.T) {
+	found := arrayIntersection(array1, array2)
+	assert.Equal(t, false, found, "if both arrays are empty, it should return false")
 
-	mockDatacenters()
+	array1 = []string{"foo", "bar"}
+	found = arrayIntersection(array1, array2)
+	assert.Equal(t, false, found, "if one array is empty, it should return false")
 
-	_, err := getAPI("")
-	assert.NotNil(t, err)
+	array2 = []string{"baz", "qux"}
+	found = arrayIntersection(array1, array2)
+	assert.Equal(t, false, found, "it should return false is none of the elements in the arrays are shared")
 
-	_, err = getAPI("qux")
-	assert.NotNil(t, err)
-
-	api, err := getAPI("foo")
-	assert.Nil(t, err)
-	assert.Equal(t, &datacenters[0], api)
-
-	api, err = getAPI("foo")
-	assert.Nil(t, err)
-	assert.Equal(t, &datacenters[0], api)
+	array2 = append(array2, "foo")
+	found = arrayIntersection(array1, array2)
+	assert.Equal(t, true, found, "it should return true if at least one element is shared between the arrays")
 }

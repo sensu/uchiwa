@@ -1,12 +1,10 @@
 package uchiwa
 
-import (
-	"github.com/palourde/logger"
-)
+import "github.com/palourde/logger"
 
 // GetAggregate retrieves a list of issued timestamps from a specified DC
-func GetAggregate(check string, dc string) (*[]interface{}, error) {
-	api, err := getAPI(dc)
+func (u *Uchiwa) GetAggregate(check string, dc string) (*[]interface{}, error) {
+	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
@@ -22,8 +20,8 @@ func GetAggregate(check string, dc string) (*[]interface{}, error) {
 }
 
 // GetAggregateByIssued retrieves aggregate check info from a specified DC
-func GetAggregateByIssued(check string, issued string, dc string) (*map[string]interface{}, error) {
-	api, err := getAPI(dc)
+func (u *Uchiwa) GetAggregateByIssued(check string, issued string, dc string) (*map[string]interface{}, error) {
+	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err

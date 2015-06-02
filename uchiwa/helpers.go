@@ -4,35 +4,29 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/bencaron/gosensu"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/mitchellh/mapstructure"
 	"github.com/palourde/logger"
+	"github.com/sensu/uchiwa/uchiwa/auth"
+	"github.com/sensu/uchiwa/uchiwa/sensu"
 )
 
-func findDcFromInterface(data interface{}) (*sensu.Sensu, map[string]interface{}, error) {
-	m, ok := data.(map[string]interface{})
-	if !ok {
-		logger.Warningf("Type assertion failed. Could not assert the given interface into a map: %+v", data)
-		return nil, nil, errors.New("Could not determine the datacenter.")
+func getAPI(datacenters *[]sensu.Sensu, name string) (*sensu.Sensu, error) {
+	if name == "" {
+		return nil, errors.New("The datacenter name can't be empty")
 	}
 
-	id := m["dc"].(string)
-	if id == "" {
-		logger.Warningf("The received interface does not contain any datacenter information: ", data)
-		return nil, nil, errors.New("Could not determine the datacenter.")
-	}
-
-	for _, dc := range datacenters {
-		if dc.Name == id {
-			return &dc, m, nil
+	for _, datacenter := range *datacenters {
+		if datacenter.Name == name {
+			return &datacenter, nil
 		}
 	}
 
-	logger.Warningf("Could not find the datacenter %s into %+v: ", id, data)
-	return nil, nil, fmt.Errorf("Could not find the datacenter %s", id)
+	return nil, fmt.Errorf("Could not find the datacenter '%s'", name)
 }
 
-func findModel(id string, dc string) map[string]interface{} {
-	for _, k := range tmpResults.Checks {
+func findModel(id string, dc string, checks []interface{}) map[string]interface{} {
+	for _, k := range checks {
 		m, ok := k.(map[string]interface{})
 		if !ok {
 			logger.Warningf("Could not assert check interface %+v", k)
@@ -45,117 +39,35 @@ func findModel(id string, dc string) map[string]interface{} {
 	return nil
 }
 
-func findStatus(client map[string]interface{}) {
-	if len(tmpResults.Events) == 0 {
-		client["status"] = 0
-	} else {
-		var criticals, warnings int
-		var results []string
-		for _, e := range tmpResults.Events {
-			m, ok := e.(map[string]interface{})
-			if !ok {
-				logger.Warningf("Could not assert event interface %+v", e)
-				continue
-			}
-
-			// skip this event if another dc
-			if m["dc"] != client["dc"] {
-				continue
-			}
-
-			c, ok := m["client"].(map[string]interface{})
-			if !ok {
-				logger.Warningf("Could not assert event's client interface: %+v", c)
-				continue
-			}
-
-			// skip this event if another client
-			if c["name"] != client["name"] || m["dc"] != client["dc"] {
-				continue
-			}
-
-			k := m["check"].(map[string]interface{})
-			if !ok {
-				logger.Warningf("Could not assert event's check interface: %+v", k)
-				continue
-			}
-
-			results = append(results, k["output"].(string))
-
-			status := int(k["status"].(float64))
-			if status == 2 {
-				criticals++
-			} else if status == 1 {
-				warnings++
-			}
-		}
-
-		if len(results) == 0 {
-			client["status"] = 0
-		} else if criticals > 0 {
-			client["status"] = 2
-		} else if warnings > 0 {
-			client["status"] = 1
-		} else {
-			client["status"] = 3
-		}
-
-		if len(results) == 1 {
-			client["output"] = results[0]
-		} else if len(results) > 1 {
-			output := fmt.Sprintf("%s and %d more...", results[0], (len(results) - 1))
-			client["output"] = output
-		}
+func getRoleFromToken(token *jwt.Token) (*auth.Role, error) {
+	r, ok := token.Claims["Role"]
+	if !ok {
+		return &auth.Role{}, errors.New("Could not retrieve the user Role from the JWT")
 	}
+
+	var role auth.Role
+	err := mapstructure.Decode(r, &role)
+	if err != nil {
+		return &auth.Role{}, err
+	}
+
+	return &role, nil
 }
 
-func getAPI(name string) (*sensu.Sensu, error) {
-	if name == "" {
-		return nil, errors.New("The datacenter name can't be empty")
-	}
-
-	for _, dc := range datacenters {
-		if dc.Name == name {
-			return &dc, nil
-		}
-	}
-
-	return nil, fmt.Errorf("Could not find the datacenter '%s'", name)
-}
-
-func isAcknowledged(c string, k string, dc string) bool {
-	if len(tmpResults.Stashes) == 0 {
+// arrayIntersection searches for values in both arrays
+// Returns true if there's at least one intersection
+func arrayIntersection(array1, array2 []string) bool {
+	if len(array1) == 0 || len(array2) == 0 {
 		return false
 	}
 
-	// add leading slash to check name
-	if k != "" {
-		k = fmt.Sprintf("/%s", k)
-	}
-
-	p := fmt.Sprintf("silence/%s%s", c, k)
-
-	a := false
-
-	for _, s := range tmpResults.Stashes {
-		m, ok := s.(map[string]interface{})
-		if !ok {
-			continue
-		}
-
-		if m["path"] == p && m["dc"] == dc {
-			a = true
+	for _, a := range array1 {
+		for _, b := range array2 {
+			if a == b {
+				return true
+			}
 		}
 	}
 
-	return a
-}
-
-func setDc(v interface{}, dc string) {
-	m, ok := v.(map[string]interface{})
-	if !ok {
-		logger.Warningf("Could not assert interface: %+v", v)
-	} else {
-		m["dc"] = dc
-	}
+	return false
 }

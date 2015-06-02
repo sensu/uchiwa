@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	"github.com/palourde/logger"
+	"github.com/sensu/uchiwa/uchiwa/daemon"
 )
 
-func buildClientHistory(id *string, history *[]interface{}, dc *string) {
+func (u *Uchiwa) buildClientHistory(id *string, history *[]interface{}, dc *string) {
 	for _, h := range *history {
 		m, ok := h.(map[string]interface{})
 		if !ok {
@@ -16,22 +17,22 @@ func buildClientHistory(id *string, history *[]interface{}, dc *string) {
 
 		// last_status comes in as a float64, so needs 0.0
 		if m["last_status"] == 0.0 {
-			last_result := m["last_result"]
-			lr, _ := last_result.(map[string]interface{})
+			lastResult := m["last_result"]
+			lr, _ := lastResult.(map[string]interface{})
 			m["output"] = lr["output"]
 		} else {
-			m["output"] = findOutput(id, m, dc)
+			m["output"] = u.findOutput(id, m, dc)
 		}
-		m["acknowledged"] = isAcknowledged(*id, m["check"].(string), *dc)
-		m["model"] = findModel(m["check"].(string), *dc)
+		m["model"] = findModel(m["check"].(string), *dc, u.Data.Checks)
 		m["client"] = id
 		m["dc"] = dc
+		m["acknowledged"] = daemon.IsAcknowledged(*id, m["check"].(string), *dc, u.Data.Stashes)
 	}
 }
 
 // DeleteClient send a DELETE request to the /clients/*client* endpoint in order to delete a client
-func DeleteClient(id string, dc string) error {
-	api, err := getAPI(dc)
+func (u *Uchiwa) DeleteClient(id string, dc string) error {
+	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return err
@@ -46,8 +47,8 @@ func DeleteClient(id string, dc string) error {
 	return nil
 }
 
-func findClientInClients(id *string, dc *string) (map[string]interface{}, error) {
-	for _, c := range Results.Clients {
+func (u *Uchiwa) findClientInClients(id *string, dc *string) (map[string]interface{}, error) {
+	for _, c := range u.Data.Clients {
 		m, ok := c.(map[string]interface{})
 		if !ok {
 			logger.Warningf("Could not assert client interface %+v", c)
@@ -60,12 +61,12 @@ func findClientInClients(id *string, dc *string) (map[string]interface{}, error)
 	return nil, fmt.Errorf("Could not find client %s", *id)
 }
 
-func findOutput(id *string, h map[string]interface{}, dc *string) string {
+func (u *Uchiwa) findOutput(id *string, h map[string]interface{}, dc *string) string {
 	if h["last_status"] == 0 {
 		return ""
 	}
 
-	for _, e := range Results.Events {
+	for _, e := range u.Data.Events {
 		// does the dc match?
 		m, ok := e.(map[string]interface{})
 		if !ok {
@@ -103,18 +104,18 @@ func findOutput(id *string, h map[string]interface{}, dc *string) string {
 }
 
 // GetClient retrieves client history from specified DC
-func GetClient(id string, dc string) (map[string]interface{}, error) {
-	api, err := getAPI(dc)
+func (u *Uchiwa) GetClient(id string, dc string) (map[string]interface{}, error) {
+	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
 	}
 
-	// lock Results structure while we gather client info
-	mutex.Lock()
-	defer mutex.Unlock()
+	// lock results while we gather client info
+	u.Mu.Lock()
+	defer u.Mu.Unlock()
 
-	c, err := findClientInClients(&id, &dc)
+	c, err := u.findClientInClients(&id, &dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
@@ -126,7 +127,7 @@ func GetClient(id string, dc string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	buildClientHistory(&id, &h, &dc)
+	u.buildClientHistory(&id, &h, &dc)
 
 	// add client history to client map for easy frontend consumption
 	c["history"] = h
