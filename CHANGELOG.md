@@ -1,3 +1,13 @@
+### 0.9.0 (TBD)
+#### Features
+- Display the output for all checks - [Issue #322](https://github.com/sensu/uchiwa/issues/322)
+- Various fixes and improvements to the backend - [Issue #330](https://github.com/sensu/uchiwa/pull/330)
+  - Godep is now used to manage vendored dependencies
+  - Support for Sensu Enterprise dashboard features
+  - Refactoring of the Go packages
+- Allow filtering by check on the checks view - [Issue #45](https://github.com/sensu/uchiwa-web/pull/45)
+- Include a result count when searching - [Issue #46](https://github.com/sensu/uchiwa-web/pull/46)
+
 ### 0.8.1 (2015-05-05)
 #### Features
 - Add profile picture to the navbar when logged - [Issue #44](https://github.com/sensu/uchiwa-web/pull/44)
