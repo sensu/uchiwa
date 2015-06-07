@@ -6,22 +6,41 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestArrayIntersection(t *testing.T) {
-	var array1 []string
-	var array2 []string
+func TestSliceIntersection(t *testing.T) {
+	var a1, a2 []string
 
-	found := arrayIntersection(array1, array2)
-	assert.Equal(t, false, found, "if both arrays are empty, it should return false")
+	found := sliceIntersection(a1, a2)
+	assert.Equal(t, false, found, "if both slices are empty, it should return false")
 
-	array1 = []string{"foo", "bar"}
-	found = arrayIntersection(array1, array2)
-	assert.Equal(t, false, found, "if one array is empty, it should return false")
+	a1 = []string{"foo", "bar"}
+	found = sliceIntersection(a1, a2)
+	assert.Equal(t, false, found, "if one slice is empty, it should return false")
 
-	array2 = []string{"baz", "qux"}
-	found = arrayIntersection(array1, array2)
-	assert.Equal(t, false, found, "it should return false is none of the elements in the arrays are shared")
+	a2 = []string{"baz", "qux"}
+	found = sliceIntersection(a1, a2)
+	assert.Equal(t, false, found, "it should return false is none of the elements in the slices are shared")
 
-	array2 = append(array2, "foo")
-	found = arrayIntersection(array1, array2)
-	assert.Equal(t, true, found, "it should return true if at least one element is shared between the arrays")
+	a2 = append(a2, "foo")
+	found = sliceIntersection(a1, a2)
+	assert.Equal(t, true, found, "it should return true if at least one element is shared between the slices")
+}
+
+func TestMergeStringSlice(t *testing.T) {
+	var a1, a2 []string
+
+	slice := MergeStringSlices(a1, a2)
+	assert.Equal(t, []string(nil), slice, "if both slices are empty, it should return an empty slice")
+
+	a1 = []string{"1", "2"}
+	slice = MergeStringSlices(a1, a2)
+	assert.Equal(t, a1, slice, "if one slice is empty, it should return the other slice")
+
+	a2 = []string{"2"}
+	slice = MergeStringSlices(a1, a2)
+	assert.Equal(t, a1, slice, "if one slice is empty, it should return the other slice")
+
+	a2 = []string{"2", "3"}
+	slice = MergeStringSlices(a1, a2)
+	assert.Equal(t, []string{"1", "2", "3"}, slice, "if one slice is empty, it should return the other slice")
+
 }

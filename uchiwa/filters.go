@@ -67,7 +67,7 @@ func filterPostRequest(token *jwt.Token, data *interface{}) bool {
 	if len(role.Datacenters) == 0 || daemon.StringInArray(generic.Dc, role.Datacenters) {
 		if len(role.Subscriptions) == 0 || len(generic.Check.Subscribers) == 0 {
 			return false
-		} else if arrayIntersection(generic.Check.Subscribers, role.Subscriptions) {
+		} else if sliceIntersection(generic.Check.Subscribers, role.Subscriptions) {
 			return false
 		}
 	}
@@ -121,7 +121,7 @@ func filterSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 
 		// verify if the generic element is part of the datacenters and the subscriptions specified within the role
 		if len(role.Datacenters) == 0 || daemon.StringInArray(generic.Dc, role.Datacenters) {
-			if len(role.Subscriptions) == 0 || arrayIntersection(generic.Subscribers, role.Subscriptions) {
+			if len(role.Subscriptions) == 0 || sliceIntersection(generic.Subscribers, role.Subscriptions) {
 				filteredData.Checks = append(filteredData.Checks, check)
 			}
 		}
@@ -138,7 +138,7 @@ func filterSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 
 		// verify if the generic element is part of the datacenters and the subscriptions specified within the role
 		if len(role.Datacenters) == 0 || daemon.StringInArray(generic.Dc, role.Datacenters) {
-			if len(role.Subscriptions) == 0 || arrayIntersection(generic.Subscriptions, role.Subscriptions) {
+			if len(role.Subscriptions) == 0 || sliceIntersection(generic.Subscriptions, role.Subscriptions) {
 				filteredData.Clients = append(filteredData.Clients, client)
 			}
 		}
@@ -154,7 +154,7 @@ func filterSensu(token *jwt.Token, data *structs.Data) *structs.Data {
 
 		// verify if the generic element is part of the datacenters and the subscriptions specified within the role
 		if len(role.Datacenters) == 0 || daemon.StringInArray(generic.Dc, role.Datacenters) {
-			if len(role.Subscriptions) == 0 || arrayIntersection(generic.Check.Subscribers, role.Subscriptions) {
+			if len(role.Subscriptions) == 0 || sliceIntersection(generic.Check.Subscribers, role.Subscriptions) {
 				filteredData.Events = append(filteredData.Events, event)
 			}
 		}
