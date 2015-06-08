@@ -54,16 +54,39 @@ func getRoleFromToken(token *jwt.Token) (*auth.Role, error) {
 	return &role, nil
 }
 
-// arrayIntersection searches for values in both arrays
+// MergeStringSlices merges two slices of strings and remove duplicated values
+func MergeStringSlices(a1, a2 []string) []string {
+	if len(a1) == 0 {
+		return a2
+	} else if len(a2) == 0 {
+		return a1
+	}
+
+	s := make([]string, len(a1), len(a1)+len(a2))
+	copy(s, a1)
+
+next:
+	for _, x := range a2 {
+		for _, y := range s {
+			if x == y {
+				continue next
+			}
+		}
+		s = append(s, x)
+	}
+	return s
+}
+
+// sliceIntersection searches for values in both slices
 // Returns true if there's at least one intersection
-func arrayIntersection(array1, array2 []string) bool {
-	if len(array1) == 0 || len(array2) == 0 {
+func sliceIntersection(a1, a2 []string) bool {
+	if len(a1) == 0 || len(a2) == 0 {
 		return false
 	}
 
-	for _, a := range array1 {
-		for _, b := range array2 {
-			if a == b {
+	for _, x := range a1 {
+		for _, y := range a2 {
+			if x == y {
 				return true
 			}
 		}
