@@ -27,19 +27,23 @@ type Generic struct {
 // GenericCheck is a structure for holding a generic check
 type GenericCheck struct {
 	Dc          string   `json:"dc"`
+	Output      string   `json:"output"`
+	Status      int      `json:"status"`
 	Subscribers []string `json:"subscribers"`
 }
 
 // GenericClient is a structure for holding a generic client
 type GenericClient struct {
 	Dc            string   `json:"dc"`
+	Name          string   `json:"name"`
 	Subscriptions []string `json:"subscriptions"`
 }
 
 // GenericEvent is a structure for holding a generic event
 type GenericEvent struct {
-	Dc    string       `json:"dc"`
-	Check GenericCheck `json:"check"`
+	Check  GenericCheck  `json:"check"`
+	Client GenericClient `json:"client"`
+	Dc     string        `json:"dc"`
 }
 
 // Health is a structure for holding health informaton about Sensu & Uchiwa
