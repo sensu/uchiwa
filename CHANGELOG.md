@@ -1,4 +1,4 @@
-### 0.9.0 (TBD)
+### 0.9.0 (2015-06-09)
 #### Features
 - Display the output for all checks - [Issue #322](https://github.com/sensu/uchiwa/issues/322)
 - Various fixes and improvements to the backend - [Issue #330](https://github.com/sensu/uchiwa/pull/330)
@@ -7,6 +7,10 @@
   - Refactoring of the Go packages
 - Allow filtering by check on the checks view - [Issue #45](https://github.com/sensu/uchiwa-web/pull/45)
 - Include a result count when searching - [Issue #46](https://github.com/sensu/uchiwa-web/pull/46)
+
+#### Bug Fixes
+- Better handling of invalid events - [Issue #332](https://github.com/sensu/uchiwa/issues/332)
+- A stash can only start now and not in the future - [Issue #48](https://github.com/sensu/uchiwa-web/pull/48)
 
 ### 0.8.1 (2015-05-05)
 #### Features
