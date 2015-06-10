@@ -33,25 +33,48 @@ func findClientEvents(client map[string]interface{}, events *[]interface{}) map[
 		var results []string
 		for _, e := range *events {
 
-			var event structs.GenericEvent
-			err := mapstructure.Decode(e, &event)
+			eventMap, ok := e.(map[string]interface{})
+			if !ok {
+				logger.Warningf("Could not convert the event to a map: %+v", eventMap)
+				continue
+			}
+
+			// skip this event if the check attribute does not exist
+			if eventMap["check"] == nil {
+				continue
+			}
+
+			// skip this event if the datacenter isn't the right one
+			if eventMap["dc"] == nil || eventMap["dc"] != client["dc"] {
+				continue
+			}
+
+			clientMap, ok := eventMap["client"].(map[string]interface{})
+			if !ok {
+				logger.Warningf("Could not convert the event's client to a map: %+v", eventMap)
+				continue
+			}
+
+			// skip this event if the client isn't the right one
+			if clientMap["name"] == nil || clientMap["name"] != client["name"] {
+				continue
+			}
+
+			// convert the check to a structure for easier handling
+			var check structs.GenericCheck
+			err := mapstructure.Decode(eventMap["check"], &check)
 			if err != nil {
-				logger.Warningf("Could not convert the event to a generic event structure: %s", err)
+				logger.Warningf("Could not convert the event's check to a generic check structure: %s", err)
 				continue
 			}
 
-			// skip this event if not the right client
-			if event.Client.Name != client["name"] || event.Dc != client["dc"] {
-				continue
-			}
-
-			if event.Check.Status == 2 {
+			if check.Status == 2 {
 				criticals++
-			} else if event.Check.Status == 1 {
+			} else if check.Status == 1 {
 				warnings++
 			}
 
-			results = append(results, event.Check.Output)
+			results = append(results, check.Output)
 		}
 
 		if len(results) == 0 {
