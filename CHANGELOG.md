@@ -1,3 +1,7 @@
+### 0.9.1 (2015-06-10)
+#### Bug Fixes
+- Performance issues - [Issue #337](https://github.com/sensu/uchiwa/issues/337)
+
 ### 0.9.0 (2015-06-09)
 #### Features
 - Display the output for all checks - [Issue #322](https://github.com/sensu/uchiwa/issues/322)
