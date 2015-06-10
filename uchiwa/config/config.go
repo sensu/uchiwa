@@ -63,6 +63,7 @@ type Ldap struct {
 	Server   string
 	Port     int
 	BaseDN   string
+	Insecure bool
 	Roles    []auth.Role
 	Security string
 }
