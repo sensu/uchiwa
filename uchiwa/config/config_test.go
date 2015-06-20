@@ -34,3 +34,12 @@ func TestLoad(t *testing.T) {
 	}
 
 }
+
+func TestLoadArrayOfUsers(t *testing.T) {
+	conf, err := Load("../../fixtures/config_test_multiple.json")
+	assert.Nil(t, err, "got unexpected error: %s", err)
+	assert.NotNil(t, conf, "conf should not be nil")
+
+	assert.Equal(t, "multiple", conf.Uchiwa.Auth, "Uchiwa Auth should be multiple")
+	assert.Equal(t, 2, len(conf.Uchiwa.Users))
+}

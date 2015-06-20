@@ -23,6 +23,7 @@ type loginFn func(string, string) (*User, error)
 
 var (
 	user, pass string
+	users      []User
 )
 
 // New function initalizes and returns a Config struct
@@ -44,6 +45,15 @@ func (a *Config) Simple(u, p string) {
 
 	user = u
 	pass = p
+
+	initToken()
+}
+
+func (a *Config) Multiple(u []User) {
+	a.Driver = multiple
+	a.DriverName = "multiple"
+
+	users = u
 
 	initToken()
 }

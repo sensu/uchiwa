@@ -38,6 +38,7 @@ type GlobalConfig struct {
 	Refresh int
 	Pass    string
 	User    string
+	Users   []auth.User
 	Db      Db
 	Github  Github
 	Ldap    Ldap
@@ -145,6 +146,9 @@ func (c *Config) initUchiwa() {
 		}
 	} else if c.Uchiwa.Db.Driver != "" && c.Uchiwa.Db.Scheme != "" {
 		c.Uchiwa.Auth = "sql"
+	} else if len(c.Uchiwa.Users) != 0 {
+		logger.Debug("Loading multiple config")
+		c.Uchiwa.Auth = "multiple"
 	} else if c.Uchiwa.User != "" && c.Uchiwa.Pass != "" {
 		c.Uchiwa.Auth = "simple"
 	}
