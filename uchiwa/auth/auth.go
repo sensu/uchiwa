@@ -39,19 +39,9 @@ func (a *Config) None() {
 }
 
 // Simple function sets the Config struct in order to enable simple authentication based on provided user and pass
-func (a *Config) Simple(u, p string) {
+func (a *Config) Simple(u []User) {
 	a.Driver = simple
 	a.DriverName = "simple"
-
-	user = u
-	pass = p
-
-	initToken()
-}
-
-func (a *Config) Multiple(u []User) {
-	a.Driver = multiple
-	a.DriverName = "multiple"
 
 	users = u
 

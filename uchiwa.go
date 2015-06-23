@@ -24,10 +24,8 @@ func main() {
 	u := uchiwa.Init(config)
 
 	authentication := auth.New()
-	if config.Uchiwa.Auth == "multiple" {
-		authentication.Multiple(config.Uchiwa.Users)
-	} else if config.Uchiwa.Auth == "simple" {
-		authentication.Simple(config.Uchiwa.User, config.Uchiwa.Pass)
+	if config.Uchiwa.Auth == "simple" {
+		authentication.Simple(config.Uchiwa.Users)
 	} else {
 		authentication.None()
 	}
