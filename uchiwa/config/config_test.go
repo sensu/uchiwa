@@ -45,3 +45,13 @@ func TestLoadArrayOfUsers(t *testing.T) {
 	assert.Equal(t, "simple", conf.Uchiwa.Auth, "Uchiwa Auth should be simple")
 	assert.Equal(t, 2, len(conf.Uchiwa.Users))
 }
+
+func TestLoadArrayOfUsersOnPublicGet(t *testing.T) {
+	conf, err := Load("../../fixtures/config_test_multiple.json")
+	assert.Nil(t, err, "got unexpected error: %s", err)
+	assert.NotNil(t, conf, "conf should not be nil")
+
+	assert.Equal(t, "simple", conf.Uchiwa.Auth, "Uchiwa Auth should be simple")
+	public := conf.GetPublic()
+	assert.Equal(t, 0, len(public.Uchiwa.Users))
+}

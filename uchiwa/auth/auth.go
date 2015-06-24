@@ -22,7 +22,6 @@ type User struct {
 type loginFn func(string, string) (*User, error)
 
 var (
-	user, pass string
 	users      []User
 )
 
