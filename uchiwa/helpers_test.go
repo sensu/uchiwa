@@ -9,19 +9,19 @@ import (
 func TestSliceIntersection(t *testing.T) {
 	var a1, a2 []string
 
-	found := sliceIntersection(a1, a2)
+	found := SliceIntersection(a1, a2)
 	assert.Equal(t, false, found, "if both slices are empty, it should return false")
 
 	a1 = []string{"foo", "bar"}
-	found = sliceIntersection(a1, a2)
+	found = SliceIntersection(a1, a2)
 	assert.Equal(t, false, found, "if one slice is empty, it should return false")
 
 	a2 = []string{"baz", "qux"}
-	found = sliceIntersection(a1, a2)
+	found = SliceIntersection(a1, a2)
 	assert.Equal(t, false, found, "it should return false is none of the elements in the slices are shared")
 
 	a2 = append(a2, "foo")
-	found = sliceIntersection(a1, a2)
+	found = SliceIntersection(a1, a2)
 	assert.Equal(t, true, found, "it should return true if at least one element is shared between the slices")
 }
 

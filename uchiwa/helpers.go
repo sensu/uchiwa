@@ -39,7 +39,8 @@ func findModel(id string, dc string, checks []interface{}) map[string]interface{
 	return nil
 }
 
-func getRoleFromToken(token *jwt.Token) (*auth.Role, error) {
+// GetRoleFromToken ...
+func GetRoleFromToken(token *jwt.Token) (*auth.Role, error) {
 	r, ok := token.Claims["Role"]
 	if !ok {
 		return &auth.Role{}, errors.New("Could not retrieve the user Role from the JWT")
@@ -77,9 +78,9 @@ next:
 	return s
 }
 
-// sliceIntersection searches for values in both slices
+// SliceIntersection searches for values in both slices
 // Returns true if there's at least one intersection
-func sliceIntersection(a1, a2 []string) bool {
+func SliceIntersection(a1, a2 []string) bool {
 	if len(a1) == 0 || len(a2) == 0 {
 		return false
 	}

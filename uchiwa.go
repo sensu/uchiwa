@@ -7,6 +7,7 @@ import (
 	"github.com/sensu/uchiwa/uchiwa"
 	"github.com/sensu/uchiwa/uchiwa/auth"
 	"github.com/sensu/uchiwa/uchiwa/config"
+	"github.com/sensu/uchiwa/uchiwa/filters"
 )
 
 func main() {
@@ -29,6 +30,10 @@ func main() {
 	} else {
 		authentication.None()
 	}
+
+	uchiwa.FilterGetRequest = filters.GetRequest
+	uchiwa.FilterPostRequest = filters.PostRequest
+	uchiwa.FilterSensuData = filters.SensuData
 
 	u.WebServer(publicPath, authentication)
 }
