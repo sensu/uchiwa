@@ -25,7 +25,7 @@ func main() {
 
 	authentication := auth.New()
 	if config.Uchiwa.Auth == "simple" {
-		authentication.Simple(config.Uchiwa.User, config.Uchiwa.Pass)
+		authentication.Simple(config.Uchiwa.Users)
 	} else {
 		authentication.None()
 	}

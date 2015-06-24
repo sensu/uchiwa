@@ -38,6 +38,7 @@ type GlobalConfig struct {
 	Refresh int
 	Pass    string
 	User    string
+	Users   []auth.User
 	Db      Db
 	Github  Github
 	Ldap    Ldap
@@ -145,8 +146,13 @@ func (c *Config) initUchiwa() {
 		}
 	} else if c.Uchiwa.Db.Driver != "" && c.Uchiwa.Db.Scheme != "" {
 		c.Uchiwa.Auth = "sql"
-	} else if c.Uchiwa.User != "" && c.Uchiwa.Pass != "" {
+	} else if len(c.Uchiwa.Users) != 0 {
+		logger.Debug("Loading multiple users from the config")
 		c.Uchiwa.Auth = "simple"
+	} else if c.Uchiwa.User != "" && c.Uchiwa.Pass != "" {
+		logger.Debug("Loading single user from the config")
+		c.Uchiwa.Auth = "simple"
+		c.Uchiwa.Users = append(c.Uchiwa.Users, auth.User{Username: c.Uchiwa.User, Password: c.Uchiwa.Pass, FullName: c.Uchiwa.User})
 	}
 
 }
@@ -157,6 +163,7 @@ func (c *Config) GetPublic() *Config {
 	p.Uchiwa = c.Uchiwa
 	p.Uchiwa.User = "*****"
 	p.Uchiwa.Pass = "*****"
+	p.Uchiwa.Users = []auth.User{}
 	p.Uchiwa.Db.Scheme = "*****"
 	p.Uchiwa.Github.ClientID = "*****"
 	p.Uchiwa.Github.ClientSecret = "*****"
