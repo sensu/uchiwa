@@ -7,21 +7,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFilterGetRequest(t *testing.T) {
+func TestGetRequest(t *testing.T) {
 
-	unauthorized := FilterGetRequest("", nil)
+	unauthorized := GetRequest("", nil)
 	assert.Equal(t, false, unauthorized)
 }
 
-func TestFilterPostRequest(t *testing.T) {
+func TestPostRequest(t *testing.T) {
 
 	var data interface{} = map[string]interface{}{"dc": "foo"}
 
-	unauthorized := FilterPostRequest(nil, &data)
+	unauthorized := PostRequest(nil, &data)
 	assert.Equal(t, false, unauthorized)
 }
 
-func TestFilterSensu(t *testing.T) {
+func TestSensuData(t *testing.T) {
 
 	originalData := &structs.Data{
 		Aggregates:    []interface{}{map[string]string{"dc": "foo"}, map[string]string{"dc": "bar"}},
@@ -33,5 +33,6 @@ func TestFilterSensu(t *testing.T) {
 		Subscriptions: []string{"linux", "mac", "windows"},
 	}
 
-	assert.Equal(t, originalData, originalData)
+	data := SensuData(nil, originalData)
+	assert.Equal(t, originalData, data)
 }
