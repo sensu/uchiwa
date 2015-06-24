@@ -22,7 +22,7 @@ type User struct {
 type loginFn func(string, string) (*User, error)
 
 var (
-	user, pass string
+	users      []User
 )
 
 // New function initalizes and returns a Config struct
@@ -38,12 +38,11 @@ func (a *Config) None() {
 }
 
 // Simple function sets the Config struct in order to enable simple authentication based on provided user and pass
-func (a *Config) Simple(u, p string) {
+func (a *Config) Simple(u []User) {
 	a.Driver = simple
 	a.DriverName = "simple"
 
-	user = u
-	pass = p
+	users = u
 
 	initToken()
 }
