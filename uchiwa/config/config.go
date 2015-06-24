@@ -152,7 +152,7 @@ func (c *Config) initUchiwa() {
 	} else if c.Uchiwa.User != "" && c.Uchiwa.Pass != "" {
 		logger.Debug("Loading single user from the config")
 		c.Uchiwa.Auth = "simple"
-		c.Uchiwa.Users = append(c.Uchiwa.Users, auth.User{Username: c.Uchiwa.User, Password: c.Uchiwa.Pass})
+		c.Uchiwa.Users = append(c.Uchiwa.Users, auth.User{Username: c.Uchiwa.User, Password: c.Uchiwa.Pass, FullName: c.Uchiwa.User})
 	}
 
 }
