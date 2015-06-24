@@ -6,11 +6,20 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/palourde/logger"
 	"github.com/sensu/uchiwa/uchiwa/auth"
+	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
-type sensuFilterFn func()
+// FilterGetRequest is a function that filters GET requests.
+var FilterGetRequest func(string, *jwt.Token) bool
+
+// FilterPostRequest is a function that filters POST requests.
+var FilterPostRequest func(*jwt.Token, *interface{}) bool
+
+// FilterSensuDataData is a function that filters Sensu Data.
+var FilterSensuData func(*jwt.Token, *structs.Data) *structs.Data
 
 func (u *Uchiwa) configAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
@@ -30,7 +39,7 @@ func (u *Uchiwa) deleteClientHandler(w http.ResponseWriter, r *http.Request) {
 
 	// verify that the authenticated user is authorized to access this resource
 	token := auth.GetTokenFromContext(r)
-	unauthorized := filterGetRequest(dc, token)
+	unauthorized := FilterGetRequest(dc, token)
 
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
@@ -55,7 +64,7 @@ func (u *Uchiwa) getAggregateHandler(w http.ResponseWriter, r *http.Request) {
 
 	// verify that the authenticated user is authorized to access this resource
 	token := auth.GetTokenFromContext(r)
-	unauthorized := filterGetRequest(dc, token)
+	unauthorized := FilterGetRequest(dc, token)
 
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
@@ -85,7 +94,7 @@ func (u *Uchiwa) getAggregateByIssuedHandler(w http.ResponseWriter, r *http.Requ
 
 	// verify that the authenticated user is authorized to access this resource
 	token := auth.GetTokenFromContext(r)
-	unauthorized := filterGetRequest(dc, token)
+	unauthorized := FilterGetRequest(dc, token)
 
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
@@ -114,7 +123,7 @@ func (u *Uchiwa) getClientHandler(w http.ResponseWriter, r *http.Request) {
 
 	// verify that the authenticated user is authorized to access this resource
 	token := auth.GetTokenFromContext(r)
-	unauthorized := filterGetRequest(dc, token)
+	unauthorized := FilterGetRequest(dc, token)
 
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
@@ -140,8 +149,9 @@ func (u *Uchiwa) getConfigHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Uchiwa) getSensuHandler(w http.ResponseWriter, r *http.Request) {
+	//Test()
 	token := auth.GetTokenFromContext(r)
-	data := filterSensu(token, u.Data)
+	data := FilterSensuData(token, u.Data)
 
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(data); err != nil {
@@ -176,7 +186,7 @@ func (u *Uchiwa) postEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	// verify that the authenticated user is authorized to access this resource
 	token := auth.GetTokenFromContext(r)
-	unauthorized := filterPostRequest(token, &data)
+	unauthorized := FilterPostRequest(token, &data)
 
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
@@ -206,7 +216,7 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 
 	// verify that the authenticated user is authorized to access this resource
 	token := auth.GetTokenFromContext(r)
-	unauthorized := filterGetRequest(data.Dc, token)
+	unauthorized := FilterGetRequest(data.Dc, token)
 
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
@@ -235,7 +245,7 @@ func (u *Uchiwa) stashDeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	// verify that the authenticated user is authorized to access this resource
 	token := auth.GetTokenFromContext(r)
-	unauthorized := filterGetRequest(data.Dc, token)
+	unauthorized := FilterGetRequest(data.Dc, token)
 
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
@@ -250,6 +260,7 @@ func (u *Uchiwa) stashDeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 // WebServer starts the web server and serves GET & POST requests
 func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
+
 	// private endpoints
 	http.Handle("/delete_client", auth.Authenticate(http.HandlerFunc(u.deleteClientHandler)))
 	http.Handle("/get_aggregate", auth.Authenticate(http.HandlerFunc(u.getAggregateHandler)))
