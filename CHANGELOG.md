@@ -1,3 +1,14 @@
+### 0.10.0 (TBD)
+
+### Features
+- Multiple users (RO & RW) can be defined in the configuration - [Issue #343](https://github.com/sensu/uchiwa/pull/343)
+- The theme setting is now saved in a cookie - [Issue #331](https://github.com/sensu/uchiwa/issues/331)
+- Display the check output of all checks in the check result view - [Issue #346](https://github.com/sensu/uchiwa/issues/346)
+- Check result image enhancements - [Issue #50](https://github.com/sensu/uchiwa-web/pull/50)
+
+### Bug Fixes
+- The info view might have been incomplete - [Issue #51](https://github.com/sensu/uchiwa-web/pull/51)
+
 ### 0.9.1 (2015-06-10)
 #### Bug Fixes
 - Performance issues - [Issue #337](https://github.com/sensu/uchiwa/issues/337)
