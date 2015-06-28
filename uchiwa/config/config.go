@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 
 	"github.com/palourde/logger"
 	"github.com/sensu/uchiwa/uchiwa/auth"
@@ -99,6 +100,10 @@ func (c *Config) initSensu() {
 			logger.Warningf("Sensu API %s has no name property. Generating random one...", api.URL)
 			c.Sensu[i].Name = fmt.Sprintf("sensu-%v", rand.Intn(100))
 		}
+		// escape special characters in DC name
+		r := strings.NewReplacer(":", "", "/", "", ";", "", "?", "")
+		c.Sensu[i].Name = r.Replace(api.Name)
+
 		if api.Host == "" {
 			logger.Fatalf("Sensu API %q Host is missing", api.Name)
 		}
