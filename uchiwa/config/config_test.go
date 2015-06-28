@@ -20,7 +20,7 @@ func TestLoad(t *testing.T) {
 	assert.NotEqual(t, "*****", conf.Uchiwa.User, "Uchiwa user in private config shouldn't be masked")
 	assert.NotEqual(t, "*****", conf.Uchiwa.Pass, "Uchiwa pass in private config shouldn't be masked")
 	for i := range conf.Sensu {
-		assert.NotEqual(t, "*****",conf.Sensu[i].User, "Sensu APIs user in private config shouldn't be masked")
+		assert.NotEqual(t, "*****", conf.Sensu[i].User, "Sensu APIs user in private config shouldn't be masked")
 		assert.NotEqual(t, "*****", conf.Sensu[i].Pass, "Sensu APIs pass in private config shouldn't be masked")
 	}
 	assert.Equal(t, 1, len(conf.Uchiwa.Users))
@@ -54,4 +54,21 @@ func TestLoadArrayOfUsersOnPublicGet(t *testing.T) {
 	assert.Equal(t, "simple", conf.Uchiwa.Auth, "Uchiwa Auth should be simple")
 	public := conf.GetPublic()
 	assert.Equal(t, 0, len(public.Uchiwa.Users))
+}
+
+func TestInitSensu(t *testing.T) {
+	c := Config{
+		Sensu: []SensuConfig{
+			{Name: "foo ? bar", Host: "127.0.0.1"},
+			{Name: "bar / foo", Host: "127.0.0.1"},
+		},
+	}
+
+	c.initSensu()
+
+	expectedConfig := []SensuConfig{
+		{Name: "foo  bar", Host: "127.0.0.1", Port: 4567, Ssl: false, Insecure: false, URL: "http://127.0.0.1:4567", User: "", Path: "", Pass: "", Timeout: 10},
+		{Name: "bar  foo", Host: "127.0.0.1", Port: 4567, Ssl: false, Insecure: false, URL: "http://127.0.0.1:4567", User: "", Path: "", Pass: "", Timeout: 10},
+	}
+	assert.Equal(t, expectedConfig, c.Sensu)
 }
