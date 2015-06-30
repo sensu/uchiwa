@@ -1,12 +1,16 @@
+### 0.10.1 (2016-06-30)
+#### Bug Fixes
+- Fix check result view for standalone checks - [Issue #350](https://github.com/sensu/uchiwa/issues/350)
+
 ### 0.10.0 (2015-06-29)
 
-### Features
+#### Features
 - Multiple users (RO & RW) can be defined in the configuration - [Issue #343](https://github.com/sensu/uchiwa/pull/343)
 - The theme setting is now saved in a cookie - [Issue #331](https://github.com/sensu/uchiwa/issues/331)
 - Display the output of all checks in the check result view - [Issue #346](https://github.com/sensu/uchiwa/issues/346)
 - Enhancements to the check result images - [Issue #50](https://github.com/sensu/uchiwa-web/pull/50)
 
-### Bug Fixes
+#### Bug Fixes
 - The info view might have been incomplete - [Issue #51](https://github.com/sensu/uchiwa-web/pull/51)
 - Disable autocapitalization and autocorrection on the login view - [Issue #296](https://github.com/sensu/uchiwa/issues/296)
 - Remove unsupported characters in datacenter name - [Issue #279](https://github.com/sensu/uchiwa/issues/279)
