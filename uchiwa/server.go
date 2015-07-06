@@ -283,5 +283,5 @@ func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 
 	listen := fmt.Sprintf("%s:%d", u.Config.Uchiwa.Host, u.Config.Uchiwa.Port)
 	logger.Infof("Uchiwa is now listening on %s", listen)
-	http.ListenAndServe(listen, nil)
+	logger.Fatal(http.ListenAndServe(listen, nil))
 }
