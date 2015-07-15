@@ -3,6 +3,8 @@ package uchiwa
 import (
 	"errors"
 	"fmt"
+	"net"
+	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/mitchellh/mapstructure"
@@ -37,6 +39,15 @@ func findModel(id string, dc string, checks []interface{}) map[string]interface{
 		}
 	}
 	return nil
+}
+
+// GetIP returns the real user IP address
+func GetIP(r *http.Request) string {
+	if xForwaredFor := r.Header.Get("X-FORWARDED-FOR"); len(xForwaredFor) > 0 {
+		return xForwaredFor
+	}
+	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	return ip
 }
 
 // GetRoleFromToken ...

@@ -110,7 +110,7 @@ func (a *Config) GetIdentification() http.Handler {
 		user.PasswordHash = ""
 		user.PasswordSalt = ""
 
-		token, err := GetToken(&user.Role)
+		token, err := GetToken(&user.Role, u)
 		if err != nil {
 			logger.Warningf("Authentication failed, could not create the token: %s", err)
 			http.Error(w, "", http.StatusInternalServerError)
