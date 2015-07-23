@@ -43,8 +43,8 @@ func findModel(id string, dc string, checks []interface{}) map[string]interface{
 
 // GetIP returns the real user IP address
 func GetIP(r *http.Request) string {
-	if xForwaredFor := r.Header.Get("X-FORWARDED-FOR"); len(xForwaredFor) > 0 {
-		return xForwaredFor
+	if xForwardedFor := r.Header.Get("X-FORWARDED-FOR"); len(xForwardedFor) > 0 {
+		return xForwardedFor
 	}
 	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
 	return ip
