@@ -1,5 +1,18 @@
 package structs
 
+import "time"
+
+// AuditLog is a structure for holding a log of the audit
+type AuditLog struct {
+	Date       time.Time `json:"date"`
+	Action     string    `json:"action"`
+	Level      string    `json:"level"`
+	Output     string    `json:"output,omitempty"`
+	RemoteAddr string    `json:"remoteaddr"`
+	URL        string    `json:"url,omitempty"`
+	User       string    `json:"user"`
+}
+
 // Data is a structure for holding public data fetched from the Sensu APIs and exposed by the endpoints
 type Data struct {
 	Aggregates    []interface{}

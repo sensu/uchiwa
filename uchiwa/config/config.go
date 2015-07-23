@@ -43,7 +43,14 @@ type GlobalConfig struct {
 	Db      Db
 	Github  Github
 	Ldap    Ldap
+	Audit   Audit
 	Auth    string
+}
+
+// Audit struct contains the config of the Audit logger
+type Audit struct {
+	Level   string
+	Logfile string
 }
 
 // Db struct contains the SQL driver configuration
@@ -160,6 +167,13 @@ func (c *Config) initUchiwa() {
 		c.Uchiwa.Users = append(c.Uchiwa.Users, auth.User{Username: c.Uchiwa.User, Password: c.Uchiwa.Pass, FullName: c.Uchiwa.User})
 	}
 
+	// audit
+	if c.Uchiwa.Audit.Level != "verbose" && c.Uchiwa.Audit.Level != "disabled" {
+		c.Uchiwa.Audit.Level = "default"
+	}
+	if c.Uchiwa.Audit.Logfile == "" {
+		c.Uchiwa.Audit.Logfile = "/var/log/sensu/sensu-enterprise-dashboard-audit.log"
+	}
 }
 
 // GetPublic generates the public configuration
