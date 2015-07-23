@@ -172,7 +172,7 @@ func (c *Config) initUchiwa() {
 		c.Uchiwa.Audit.Level = "default"
 	}
 	if c.Uchiwa.Audit.Logfile == "" {
-		c.Uchiwa.Audit.Logfile = "/var/log/sensu-enterprise/sensu-enterprise-dashboard-audit.log"
+		c.Uchiwa.Audit.Logfile = "/var/log/sensu/sensu-enterprise-dashboard-audit.log"
 	}
 }
 
