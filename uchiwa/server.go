@@ -218,6 +218,11 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.GetTokenFromContext(r)
 	unauthorized := FilterGetRequest(data.Dc, token)
 
+	// add username to the stash content
+	if token != nil && token.Claims["Username"] != nil {
+		data.Content["username"] = token.Claims["Username"]
+	}
+
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
 		return

@@ -3,10 +3,10 @@ package uchiwa
 import "github.com/palourde/logger"
 
 type stash struct {
-	Dc      string      `json:"dc"`
-	Path    string      `json:"path"`
-	Content interface{} `json:"content"`
-	Expire  int32       `json:"expire,omitempty"`
+	Dc      string                 `json:"dc"`
+	Path    string                 `json:"path"`
+	Content map[string]interface{} `json:"content"`
+	Expire  int32                  `json:"expire,omitempty"`
 }
 
 // PostStash send a POST request to the /stashes endpoint in order to create a stash
