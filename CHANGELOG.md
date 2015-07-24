@@ -1,4 +1,14 @@
-### 0.10.1 (2016-06-30)
+### 0.10.2 (2015-07-23)
+#### Features
+- Add username to stash content - [Issue #356](https://github.com/sensu/uchiwa/issues/356)
+- Replace silenced and critical icons - [Issue #56](https://github.com/sensu/uchiwa-web/pull/56)
+- Add support for audit logging - Sensu Enterprise Dashboard
+
+#### Bug Fixes
+- Reimplement iframe support - [Issue #354](https://github.com/sensu/uchiwa/issues/354)
+- Display any error with the http.ListenAndServe method - [Issue #352](https://github.com/sensu/uchiwa/issues/352)
+
+### 0.10.1 (2015-06-30)
 #### Bug Fixes
 - Fix check result view for standalone checks - [Issue #350](https://github.com/sensu/uchiwa/issues/350)
 
