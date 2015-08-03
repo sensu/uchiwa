@@ -52,7 +52,6 @@ func (d *Daemon) buildData() {
 	d.buildClients()
 	d.BuildSubscriptions()
 	d.buildResults()
-	//d.buildDashboard()
 }
 
 // getData retrieves all endpoints for every datacenter
