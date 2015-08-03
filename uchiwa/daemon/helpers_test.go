@@ -6,6 +6,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestGetBoolFromInterface(t *testing.T) {
+	i := map[string]interface{}{"foo": true}
+
+	_, err := GetBoolFromInterface(i)
+	assert.NotNil(t, err)
+
+	b, err := GetBoolFromInterface(i["foo"])
+	assert.Nil(t, err)
+	assert.Equal(t, b, true)
+}
+
+func TestGetMapFromInterface(t *testing.T) {
+	i := map[string]interface{}{"foo": "vodka"}
+	m := GetMapFromInterface(i)
+	assert.Equal(t, "vodka", m["foo"])
+}
+
 func TestStringInArray(t *testing.T) {
 	var item string
 	var array []string

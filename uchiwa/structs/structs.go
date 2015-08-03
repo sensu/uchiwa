@@ -21,6 +21,7 @@ type Data struct {
 	Dc            []*Datacenter
 	Events        []interface{}
 	Health        Health
+	Results       []interface{} `json:"-"`
 	Stashes       []interface{}
 	Subscriptions []string
 }
@@ -30,6 +31,24 @@ type Datacenter struct {
 	Name  string         `json:"name"`
 	Info  Info           `json:"info"`
 	Stats map[string]int `json:"stats"`
+}
+
+// Dashboard is a struct for holding Dashboard content
+type Dashboard struct {
+	Checks      DashboardStats `json:"checks"`
+	Clients     DashboardStats `json:"clients"`
+	Datacenters DashboardStats `json:"datacenters"`
+}
+
+// DashboardStats is a struct for holding statistics about a dashboard element
+type DashboardStats struct {
+	Critical    int `json:"critical"`
+	Warning     int `json:"warning"`
+	Unknown     int `json:"unknown"`
+	Silenced    int `json:"silenced"`
+	Healthy     int `json:"healthy"`
+	Unsupported int `json:"unsupported"`
+	Total       int `json:"total"`
 }
 
 // Generic is a structure for holding a generic element
@@ -72,16 +91,18 @@ type SensuHealth struct {
 
 // Info is a structure for holding the /info API information
 type Info struct {
-	Redis     redis     `json:"redis"`
-	Sensu     sensu     `json:"sensu"`
+	Redis     Redis     `json:"redis"`
+	Sensu     Sensu     `json:"sensu"`
 	Transport transport `json:"transport"`
 }
 
-type redis struct {
+// Redis is a structure for holding the redis status
+type Redis struct {
 	Connected bool `json:"connected"`
 }
 
-type sensu struct {
+// Sensu is a structure for holding the sensu version
+type Sensu struct {
 	Version string `json:"version"`
 }
 

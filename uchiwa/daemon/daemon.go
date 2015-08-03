@@ -51,6 +51,8 @@ func (d *Daemon) buildData() {
 	d.buildEvents()
 	d.buildClients()
 	d.BuildSubscriptions()
+	d.buildResults()
+	//d.buildDashboard()
 }
 
 // getData retrieves all endpoints for every datacenter
@@ -92,6 +94,13 @@ func (d *Daemon) fetchData() {
 		if err != nil {
 			logger.Warning(err)
 			continue
+		}
+		results, err := datacenter.Results()
+		if err == nil {
+			for _, v := range *results {
+				setDc(v, datacenter.Name)
+				d.Data.Results = append(d.Data.Results, v)
+			}
 		}
 
 		d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: "ok"}

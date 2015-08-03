@@ -12,6 +12,27 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
+// FilterAggregates is a function that filters aggregates
+var FilterAggregates func(aggregates *[]interface{}, token *jwt.Token) []interface{}
+
+// FilterChecks is a function that filters checks
+var FilterChecks func(checks *[]interface{}, token *jwt.Token) []interface{}
+
+// FilterClients is a function that filters clients
+var FilterClients func(clients *[]interface{}, token *jwt.Token) []interface{}
+
+// FilterAggregates is a function that filters datacenters
+var FilterDatacenters func(datacenters []*structs.Datacenter, token *jwt.Token) []*structs.Datacenter
+
+// FilterEvents is a function that filters events
+var FilterEvents func(events *[]interface{}, token *jwt.Token) []interface{}
+
+// FilterAggregates is a function that filters aggregates
+var FilterStashes func(stashes *[]interface{}, token *jwt.Token) []interface{}
+
+// FilterAggregates is a function that filters aggregates
+var FilterSubscriptions func(subscriptions *[]string, token *jwt.Token) []string
+
 // FilterGetRequest is a function that filters GET requests.
 var FilterGetRequest func(string, *jwt.Token) bool
 
@@ -21,11 +42,75 @@ var FilterPostRequest func(*jwt.Token, *interface{}) bool
 // FilterSensuDataData is a function that filters Sensu Data.
 var FilterSensuData func(*jwt.Token, *structs.Data) *structs.Data
 
+func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	token := auth.GetTokenFromContext(r)
+	stashes := FilterAggregates(&u.Data.Aggregates, token)
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(stashes); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (u *Uchiwa) checksHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	token := auth.GetTokenFromContext(r)
+	checks := FilterChecks(&u.Data.Checks, token)
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(checks); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	token := auth.GetTokenFromContext(r)
+	clients := FilterClients(&u.Data.Clients, token)
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(clients); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
+	}
+}
+
 func (u *Uchiwa) configAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, "", http.StatusBadRequest)
 	}
 	fmt.Fprintf(w, "%s", u.PublicConfig.Uchiwa.Auth)
+}
+
+func (u *Uchiwa) datacentersHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	token := auth.GetTokenFromContext(r)
+	datacenters := FilterDatacenters(u.Data.Dc, token)
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(datacenters); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
+	}
 }
 
 func (u *Uchiwa) deleteClientHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,6 +134,23 @@ func (u *Uchiwa) deleteClientHandler(w http.ResponseWriter, r *http.Request) {
 	err := u.DeleteClient(id, dc)
 	if err != nil {
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+		return
+	}
+}
+
+// events
+func (u *Uchiwa) eventsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	token := auth.GetTokenFromContext(r)
+	events := FilterEvents(&u.Data.Events, token)
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(events); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 		return
 	}
 }
@@ -78,6 +180,7 @@ func (u *Uchiwa) getAggregateHandler(w http.ResponseWriter, r *http.Request) {
 		encoder := json.NewEncoder(w)
 		if err := encoder.Encode(aggregate); err != nil {
 			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+			return
 		}
 	}
 }
@@ -104,11 +207,13 @@ func (u *Uchiwa) getAggregateByIssuedHandler(w http.ResponseWriter, r *http.Requ
 	aggregate, err := u.GetAggregateByIssued(check, issued, dc)
 	if err != nil {
 		http.Error(w, fmt.Sprint(err), 500)
-	} else {
-		encoder := json.NewEncoder(w)
-		if err := encoder.Encode(aggregate); err != nil {
-			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
-		}
+		return
+	}
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(aggregate); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -133,11 +238,13 @@ func (u *Uchiwa) getClientHandler(w http.ResponseWriter, r *http.Request) {
 	client, err := u.GetClient(id, dc)
 	if err != nil {
 		http.Error(w, fmt.Sprint(err), http.StatusNotFound)
-	} else {
-		encoder := json.NewEncoder(w)
-		if err := encoder.Encode(client); err != nil {
-			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
-		}
+		return
+	}
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(client); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -149,13 +256,13 @@ func (u *Uchiwa) getConfigHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Uchiwa) getSensuHandler(w http.ResponseWriter, r *http.Request) {
-	//Test()
 	token := auth.GetTokenFromContext(r)
 	data := FilterSensuData(token, u.Data)
 
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(data); err != nil {
 		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -200,37 +307,43 @@ func (u *Uchiwa) postEventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
+// stashes
+func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		token := auth.GetTokenFromContext(r)
+		stashes := FilterStashes(&u.Data.Stashes, token)
+
+		encoder := json.NewEncoder(w)
+		if err := encoder.Encode(stashes); err != nil {
+			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+			return
+		}
+	} else if r.Method == "POST" {
+		decoder := json.NewDecoder(r.Body)
+		var data stash
+		err := decoder.Decode(&data)
+		if err != nil {
+			http.Error(w, "Could not decode body", http.StatusInternalServerError)
+			return
+		}
+
+		// verify that the authenticated user is authorized to access this resource
+		token := auth.GetTokenFromContext(r)
+		unauthorized := FilterGetRequest(data.Dc, token)
+
+		if unauthorized {
+			http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+			return
+		}
+
+		err = u.PostStash(data)
+		if err != nil {
+			http.Error(w, "Could not create the stash", http.StatusNotFound)
+			return
+		}
+	} else {
 		http.Error(w, "", http.StatusBadRequest)
 		return
-	}
-
-	decoder := json.NewDecoder(r.Body)
-	var data stash
-	err := decoder.Decode(&data)
-	if err != nil {
-		http.Error(w, "Could not decode body", http.StatusInternalServerError)
-		return
-	}
-
-	// verify that the authenticated user is authorized to access this resource
-	token := auth.GetTokenFromContext(r)
-	unauthorized := FilterGetRequest(data.Dc, token)
-
-	// add username to the stash content
-	if token != nil && token.Claims["Username"] != nil {
-		data.Content["username"] = token.Claims["Username"]
-	}
-
-	if unauthorized {
-		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
-		return
-	}
-
-	err = u.PostStash(data)
-	if err != nil {
-		http.Error(w, "Could not create the stash", http.StatusNotFound)
 	}
 }
 
@@ -263,10 +376,36 @@ func (u *Uchiwa) stashDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// events
+func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	token := auth.GetTokenFromContext(r)
+	subscriptions := FilterSubscriptions(&u.Data.Subscriptions, token)
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(subscriptions); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
+	}
+}
+
 // WebServer starts the web server and serves GET & POST requests
 func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 
 	// private endpoints
+	http.Handle("/aggregates", auth.Authenticate(http.HandlerFunc(u.aggregatesHandler)))
+	http.Handle("/checks", auth.Authenticate(http.HandlerFunc(u.checksHandler)))
+	http.Handle("/clients", auth.Authenticate(http.HandlerFunc(u.clientsHandler)))
+	http.Handle("/datacenters", auth.Authenticate(http.HandlerFunc(u.datacentersHandler)))
+	http.Handle("/events", auth.Authenticate(http.HandlerFunc(u.eventsHandler)))
+	http.Handle("/stashes", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
+	http.Handle("/stashes/delete", auth.Authenticate(http.HandlerFunc(u.stashDeleteHandler)))
+	http.Handle("/subscriptions", auth.Authenticate(http.HandlerFunc(u.subscriptionsHandler)))
+
 	http.Handle("/delete_client", auth.Authenticate(http.HandlerFunc(u.deleteClientHandler)))
 	http.Handle("/get_aggregate", auth.Authenticate(http.HandlerFunc(u.getAggregateHandler)))
 	http.Handle("/get_aggregate_by_issued", auth.Authenticate(http.HandlerFunc(u.getAggregateByIssuedHandler)))
@@ -274,8 +413,6 @@ func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 	http.Handle("/get_config", auth.Authenticate(http.HandlerFunc(u.getConfigHandler)))
 	http.Handle("/get_sensu", auth.Authenticate(http.HandlerFunc(u.getSensuHandler)))
 	http.Handle("/post_event", auth.Authenticate(http.HandlerFunc(u.postEventHandler)))
-	http.Handle("/stashes", auth.Authenticate(http.HandlerFunc(u.stashHandler)))
-	http.Handle("/stashes/delete", auth.Authenticate(http.HandlerFunc(u.stashDeleteHandler)))
 
 	// static files
 	http.Handle("/", http.FileServer(http.Dir(*publicPath)))

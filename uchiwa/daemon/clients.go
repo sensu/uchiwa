@@ -11,7 +11,10 @@ import (
 // buildClients constructs clients objects for frontend consumption
 func (d *Daemon) buildClients() {
 	for _, c := range d.Data.Clients {
-		client := c.(map[string]interface{})
+		client, ok := c.(map[string]interface{})
+		if !ok {
+			continue
+		}
 
 		if client["version"] == nil {
 			client["version"] = "0.12.x"
