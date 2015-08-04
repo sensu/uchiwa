@@ -1,3 +1,8 @@
+### 0.10.3 (2015-08-03)
+#### Features
+- Add status filter on the clients and events views - [Issue #61](https://github.com/sensu/uchiwa-web/pull/61)
+- Add support for Sensu Enterprise dashboard
+
 ### 0.10.2 (2015-07-23)
 #### Features
 - Add username to stash content - [Issue #356](https://github.com/sensu/uchiwa/issues/356)
