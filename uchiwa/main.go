@@ -17,7 +17,7 @@ type Uchiwa struct {
 	Daemon       *daemon.Daemon
 	Data         *structs.Data
 	Datacenters  *[]sensu.Sensu
-	Mu           sync.Mutex
+	Mu           *sync.Mutex
 	PublicConfig *config.Config
 }
 
@@ -41,6 +41,7 @@ func Init(c *config.Config) *Uchiwa {
 		Daemon:       d,
 		Data:         &structs.Data{},
 		Datacenters:  &datacenters,
+		Mu:           &sync.Mutex{},
 		PublicConfig: c.GetPublic(),
 	}
 
