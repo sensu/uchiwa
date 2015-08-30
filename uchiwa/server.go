@@ -307,6 +307,23 @@ func (u *Uchiwa) postEventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// results
+func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	token := auth.GetTokenFromContext(r)
+	results := FilterChecks(&u.Data.Results, token)
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(results); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
+	}
+}
+
 // stashes
 func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
@@ -402,6 +419,7 @@ func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 	http.Handle("/clients", auth.Authenticate(http.HandlerFunc(u.clientsHandler)))
 	http.Handle("/datacenters", auth.Authenticate(http.HandlerFunc(u.datacentersHandler)))
 	http.Handle("/events", auth.Authenticate(http.HandlerFunc(u.eventsHandler)))
+	http.Handle("/results", auth.Authenticate(http.HandlerFunc(u.resultsHandler)))
 	http.Handle("/stashes", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
 	http.Handle("/stashes/delete", auth.Authenticate(http.HandlerFunc(u.stashDeleteHandler)))
 	http.Handle("/subscriptions", auth.Authenticate(http.HandlerFunc(u.subscriptionsHandler)))
