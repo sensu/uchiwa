@@ -69,12 +69,15 @@ type Github struct {
 
 // Ldap struct contains the LDAP driver configuration
 type Ldap struct {
-	Server   string
-	Port     int
-	BaseDN   string
-	Insecure bool
-	Roles    []auth.Role
-	Security string
+	Server        string
+	Port          int
+	BaseDN        string
+	BindUser      string
+	BindPass      string
+	Insecure      bool
+	Roles         []auth.Role
+	Security      string
+	UserAttribute string
 }
 
 // Load retrieves a specified configuration file and return a Config struct
@@ -155,6 +158,9 @@ func (c *Config) initUchiwa() {
 		}
 		if c.Uchiwa.Ldap.Security == "" {
 			c.Uchiwa.Ldap.Security = "none"
+		}
+		if c.Uchiwa.Ldap.UserAttribute == "" {
+			c.Uchiwa.Ldap.UserAttribute = "sAMAccountName"
 		}
 	} else if c.Uchiwa.Db.Driver != "" && c.Uchiwa.Db.Scheme != "" {
 		c.Uchiwa.Auth = "sql"
