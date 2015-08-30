@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 
-	"github.com/palourde/logger"
 	"github.com/sensu/uchiwa/uchiwa"
 	"github.com/sensu/uchiwa/uchiwa/auth"
 	"github.com/sensu/uchiwa/uchiwa/config"
 	"github.com/sensu/uchiwa/uchiwa/filters"
+	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
 func main() {

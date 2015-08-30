@@ -6,7 +6,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/context"
-	"github.com/palourde/logger"
+	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
 const jwtToken = "jwtToken"

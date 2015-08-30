@@ -1,6 +1,6 @@
 package uchiwa
 
-import "github.com/palourde/logger"
+import "github.com/sensu/uchiwa/uchiwa/logger"
 import "github.com/sensu/uchiwa/uchiwa/daemon"
 
 // ResolveEvent send a POST request to the /resolve endpoint in order to resolve an event

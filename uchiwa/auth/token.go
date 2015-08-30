@@ -7,7 +7,7 @@ import (
 	"encoding/pem"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/palourde/logger"
+	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
 var (

@@ -3,7 +3,7 @@ package uchiwa
 import (
 	"fmt"
 
-	"github.com/palourde/logger"
+	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/daemon"
 )
 

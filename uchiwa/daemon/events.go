@@ -1,6 +1,6 @@
 package daemon
 
-import "github.com/palourde/logger"
+import "github.com/sensu/uchiwa/uchiwa/logger"
 
 // BuildEvents constructs events objects for frontend consumption
 func (d *Daemon) buildEvents() {
