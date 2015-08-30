@@ -2,11 +2,15 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/context"
+	"github.com/sensu/uchiwa/uchiwa/audit"
+	"github.com/sensu/uchiwa/uchiwa/helpers"
 	"github.com/sensu/uchiwa/uchiwa/logger"
+	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
 const jwtToken = "jwtToken"
@@ -101,7 +105,16 @@ func (a *Config) GetIdentification() http.Handler {
 		// validate the user with the Login authentication driver
 		user, err := a.Driver(u, p)
 		if err != nil {
-			logger.Infof("Authentication failed: %s", err)
+			message := fmt.Sprintf("Authentication failed: %s", err)
+
+			// Output to stdout
+			logger.Info(message)
+
+			// Output to audit log
+			log := structs.AuditLog{Action: "loginfailure", Level: "default", Output: message}
+			log.RemoteAddr = helpers.GetIP(r)
+			audit.Log(log)
+
 			http.Error(w, "", http.StatusUnauthorized)
 			return
 		}

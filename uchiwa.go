@@ -4,6 +4,7 @@ import (
 	"flag"
 
 	"github.com/sensu/uchiwa/uchiwa"
+	"github.com/sensu/uchiwa/uchiwa/audit"
 	"github.com/sensu/uchiwa/uchiwa/auth"
 	"github.com/sensu/uchiwa/uchiwa/config"
 	"github.com/sensu/uchiwa/uchiwa/filters"
@@ -30,6 +31,9 @@ func main() {
 	} else {
 		authentication.None()
 	}
+
+	// Audit
+	audit.Log = audit.LogMock
 
 	// filters
 	uchiwa.FilterAggregates = filters.FilterAggregates
