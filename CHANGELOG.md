@@ -1,3 +1,12 @@
+### 0.10.4 (2015-09-01)
+#### Bug Fixes
+- Order alphabetically the items in the checks filter - [Issue #62](https://github.com/sensu/uchiwa-web/pull/62)
+- Fix client view table for RO users - [Issue #63](https://github.com/sensu/uchiwa-web/pull/63)
+- Visual improvements to client view when resizing to a narrow view - [Issue #64](https://github.com/sensu/uchiwa-web/pull/64)
+- Fix favicon for Firefox - [Issue #376](https://github.com/sensu/uchiwa/pull/367)
+- Add support for Sensu Enteprise OpenLDAP driver - [Issue #369](https://github.com/sensu/uchiwa/pull/369)
+- Add support for Sensu Enteprise audit logging - [Issue #370](https://github.com/sensu/uchiwa/pull/370)
+
 ### 0.10.3 (2015-08-03)
 #### Features
 - Add status filter on the clients and events views - [Issue #61](https://github.com/sensu/uchiwa-web/pull/61)
