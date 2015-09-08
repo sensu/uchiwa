@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/auth"
+	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
 // Config struct contains []SensuConfig and UchiwaConfig structs
@@ -69,15 +69,17 @@ type Github struct {
 
 // Ldap struct contains the LDAP driver configuration
 type Ldap struct {
-	Server        string
-	Port          int
-	BaseDN        string
-	BindUser      string
-	BindPass      string
-	Insecure      bool
-	Roles         []auth.Role
-	Security      string
-	UserAttribute string
+	Server           string
+	Port             int
+	BaseDN           string
+	BindUser         string
+	BindPass         string
+	GroupObjectClass string
+	Insecure         bool
+	Roles            []auth.Role
+	Security         string
+	UserAttribute    string
+	UserObjectClass  string
 }
 
 // Load retrieves a specified configuration file and return a Config struct
@@ -161,6 +163,12 @@ func (c *Config) initUchiwa() {
 		}
 		if c.Uchiwa.Ldap.UserAttribute == "" {
 			c.Uchiwa.Ldap.UserAttribute = "sAMAccountName"
+		}
+		if c.Uchiwa.Ldap.UserObjectClass == "" {
+			c.Uchiwa.Ldap.UserObjectClass = "person"
+		}
+		if c.Uchiwa.Ldap.GroupObjectClass == "" {
+			c.Uchiwa.Ldap.GroupObjectClass = "groupOfNames"
 		}
 	} else if c.Uchiwa.Db.Driver != "" && c.Uchiwa.Db.Scheme != "" {
 		c.Uchiwa.Auth = "sql"
