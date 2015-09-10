@@ -74,12 +74,14 @@ type Ldap struct {
 	BaseDN               string
 	BindUser             string
 	BindPass             string
+	GroupBaseDN          string
 	GroupObjectClass     string
 	GroupMemberAttribute string
 	Insecure             bool
 	Roles                []auth.Role
 	Security             string
 	UserAttribute        string
+	UserBaseDN           string
 	UserObjectClass      string
 }
 
@@ -173,6 +175,12 @@ func (c *Config) initUchiwa() {
 		}
 		if c.Uchiwa.Ldap.GroupObjectClass == "" {
 			c.Uchiwa.Ldap.GroupObjectClass = "groupOfNames"
+		}
+		if c.Uchiwa.Ldap.GroupBaseDN == "" {
+			c.Uchiwa.Ldap.GroupBaseDN = c.Uchiwa.Ldap.BaseDN
+		}
+		if c.Uchiwa.Ldap.UserBaseDN == "" {
+			c.Uchiwa.Ldap.UserBaseDN = c.Uchiwa.Ldap.BaseDN
 		}
 
 	} else if c.Uchiwa.Db.Driver != "" && c.Uchiwa.Db.Scheme != "" {
