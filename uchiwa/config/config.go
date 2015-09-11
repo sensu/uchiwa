@@ -213,6 +213,7 @@ func (c *Config) GetPublic() *Config {
 	p.Uchiwa.Db.Scheme = "*****"
 	p.Uchiwa.Github.ClientID = "*****"
 	p.Uchiwa.Github.ClientSecret = "*****"
+	p.Uchiwa.Ldap.BindPass = "*****"
 	p.Sensu = make([]SensuConfig, len(c.Sensu))
 	for i := range c.Sensu {
 		p.Sensu[i] = c.Sensu[i]
