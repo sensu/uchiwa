@@ -353,6 +353,10 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if token != nil && token.Claims["Username"] != nil {
+			data.Content["username"] = token.Claims["Username"]
+		}
+
 		err = u.PostStash(data)
 		if err != nil {
 			http.Error(w, "Could not create the stash", http.StatusNotFound)
