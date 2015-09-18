@@ -14,6 +14,7 @@ const datacenterErrorString = "Connection error. Is the Sensu API running?"
 type Daemon struct {
 	Data        *structs.Data
 	Datacenters *[]sensu.Sensu
+	Enterprise  bool
 }
 
 // Start method fetches and builds Sensu data from each datacenter every Refresh seconds
@@ -94,11 +95,14 @@ func (d *Daemon) fetchData() {
 			logger.Warning(err)
 			continue
 		}
-		results, err := datacenter.Results()
-		if err == nil {
-			for _, v := range *results {
-				setDc(v, datacenter.Name)
-				d.Data.Results = append(d.Data.Results, v)
+
+		if d.Enterprise {
+			results, err := datacenter.Results()
+			if err == nil {
+				for _, v := range *results {
+					setDc(v, datacenter.Name)
+					d.Data.Results = append(d.Data.Results, v)
+				}
 			}
 		}
 

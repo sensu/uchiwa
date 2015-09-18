@@ -34,17 +34,18 @@ type SensuConfig struct {
 
 // GlobalConfig struct contains conf about Uchiwa
 type GlobalConfig struct {
-	Host    string
-	Port    int
-	Refresh int
-	Pass    string
-	User    string
-	Users   []auth.User
-	Db      Db
-	Github  Github
-	Ldap    Ldap
-	Audit   Audit
-	Auth    string
+	Host       string
+	Port       int
+	Refresh    int
+	Pass       string
+	User       string
+	Users      []auth.User
+	Audit      Audit
+	Auth       string
+	Db         Db
+	Enterprise bool
+	Github     Github
+	Ldap       Ldap
 }
 
 // Audit struct contains the config of the Audit logger
