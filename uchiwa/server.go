@@ -285,6 +285,7 @@ func (u *Uchiwa) healthHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
 	}
 }
 
