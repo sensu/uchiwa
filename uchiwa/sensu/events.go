@@ -1,9 +1,6 @@
 package sensu
 
-import (
-	"encoding/json"
-	"fmt"
-)
+import "fmt"
 
 // GetEvents Return all the current events
 func (s *Sensu) GetEvents() ([]interface{}, error) {
@@ -21,10 +18,6 @@ func (s *Sensu) GetEventsCheckForClient(client string, check string) ([]interfac
 }
 
 // ResolveEvent delete an event
-func (s *Sensu) ResolveEvent(payload interface{}) (map[string]interface{}, error) {
-	payloadstr, err := json.Marshal(payload)
-	if err != nil {
-		return nil, fmt.Errorf("Stash parsing error: %q returned: %v", err, err)
-	}
-	return s.postPayload("resolve", string(payloadstr[:]))
+func (s *Sensu) ResolveEvent(check, client string) error {
+	return s.delete(fmt.Sprintf("events/%s/%s", client, check))
 }

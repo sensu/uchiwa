@@ -27,14 +27,14 @@ func (u *Uchiwa) PostStash(data stash) error {
 }
 
 // DeleteStash send a DELETE request to the /stashes/*path* endpoint in order to delete a stash
-func (u *Uchiwa) DeleteStash(data stash) error {
-	api, err := getAPI(u.Datacenters, data.Dc)
+func (u *Uchiwa) DeleteStash(dc, path string) error {
+	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return err
 	}
 
-	err = api.DeleteStash(data.Path)
+	err = api.DeleteStash(path)
 	if err != nil {
 		logger.Warning(err)
 		return err
