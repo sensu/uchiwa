@@ -14,7 +14,7 @@ See [uchiwa-web](https://github.com/sensu/uchiwa-web) for the AngularJS web fron
 See [Uchiwa Docs](http://docs.uchiwa.io/en/latest/getting-started/)
 
 ## Configuration
-See [Uchiwa Docs](http://docs.uchiwa.io/en/latest/configuration/examples/)
+See [Uchiwa Docs](http://docs.uchiwa.io/en/latest/configuration/overview/)
 
 ## Contributing
 See [Uchiwa Docs](http://docs.uchiwa.io/en/latest/contributing/)
