@@ -3,15 +3,15 @@ package uchiwa
 import (
 	"fmt"
 
-	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/daemon"
+	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
 func (u *Uchiwa) buildClientHistory(id *string, history *[]interface{}, dc *string) {
 	for _, h := range *history {
 		m, ok := h.(map[string]interface{})
 		if !ok {
-			logger.Warningf("Could not assert history interface %+v", h)
+			logger.Warningf("Could not assert this client history to an interface: %+v", h)
 			continue
 		}
 
@@ -23,10 +23,17 @@ func (u *Uchiwa) buildClientHistory(id *string, history *[]interface{}, dc *stri
 		} else {
 			m["output"] = u.findOutput(id, m, dc)
 		}
-		m["model"] = findModel(m["check"].(string), *dc, u.Data.Checks)
+
+		check, ok := m["check"].(string)
+		if !ok {
+			logger.Warningf("Could not assert this check name to a string: %+v", m["check"])
+			continue
+		}
+
+		m["model"] = findModel(check, *dc, u.Data.Checks)
 		m["client"] = id
 		m["dc"] = dc
-		m["acknowledged"] = daemon.IsAcknowledged(*id, m["check"].(string), *dc, u.Data.Stashes)
+		m["acknowledged"] = daemon.IsAcknowledged(*id, check, *dc, u.Data.Stashes)
 	}
 }
 
@@ -51,7 +58,7 @@ func (u *Uchiwa) findClientInClients(id *string, dc *string) (map[string]interfa
 	for _, c := range u.Data.Clients {
 		m, ok := c.(map[string]interface{})
 		if !ok {
-			logger.Warningf("Could not assert client interface %+v", c)
+			logger.Warningf("Could not assert this client to an interface %+v", c)
 			continue
 		}
 		if m["name"] == *id && m["dc"] == *dc {
@@ -70,7 +77,7 @@ func (u *Uchiwa) findOutput(id *string, h map[string]interface{}, dc *string) st
 		// does the dc match?
 		m, ok := e.(map[string]interface{})
 		if !ok {
-			logger.Warningf("Could not assert event interface %+v", e)
+			logger.Warningf("Could not assert this event to an interface %+v", e)
 			continue
 		}
 		if m["dc"] != *dc {
@@ -80,7 +87,7 @@ func (u *Uchiwa) findOutput(id *string, h map[string]interface{}, dc *string) st
 		// does the client match?
 		c, ok := m["client"].(map[string]interface{})
 		if !ok {
-			logger.Warningf("Could not assert event's client interface: %+v", c)
+			logger.Warningf("Could not assert this client to an interface: %+v", c)
 			continue
 		}
 
@@ -91,7 +98,7 @@ func (u *Uchiwa) findOutput(id *string, h map[string]interface{}, dc *string) st
 		// does the check match?
 		k := m["check"].(map[string]interface{})
 		if !ok {
-			logger.Warningf("Could not assert event's check interface: %+v", k)
+			logger.Warningf("Could not assert this check to an interface: %+v", k)
 			continue
 		}
 		if k["name"] != h["check"] {
