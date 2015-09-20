@@ -34,6 +34,7 @@ func Init(c *config.Config) *Uchiwa {
 	d := &daemon.Daemon{
 		Data:        &structs.Data{},
 		Datacenters: &datacenters,
+		Enterprise:  c.Uchiwa.Enterprise,
 	}
 
 	u := &Uchiwa{
