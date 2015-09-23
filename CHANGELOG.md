@@ -1,3 +1,21 @@
+### 0.11.0 (2015-09-22)
+#### Features
+- Implement a RESTful API and remove the *get_sensu* endpoint for Uchiwa backend - [Issue #378](https://github.com/sensu/uchiwa/pull/378)
+- Major frontend performance and stability improvement: use the newer Uchiwa RESTful API and store data into $scope instead of $rootScope - [Issue #72](https://github.com/sensu/uchiwa-web/pull/72)
+- Allow bulk removal of stashes - [Issue #65](https://github.com/sensu/uchiwa-web/pull/65)
+- Also display client's images in a dedicated panels on the client view - [Issue #361](https://github.com/sensu/uchiwa/issues/361)
+- Add progress bar into aggregate view - [Issue #69](https://github.com/sensu/uchiwa-web/pull/69)
+
+#### Bug Fixes
+- Allow text selection without immediately firing ng-click - [Issue #262](https://github.com/sensu/uchiwa/issues/262)
+- Break long datacenter name into multiple lines - [Issue #368](https://github.com/sensu/uchiwa/issues/368)
+- Add username to stash content - [Issue #356](https://github.com/sensu/uchiwa/issues/356)
+- The /results Sensu API endpoint is not required yet - [Issue #379](https://github.com/sensu/uchiwa/pull/379)
+- Two events with the same client and check names could be mixed - [Issue #375](https://github.com/sensu/uchiwa/issues/375)
+- Recover from an unexpected type assertion when processing a client
+- Prevent multiple status code within a single HTTP response on the /health endpoint
+- Properly display username in navbar if authentication is enabled
+
 ### 0.10.4 (2015-09-01)
 #### Bug Fixes
 - Order alphabetically the items in the checks filter - [Issue #62](https://github.com/sensu/uchiwa-web/pull/62)
