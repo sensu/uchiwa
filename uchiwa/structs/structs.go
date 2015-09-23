@@ -21,6 +21,7 @@ type Data struct {
 	Dc            []*Datacenter
 	Events        []interface{}
 	Health        Health
+	Metrics       Metrics
 	Results       []interface{} `json:"-"`
 	Stashes       []interface{}
 	Subscriptions []string
@@ -99,6 +100,24 @@ type Info struct {
 // Redis is a structure for holding the redis status
 type Redis struct {
 	Connected bool `json:"connected"`
+}
+
+// Metrics is a structure for holding the metrics of the Sensu objects
+type Metrics struct {
+	Aggregates  StatusMetrics `json:"aggregates"`
+	Checks      StatusMetrics `json:"checks"`
+	Clients     StatusMetrics `json:"clients"`
+	Datacenters StatusMetrics `json:"datacenters"`
+	Events      StatusMetrics `json:"events"`
+	Stashes     StatusMetrics `json:"stashes"`
+}
+
+// StatusMetrics is a structure for holding the status count
+type StatusMetrics struct {
+	Critical int `json:"critical"`
+	Total    int `json:"total"`
+	Unknown  int `json:"unknown"`
+	Warning  int `json:"warning"`
 }
 
 // Sensu is a structure for holding the sensu version

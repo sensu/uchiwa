@@ -125,12 +125,12 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 	resources := strings.Split(r.URL.Path, "/")
 	if len(resources) == 2 && r.Method == "GET" {
 		clients := FilterClients(&u.Data.Clients, token)
-
 		encoder := json.NewEncoder(w)
 		if err := encoder.Encode(clients); err != nil {
 			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 			return
 		}
+		return
 	} else if len(resources) != 4 {
 		http.Error(w, "", http.StatusBadRequest)
 		return
@@ -261,17 +261,6 @@ func (u *Uchiwa) eventsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (u *Uchiwa) getSensuHandler(w http.ResponseWriter, r *http.Request) {
-	token := auth.GetTokenFromContext(r)
-	data := FilterSensuData(token, u.Data)
-
-	encoder := json.NewEncoder(w)
-	if err := encoder.Encode(data); err != nil {
-		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
-		return
-	}
-}
-
 func (u *Uchiwa) healthHandler(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	var err error
@@ -284,6 +273,20 @@ func (u *Uchiwa) healthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
+	}
+}
+
+// Metrics
+func (u *Uchiwa) metricsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(&u.Data.Metrics); err != nil {
 		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 		return
 	}
@@ -383,7 +386,6 @@ func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 
 // WebServer starts the web server and serves GET & POST requests
 func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
-
 	// Private endpoints
 	http.Handle("/aggregates", auth.Authenticate(http.HandlerFunc(u.aggregatesHandler)))
 	http.Handle("/aggregates/", auth.Authenticate(http.HandlerFunc(u.aggregatesHandler)))
@@ -398,9 +400,9 @@ func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 	http.Handle("/stashes", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
 	http.Handle("/stashes/", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
 	http.Handle("/subscriptions", auth.Authenticate(http.HandlerFunc(u.subscriptionsHandler)))
-
-	// Legacy private endpoint
-	http.Handle("/get_sensu", auth.Authenticate(http.HandlerFunc(u.getSensuHandler)))
+	if u.Config.Uchiwa.Enterprise == false {
+		http.Handle("/metrics", auth.Authenticate(http.HandlerFunc(u.metricsHandler)))
+	}
 
 	// Static files
 	http.Handle("/", http.FileServer(http.Dir(*publicPath)))
