@@ -1,3 +1,11 @@
+### 0.11.1 (2015-09-23)
+#### Bug Fixes
+- Redirection to the login page should remove all query strings - [Issue #385](https://github.com/sensu/uchiwa/issues/385)
+- Add versioning to JS & CSS files to avoid caching with upgrades - [Issue #386](https://github.com/sensu/uchiwa/issues/386)
+- Set *success* style to the events sidebar icon when we have no events
+- Prevent errors when an API endpoint returns null
+- Dependency cleanup
+
 ### 0.11.0 (2015-09-22)
 #### Features
 - Implement a RESTful API and remove the *get_sensu* endpoint for Uchiwa backend - [Issue #378](https://github.com/sensu/uchiwa/pull/378)
@@ -5,6 +13,7 @@
 - Allow bulk removal of stashes - [Issue #65](https://github.com/sensu/uchiwa-web/pull/65)
 - Also display client's images in a dedicated panels on the client view - [Issue #361](https://github.com/sensu/uchiwa/issues/361)
 - Add progress bar into aggregate view - [Issue #69](https://github.com/sensu/uchiwa-web/pull/69)
+- Upgrade to Go 1.5.1
 
 #### Bug Fixes
 - Allow text selection without immediately firing ng-click - [Issue #262](https://github.com/sensu/uchiwa/issues/262)
