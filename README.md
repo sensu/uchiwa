@@ -7,7 +7,7 @@ See [uchiwa-web](https://github.com/sensu/uchiwa-web) for the AngularJS web fron
 
 [![Build Status](https://travis-ci.org/sensu/uchiwa.svg?branch=master)](https://travis-ci.org/sensu/uchiwa)
 [![Coverage Status](https://coveralls.io/repos/sensu/uchiwa/badge.svg?branch=master)](https://coveralls.io/r/sensu/uchiwa?branch=master)
-[![Download](https://api.bintray.com/packages/palourde/uchiwa/uchiwa/images/download.svg) ](https://bintray.com/palourde/uchiwa/uchiwa/_latestVersion)
+[![Download](https://api.bintray.com/packages/palourde/uchiwa/uchiwa/images/download.svg) ](https://uchiwa.io/#/download)
 
 ## Getting Started
 
