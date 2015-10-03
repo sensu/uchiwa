@@ -1,14 +1,15 @@
-FROM golang:1.3.3-onbuild
+FROM golang:1.5.1-onbuild
 
-# install debian packages
-RUN apt-get update \
-&& apt-get install -yq nodejs npm git wget \
-&& ln -s /usr/bin/nodejs /usr/bin/node \
-&& npm install --production --unsafe-perm \
-&& mv ./docker/start /start && chmod 0755 /start
+# update debian packages
+RUN apt-get update
+
+# install uchiwa-web bower package
+RUN apt-get install -yq nodejs npm git wget
+RUN ln -s /usr/bin/nodejs /usr/bin/node
+RUN npm install --production --unsafe-perm
 
 VOLUME /config
 
-CMD ["/start"]
+CMD ["/go/bin/app", "-c", "/config/config.json"]
 
 EXPOSE 3000
