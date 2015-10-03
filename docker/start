@@ -1,3 +1,0 @@
-#!/bin/bash
-
-/go/bin/app -c /config/config.json
