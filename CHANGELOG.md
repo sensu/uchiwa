@@ -1,3 +1,8 @@
+### 0.11.2 (2015-10-04)
+#### Bug Fixes
+- Prevent undefined object when evaluating scope.metrics object in SidebarController - [Issue #387](https://github.com/sensu/uchiwa/issues/387)
+- Simplify Dockerfile and upgrade golang docker image to 1.5.1 - [Issue #391](https://github.com/sensu/uchiwa/issues/391)
+
 ### 0.11.1 (2015-09-23)
 #### Bug Fixes
 - Redirection to the login page should remove all query strings - [Issue #385](https://github.com/sensu/uchiwa/issues/385)
