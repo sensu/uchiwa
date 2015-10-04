@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"errors"
 	"net"
 	"net/http"
 
@@ -72,6 +73,33 @@ func BuildEventsMetrics(events *[]interface{}) *structs.StatusMetrics {
 	return &metrics
 }
 
+// GetBoolFromInterface ...
+func GetBoolFromInterface(i interface{}) (bool, error) {
+	if i == nil {
+		logger.Debug("The interface is nil")
+		return false, errors.New("The interface is nil")
+	}
+
+	b, ok := i.(bool)
+	if !ok {
+		logger.Debugf("Could not assert to a boolean the interface: %+v", i)
+		return false, errors.New("Could not assert to a boolean the interface")
+	}
+
+	return b, nil
+}
+
+// GetMapFromInterface returns a map from an interface
+func GetMapFromInterface(i interface{}) map[string]interface{} {
+	m, ok := i.(map[string]interface{})
+	if !ok {
+		logger.Debugf("Could not assert to a map the interface: %+v", i)
+		return nil
+	}
+
+	return m
+}
+
 // GetIP returns the real user IP address
 func GetIP(r *http.Request) string {
 	if xForwardedFor := r.Header.Get("X-FORWARDED-FOR"); len(xForwardedFor) > 0 {
@@ -79,4 +107,20 @@ func GetIP(r *http.Request) string {
 	}
 	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
 	return ip
+}
+
+// IsStringInArray searches 'array' for 'item' string
+// Returns true 'item' is a value of 'array'
+func IsStringInArray(item string, array []string) bool {
+	if item == "" || len(array) == 0 {
+		return false
+	}
+
+	for _, element := range array {
+		if element == item {
+			return true
+		}
+	}
+
+	return false
 }

@@ -32,33 +32,6 @@ func FindDcFromInterface(data interface{}, datacenters *[]sensu.Sensu) (*sensu.S
 	return nil, nil, fmt.Errorf("Could not find the datacenter %s", id)
 }
 
-// GetBoolFromInterface ...
-func GetBoolFromInterface(i interface{}) (bool, error) {
-	if i == nil {
-		logger.Debug("The interface is nil")
-		return false, errors.New("The interface is nil")
-	}
-
-	b, ok := i.(bool)
-	if !ok {
-		logger.Debugf("Could not assert to a boolean the interface: %+v", i)
-		return false, errors.New("Could not assert to a boolean the interface")
-	}
-
-	return b, nil
-}
-
-// GetMapFromInterface ...
-func GetMapFromInterface(i interface{}) map[string]interface{} {
-	m, ok := i.(map[string]interface{})
-	if !ok {
-		logger.Debugf("Could not assert to a map the interface: %+v", i)
-		return nil
-	}
-
-	return m
-}
-
 // IsAcknowledged ...
 func IsAcknowledged(client string, check string, dc string, stashes []interface{}) bool {
 	if len(stashes) == 0 {
@@ -95,20 +68,4 @@ func setDc(v interface{}, dc string) {
 	} else {
 		m["dc"] = dc
 	}
-}
-
-// StringInArray searches 'array' for 'item' string
-// Returns true 'item' is a value of 'array'
-func StringInArray(item string, array []string) bool {
-	if item == "" || len(array) == 0 {
-		return false
-	}
-
-	for _, element := range array {
-		if element == item {
-			return true
-		}
-	}
-
-	return false
 }

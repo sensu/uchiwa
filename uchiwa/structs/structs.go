@@ -34,24 +34,6 @@ type Datacenter struct {
 	Stats map[string]int `json:"stats"`
 }
 
-// Dashboard is a struct for holding Dashboard content
-type Dashboard struct {
-	Checks      DashboardStats `json:"checks"`
-	Clients     DashboardStats `json:"clients"`
-	Datacenters DashboardStats `json:"datacenters"`
-}
-
-// DashboardStats is a struct for holding statistics about a dashboard element
-type DashboardStats struct {
-	Critical    int `json:"critical"`
-	Warning     int `json:"warning"`
-	Unknown     int `json:"unknown"`
-	Silenced    int `json:"silenced"`
-	Healthy     int `json:"healthy"`
-	Unsupported int `json:"unsupported"`
-	Total       int `json:"total"`
-}
-
 // Generic is a structure for holding a generic element
 type Generic struct {
 	Dc string `json:"dc"`
@@ -115,6 +97,8 @@ type Metrics struct {
 // StatusMetrics is a structure for holding the status count
 type StatusMetrics struct {
 	Critical int `json:"critical"`
+	Healthy  int `json:"healthy"`
+	Silenced int `json:"silenced"`
 	Total    int `json:"total"`
 	Unknown  int `json:"unknown"`
 	Warning  int `json:"warning"`
