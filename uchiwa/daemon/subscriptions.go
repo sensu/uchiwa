@@ -2,6 +2,7 @@ package daemon
 
 import (
 	"github.com/mitchellh/mapstructure"
+	"github.com/sensu/uchiwa/uchiwa/helpers"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
@@ -17,7 +18,7 @@ func (d *Daemon) BuildSubscriptions() {
 		}
 
 		for _, subscription := range generic.Subscriptions {
-			if !StringInArray(subscription, d.Data.Subscriptions) {
+			if !helpers.IsStringInArray(subscription, d.Data.Subscriptions) {
 				d.Data.Subscriptions = append(d.Data.Subscriptions, subscription)
 			}
 		}
