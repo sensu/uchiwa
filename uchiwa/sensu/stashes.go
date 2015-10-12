@@ -7,12 +7,7 @@ import (
 
 // GetStashes Return a list of stashes path
 func (s *Sensu) GetStashes() ([]interface{}, error) {
-	return s.getList(fmt.Sprintf("stashes"), NoLimit, NoOffset)
-}
-
-// GetStashesSlice Return a slice in the list of stashes path
-func (s *Sensu) GetStashesSlice(limit int, offset int) ([]interface{}, error) {
-	return s.getList(fmt.Sprintf("stashes"), limit, offset)
+	return s.getList(fmt.Sprintf("stashes"), NoLimit)
 }
 
 // GetStash Get a stash
