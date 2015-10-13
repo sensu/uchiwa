@@ -16,13 +16,25 @@ func (d *Daemon) buildClients() {
 			continue
 		}
 
+		dc, ok := client["dc"].(string)
+		if !ok {
+			continue
+		}
+
+		name, ok := client["name"].(string)
+		if !ok {
+			continue
+		}
+
+		client["_id"] = fmt.Sprintf("%s/%s", dc, name)
+
 		if client["version"] == nil {
 			client["version"] = "0.12.x"
 		}
 
 		client = findClientEvents(client, &d.Data.Events)
 
-		client["acknowledged"] = IsAcknowledged(client["name"].(string), "", client["dc"].(string), d.Data.Stashes)
+		client["acknowledged"] = IsAcknowledged(name, "", dc, d.Data.Stashes)
 	}
 }
 
