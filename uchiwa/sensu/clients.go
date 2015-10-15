@@ -4,12 +4,7 @@ import "fmt"
 
 // GetClients Return the list of clients
 func (s *Sensu) GetClients() ([]interface{}, error) {
-	return s.getList("clients", 0, 0)
-}
-
-// GetClientsSlice Return a slice in the list of clients
-func (s *Sensu) GetClientsSlice(limit int, offset int) ([]interface{}, error) {
-	return s.getList("clients", limit, offset)
+	return s.getList("clients", DefaultLimit)
 }
 
 // GetClient Return client info
@@ -19,7 +14,7 @@ func (s *Sensu) GetClient(client string) (map[string]interface{}, error) {
 
 // GetClientHistory Return client history
 func (s *Sensu) GetClientHistory(client string) ([]interface{}, error) {
-	return s.getList(fmt.Sprintf("clients/%s/history", client), 0, 0)
+	return s.getList(fmt.Sprintf("clients/%s/history", client), NoLimit)
 }
 
 // DeleteClient Return the list of clients

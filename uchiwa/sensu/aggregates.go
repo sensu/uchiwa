@@ -4,18 +4,13 @@ import "fmt"
 
 // GetAggregates Return the list of Aggregates
 func (s *Sensu) GetAggregates() ([]interface{}, error) {
-	return s.getList("aggregates", 0, 0)
-}
-
-// GetAggregatesSlice Return a slice in the current list of Aggregates
-func (s *Sensu) GetAggregatesSlice(limit int, offset int) ([]interface{}, error) {
-	return s.getList("aggregates", limit, offset)
+	return s.getList("aggregates", NoLimit)
 }
 
 // GetAggregate Return Aggregate info
 func (s *Sensu) GetAggregate(check string, age int) ([]interface{}, error) {
 	// TODO GetAgregate Not handling age
-	return s.getList(fmt.Sprintf("aggregate/%s", check), 0, 0)
+	return s.getList(fmt.Sprintf("aggregate/%s", check), NoLimit)
 }
 
 // GetAggregateIssued Return Aggregate history

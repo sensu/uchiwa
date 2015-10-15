@@ -9,7 +9,7 @@ import (
 
 // Info Will return the Sensu version along with rabbitmq and redis information.
 func (s *Sensu) Info() (*structs.Info, error) {
-	body, err := s.get("info")
+	body, _, err := s.get(fmt.Sprintf("%s/%s", s.URL, "info"))
 	if err != nil {
 		return nil, err
 	}

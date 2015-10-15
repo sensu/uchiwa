@@ -42,6 +42,12 @@ import (
 	//"bytes"
 )
 
+// NoLimit is used as a limit parameter
+const NoLimit int = -1
+
+// DefaultLimit is used as the default limit parameter for endpoint that supports pagination
+const DefaultLimit int = 1000
+
 // Sensu struct contains the API details
 type Sensu struct {
 	Name    string

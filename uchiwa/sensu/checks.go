@@ -4,7 +4,7 @@ import "fmt"
 
 // GetChecks Return the list of checks
 func (s *Sensu) GetChecks() ([]interface{}, error) {
-	return s.getList("checks", 0, 0)
+	return s.getList("checks", NoLimit)
 }
 
 // GetCheck Return check info for a specific check

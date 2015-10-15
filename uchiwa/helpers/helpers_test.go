@@ -34,6 +34,30 @@ func TestGetBoolFromInterface(t *testing.T) {
 	assert.Equal(t, b, true)
 }
 
+func TestGetInterfacesFromBytes(t *testing.T) {
+	bytes := []byte(`{"foo": "bar"}`)
+	_, err := GetInterfacesFromBytes(bytes)
+	assert.NotNil(t, err)
+
+	bytes = []byte(`[{"foo": "bar"}, {"baz": "qux"}]`)
+	expectedInterfaces := []interface{}{map[string]interface{}{"foo": "bar"}, map[string]interface{}{"baz": "qux"}}
+	interfaces, err := GetInterfacesFromBytes(bytes)
+	assert.Nil(t, err)
+	assert.Equal(t, expectedInterfaces, interfaces)
+}
+
+func TestGetMapFromBytes(t *testing.T) {
+	bytes := []byte(`[{"foo": "bar"}]`)
+	m, err := GetMapFromBytes(bytes)
+	assert.NotNil(t, err)
+
+	bytes = []byte(`{"foo": "bar"}`)
+	expectedMap := map[string]interface{}{"foo": "bar"}
+	m, err = GetMapFromBytes(bytes)
+	assert.Nil(t, err)
+	assert.Equal(t, expectedMap, m)
+}
+
 func TestGetMapFromInterface(t *testing.T) {
 	i := map[string]interface{}{"foo": "vodka"}
 	m := GetMapFromInterface(i)

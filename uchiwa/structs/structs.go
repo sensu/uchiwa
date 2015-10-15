@@ -119,3 +119,10 @@ type transportStatus struct {
 	Messages  int `json:"messages"`
 	Consumers int `json:"consumers"`
 }
+
+// XPagination is a structure for holding the x-pagination HTTP header
+type XPagination struct {
+	Limit  int
+	Offset int
+	Total  int
+}

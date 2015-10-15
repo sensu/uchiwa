@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"encoding/json"
 	"errors"
 	"net"
 	"net/http"
@@ -87,6 +88,24 @@ func GetBoolFromInterface(i interface{}) (bool, error) {
 	}
 
 	return b, nil
+}
+
+// GetInterfacesFromBytes returns a slice of interfaces from a slice of byte
+func GetInterfacesFromBytes(bytes []byte) ([]interface{}, error) {
+	var interfaces []interface{}
+	if err := json.Unmarshal(bytes, &interfaces); err != nil {
+		return nil, err
+	}
+	return interfaces, nil
+}
+
+// GetMapFromBytes returns a map from a slice of byte
+func GetMapFromBytes(bytes []byte) (map[string]interface{}, error) {
+	var m map[string]interface{}
+	if err := json.Unmarshal(bytes, &m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // GetMapFromInterface returns a map from an interface
