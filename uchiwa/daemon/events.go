@@ -1,6 +1,10 @@
 package daemon
 
-import "github.com/sensu/uchiwa/uchiwa/logger"
+import (
+	"fmt"
+
+	"github.com/sensu/uchiwa/uchiwa/logger"
+)
 
 // BuildEvents constructs events objects for frontend consumption
 func (d *Daemon) buildEvents() {
@@ -68,6 +72,9 @@ func (d *Daemon) buildEvents() {
 			logger.Warningf("Could not assert event's datacenter name from %+v", m)
 			continue
 		}
+
+		// Set the event unique ID
+		m["_id"] = fmt.Sprintf("%s/%s/%s", dcName, clientName, checkName)
 
 		// determine if the event is acknowledged
 		m["acknowledged"] = IsAcknowledged(clientName, checkName, dcName, d.Data.Stashes)

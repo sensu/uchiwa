@@ -1,6 +1,7 @@
 package uchiwa
 
 import (
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -54,16 +55,25 @@ func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
 
 	resources := strings.Split(r.URL.Path, "/")
 
+	// GET on /aggregates
 	if len(resources) == 2 {
 		token := auth.GetTokenFromContext(r)
 		aggregates := FilterAggregates(&u.Data.Aggregates, token)
 
-		encoder := json.NewEncoder(w)
-		if err := encoder.Encode(aggregates); err != nil {
+		// Create header
+		w.Header().Add("Accept-Charset", "utf-8")
+		w.Header().Add("Content-Type", "application/json")
+		w.Header().Set("Content-Encoding", "gzip")
+
+		gz := gzip.NewWriter(w)
+		defer gz.Close()
+		if err := json.NewEncoder(gz).Encode(aggregates); err != nil {
 			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 			return
 		}
+		return
 	} else if len(resources) == 5 {
+		// GET on /aggregates/{dc}/{check}/{issued}
 		check := resources[3]
 		dc := resources[2]
 		issued := resources[4]
@@ -106,11 +116,18 @@ func (u *Uchiwa) checksHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.GetTokenFromContext(r)
 	checks := FilterChecks(&u.Data.Checks, token)
 
-	encoder := json.NewEncoder(w)
-	if err := encoder.Encode(checks); err != nil {
+	// Create header
+	w.Header().Add("Accept-Charset", "utf-8")
+	w.Header().Add("Content-Type", "application/json")
+	w.Header().Set("Content-Encoding", "gzip")
+
+	gz := gzip.NewWriter(w)
+	defer gz.Close()
+	if err := json.NewEncoder(gz).Encode(checks); err != nil {
 		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 		return
 	}
+	return
 }
 
 // Clients
@@ -123,10 +140,19 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.GetTokenFromContext(r)
 
 	resources := strings.Split(r.URL.Path, "/")
+
+	// GET on /clients
 	if len(resources) == 2 && r.Method == "GET" {
 		clients := FilterClients(&u.Data.Clients, token)
-		encoder := json.NewEncoder(w)
-		if err := encoder.Encode(clients); err != nil {
+
+		// Create header
+		w.Header().Add("Accept-Charset", "utf-8")
+		w.Header().Add("Content-Type", "application/json")
+		w.Header().Set("Content-Encoding", "gzip")
+
+		gz := gzip.NewWriter(w)
+		defer gz.Close()
+		if err := json.NewEncoder(gz).Encode(clients); err != nil {
 			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 			return
 		}
@@ -144,6 +170,7 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// DELETE on /clients
 	if r.Method == "DELETE" {
 		// verify that the authenticated user is authorized to access this resource
 		unauthorized := FilterGetRequest(dc, token)
@@ -158,6 +185,7 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else if r.Method == "GET" {
+		// GET on /clients/{client}
 		unauthorized := FilterGetRequest(dc, token)
 		if unauthorized {
 			http.Error(w, fmt.Sprint(""), http.StatusNotFound)
@@ -213,17 +241,25 @@ func (u *Uchiwa) datacentersHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.GetTokenFromContext(r)
 	datacenters := FilterDatacenters(u.Data.Dc, token)
 
-	encoder := json.NewEncoder(w)
-	if err := encoder.Encode(datacenters); err != nil {
+	// Create header
+	w.Header().Add("Accept-Charset", "utf-8")
+	w.Header().Add("Content-Type", "application/json")
+	w.Header().Set("Content-Encoding", "gzip")
+
+	gz := gzip.NewWriter(w)
+	defer gz.Close()
+	if err := json.NewEncoder(gz).Encode(datacenters); err != nil {
 		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 		return
 	}
+	return
 }
 
 // Events
 func (u *Uchiwa) eventsHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.GetTokenFromContext(r)
 
+	// DELETE on /events
 	if r.Method == "DELETE" {
 		resources := strings.Split(r.URL.Path, "/")
 		if len(resources) != 5 {
@@ -248,13 +284,21 @@ func (u *Uchiwa) eventsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else if r.Method == "GET" {
+		// GET on /events
 		events := FilterEvents(&u.Data.Events, token)
 
-		encoder := json.NewEncoder(w)
-		if err := encoder.Encode(events); err != nil {
+		// Create header
+		w.Header().Add("Accept-Charset", "utf-8")
+		w.Header().Add("Content-Type", "application/json")
+		w.Header().Set("Content-Encoding", "gzip")
+
+		gz := gzip.NewWriter(w)
+		defer gz.Close()
+		if err := json.NewEncoder(gz).Encode(events); err != nil {
 			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 			return
 		}
+		return
 	} else {
 		http.Error(w, "", http.StatusBadRequest)
 		return
@@ -292,28 +336,12 @@ func (u *Uchiwa) metricsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Results
-func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "", http.StatusBadRequest)
-		return
-	}
-
-	token := auth.GetTokenFromContext(r)
-	results := FilterChecks(&u.Data.Results, token)
-
-	encoder := json.NewEncoder(w)
-	if err := encoder.Encode(results); err != nil {
-		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
-		return
-	}
-}
-
 // Stashes
 func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.GetTokenFromContext(r)
 	resources := strings.Split(r.URL.Path, "/")
 
+	// DELETE on /stashes/{dc}/{path}
 	if r.Method == "DELETE" && len(resources) >= 3 {
 		dc := resources[2]
 		path := strings.Join(resources[3:], "/")
@@ -329,14 +357,23 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Could not create the stash", http.StatusNotFound)
 		}
 	} else if r.Method == "GET" {
+		// GET on /stashes
 		stashes := FilterStashes(&u.Data.Stashes, token)
 
-		encoder := json.NewEncoder(w)
-		if err := encoder.Encode(stashes); err != nil {
+		// Create header
+		w.Header().Add("Accept-Charset", "utf-8")
+		w.Header().Add("Content-Type", "application/json")
+		w.Header().Set("Content-Encoding", "gzip")
+
+		gz := gzip.NewWriter(w)
+		defer gz.Close()
+		if err := json.NewEncoder(gz).Encode(stashes); err != nil {
 			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 			return
 		}
+		return
 	} else if r.Method == "POST" {
+		// POST on /stashes
 		decoder := json.NewDecoder(r.Body)
 		var data stash
 		err := decoder.Decode(&data)
@@ -396,7 +433,6 @@ func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 	http.Handle("/datacenters", auth.Authenticate(http.HandlerFunc(u.datacentersHandler)))
 	http.Handle("/events", auth.Authenticate(http.HandlerFunc(u.eventsHandler)))
 	http.Handle("/events/", auth.Authenticate(http.HandlerFunc(u.eventsHandler)))
-	http.Handle("/results", auth.Authenticate(http.HandlerFunc(u.resultsHandler)))
 	http.Handle("/stashes", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
 	http.Handle("/stashes/", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
 	http.Handle("/subscriptions", auth.Authenticate(http.HandlerFunc(u.subscriptionsHandler)))
