@@ -5,7 +5,6 @@ pids
 logs
 results
 node_modules
-config/
 config.js
 config.json
 config.json.*

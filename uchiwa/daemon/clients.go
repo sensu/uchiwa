@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mitchellh/mapstructure"
+	"github.com/sensu/uchiwa/uchiwa/helpers"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
@@ -34,7 +35,7 @@ func (d *Daemon) buildClients() {
 
 		client = findClientEvents(client, &d.Data.Events)
 
-		client["acknowledged"] = IsAcknowledged(name, "", dc, d.Data.Stashes)
+		client["acknowledged"] = helpers.IsAcknowledged("", name, dc, d.Data.Stashes)
 	}
 }
 

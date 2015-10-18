@@ -3,6 +3,7 @@ package daemon
 import (
 	"fmt"
 
+	"github.com/sensu/uchiwa/uchiwa/helpers"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
@@ -77,9 +78,9 @@ func (d *Daemon) buildEvents() {
 		m["_id"] = fmt.Sprintf("%s/%s/%s", dcName, clientName, checkName)
 
 		// determine if the event is acknowledged
-		m["acknowledged"] = IsAcknowledged(clientName, checkName, dcName, d.Data.Stashes)
+		m["acknowledged"] = helpers.IsAcknowledged(checkName, clientName, dcName, d.Data.Stashes)
 
 		// detertermine if the client is acknowledged
-		m["client"].(map[string]interface{})["acknowledged"] = IsAcknowledged(clientName, "", dcName, d.Data.Stashes)
+		m["client"].(map[string]interface{})["acknowledged"] = helpers.IsAcknowledged("", clientName, dcName, d.Data.Stashes)
 	}
 }

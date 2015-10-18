@@ -3,38 +3,65 @@ package uchiwa
 import (
 	"fmt"
 
-	"github.com/sensu/uchiwa/uchiwa/daemon"
+	"github.com/sensu/uchiwa/uchiwa/helpers"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
-func (u *Uchiwa) buildClientHistory(id *string, history *[]interface{}, dc *string) {
-	for _, h := range *history {
+func (u *Uchiwa) buildClientHistory(client, dc string, history []interface{}) []interface{} {
+	for _, h := range history {
 		m, ok := h.(map[string]interface{})
 		if !ok {
 			logger.Warningf("Could not assert this client history to an interface: %+v", h)
 			continue
 		}
 
-		// last_status comes in as a float64, so needs 0.0
-		if m["last_status"] == 0.0 {
-			lastResult := m["last_result"]
-			lr, _ := lastResult.(map[string]interface{})
-			m["output"] = lr["output"]
-		} else {
-			m["output"] = u.findOutput(id, m, dc)
-		}
-
+		// Set some attributes for easier frontend consumption
 		check, ok := m["check"].(string)
 		if !ok {
-			logger.Warningf("Could not assert this check name to a string: %+v", m["check"])
 			continue
 		}
-
-		m["model"] = findModel(check, *dc, u.Data.Checks)
-		m["client"] = id
+		m["client"] = client
 		m["dc"] = dc
-		m["acknowledged"] = daemon.IsAcknowledged(*id, check, *dc, u.Data.Stashes)
+		m["acknowledged"] = helpers.IsAcknowledged(check, client, dc, u.Data.Stashes)
+
+		// Add missing attributes to last_result object
+		if m["last_result"] != nil {
+			if m["last_status"] == 0.0 {
+				continue
+			}
+
+			event, err := helpers.GetEvent(check, client, dc, &u.Data.Events)
+			if err != nil {
+				continue
+			}
+
+			lastResult, ok := m["last_result"].(map[string]interface{})
+			if !ok {
+				continue
+			}
+
+			if event["action"] != nil {
+				lastResult["action"] = event["action"]
+			}
+			if event["occurrences"] != nil {
+				lastResult["occurrences"] = event["occurrences"]
+			}
+		}
+
+		// Maintain backward compatiblity with Sensu <= 0.17
+		// by constructing the last_result object
+		if m["last_status"] != nil && m["last_status"] != 0.0 {
+			event, err := helpers.GetEvent(check, client, dc, &u.Data.Events)
+			if err != nil {
+				continue
+			}
+			m["last_result"] = event
+		} else {
+			m["last_result"] = map[string]interface{}{"last_execution": m["last_execution"], "status": m["last_status"]}
+		}
 	}
+
+	return history
 }
 
 // DeleteClient send a DELETE request to the /clients/*client* endpoint in order to delete a client
@@ -111,7 +138,7 @@ func (u *Uchiwa) findOutput(id *string, h map[string]interface{}, dc *string) st
 }
 
 // GetClient retrieves client history from specified DC
-func (u *Uchiwa) GetClient(id string, dc string) (map[string]interface{}, error) {
+func (u *Uchiwa) GetClient(client, dc string) (map[string]interface{}, error) {
 	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
@@ -122,22 +149,22 @@ func (u *Uchiwa) GetClient(id string, dc string) (map[string]interface{}, error)
 	u.Mu.Lock()
 	defer u.Mu.Unlock()
 
-	c, err := u.findClientInClients(&id, &dc)
+	c, err := u.findClientInClients(&client, &dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
 	}
 
-	h, err := api.GetClientHistory(id)
+	h, err := api.GetClientHistory(client)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
 	}
 
-	u.buildClientHistory(&id, &h, &dc)
+	history := u.buildClientHistory(client, dc, h)
 
 	// add client history to client map for easy frontend consumption
-	c["history"] = h
+	c["history"] = history
 
 	return c, nil
 }

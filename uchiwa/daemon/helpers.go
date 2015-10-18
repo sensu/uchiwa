@@ -32,35 +32,6 @@ func FindDcFromInterface(data interface{}, datacenters *[]sensu.Sensu) (*sensu.S
 	return nil, nil, fmt.Errorf("Could not find the datacenter %s", id)
 }
 
-// IsAcknowledged ...
-func IsAcknowledged(client string, check string, dc string, stashes []interface{}) bool {
-	if len(stashes) == 0 {
-		return false
-	}
-
-	// add leading slash to check name
-	if check != "" {
-		check = fmt.Sprintf("/%s", check)
-	}
-
-	path := fmt.Sprintf("silence/%s%s", client, check)
-
-	ack := false
-
-	for _, stash := range stashes {
-		m, ok := stash.(map[string]interface{})
-		if !ok {
-			continue
-		}
-
-		if m["path"] == path && m["dc"] == dc {
-			ack = true
-		}
-	}
-
-	return ack
-}
-
 func setDc(v interface{}, dc string) {
 	m, ok := v.(map[string]interface{})
 	if !ok {

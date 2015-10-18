@@ -3,6 +3,7 @@ package helpers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net"
 	"net/http"
 
@@ -90,6 +91,55 @@ func GetBoolFromInterface(i interface{}) (bool, error) {
 	return b, nil
 }
 
+// GetEvent returns an event associated to a specific check
+func GetEvent(check, client, dc string, events *[]interface{}) (map[string]interface{}, error) {
+	if check == "" || client == "" || dc == "" || len(*events) == 0 {
+		return nil, errors.New("No parameters should be empty")
+	}
+
+	for _, e := range *events {
+		event, ok := e.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		if event["dc"] == nil || event["dc"] != dc {
+			continue
+		}
+
+		c, ok := event["client"].(map[string]interface{})
+		if !ok {
+			if event["client"] == nil || event["client"] != client {
+				continue
+			}
+		} else if c["name"] == nil || c["name"] != client {
+			continue
+		}
+
+		k, ok := event["check"].(map[string]interface{})
+		if !ok {
+			if event["check"] == nil || event["check"] != check {
+				continue
+			} else {
+				return map[string]interface{}{"check": event["check"], "client": event["client"], "occurrences": event["occurrences"], "output": event["output"], "status": event["status"]}, nil
+			}
+		} else if k["name"] == nil || k["name"] != check {
+			continue
+		}
+
+		if event["action"] != nil {
+			k["action"] = event["action"]
+		}
+		if event["occurrences"] != nil {
+			k["occurrences"] = event["occurrences"]
+		}
+
+		return k, nil
+	}
+
+	return nil, errors.New("No event found")
+}
+
 // GetInterfacesFromBytes returns a slice of interfaces from a slice of byte
 func GetInterfacesFromBytes(bytes []byte) ([]interface{}, error) {
 	var interfaces []interface{}
@@ -126,6 +176,33 @@ func GetIP(r *http.Request) string {
 	}
 	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
 	return ip
+}
+
+// IsAcknowledged determines if a client or a check has an associated silence stash
+func IsAcknowledged(check, client, dc string, stashes []interface{}) bool {
+	if dc == "" || client == "" || len(stashes) == 0 {
+		return false
+	}
+
+	// add leading slash to check name
+	if check != "" {
+		check = fmt.Sprintf("/%s", check)
+	}
+
+	path := fmt.Sprintf("silence/%s%s", client, check)
+
+	for _, stash := range stashes {
+		m, ok := stash.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		if m["path"] == path && m["dc"] == dc {
+			return true
+		}
+	}
+
+	return false
 }
 
 // IsStringInArray searches 'array' for 'item' string
