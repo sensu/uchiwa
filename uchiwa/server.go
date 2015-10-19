@@ -355,6 +355,7 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 		err := u.DeleteStash(dc, path)
 		if err != nil {
 			http.Error(w, "Could not create the stash", http.StatusNotFound)
+			return
 		}
 	} else if r.Method == "GET" {
 		// GET on /stashes
