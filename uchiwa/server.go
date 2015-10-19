@@ -346,6 +346,11 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 		dc := resources[2]
 		path := strings.Join(resources[3:], "/")
 
+		if dc == "" || path == "" {
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+
 		unauthorized := FilterGetRequest(dc, token)
 		if unauthorized {
 			http.Error(w, fmt.Sprint(""), http.StatusNotFound)
@@ -354,6 +359,7 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := u.DeleteStash(dc, path)
 		if err != nil {
+			logger.Warningf("Could not delete the stash '%s': %s", path, err)
 			http.Error(w, "Could not create the stash", http.StatusNotFound)
 			return
 		}

@@ -30,13 +30,11 @@ func (u *Uchiwa) PostStash(data stash) error {
 func (u *Uchiwa) DeleteStash(dc, path string) error {
 	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
-		logger.Warning(err)
 		return err
 	}
 
 	err = api.DeleteStash(path)
 	if err != nil {
-		logger.Warning(err)
 		return err
 	}
 
