@@ -1,3 +1,9 @@
+### 0.12.0 (2015-10-20)
+#### Features
+- Major performance improvements on the frontend, especially when manipulating ten of thousands of elements - [Issue #399](https://github.com/sensu/uchiwa/issues/387)
+- Use pagination when querying the Sensu API - [Issue #397](https://github.com/sensu/uchiwa/issues/387)
+- Refactoring of the client history in order to display rich information for all checks, including standalones, on the client view. Deprecating support for Sensu 0.12. - [Issue #395](https://github.com/sensu/uchiwa/issues/387)
+
 ### 0.11.2 (2015-10-04)
 #### Bug Fixes
 - Prevent undefined object when evaluating scope.metrics object in SidebarController - [Issue #387](https://github.com/sensu/uchiwa/issues/387)
