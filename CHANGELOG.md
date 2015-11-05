@@ -1,3 +1,8 @@
+### 0.12.1 (2015-11-05)
+#### Bug Fixes
+- History for all checks was not properly displayed on the client view - [Issue #404](https://github.com/sensu/uchiwa/issues/404)
+- Better handling of JIT clients with no timestamp - [Issue #79](https://github.com/sensu/uchiwa-web/pull/79)
+
 ### 0.12.0 (2015-10-20)
 #### Features
 - Major performance improvements on the frontend, especially when manipulating ten of thousands of elements - [Issue #399](https://github.com/sensu/uchiwa/issues/399)
