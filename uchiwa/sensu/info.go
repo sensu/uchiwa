@@ -7,9 +7,10 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
-// Info Will return the Sensu version along with rabbitmq and redis information.
-func (s *Sensu) Info() (*structs.Info, error) {
-	body, _, err := s.get(fmt.Sprintf("%s/%s", s.URL, "info"))
+// GetInfo returns a pointer to a structs.Info struct containing the
+// Sensu version and the transport and Redis connection information
+func (s *Sensu) GetInfo() (*structs.Info, error) {
+	body, _, err := s.getBytes("info")
 	if err != nil {
 		return nil, err
 	}

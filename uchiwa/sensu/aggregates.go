@@ -2,24 +2,22 @@ package sensu
 
 import "fmt"
 
-// GetAggregates Return the list of Aggregates
+// GetAggregates returns a slice of all aggregates
 func (s *Sensu) GetAggregates() ([]interface{}, error) {
-	return s.getList("aggregates", NoLimit)
+	return s.getSlice("aggregates", NoLimit)
 }
 
-// GetAggregate Return Aggregate info
+// GetAggregate returns a slice of a specific aggregate corresponding to the provided check name
 func (s *Sensu) GetAggregate(check string, age int) ([]interface{}, error) {
-	// TODO GetAgregate Not handling age
-	return s.getList(fmt.Sprintf("aggregate/%s", check), NoLimit)
+	return s.getSlice(fmt.Sprintf("aggregate/%s", check), NoLimit)
 }
 
-// GetAggregateIssued Return Aggregate history
-func (s *Sensu) GetAggregateIssued(check string, issued string, summarize bool, result bool) (map[string]interface{}, error) {
-	// TODO Aggregate Not handling summarize/result
+// GetAggregateIssued returns a map containing the history of a specific check corresponding to the provided check name and the issued timestamp
+func (s *Sensu) GetAggregateIssued(check string, issued string) (map[string]interface{}, error) {
 	return s.getMap(fmt.Sprintf("aggregate/%s/%s", check, issued))
 }
 
-// DeleteAggregate Return the list of Aggregates
-func (s *Sensu) DeleteAggregate(aggregate string) error {
-	return s.delete(fmt.Sprintf("aggregate/%s", aggregate))
+// DeleteAggregate deletes an aggregate using its check name
+func (s *Sensu) DeleteAggregate(check string) error {
+	return s.delete(fmt.Sprintf("aggregate/%s", check))
 }

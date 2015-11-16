@@ -10,7 +10,7 @@ func (u *Uchiwa) ResolveEvent(check, client, dc string) error {
 		return err
 	}
 
-	err = api.ResolveEvent(check, client)
+	err = api.DeleteEvent(check, client)
 	if err != nil {
 		logger.Warning(err)
 		return err

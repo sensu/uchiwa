@@ -24,16 +24,12 @@ type Uchiwa struct {
 // Init method initializes the Sensu structure with the provided configuration and start the Uchiwa daemon
 func Init(c *config.Config) *Uchiwa {
 
-	// build datacenters list from configuration
-	datacenters := make([]sensu.Sensu, len(c.Sensu))
-	for i, datacenter := range c.Sensu {
-		datacenter := sensu.New(datacenter.Name, datacenter.Path, datacenter.URL, datacenter.Timeout, datacenter.User, datacenter.Pass, datacenter.Insecure)
-		datacenters[i] = *datacenter
-	}
+	// Get the datacenters
+	datacenters := initDatacenters(c)
 
 	d := &daemon.Daemon{
 		Data:        &structs.Data{},
-		Datacenters: &datacenters,
+		Datacenters: datacenters,
 		Enterprise:  c.Uchiwa.Enterprise,
 	}
 
@@ -41,7 +37,7 @@ func Init(c *config.Config) *Uchiwa {
 		Config:       c,
 		Daemon:       d,
 		Data:         &structs.Data{},
-		Datacenters:  &datacenters,
+		Datacenters:  datacenters,
 		Mu:           &sync.Mutex{},
 		PublicConfig: c.GetPublic(),
 	}
@@ -55,8 +51,36 @@ func Init(c *config.Config) *Uchiwa {
 	return u
 }
 
-// listener method listens on the data channel for messages from the daemon
-// and updates the Data structure with results from the Sensu APIs
+// initDatacenters initializes the Datacenters struct by initalizing each
+// datacenter based on the provided configuration and by associating multiple
+// APIs for the same datacenter for failover/load balancing purposes.
+func initDatacenters(c *config.Config) *[]sensu.Sensu {
+	var datacenters []sensu.Sensu
+
+OUTER:
+	for _, api := range c.Sensu {
+		// Do we already have a datacenter with the same name as this API?
+		for i, datacenter := range datacenters {
+			if datacenter.Name == api.Name {
+				// Add this API to the corresponding datacenter
+				datacenter.APIs = append(datacenter.APIs, sensu.NewAPI(api.Path, api.URL, api.Timeout, api.User, api.Pass, api.Insecure))
+				datacenters[i] = datacenter
+
+				continue OUTER
+			}
+		}
+		// At this point we didn't find any datacenter with the same name
+		// so we will create a new one and add it to the datacenters slice
+		datacenter := sensu.Sensu{Name: api.Name}
+		datacenter.APIs = append(datacenter.APIs, sensu.NewAPI(api.Path, api.URL, api.Timeout, api.User, api.Pass, api.Insecure))
+		datacenters = append(datacenters, datacenter)
+	}
+
+	return &datacenters
+}
+
+// listener listens on the data channel for messages from the daemon
+// and updates the Data struct with latest results from the Sensu datacenters
 func (u *Uchiwa) listener(interval int, data chan *structs.Data) {
 	for {
 		select {

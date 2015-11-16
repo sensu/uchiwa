@@ -68,32 +68,32 @@ func (d *Daemon) fetchData() {
 		// fetch sensu data from the datacenter
 		stashes, err := datacenter.GetStashes()
 		if err != nil {
-			logger.Warning(err)
+			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
 			continue
 		}
 		checks, err := datacenter.GetChecks()
 		if err != nil {
-			logger.Warning(err)
+			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
 			continue
 		}
 		clients, err := datacenter.GetClients()
 		if err != nil {
-			logger.Warning(err)
+			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
 			continue
 		}
 		events, err := datacenter.GetEvents()
 		if err != nil {
-			logger.Warning(err)
+			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
 			continue
 		}
-		info, err := datacenter.Info()
+		info, err := datacenter.GetInfo()
 		if err != nil {
-			logger.Warning(err)
+			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
 			continue
 		}
 		aggregates, err := datacenter.GetAggregates()
 		if err != nil {
-			logger.Warning(err)
+			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
 			continue
 		}
 
