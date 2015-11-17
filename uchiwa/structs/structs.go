@@ -13,6 +13,14 @@ type AuditLog struct {
 	User       string    `json:"user"`
 }
 
+// Auth struct contains the generic configuration and details
+// about the authentication
+type Auth struct {
+	Driver     string
+	PrivateKey string
+	PublicKey  string
+}
+
 // Data is a structure for holding public data fetched from the Sensu APIs and exposed by the endpoints
 type Data struct {
 	Aggregates    []interface{}

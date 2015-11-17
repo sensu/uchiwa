@@ -25,8 +25,8 @@ func main() {
 
 	u := uchiwa.Init(config)
 
-	authentication := auth.New()
-	if config.Uchiwa.Auth == "simple" {
+	authentication := auth.New(config.Uchiwa.Auth)
+	if config.Uchiwa.Auth.Driver == "simple" {
 		authentication.Simple(config.Uchiwa.Users)
 	} else {
 		authentication.None()

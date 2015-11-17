@@ -3,16 +3,18 @@ package auth
 import (
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
+	"errors"
+	"fmt"
+	"io/ioutil"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sensu/uchiwa/uchiwa/logger"
+	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
 var (
-	keyPEM    []byte
-	pubKeyPEM []byte
+	privateKey *rsa.PrivateKey
+	publicKey  *rsa.PublicKey
 )
 
 // GetToken returns a string that contain the token
@@ -20,25 +22,70 @@ func GetToken(role *Role, username string) (string, error) {
 	t := jwt.New(jwt.GetSigningMethod("RS256"))
 	t.Claims["Role"] = role
 	t.Claims["Username"] = username
-	tokenString, err := t.SignedString(keyPEM)
+	tokenString, err := t.SignedString(privateKey)
 	return tokenString, err
 }
 
-func initToken() {
-	keyPair, err := rsa.GenerateKey(rand.Reader, 1024)
-	if err != nil {
-		logger.Fatalf("Could not generate the private key: %s", err)
+// generateToken generates a private and public RSA keys
+// in order to be used for the JWT signature
+func generateToken() {
+	privateKey = generateKeyPair()
+	// Precompute some calculations
+	privateKey.Precompute()
+	publicKey = &privateKey.PublicKey
+}
+
+// loadToken loads a private and public RSA keys from the filesystem
+// in order to be used for the JWT signature
+func loadToken(a structs.Auth) error {
+	logger.Debug("Attempting to load the RSA keys from the filesystem")
+
+	if a.PrivateKey == "" || a.PublicKey == "" {
+		return errors.New("The paths to the private and public RSA keys were not provided")
 	}
-	keyPEM = pem.EncodeToMemory(&pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: x509.MarshalPKCS1PrivateKey(keyPair),
-	})
-	pubKeyANS1, err := x509.MarshalPKIXPublicKey(&keyPair.PublicKey)
+
+	// Read the files from the filesystem
+	prv, err := ioutil.ReadFile(a.PrivateKey)
 	if err != nil {
-		logger.Fatalf("Could not generate the public key: %s", err)
+		return fmt.Errorf("Unable to open the private key file: %v", err)
 	}
-	pubKeyPEM = pem.EncodeToMemory(&pem.Block{
-		Type:  "RSA PUBLIC KEY",
-		Bytes: pubKeyANS1,
-	})
+	pub, err := ioutil.ReadFile(a.PublicKey)
+	if err != nil {
+		return fmt.Errorf("Unable to open the public key file: %v", err)
+	}
+
+	// Parse the RSA keys
+	privateKey, err = jwt.ParseRSAPrivateKeyFromPEM(prv)
+	if err != nil {
+		return fmt.Errorf("Unable to parse the private key: %v", err)
+	}
+	publicKey, err = jwt.ParseRSAPublicKeyFromPEM(pub)
+	if err != nil {
+		return fmt.Errorf("Unable to parse the public key: %v", err)
+	}
+
+	logger.Info("Provided RSA keys successfully loaded")
+	return nil
+}
+
+// initToken initializes the token by weither loading the keys from the
+// filesystem with the loadToken() function or by generating temporarily
+// ones with the generateToken() function
+func initToken(a structs.Auth) {
+	err := loadToken(a)
+	if err != nil {
+		logger.Debug(err)
+		logger.Debug("Generating new temporary RSA keys")
+		generateToken()
+	}
+}
+
+// generateKeyPair generates an RSA keypair of 2048 bits using a random rand.Reader
+func generateKeyPair() *rsa.PrivateKey {
+	keypair, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		logger.Fatalf("Could not generate an RSA keypair: %s", err)
+	}
+
+	return keypair
 }
