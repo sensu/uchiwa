@@ -39,7 +39,11 @@ func publicHandler(next http.Handler) http.Handler {
 func restrictedHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token, err := jwt.ParseFromRequest(r, func(t *jwt.Token) (interface{}, error) {
-			return pubKeyPEM, nil
+			if _, ok := t.Method.(*jwt.SigningMethodRSA); !ok {
+				return nil, fmt.Errorf("Unexpected signing method: %v", t.Header["alg"])
+			}
+
+			return publicKey, nil
 		})
 		if token != nil && err == nil {
 			if token.Valid {
@@ -103,7 +107,7 @@ func (a *Config) GetIdentification() http.Handler {
 		}
 
 		// validate the user with the Login authentication driver
-		user, err := a.Driver(u, p)
+		user, err := a.DriverFn(u, p)
 		if err != nil {
 			message := fmt.Sprintf("Authentication failed: %s", err)
 

@@ -223,7 +223,7 @@ func (u *Uchiwa) configHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		if resources[2] == "auth" {
-			fmt.Fprintf(w, "%s", u.PublicConfig.Uchiwa.Auth)
+			fmt.Fprintf(w, "%s", u.PublicConfig.Uchiwa.Auth.Driver)
 		} else {
 			http.Error(w, "", http.StatusNotFound)
 			return

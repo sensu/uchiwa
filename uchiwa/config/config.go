@@ -9,6 +9,7 @@ import (
 
 	"github.com/sensu/uchiwa/uchiwa/auth"
 	"github.com/sensu/uchiwa/uchiwa/logger"
+	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
 // Config struct contains []SensuConfig and UchiwaConfig structs
@@ -41,7 +42,7 @@ type GlobalConfig struct {
 	User       string
 	Users      []auth.User
 	Audit      Audit
-	Auth       string
+	Auth       structs.Auth
 	Db         Db
 	Enterprise bool
 	Github     Github
@@ -156,9 +157,9 @@ func (c *Config) initUchiwa() {
 
 	// authentication
 	if c.Uchiwa.Github.Server != "" {
-		c.Uchiwa.Auth = "github"
+		c.Uchiwa.Auth.Driver = "github"
 	} else if c.Uchiwa.Ldap.Server != "" {
-		c.Uchiwa.Auth = "ldap"
+		c.Uchiwa.Auth.Driver = "ldap"
 		if c.Uchiwa.Ldap.Port == 0 {
 			c.Uchiwa.Ldap.Port = 389
 		}
@@ -185,13 +186,13 @@ func (c *Config) initUchiwa() {
 		}
 
 	} else if c.Uchiwa.Db.Driver != "" && c.Uchiwa.Db.Scheme != "" {
-		c.Uchiwa.Auth = "sql"
+		c.Uchiwa.Auth.Driver = "sql"
 	} else if len(c.Uchiwa.Users) != 0 {
 		logger.Debug("Loading multiple users from the config")
-		c.Uchiwa.Auth = "simple"
+		c.Uchiwa.Auth.Driver = "simple"
 	} else if c.Uchiwa.User != "" && c.Uchiwa.Pass != "" {
 		logger.Debug("Loading single user from the config")
-		c.Uchiwa.Auth = "simple"
+		c.Uchiwa.Auth.Driver = "simple"
 		c.Uchiwa.Users = append(c.Uchiwa.Users, auth.User{Username: c.Uchiwa.User, Password: c.Uchiwa.Pass, FullName: c.Uchiwa.User})
 	}
 

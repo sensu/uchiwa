@@ -1,8 +1,11 @@
 package auth
 
+import "github.com/sensu/uchiwa/uchiwa/structs"
+
 // Config struct contains the authentication configuration
 type Config struct {
-	Driver     loginFn
+	Auth       structs.Auth
+	DriverFn   loginFn
 	DriverName string
 }
 
@@ -22,35 +25,37 @@ type User struct {
 type loginFn func(string, string) (*User, error)
 
 var (
-	users      []User
+	users []User
 )
 
 // New function initalizes and returns a Config struct
-func New() Config {
-	a := Config{}
+func New(auth structs.Auth) Config {
+	a := Config{
+		Auth: auth,
+	}
 	return a
 }
 
 // None function sets the Config struct in order to disable authentication
 func (a *Config) None() {
-	a.Driver = none
+	a.DriverFn = none
 	a.DriverName = "none"
 }
 
 // Simple function sets the Config struct in order to enable simple authentication based on provided user and pass
 func (a *Config) Simple(u []User) {
-	a.Driver = simple
+	a.DriverFn = simple
 	a.DriverName = "simple"
 
 	users = u
 
-	initToken()
+	initToken(a.Auth)
 }
 
 // Advanced function allows a third party Identification driver
 func (a *Config) Advanced(driver loginFn, driverName string) {
-	a.Driver = driver
+	a.DriverFn = driver
 	a.DriverName = driverName
 
-	initToken()
+	initToken(a.Auth)
 }

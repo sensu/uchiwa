@@ -42,7 +42,7 @@ func TestLoadArrayOfUsers(t *testing.T) {
 	assert.Nil(t, err, "got unexpected error: %s", err)
 	assert.NotNil(t, conf, "conf should not be nil")
 
-	assert.Equal(t, "simple", conf.Uchiwa.Auth, "Uchiwa Auth should be simple")
+	assert.Equal(t, "simple", conf.Uchiwa.Auth.Driver, "Uchiwa authentication driver should be 'simple'")
 	assert.Equal(t, 2, len(conf.Uchiwa.Users))
 }
 
@@ -51,7 +51,7 @@ func TestLoadArrayOfUsersOnPublicGet(t *testing.T) {
 	assert.Nil(t, err, "got unexpected error: %s", err)
 	assert.NotNil(t, conf, "conf should not be nil")
 
-	assert.Equal(t, "simple", conf.Uchiwa.Auth, "Uchiwa Auth should be simple")
+	assert.Equal(t, "simple", conf.Uchiwa.Auth.Driver, "Uchiwa authentication driver should be 'simple'")
 	public := conf.GetPublic()
 	assert.Equal(t, 0, len(public.Uchiwa.Users))
 }
