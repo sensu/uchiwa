@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"errors"
-	"fmt"
 	"io/ioutil"
 
 	"github.com/dgrijalva/jwt-go"
@@ -28,55 +27,59 @@ func GetToken(role *Role, username string) (string, error) {
 
 // generateToken generates a private and public RSA keys
 // in order to be used for the JWT signature
-func generateToken() {
-	privateKey = generateKeyPair()
+func generateToken() (*rsa.PrivateKey, *rsa.PublicKey) {
+	logger.Debug("Generating new temporary RSA keys")
+	privateKey := generateKeyPair()
 	// Precompute some calculations
 	privateKey.Precompute()
-	publicKey = &privateKey.PublicKey
+	publicKey := &privateKey.PublicKey
+
+	return privateKey, publicKey
 }
 
 // loadToken loads a private and public RSA keys from the filesystem
 // in order to be used for the JWT signature
-func loadToken(a structs.Auth) error {
+func loadToken(a structs.Auth) (*rsa.PrivateKey, *rsa.PublicKey, error) {
 	logger.Debug("Attempting to load the RSA keys from the filesystem")
 
 	if a.PrivateKey == "" || a.PublicKey == "" {
-		return errors.New("The paths to the private and public RSA keys were not provided")
+		return nil, nil, errors.New("The paths to the private and public RSA keys were not provided")
 	}
 
 	// Read the files from the filesystem
 	prv, err := ioutil.ReadFile(a.PrivateKey)
 	if err != nil {
-		return fmt.Errorf("Unable to open the private key file: %v", err)
+		logger.Fatalf("Unable to open the private key file: %v", err)
 	}
 	pub, err := ioutil.ReadFile(a.PublicKey)
 	if err != nil {
-		return fmt.Errorf("Unable to open the public key file: %v", err)
+		logger.Fatalf("Unable to open the public key file: %v", err)
 	}
 
 	// Parse the RSA keys
-	privateKey, err = jwt.ParseRSAPrivateKeyFromPEM(prv)
+	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(prv)
 	if err != nil {
-		return fmt.Errorf("Unable to parse the private key: %v", err)
+		logger.Fatalf("Unable to parse the private key: %v", err)
 	}
-	publicKey, err = jwt.ParseRSAPublicKeyFromPEM(pub)
+	publicKey, err := jwt.ParseRSAPublicKeyFromPEM(pub)
 	if err != nil {
-		return fmt.Errorf("Unable to parse the public key: %v", err)
+		logger.Fatalf("Unable to parse the public key: %v", err)
 	}
 
 	logger.Info("Provided RSA keys successfully loaded")
-	return nil
+	return privateKey, publicKey, nil
 }
 
 // initToken initializes the token by weither loading the keys from the
 // filesystem with the loadToken() function or by generating temporarily
 // ones with the generateToken() function
 func initToken(a structs.Auth) {
-	err := loadToken(a)
+	var err error
+	privateKey, publicKey, err = loadToken(a)
 	if err != nil {
+		// At this point we need to generate temporary RSA keys
 		logger.Debug(err)
-		logger.Debug("Generating new temporary RSA keys")
-		generateToken()
+		privateKey, publicKey = generateToken()
 	}
 }
 
