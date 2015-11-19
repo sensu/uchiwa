@@ -27,7 +27,7 @@ func (u *Uchiwa) GetAggregateByIssued(check string, issued string, dc string) (*
 		return nil, err
 	}
 
-	aggregate, err := api.GetAggregateIssued(check, issued, true, true)
+	aggregate, err := api.GetAggregateIssued(check, issued)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
