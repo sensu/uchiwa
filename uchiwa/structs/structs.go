@@ -30,7 +30,8 @@ type Data struct {
 	Events        []interface{}
 	Health        Health
 	Metrics       Metrics
-	Results       []interface{} `json:"-"`
+	SEMetrics     SEMetrics
+	SERawMetrics  SERawMetrics `json:"-"`
 	Stashes       []interface{}
 	Subscriptions []string
 }
@@ -78,6 +79,7 @@ type Health struct {
 // SensuHealth is a structure for holding health information about a specific sensu datacenter
 type SensuHealth struct {
 	Output string `json:"output"`
+	Status int    `json:"status"`
 }
 
 // Info is a structure for holding the /info API information
@@ -112,6 +114,36 @@ type StatusMetrics struct {
 	Warning  int `json:"warning"`
 }
 
+// SEMetrics is a structure for holding the Sensu Enterprise metrics
+type SEMetrics struct {
+	Clients         *SEMetric   `json:"clients"`
+	Events          []*SEMetric `json:"events"`
+	KeepalivesAVG60 *SEMetric   `json:"keepalives_avg_60"`
+	Requests        *SEMetric   `json:"requests"`
+	Results         *SEMetric   `json:"results"`
+}
+
+// SEMetric is a structure for holding a Sensu Enterprise metric
+type SEMetric struct {
+	Data []XY   `json:"data"`
+	Name string `json:"name"`
+}
+
+// SERawMetrics ...
+type SERawMetrics struct {
+	Clients         []*SERawMetric
+	Events          []*SERawMetric
+	KeepalivesAVG60 []*SERawMetric
+	Requests        []*SERawMetric
+	Results         []*SERawMetric
+}
+
+// SERawMetric ...
+type SERawMetric struct {
+	Name   string
+	Points [][]interface{} `json:"points"`
+}
+
 // Sensu is a structure for holding the sensu version
 type Sensu struct {
 	Version string `json:"version"`
@@ -133,4 +165,10 @@ type XPagination struct {
 	Limit  int
 	Offset int
 	Total  int
+}
+
+// XY is a structure for holding the coordinates of Sensu Enterprise metrics points
+type XY struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
 }

@@ -54,6 +54,7 @@ func (d *Daemon) buildData() {
 	d.buildStashes()
 	d.BuildSubscriptions()
 	d.buildMetrics()
+	d.buildSEMetrics()
 }
 
 // getData retrieves all endpoints for every datacenter
@@ -62,42 +63,88 @@ func (d *Daemon) fetchData() {
 
 	for _, datacenter := range *d.Datacenters {
 		// set default health status
-		d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: datacenterErrorString}
+		d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: datacenterErrorString, Status: 2}
 		d.Data.Health.Uchiwa = "ok"
 
 		// fetch sensu data from the datacenter
 		stashes, err := datacenter.GetStashes()
 		if err != nil {
-			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
+			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 		checks, err := datacenter.GetChecks()
 		if err != nil {
-			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
+			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 		clients, err := datacenter.GetClients()
 		if err != nil {
-			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
+			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 		events, err := datacenter.GetEvents()
 		if err != nil {
-			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
+			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 		info, err := datacenter.GetInfo()
 		if err != nil {
-			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
+			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 		aggregates, err := datacenter.GetAggregates()
 		if err != nil {
-			logger.Warningf("Unable to connect to the datacenter %s", datacenter.Name)
+			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 
-		d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: "ok"}
+		if d.Enterprise {
+			clientsMetrics, err := datacenter.Metric("clients")
+			if err != nil {
+				logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+				continue
+			}
+
+			eventsMetrics, err := datacenter.Metric("events")
+			if err != nil {
+				logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+				continue
+			}
+
+			keepalivesMetrics, err := datacenter.Metric("keepalives_avg_60")
+			if err != nil {
+				logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+				continue
+			}
+
+			requestsMetrics, err := datacenter.Metric("check_requests")
+			if err != nil {
+				logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+				continue
+			}
+
+			resultsMetrics, err := datacenter.Metric("results")
+			if err != nil {
+				logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+				continue
+			}
+
+			eventsMetrics.Name = datacenter.Name
+			d.Data.SERawMetrics.Clients = append(d.Data.SERawMetrics.Clients, clientsMetrics)
+			d.Data.SERawMetrics.Events = append(d.Data.SERawMetrics.Events, eventsMetrics)
+			d.Data.SERawMetrics.KeepalivesAVG60 = append(d.Data.SERawMetrics.KeepalivesAVG60, keepalivesMetrics)
+			d.Data.SERawMetrics.Requests = append(d.Data.SERawMetrics.Requests, requestsMetrics)
+			d.Data.SERawMetrics.Results = append(d.Data.SERawMetrics.Results, resultsMetrics)
+		}
+
+		// Determine the status of the datacenter
+		if !info.Redis.Connected {
+			d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: "Not connected to Redis", Status: 1}
+		} else if !info.Transport.Connected {
+			d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: "Not connected to the transport", Status: 1}
+		} else {
+			d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: "ok", Status: 0}
+		}
 
 		// add fetched data into d.Data interface
 		for _, v := range stashes {
