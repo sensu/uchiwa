@@ -1,3 +1,15 @@
+### 0.13.0 (2015-11-22)
+#### Features
+- Datacenters high availability (support multiple APIs for the same datacenter) - [Issue #173](https://github.com/sensu/uchiwa/issues/173) - [Docs](http://docs.uchiwa.io/en/latest/configuration/sensu/#datacenters-high-availability)
+- Static RSA keys for the JSON Web Tokens signature - [Issue #394](https://github.com/sensu/uchiwa/issues/394) - [Docs](http://docs.uchiwa.io/en/latest/configuration/uchiwa/#static-rsa-keys)
+- Upgrade angular-toastr version to 1.6.0 - [PR #85](https://github.com/sensu/uchiwa-web/pull/85)
+
+#### Bug Fixes
+- Fix the _Hide Silenced Clients_ filter on the events view - [Issue #412](https://github.com/sensu/uchiwa/issues/412)
+- Display an error message when Uchiwa fails to contact its backend API - [PR #85](https://github.com/sensu/uchiwa-web/pull/85)
+- Make sure to update the health and metrics data on all views - [PR #86](https://github.com/sensu/uchiwa-web/pull/86)
+- Tweak the badges position on the sidebar
+
 ### 0.12.1 (2015-11-05)
 #### Bug Fixes
 - History for all checks was not properly displayed on the client view - [Issue #404](https://github.com/sensu/uchiwa/issues/404)
