@@ -13,13 +13,11 @@ import (
 
 func main() {
 	configFile := flag.String("c", "./config.json", "Full or relative path to the configuration file")
+	configDir := flag.String("d", "", "Full or relative path to the configuration directory, or comma delimited directories")
 	publicPath := flag.String("p", "public", "Full or relative path to the public directory")
 	flag.Parse()
 
-	config, err := config.Load(*configFile)
-	if err != nil {
-		logger.Fatal(err)
-	}
+	config := config.Load(*configFile, *configDir)
 
 	logger.Debug("Debug mode enabled")
 

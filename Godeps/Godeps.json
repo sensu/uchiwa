@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/sensu/uchiwa",
-	"GoVersion": "go1.4.2",
+	"GoVersion": "go1.5.1",
 	"Packages": [
 		"./..."
 	],
@@ -17,6 +17,11 @@
 		{
 			"ImportPath": "github.com/mitchellh/mapstructure",
 			"Rev": "f7d28d5aeab42b9b95d2e6d6b956f73a290077fc"
+		},
+		{
+			"ImportPath": "github.com/palourde/mergo",
+			"Comment": "0.2.0-10-gd931ffd",
+			"Rev": "d931ffd2c07cb4caf7194e0f6af9ac6771c26d54"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",

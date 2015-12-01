@@ -16,6 +16,10 @@ build
 .idea/
 coverage.out
 *.swp
+
 keys/
 *.rsa
 *.rsa.pub
+
+cover.out
+coverage.html

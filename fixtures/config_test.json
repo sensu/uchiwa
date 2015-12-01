@@ -1,14 +1,19 @@
 {
   "sensu": [
     {
-      "name": "qux",
-      "host": "hidden-ravine-4272.herokuapp.com",
-      "port": 80
+      "name": "us-east-1",
+      "host": "10.0.0.1"
+    },
+    {
+      "name": "us-west-1",
+      "host": "192.168.0.1",
+      "port": 4570,
+      "timeout": 5
     }
   ],
   "uchiwa": {
     "host": "0.0.0.0",
-    "port": 3000,
+    "port": 8080,
     "user": "foo",
     "pass": "bar"
   }

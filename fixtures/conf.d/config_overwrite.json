@@ -1,0 +1,28 @@
+{
+  "sensu": [
+    {
+      "name": "us-east-3",
+      "host": "10.0.0.3"
+    }
+  ],
+  "uchiwa": {
+    "host": "192.168.0.1",
+    "port": 8000,
+    "users": [
+      {
+        "username" : "admin",
+        "password": "secret",
+        "role": {
+          "readonly": false
+        }
+      },
+      {
+        "username" : "readonly",
+        "password": "secret",
+        "role": {
+          "readonly": true
+        }
+      }
+    ]
+  }
+}
