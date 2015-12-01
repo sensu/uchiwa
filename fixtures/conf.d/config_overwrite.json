@@ -10,6 +10,13 @@
     "port": 8000,
     "users": [
       {
+        "username" : "admin",
+        "password": "secret",
+        "role": {
+          "readonly": false
+        }
+      },
+      {
         "username" : "readonly",
         "password": "secret",
         "role": {
