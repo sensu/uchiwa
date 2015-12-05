@@ -336,6 +336,38 @@ func (u *Uchiwa) metricsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Request
+func (u *Uchiwa) requestHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	decoder := json.NewDecoder(r.Body)
+	var data structs.CheckExecution
+	err := decoder.Decode(&data)
+	if err != nil {
+		http.Error(w, "Could not decode body", http.StatusInternalServerError)
+		return
+	}
+
+	// verify that the authenticated user is authorized to access this resource
+	token := auth.GetTokenFromContext(r)
+	unauthorized := FilterGetRequest(data.Dc, token)
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
+	}
+
+	err = u.IssueCheckExecution(data)
+	if err != nil {
+		http.Error(w, "Could not create the stash", http.StatusNotFound)
+		return
+	}
+
+	return
+}
+
 // Stashes
 func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.GetTokenFromContext(r)
@@ -440,6 +472,7 @@ func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 	http.Handle("/datacenters", auth.Authenticate(http.HandlerFunc(u.datacentersHandler)))
 	http.Handle("/events", auth.Authenticate(http.HandlerFunc(u.eventsHandler)))
 	http.Handle("/events/", auth.Authenticate(http.HandlerFunc(u.eventsHandler)))
+	http.Handle("/request", auth.Authenticate(http.HandlerFunc(u.requestHandler)))
 	http.Handle("/stashes", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
 	http.Handle("/stashes/", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
 	http.Handle("/subscriptions", auth.Authenticate(http.HandlerFunc(u.subscriptionsHandler)))

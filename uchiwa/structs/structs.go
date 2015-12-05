@@ -21,6 +21,14 @@ type Auth struct {
 	PublicKey  string
 }
 
+// CheckExecution struct contains the payload for issuing a
+// check execution request to a Sensu API
+type CheckExecution struct {
+	Check       string   `json:"check"`
+	Dc          string   `json:"dc"`
+	Subscribers []string `json:"subscribers"`
+}
+
 // Data is a structure for holding public data fetched from the Sensu APIs and exposed by the endpoints
 type Data struct {
 	Aggregates    []interface{}
