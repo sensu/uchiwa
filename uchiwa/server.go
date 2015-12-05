@@ -368,6 +368,38 @@ func (u *Uchiwa) requestHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Results
+func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "DELETE" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	resources := strings.Split(r.URL.Path, "/")
+	if len(resources) != 5 {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	check := resources[4]
+	client := resources[3]
+	dc := resources[2]
+
+	token := auth.GetTokenFromContext(r)
+
+	unauthorized := FilterGetRequest(dc, token)
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
+	}
+
+	err := u.DeleteCheckResult(check, client, dc)
+	if err != nil {
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+		return
+	}
+}
+
 // Stashes
 func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.GetTokenFromContext(r)
@@ -473,6 +505,7 @@ func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 	http.Handle("/events", auth.Authenticate(http.HandlerFunc(u.eventsHandler)))
 	http.Handle("/events/", auth.Authenticate(http.HandlerFunc(u.eventsHandler)))
 	http.Handle("/request", auth.Authenticate(http.HandlerFunc(u.requestHandler)))
+	http.Handle("/results/", auth.Authenticate(http.HandlerFunc(u.resultsHandler)))
 	http.Handle("/stashes", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
 	http.Handle("/stashes/", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
 	http.Handle("/subscriptions", auth.Authenticate(http.HandlerFunc(u.subscriptionsHandler)))
