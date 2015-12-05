@@ -51,6 +51,7 @@ func (d *Daemon) Start(interval int, data chan *structs.Data) {
 func (d *Daemon) buildData() {
 	d.buildEvents()
 	d.buildClients()
+	d.buildChecks()
 	d.buildStashes()
 	d.BuildSubscriptions()
 	d.buildMetrics()
