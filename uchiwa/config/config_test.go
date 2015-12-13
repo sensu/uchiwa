@@ -93,6 +93,10 @@ func TestInitUchiwa(t *testing.T) {
 	uchiwa := initUchiwa(conf)
 	assert.Equal(t, "github", uchiwa.Auth.Driver)
 
+	conf = GlobalConfig{Gitlab: Gitlab{Server: "127.0.0.1"}}
+	uchiwa = initUchiwa(conf)
+	assert.Equal(t, "gitlab", uchiwa.Auth.Driver)
+
 	conf = GlobalConfig{Ldap: Ldap{BaseDN: "cn=foo", Server: "127.0.0.1"}}
 	uchiwa = initUchiwa(conf)
 	assert.Equal(t, "ldap", uchiwa.Auth.Driver)

@@ -18,6 +18,10 @@ var (
 
 // GetToken returns a string that contain the token
 func GetToken(role *Role, username string) (string, error) {
+	if username == "" {
+		return "", errors.New("Could not generate a token for the user. Invalid username")
+	}
+
 	t := jwt.New(jwt.GetSigningMethod("RS256"))
 	t.Claims["Role"] = role
 	t.Claims["Username"] = username

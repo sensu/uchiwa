@@ -39,6 +39,7 @@ type GlobalConfig struct {
 	Db         Db
 	Enterprise bool
 	Github     Github
+	Gitlab     Gitlab
 	Ldap       Ldap
 }
 
@@ -60,6 +61,15 @@ type Github struct {
 	ClientSecret string
 	Roles        []auth.Role
 	Server       string
+}
+
+// Gitlab struct contains the Gitlab driver configuration
+type Gitlab struct {
+	ApplicationID string
+	Secret        string
+	RedirectURL   string
+	Roles         []auth.Role
+	Server        string
 }
 
 // Ldap struct contains the LDAP driver configuration

@@ -178,6 +178,8 @@ func initUchiwa(global GlobalConfig) GlobalConfig {
 	// Set the proper authentication driver
 	if global.Github.Server != "" {
 		global.Auth.Driver = "github"
+	} else if global.Gitlab.Server != "" {
+		global.Auth.Driver = "gitlab"
 	} else if global.Ldap.Server != "" {
 		global.Auth.Driver = "ldap"
 		if global.Ldap.GroupBaseDN == "" {
