@@ -1,8 +1,8 @@
 language: go
 
 go:
-  - 1.3
   - 1.4
+  - 1.5
 
 notifications:
     email: false
@@ -18,10 +18,13 @@ before_install:
 
 after_success:
   - go test -coverprofile=uchiwa.coverprofile ./uchiwa
+  - go test -coverprofile=audit.coverprofile ./uchiwa/audit
   - go test -coverprofile=auth.coverprofile ./uchiwa/auth
   - go test -coverprofile=config.coverprofile ./uchiwa/config
   - go test -coverprofile=daemon.coverprofile ./uchiwa/daemon
   - go test -coverprofile=filters.coverprofile ./uchiwa/filters
+  - go test -coverprofile=helpers.coverprofile ./uchiwa/helpers
+  - go test -coverprofile=logger.coverprofile ./uchiwa/logger
   - go test -coverprofile=sensu.coverprofile ./uchiwa/sensu
   - go test -coverprofile=structs.coverprofile ./uchiwa/structs
   - $HOME/gopath/bin/gover
