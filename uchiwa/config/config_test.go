@@ -28,6 +28,12 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, "192.168.0.1", conf.Uchiwa.Host)
 	assert.Equal(t, 8000, conf.Uchiwa.Port)
 	assert.Equal(t, 2, len(conf.Uchiwa.Users))
+
+	// We should also support the dashboard attribute instead of uchiwa
+	conf = Load("../../fixtures/config_dashboard.json", "")
+	assert.Equal(t, "127.0.0.1", conf.Uchiwa.Host)
+	assert.Equal(t, 8080, conf.Uchiwa.Port)
+	assert.Equal(t, 1, len(conf.Uchiwa.Users))
 }
 
 func TestLoadDirectories(t *testing.T) {

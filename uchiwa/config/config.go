@@ -67,6 +67,11 @@ func Load(file, directories string) *Config {
 	}
 
 	conf.Sensu = initSensu(conf.Sensu)
+
+	// Support the dashboard attribute
+	if conf.Dashboard != nil {
+		conf.Uchiwa = *conf.Dashboard
+	}
 	conf.Uchiwa = initUchiwa(conf.Uchiwa)
 
 	return conf
@@ -169,6 +174,7 @@ func initSensu(apis []SensuConfig) []SensuConfig {
 }
 
 func initUchiwa(global GlobalConfig) GlobalConfig {
+
 	// Set the proper authentication driver
 	if global.Github.Server != "" {
 		global.Auth.Driver = "github"

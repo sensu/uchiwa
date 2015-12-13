@@ -21,6 +21,11 @@ func GetToken(role *Role, username string) (string, error) {
 	t := jwt.New(jwt.GetSigningMethod("RS256"))
 	t.Claims["Role"] = role
 	t.Claims["Username"] = username
+
+	if privateKey == nil {
+		return "", errors.New("Could not generate a token for the user. Invalid private key")
+	}
+
 	tokenString, err := t.SignedString(privateKey)
 	return tokenString, err
 }
