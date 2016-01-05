@@ -71,9 +71,13 @@ func Load(file, directories string) *Config {
 	// Support the dashboard attribute
 	if conf.Dashboard != nil {
 		conf.Uchiwa = *conf.Dashboard
+		// Apply the default config to the dashboard attribute
+		if err := mergo.Merge(conf, defaultConfig); err != nil {
+			logger.Fatal(err)
+		}
 	}
-	conf.Uchiwa = initUchiwa(conf.Uchiwa)
 
+	conf.Uchiwa = initUchiwa(conf.Uchiwa)
 	return conf
 }
 

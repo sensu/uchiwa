@@ -14,6 +14,7 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, 10, conf.Sensu[0].Timeout)
 	assert.Equal(t, 10, conf.Uchiwa.Refresh)
 	assert.Equal(t, 389, conf.Uchiwa.Ldap.Port)
+	assert.Equal(t, "person", conf.Uchiwa.Ldap.UserObjectClass)
 	assert.Equal(t, "default", conf.Uchiwa.Audit.Level)
 
 	conf = Load("../../fixtures/config_test.json", "../../fixtures/conf.d")
@@ -34,6 +35,8 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, "127.0.0.1", conf.Uchiwa.Host)
 	assert.Equal(t, 8080, conf.Uchiwa.Port)
 	assert.Equal(t, 1, len(conf.Uchiwa.Users))
+	assert.Equal(t, 389, conf.Uchiwa.Ldap.Port)
+	assert.Equal(t, "person", conf.Uchiwa.Ldap.UserObjectClass)
 }
 
 func TestLoadDirectories(t *testing.T) {
