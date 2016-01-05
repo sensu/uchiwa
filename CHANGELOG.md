@@ -1,3 +1,9 @@
+### 0.14.0 (2016-01-05)
+#### Features
+- Load Uchiwa configuration from directories - [PR #416](https://github.com/sensu/uchiwa/pull/416)
+- Issue check requests from the checks view - [Issue #141](https://github.com/sensu/uchiwa/issues/141)
+- Delete a client check result, **requires Sensu 0.21.0 or later** - [PR #419](https://github.com/sensu/uchiwa/pull/419)
+
 ### 0.13.0 (2015-11-22)
 #### Features
 - Datacenters high availability (support multiple APIs for the same datacenter) - [Issue #173](https://github.com/sensu/uchiwa/issues/173) - [Docs](http://docs.uchiwa.io/en/latest/configuration/sensu/#datacenters-high-availability)
