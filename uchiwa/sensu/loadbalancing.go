@@ -17,11 +17,12 @@ func (s *Sensu) delete(endpoint string) error {
 
 	var err error
 	for i := 0; i < len(apis); i++ {
+		logger.Infof("DELETE %s/%s", s.APIs[i].URL, endpoint)
 		err = apis[i].delete(endpoint)
 		if err == nil {
 			return err
 		}
-		logger.Debugf("Delete %s/%s: %v", s.APIs[i].URL, endpoint, err)
+		logger.Warningf("DELETE %s/%s returned: %v", s.APIs[i].URL, endpoint, err)
 	}
 
 	return err
@@ -31,11 +32,12 @@ func (s *Sensu) getBytes(endpoint string) ([]byte, *http.Response, error) {
 	apis := shuffle(s.APIs)
 
 	for i := 0; i < len(apis); i++ {
+		logger.Debugf("GET %s/%s", s.APIs[i].URL, endpoint)
 		bytes, res, err := apis[i].getBytes(endpoint)
 		if err == nil {
 			return bytes, res, err
 		}
-		logger.Debug(err)
+		logger.Warningf("GET %s/%s returned: %v", s.APIs[i].URL, endpoint, err)
 	}
 
 	return nil, nil, errors.New("")
@@ -45,11 +47,12 @@ func (s *Sensu) getSlice(endpoint string, limit int) ([]interface{}, error) {
 	apis := shuffle(s.APIs)
 
 	for i := 0; i < len(apis); i++ {
+		logger.Debugf("GET %s/%s", s.APIs[i].URL, endpoint)
 		slice, err := apis[i].getSlice(endpoint, limit)
 		if err == nil {
 			return slice, err
 		}
-		logger.Debug(err)
+		logger.Warningf("GET %s/%s returned: %v", s.APIs[i].URL, endpoint, err)
 	}
 
 	return nil, errors.New("")
@@ -59,11 +62,12 @@ func (s *Sensu) getMap(endpoint string) (map[string]interface{}, error) {
 	apis := shuffle(s.APIs)
 
 	for i := 0; i < len(apis); i++ {
+		logger.Debugf("GET %s/%s", s.APIs[i].URL, endpoint)
 		m, err := apis[i].getMap(endpoint)
 		if err == nil {
 			return m, err
 		}
-		logger.Debug(err)
+		logger.Warningf("GET %s/%s returned: %v", s.APIs[i].URL, endpoint, err)
 	}
 
 	return nil, errors.New("")
@@ -73,11 +77,12 @@ func (s *Sensu) postPayload(endpoint string, payload string) (map[string]interfa
 	apis := shuffle(s.APIs)
 
 	for i := 0; i < len(apis); i++ {
+		logger.Debugf("POST %s/%s", s.APIs[i].URL, endpoint)
 		m, err := apis[i].postPayload(endpoint, payload)
 		if err == nil {
 			return m, err
 		}
-		logger.Debug(err)
+		logger.Warningf("POST %s/%s returned: %v", s.APIs[i].URL, endpoint, err)
 	}
 
 	return nil, errors.New("")

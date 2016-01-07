@@ -15,9 +15,10 @@ import (
 
 var (
 	defaultGlobalConfig = GlobalConfig{
-		Host:    "0.0.0.0",
-		Port:    3000,
-		Refresh: 10,
+		Host:     "0.0.0.0",
+		Port:     3000,
+		LogLevel: "info",
+		Refresh:  10,
 		Ldap: Ldap{
 			Port:                 389,
 			Security:             "none",
@@ -129,7 +130,7 @@ func loadDirectories(path string) *Config {
 
 // loadFile loads a Config struct from a configuration file
 func loadFile(path string) (*Config, error) {
-	logger.Infof("Loading the configuration file %s", path)
+	logger.Warningf("Loading the configuration file %s", path)
 
 	c := new(Config)
 	file, err := os.Open(path)
@@ -205,6 +206,8 @@ func initUchiwa(global GlobalConfig) GlobalConfig {
 		global.Users = append(global.Users, auth.User{Username: global.User, Password: global.Pass, FullName: global.User})
 	}
 
+	// Set the logger level
+	logger.SetLogLevel(global.LogLevel)
 	return global
 }
 

@@ -523,6 +523,6 @@ func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 	http.Handle("/login", auth.GetIdentification())
 
 	listen := fmt.Sprintf("%s:%d", u.Config.Uchiwa.Host, u.Config.Uchiwa.Port)
-	logger.Infof("Uchiwa is now listening on %s", listen)
+	logger.Warningf("Uchiwa is now listening on %s", listen)
 	logger.Fatal(http.ListenAndServe(listen, nil))
 }

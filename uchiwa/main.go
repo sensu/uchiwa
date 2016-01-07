@@ -85,7 +85,7 @@ func (u *Uchiwa) listener(interval int, data chan *structs.Data) {
 	for {
 		select {
 		case result := <-data:
-			logger.Debug("Received results on the 'data' channel")
+			logger.Trace("Received results on the 'data' channel")
 
 			u.Mu.Lock()
 			u.Data = result
