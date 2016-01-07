@@ -25,9 +25,9 @@ func (d *Daemon) Start(interval int, data chan *structs.Data) {
 
 	select {
 	case data <- d.Data:
-		logger.Debug("Sending initial results on the 'data' channel")
+		logger.Trace("Sending initial results on the 'data' channel")
 	default:
-		logger.Debug("Could not send initial results on the 'data' channel")
+		logger.Trace("Could not send initial results on the 'data' channel")
 	}
 
 	// fetch new data every interval
@@ -40,9 +40,9 @@ func (d *Daemon) Start(interval int, data chan *structs.Data) {
 		// send the result over the data channel
 		select {
 		case data <- d.Data:
-			logger.Debug("Sending results on the 'data' channel")
+			logger.Trace("Sending results on the 'data' channel")
 		default:
-			logger.Debug("Could not send results on the 'data' channel")
+			logger.Trace("Could not send results on the 'data' channel")
 		}
 	}
 }
@@ -63,6 +63,8 @@ func (d *Daemon) fetchData() {
 	d.Data.Health.Sensu = make(map[string]structs.SensuHealth, len(*d.Datacenters))
 
 	for _, datacenter := range *d.Datacenters {
+		logger.Infof("Updating the datacenter %s", datacenter.Name)
+
 		// set default health status
 		d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: datacenterErrorString, Status: 2}
 		d.Data.Health.Uchiwa = "ok"

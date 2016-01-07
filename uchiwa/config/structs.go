@@ -30,6 +30,7 @@ type SensuConfig struct {
 type GlobalConfig struct {
 	Host       string
 	Port       int
+	LogLevel   string
 	Refresh    int
 	Pass       string
 	User       string

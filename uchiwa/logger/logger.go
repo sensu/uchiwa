@@ -5,36 +5,57 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"strings"
 	"time"
 )
 
+// Logging Levels
+const (
+	FATAL int = iota
+	WARN
+	INFO
+	DEBUG
+	TRACE
+)
+
+var configuredLevel int
+
+var levels = []string{"FATAL", "WARN", "INFO", "DEBUG", "TRACE"}
+
 // Logger stuct contains the log details
 type Logger struct {
-	Date   time.Time
-	Level  string
-	Src    Source
-	Output *string
+	Timestamp time.Time `json:"timestamp"`
+	Level     *string   `json:"level"`
+	Src       *Source   `json:"src,omitempty"`
+	Message   *string   `json:"message"`
 }
 
 // Source struct contains the source details
 type Source struct {
-	Func string
-	Line int
+	Func string `json:"func,omitempty"`
+	Line int    `json:"line,omitempty"`
 }
 
 var log = new(Logger)
 
+func init() {
+	configuredLevel = INFO
+}
+
 func (l *Logger) caller() {
 	var ok bool
 	var pc uintptr
-	pc, _, l.Src.Line, ok = runtime.Caller(3)
+	var src Source
+
+	pc, _, src.Line, ok = runtime.Caller(3)
 	if !ok {
-		l.Src.Func = "???"
-		l.Src.Line = 0
+		src.Func = "???"
+		src.Line = 0
 	} else {
-		l.Src.Func = runtime.FuncForPC(pc).Name()
+		src.Func = runtime.FuncForPC(pc).Name()
 	}
 
+	l.Src = &src
 }
 
 func (l *Logger) message(format string, args []interface{}) *string {
@@ -43,14 +64,23 @@ func (l *Logger) message(format string, args []interface{}) *string {
 }
 
 func (l *Logger) now() {
-	l.Date = time.Now()
+	l.Timestamp = time.Now()
 }
 
 func (l *Logger) print(level string, format string, args ...interface{}) {
 	l.now()
-	l.caller()
-	l.Output = l.message(format, args)
-	l.Level = level
+	l.Message = l.message(format, args)
+	l.Level = &level
+
+	// Are we priting logs for this level?
+	if isDisabledFor(level) {
+		return
+	}
+
+	// Do we need to add additional information to the message?
+	if configuredLevel >= DEBUG {
+		l.caller()
+	}
 
 	data, err := json.Marshal(l)
 	if err != nil {
@@ -60,25 +90,16 @@ func (l *Logger) print(level string, format string, args ...interface{}) {
 	fmt.Println(string(data))
 }
 
-// Info function logs a message using INFO as log level
-func Info(args ...interface{}) {
-	s := fmt.Sprint(args...)
-	log.print("info", "%s", s)
-}
-
 // Debug function logs a message using DEBUG as log level if DEBUG environment variable is enabled
 func Debug(args ...interface{}) {
-	debug := os.Getenv("DEBUG")
-	if debug != "" {
-		s := fmt.Sprint(args...)
-		log.print("debug", "%s", s)
-	}
+	s := fmt.Sprint(args...)
+	log.print("debug", "%s", s)
 }
 
-// Warning function logs a message using WARNING as log level
-func Warning(args ...interface{}) {
-	s := fmt.Sprint(args...)
-	log.print("warning", "%s", s)
+// Debugf function logs a message with arguments using DEBUG as log level if DEBUG environment variable is enabled
+func Debugf(format string, args ...interface{}) {
+	s := fmt.Sprintf(format, args...)
+	log.print("debug", s)
 }
 
 // Fatal function logs a message using FATAL as log level followed by a call to os.Exit(1)
@@ -88,30 +109,68 @@ func Fatal(args ...interface{}) {
 	os.Exit(1)
 }
 
+// Fatalf function logs a message with arguments using FATAL as log level followed by a call to os.Exit(1)
+func Fatalf(format string, args ...interface{}) {
+	s := fmt.Sprintf(format, args...)
+	log.print("fatal", s)
+	os.Exit(1)
+}
+
+// Info function logs a message using INFO as log level
+func Info(args ...interface{}) {
+	s := fmt.Sprint(args...)
+	log.print("info", "%s", s)
+}
+
 // Infof function logs a message with arguments using INFO as log level
 func Infof(format string, args ...interface{}) {
 	s := fmt.Sprintf(format, args...)
 	log.print("info", s)
 }
 
-// Debugf function logs a message with arguments using DEBUG as log level if DEBUG environment variable is enabled
-func Debugf(format string, args ...interface{}) {
-	debug := os.Getenv("DEBUG")
-	if debug != "" {
-		s := fmt.Sprintf(format, args...)
-		log.print("debug", s)
-	}
+// Trace function logs a message using TRACE as log level
+func Trace(args ...interface{}) {
+	s := fmt.Sprint(args...)
+	log.print("trace", "%s", s)
+}
+
+// Tracef function logs a message with arguments using TRACE as log level
+func Tracef(format string, args ...interface{}) {
+	s := fmt.Sprintf(format, args...)
+	log.print("trace", s)
+}
+
+// Warning function logs a message using WARNING as log level
+func Warning(args ...interface{}) {
+	s := fmt.Sprint(args...)
+	log.print("warn", "%s", s)
 }
 
 // Warningf function logs a message with arguments using WARNING as log level
 func Warningf(format string, args ...interface{}) {
 	s := fmt.Sprintf(format, args...)
-	log.print("warning", s)
+	log.print("warn", s)
 }
 
-// Fatalf function logs a message with arguments using FATAL as log level followed by a call to os.Exit(1)
-func Fatalf(format string, args ...interface{}) {
-	s := fmt.Sprintf(format, args...)
-	log.print("fatal", s)
-	os.Exit(1)
+// getLevelInt returns the integer representation of a logging level
+func getLevelInt(level string) int {
+	for i, name := range levels {
+		if strings.EqualFold(name, level) {
+			return i
+		}
+	}
+	// Return info by default
+	return INFO
+}
+
+// isDisabledFor returns true if logging is disabled for the provided level
+func isDisabledFor(level string) bool {
+	levelInt := getLevelInt(level)
+
+	return levelInt > configuredLevel
+}
+
+// SetLogLevel ...
+func SetLogLevel(level string) {
+	configuredLevel = getLevelInt(level)
 }

@@ -8,7 +8,6 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/auth"
 	"github.com/sensu/uchiwa/uchiwa/config"
 	"github.com/sensu/uchiwa/uchiwa/filters"
-	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
 func main() {
@@ -18,8 +17,6 @@ func main() {
 	flag.Parse()
 
 	config := config.Load(*configFile, *configDir)
-
-	logger.Debug("Debug mode enabled")
 
 	u := uchiwa.Init(config)
 
