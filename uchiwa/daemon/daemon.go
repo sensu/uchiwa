@@ -102,42 +102,27 @@ func (d *Daemon) fetchData() {
 		}
 
 		if d.Enterprise {
-			clientsMetrics, err := datacenter.Metric("clients")
-			if err != nil {
-				logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
-				continue
+			hasMetrics := true
+			metrics := make(map[string]*structs.SERawMetric)
+			metricsEndpoints := []string{"clients", "events", "keepalives_avg_60", "check_requests", "results"}
+
+			for _, metric := range metricsEndpoints {
+				metrics[metric], err = datacenter.Metric(metric)
+				if err != nil {
+					logger.Warningf("Could not retrieve the %s metrics. Discarding all metrics for the datacenter %s", metric, datacenter.Name)
+					hasMetrics = false
+					break
+				}
 			}
 
-			eventsMetrics, err := datacenter.Metric("events")
-			if err != nil {
-				logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
-				continue
+			if hasMetrics {
+				metrics["events"].Name = datacenter.Name
+				d.Data.SERawMetrics.Clients = append(d.Data.SERawMetrics.Clients, metrics["clients"])
+				d.Data.SERawMetrics.Events = append(d.Data.SERawMetrics.Events, metrics["events"])
+				d.Data.SERawMetrics.KeepalivesAVG60 = append(d.Data.SERawMetrics.KeepalivesAVG60, metrics["keepalives_avg_60"])
+				d.Data.SERawMetrics.Requests = append(d.Data.SERawMetrics.Requests, metrics["check_requests"])
+				d.Data.SERawMetrics.Results = append(d.Data.SERawMetrics.Results, metrics["results"])
 			}
-
-			keepalivesMetrics, err := datacenter.Metric("keepalives_avg_60")
-			if err != nil {
-				logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
-				continue
-			}
-
-			requestsMetrics, err := datacenter.Metric("check_requests")
-			if err != nil {
-				logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
-				continue
-			}
-
-			resultsMetrics, err := datacenter.Metric("results")
-			if err != nil {
-				logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
-				continue
-			}
-
-			eventsMetrics.Name = datacenter.Name
-			d.Data.SERawMetrics.Clients = append(d.Data.SERawMetrics.Clients, clientsMetrics)
-			d.Data.SERawMetrics.Events = append(d.Data.SERawMetrics.Events, eventsMetrics)
-			d.Data.SERawMetrics.KeepalivesAVG60 = append(d.Data.SERawMetrics.KeepalivesAVG60, keepalivesMetrics)
-			d.Data.SERawMetrics.Requests = append(d.Data.SERawMetrics.Requests, requestsMetrics)
-			d.Data.SERawMetrics.Results = append(d.Data.SERawMetrics.Results, resultsMetrics)
 		}
 
 		// Determine the status of the datacenter
