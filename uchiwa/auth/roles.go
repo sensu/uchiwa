@@ -10,6 +10,7 @@ import (
 // Role contains the roles of each GitHub team
 type Role struct {
 	Datacenters   []string
+	Fallback      bool
 	Members       []string
 	Name          string
 	Readonly      bool
