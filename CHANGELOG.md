@@ -1,3 +1,11 @@
+### 0.14.1 (2016-01-15)
+#### Bug Fixes
+- Fix version number for Debian packages - [Issue #26](https://github.com/sensu/uchiwa-build/issues/26)
+
+#### Other
+- Improved logging with log levels - [PR #425](https://github.com/sensu/uchiwa/pull/425)
+- Upgrade to Go 1.5.3
+
 ### 0.14.0 (2016-01-05)
 #### Features
 - Load Uchiwa configuration from directories - [PR #416](https://github.com/sensu/uchiwa/pull/416)
