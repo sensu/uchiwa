@@ -42,3 +42,8 @@ func NewAPI(path string, url string, timeout int, username string, password stri
 
 	return API{path, url, timeout, username, password, client}
 }
+
+// GetName returns the Name attribute
+func (s *Sensu) GetName() string {
+	return s.Name
+}
