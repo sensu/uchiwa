@@ -1,3 +1,7 @@
+### 0.14.2 (2016-02-02)
+#### Features
+- Add support for serving content over HTTPS - [PR #441](https://github.com/sensu/uchiwa/pull/441)
+
 ### 0.14.1 (2016-01-15)
 #### Bug Fixes
 - Fix version number for Debian packages - [Issue #26](https://github.com/sensu/uchiwa-build/issues/26)
