@@ -20,6 +20,8 @@ coverage.out
 keys/
 *.rsa
 *.rsa.pub
+*.key
+*.pem
 
 cover.out
 coverage.html

@@ -42,6 +42,7 @@ type GlobalConfig struct {
 	Github     Github
 	Gitlab     Gitlab
 	Ldap       Ldap
+	SSL        SSL
 }
 
 // Audit struct contains the config of the Audit logger
@@ -89,4 +90,10 @@ type Ldap struct {
 	UserAttribute        string
 	UserBaseDN           string
 	UserObjectClass      string
+}
+
+// SSL struct contains the path the SSL certificate and key
+type SSL struct {
+	CertFile string
+	KeyFile  string
 }

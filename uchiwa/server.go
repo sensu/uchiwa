@@ -524,5 +524,10 @@ func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 
 	listen := fmt.Sprintf("%s:%d", u.Config.Uchiwa.Host, u.Config.Uchiwa.Port)
 	logger.Warningf("Uchiwa is now listening on %s", listen)
+
+	if u.Config.Uchiwa.SSL.CertFile != "" && u.Config.Uchiwa.SSL.KeyFile != "" {
+		logger.Fatal(http.ListenAndServeTLS(listen, u.Config.Uchiwa.SSL.CertFile, u.Config.Uchiwa.SSL.KeyFile, nil))
+	}
+
 	logger.Fatal(http.ListenAndServe(listen, nil))
 }
