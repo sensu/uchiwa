@@ -79,6 +79,11 @@ func rawMetricsToAggregatedCoordinates(rawMetrics []*structs.SERawMetric) *struc
 	var oldest float64
 	for _, metrics := range rawMetrics {
 		count := len(metrics.Points)
+		if count == 0 || len(metrics.Points[count-1]) == 0 {
+			metrics.Points = make([][]interface{}, 0)
+			break
+		}
+
 		timestamp, ok := metrics.Points[count-1][0].(float64)
 		if !ok {
 			metrics.Points = make([][]interface{}, 0)
@@ -95,6 +100,11 @@ func rawMetricsToAggregatedCoordinates(rawMetrics []*structs.SERawMetric) *struc
 	// Make sure all arrays have the same latest point
 	for _, metrics := range rawMetrics {
 		count := len(metrics.Points)
+		if count == 0 || len(metrics.Points[count-1]) == 0 {
+			metrics.Points = make([][]interface{}, 0)
+			break
+		}
+
 		value, ok := metrics.Points[count-1][0].(float64)
 		if !ok {
 			metrics.Points = make([][]interface{}, 0)
@@ -103,7 +113,7 @@ func rawMetricsToAggregatedCoordinates(rawMetrics []*structs.SERawMetric) *struc
 		if value == oldest {
 			continue
 		} else {
-			// This metrics contains a too new data point that we need to remove
+			// This metrics contains a too recent data point that we need to remove
 			_, metrics.Points = metrics.Points[len(metrics.Points)-1], metrics.Points[:len(metrics.Points)-1]
 		}
 	}
@@ -121,6 +131,10 @@ func rawMetricsToAggregatedCoordinates(rawMetrics []*structs.SERawMetric) *struc
 	for i := range seMetric.Data {
 		for _, metrics := range rawMetrics {
 			if len(metrics.Points) > i {
+				if len(metrics.Points[len(metrics.Points)-i-1]) < 2 {
+					continue
+				}
+
 				x, ok := metrics.Points[len(metrics.Points)-i-1][0].(float64)
 				if !ok {
 					continue

@@ -8,6 +8,7 @@ import (
 )
 
 func TestRawMetricsToAggregatedCoordinates(t *testing.T) {
+	// Normal metrics
 	raw1 := structs.SERawMetric{
 		Points: [][]interface{}{{1000000000.0, 0.5}, {1000000001.0, 1.0}, {1000000002.0, 1.0}},
 	}
@@ -33,4 +34,19 @@ func TestRawMetricsToAggregatedCoordinates(t *testing.T) {
 
 	coordinates := rawMetricsToAggregatedCoordinates(metrics)
 	assert.Equal(t, &expectedCoordinates, coordinates)
+
+	// Empty metrics
+	metrics = []*structs.SERawMetric{&structs.SERawMetric{}}
+	coordinates = rawMetricsToAggregatedCoordinates(metrics)
+	assert.Equal(t, &structs.SEMetric{Data: []structs.XY{}}, coordinates)
+
+	// Invalid point
+	metrics = []*structs.SERawMetric{&structs.SERawMetric{Points: [][]interface{}{{100000000.0}}}}
+	coordinates = rawMetricsToAggregatedCoordinates(metrics)
+	assert.Equal(t, &structs.SEMetric{Data: []structs.XY{structs.XY{X: 0, Y: 0}}}, coordinates)
+
+	// Single point metrics
+	metrics = []*structs.SERawMetric{&raw4}
+	coordinates = rawMetricsToAggregatedCoordinates(metrics)
+	assert.Equal(t, &structs.SEMetric{Data: []structs.XY{structs.XY{X: 1.000000002e+12, Y: 2.5}}}, coordinates)
 }
