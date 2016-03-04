@@ -1,3 +1,10 @@
+### 0.14.3 (2016-03-03)
+#### Features
+- Add a detailed stash view - [PR #90](https://github.com/sensu/uchiwa-web/pull/90)
+
+#### Bug Fixes
+- The HTML code for syntax highlighting was not always properly processed - [PR #91](https://github.com/sensu/uchiwa-web/pull/91)
+
 ### 0.14.2 (2016-02-02)
 #### Features
 - Add support for serving content over HTTPS - [PR #441](https://github.com/sensu/uchiwa/pull/441)
