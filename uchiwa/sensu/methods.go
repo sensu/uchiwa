@@ -48,7 +48,6 @@ func (api *API) getSlice(endpoint string, limit int) ([]interface{}, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Could not parse the JSON-encoded response body: %v", err)
 	}
-
 	// Verify if the endpoint supports pagination
 	if limit != -1 && res.Header.Get("X-Pagination") != "" {
 		var xPagination structs.XPagination
@@ -72,6 +71,11 @@ func (api *API) getSlice(endpoint string, limit int) ([]interface{}, error) {
 			partialList, err := helpers.GetInterfacesFromBytes(body)
 			if err != nil {
 				return nil, fmt.Errorf("Could not parse the JSON-encoded response body: %v", err)
+			}
+
+			if len(partialList) == 0 {
+				logger.Debugf("No additional elements found, exiting pagination for %s endpoint", endpoint)
+				break
 			}
 
 			for _, e := range partialList {
