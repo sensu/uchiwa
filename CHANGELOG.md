@@ -1,3 +1,9 @@
+### 0.14.4 (2016-05-10)
+#### Bug Fixes
+- Add missing syntax highlighting on the client view - [1089a7d](https://github.com/sensu/uchiwa-web/commit/1089a7d75ca8810c31fc44492acb07dc402faa5a)
+- Fix the checks filter on the events view - [PR #94](https://github.com/sensu/uchiwa-web/pull/94)
+- Prevent infinite pagination loop on the Sensu API - [PR #478](https://github.com/sensu/uchiwa/pull/478)
+
 ### 0.14.3 (2016-03-03)
 #### Features
 - Add a detailed stash view - [PR #90](https://github.com/sensu/uchiwa-web/pull/90)
