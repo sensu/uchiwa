@@ -1,3 +1,7 @@
+### 0.14.5 (2016-05-10)
+#### Bug Fixes
+- Fix i386 packages - [PR #31](https://github.com/sensu/uchiwa-build/pull/31)
+
 ### 0.14.4 (2016-05-10)
 #### Bug Fixes
 - Add missing syntax highlighting on the client view - [1089a7d](https://github.com/sensu/uchiwa-web/commit/1089a7d75ca8810c31fc44492acb07dc402faa5a)
