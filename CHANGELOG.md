@@ -1,3 +1,7 @@
+### 0.15.0 (2016-06-02)
+#### Features
+- Add support for upcoming Sensu 0.24.0 - [PR #500](https://github.com/sensu/uchiwa/pull/500)
+
 ### 0.14.5 (2016-05-10)
 #### Bug Fixes
 - Fix i386 packages - [PR #31](https://github.com/sensu/uchiwa-build/pull/31)
