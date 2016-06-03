@@ -3,14 +3,14 @@ package uchiwa
 import "github.com/sensu/uchiwa/uchiwa/logger"
 
 // GetAggregate retrieves a list of issued timestamps from a specified DC
-func (u *Uchiwa) GetAggregate(check string, dc string) (*[]interface{}, error) {
+func (u *Uchiwa) GetAggregate(check string, dc string) (*map[string]interface{}, error) {
 	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
 	}
 
-	aggregate, err := api.GetAggregate(check, 1)
+	aggregate, err := api.GetAggregate(check)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
