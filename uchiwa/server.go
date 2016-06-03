@@ -72,13 +72,12 @@ func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		return
-	} else if len(resources) == 5 {
-		// GET on /aggregates/{dc}/{check}/{issued}
+	} else if len(resources) >= 4 {
+		// GET on /aggregates/{dc}/{check}/?{issued}
 		check := resources[3]
 		dc := resources[2]
-		issued := resources[4]
 
-		if check == "" || dc == "" || issued == "" {
+		if check == "" || dc == "" {
 			http.Error(w, "", http.StatusBadRequest)
 			return
 		}
@@ -89,10 +88,22 @@ func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		aggregate, err := u.GetAggregateByIssued(check, issued, dc)
-		if err != nil {
-			http.Error(w, fmt.Sprint(err), 500)
-			return
+		var aggregate *map[string]interface{}
+		var err error
+
+		if len(resources) == 4 {
+			aggregate, err = u.GetAggregate(check, dc)
+			if err != nil {
+				http.Error(w, fmt.Sprint(err), 500)
+				return
+			}
+		} else {
+			issued := resources[4]
+			aggregate, err = u.GetAggregateByIssued(check, issued, dc)
+			if err != nil {
+				http.Error(w, fmt.Sprint(err), 500)
+				return
+			}
 		}
 
 		encoder := json.NewEncoder(w)
