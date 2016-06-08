@@ -81,6 +81,7 @@ type Ldap struct {
 	BaseDN               string
 	BindUser             string
 	BindPass             string
+	Dialect              string
 	GroupBaseDN          string
 	GroupObjectClass     string
 	GroupMemberAttribute string
