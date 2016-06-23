@@ -70,3 +70,26 @@ func TestBuildClientHistory(t *testing.T) {
 	assert.Equal(t, expectedHistory, result)
 
 }
+
+func TestFindClient(t *testing.T) {
+	u := Uchiwa{
+		Data: &structs.Data{},
+	}
+
+	u.Data.Clients = []interface{}{
+		map[string]interface{}{"name": "foo", "dc": "us-east-1"},
+		map[string]interface{}{"name": "bar", "dc": "us-east-1"},
+		map[string]interface{}{"name": "foo", "dc": "us-west-1"},
+	}
+
+	clients, err := u.findClient("foo")
+	assert.Nil(t, err)
+	assert.Equal(t, 2, len(clients))
+
+	clients, err = u.findClient("bar")
+	assert.Nil(t, err)
+	assert.Equal(t, 1, len(clients))
+
+	_, err = u.findClient("qux")
+	assert.NotNil(t, err)
+}

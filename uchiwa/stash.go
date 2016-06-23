@@ -1,6 +1,10 @@
 package uchiwa
 
-import "github.com/sensu/uchiwa/uchiwa/logger"
+import (
+	"fmt"
+
+	"github.com/sensu/uchiwa/uchiwa/logger"
+)
 
 type stash struct {
 	Dc      string                 `json:"dc"`
@@ -39,4 +43,24 @@ func (u *Uchiwa) DeleteStash(dc, path string) error {
 	}
 
 	return nil
+}
+
+func (u *Uchiwa) findStash(path string) ([]interface{}, error) {
+	var stashes []interface{}
+	for _, c := range u.Data.Stashes {
+		m, ok := c.(map[string]interface{})
+		if !ok {
+			logger.Warningf("Could not assert this stash to an interface %+v", c)
+			continue
+		}
+		if m["path"] == path {
+			stashes = append(stashes, m)
+		}
+	}
+
+	if len(stashes) == 0 {
+		return nil, fmt.Errorf("Could not find any stashes with the path '%s'", path)
+	}
+
+	return stashes, nil
 }

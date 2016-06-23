@@ -65,14 +65,14 @@ func (u *Uchiwa) buildClientHistory(client, dc string, history []interface{}) []
 }
 
 // DeleteClient send a DELETE request to the /clients/*client* endpoint in order to delete a client
-func (u *Uchiwa) DeleteClient(id string, dc string) error {
+func (u *Uchiwa) DeleteClient(dc, name string) error {
 	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return err
 	}
 
-	err = api.DeleteClient(id)
+	err = api.DeleteClient(name)
 	if err != nil {
 		logger.Warning(err)
 		return err
@@ -81,18 +81,24 @@ func (u *Uchiwa) DeleteClient(id string, dc string) error {
 	return nil
 }
 
-func (u *Uchiwa) findClientInClients(id *string, dc *string) (map[string]interface{}, error) {
+func (u *Uchiwa) findClient(name string) ([]interface{}, error) {
+	var clients []interface{}
 	for _, c := range u.Data.Clients {
 		m, ok := c.(map[string]interface{})
 		if !ok {
 			logger.Warningf("Could not assert this client to an interface %+v", c)
 			continue
 		}
-		if m["name"] == *id && m["dc"] == *dc {
-			return m, nil
+		if m["name"] == name {
+			clients = append(clients, m)
 		}
 	}
-	return nil, fmt.Errorf("Could not find client %s", *id)
+
+	if len(clients) == 0 {
+		return nil, fmt.Errorf("Could not find any client with the name '%s'", name)
+	}
+
+	return clients, nil
 }
 
 func (u *Uchiwa) findOutput(id *string, h map[string]interface{}, dc *string) string {
@@ -137,34 +143,42 @@ func (u *Uchiwa) findOutput(id *string, h map[string]interface{}, dc *string) st
 	return ""
 }
 
-// GetClient retrieves client history from specified DC
-func (u *Uchiwa) GetClient(client, dc string) (map[string]interface{}, error) {
+// GetClient retrieves a specific client
+func (u *Uchiwa) GetClient(dc, name string) (map[string]interface{}, error) {
 	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
 	}
 
-	// lock results while we gather client info
-	u.Mu.Lock()
-	defer u.Mu.Unlock()
-
-	c, err := u.findClientInClients(&client, &dc)
+	client, err := api.GetClient(name)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
 	}
 
-	h, err := api.GetClientHistory(client)
+	client["_id"] = fmt.Sprintf("%s/%s", dc, name)
+	client["dc"] = dc
+	client["acknowledged"] = helpers.IsAcknowledged("", name, dc, u.Data.Stashes)
+
+	return client, nil
+}
+
+// GetClientHistory retrieves a specific client history
+func (u *Uchiwa) GetClientHistory(dc, name string) ([]interface{}, error) {
+	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
 	}
 
-	history := u.buildClientHistory(client, dc, h)
+	h, err := api.GetClientHistory(name)
+	if err != nil {
+		logger.Warning(err)
+		return nil, err
+	}
 
-	// add client history to client map for easy frontend consumption
-	c["history"] = history
+	history := u.buildClientHistory(name, dc, h)
 
-	return c, nil
+	return history, nil
 }
