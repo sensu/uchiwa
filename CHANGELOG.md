@@ -1,3 +1,13 @@
+### 0.16.0 (2016-06-23)
+### Bug Fixes
+- The stashes could not be deleted from the stashes view - [Issue #503](https://github.com/sensu/uchiwa/issues/507)
+- Incorrect client attributes could be displayed on a client view - [Issue #471](https://github.com/sensu/uchiwa/issues/471)
+- The 'Show All' option should not use the current elements number - [Issue #466](https://github.com/sensu/uchiwa/issues/466)
+- The relative timestamp was not properly calculated on a stash view - [Issue #456](https://github.com/sensu/uchiwa/issues/456)
+
+#### Other
+- Refactoring of the Uchiwa API endpoints - [PR #513](https://github.com/sensu/uchiwa/pull/513)
+
 ### 0.15.0 (2016-06-02)
 #### Features
 - Add support for upcoming Sensu 0.24.0 - [PR #500](https://github.com/sensu/uchiwa/pull/500)
