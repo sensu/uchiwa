@@ -155,6 +155,9 @@ func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := auth.GetTokenFromContext(r)
 	aggregates := FilterAggregates(&u.Data.Aggregates, token)
+	if len(aggregates) == 0 {
+		aggregates = make([]interface{}, 0)
+	}
 
 	// Create header
 	w.Header().Add("Accept-Charset", "utf-8")
@@ -191,6 +194,9 @@ func (u *Uchiwa) checksHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := auth.GetTokenFromContext(r)
 	checks := FilterChecks(&u.Data.Checks, token)
+	if len(checks) == 0 {
+		checks = make([]interface{}, 0)
+	}
 
 	// Create header
 	w.Header().Add("Accept-Charset", "utf-8")
@@ -351,8 +357,10 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := auth.GetTokenFromContext(r)
-
 	clients := FilterClients(&u.Data.Clients, token)
+	if len(clients) == 0 {
+		clients = make([]interface{}, 0)
+	}
 
 	// Create header
 	w.Header().Add("Accept-Charset", "utf-8")
@@ -536,6 +544,9 @@ func (u *Uchiwa) eventsHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := auth.GetTokenFromContext(r)
 	events := FilterEvents(&u.Data.Events, token)
+	if len(events) == 0 {
+		events = make([]interface{}, 0)
+	}
 
 	// Create header
 	w.Header().Add("Accept-Charset", "utf-8")
@@ -808,6 +819,9 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" || r.Method == "HEAD" {
 		// GET on /stashes
 		stashes := FilterStashes(&u.Data.Stashes, token)
+		if len(stashes) == 0 {
+			stashes = make([]interface{}, 0)
+		}
 
 		// Create header
 		w.Header().Add("Accept-Charset", "utf-8")
@@ -874,6 +888,9 @@ func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := auth.GetTokenFromContext(r)
 	subscriptions := FilterSubscriptions(&u.Data.Subscriptions, token)
+	if len(subscriptions) == 0 {
+		subscriptions = make([]string, 0)
+	}
 
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(subscriptions); err != nil {
