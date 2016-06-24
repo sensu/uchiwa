@@ -157,6 +157,10 @@ func (u *Uchiwa) GetClient(dc, name string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
+	// lock results
+	u.Mu.Lock()
+	defer u.Mu.Unlock()
+
 	client["_id"] = fmt.Sprintf("%s/%s", dc, name)
 	client["dc"] = dc
 	client["acknowledged"] = helpers.IsAcknowledged("", name, dc, u.Data.Stashes)
@@ -177,6 +181,10 @@ func (u *Uchiwa) GetClientHistory(dc, name string) ([]interface{}, error) {
 		logger.Warning(err)
 		return nil, err
 	}
+
+	// lock results
+	u.Mu.Lock()
+	defer u.Mu.Unlock()
 
 	history := u.buildClientHistory(name, dc, h)
 
