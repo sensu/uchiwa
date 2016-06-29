@@ -1,12 +1,14 @@
-FROM golang:1.5.3-onbuild
+FROM golang:1.5.4-alpine
 
-# update debian packages
-RUN apt-get update
-
-# install uchiwa-web bower package
-RUN apt-get install -yq nodejs npm git wget
-RUN ln -s /usr/bin/nodejs /usr/bin/node
-RUN npm install --production --unsafe-perm
+# golang alpine doesn't have ONBUILD, do it manually, then run npm and cleanup
+COPY . /go/src/app
+WORKDIR /go/src/app
+RUN apk add --no-cache nodejs git && \
+    go get -d -v && \
+    go install -v && \
+    npm install --production --unsafe-perm && \
+    npm dedupe && \
+    apk del --no-cache git
 
 VOLUME /config
 
