@@ -1,5 +1,16 @@
+### 0.17.0 (2016-07-20)
+#### Features
+- Add API token-based authentication - [PR #525](https://github.com/sensu/uchiwa/pull/525)
+
+#### Bug Fixes
+- Prevent old alerts to be displayed inadvertently - [Issue #512](https://github.com/sensu/uchiwa/issues/512)
+- Fix iframes support - [Issue #508](https://github.com/sensu/uchiwa/issues/508)
+
+#### Other
+Use Alpine Linux as the base image for Docker images - [PR #498](https://github.com/sensu/uchiwa/pull/498)
+
 ### 0.16.0 (2016-06-23)
-### Bug Fixes
+#### Bug Fixes
 - The stashes could not be deleted from the stashes view - [Issue #503](https://github.com/sensu/uchiwa/issues/507)
 - Incorrect client attributes could be displayed on a client view - [Issue #471](https://github.com/sensu/uchiwa/issues/471)
 - The 'Show All' option should not use the current elements number - [Issue #466](https://github.com/sensu/uchiwa/issues/466)
