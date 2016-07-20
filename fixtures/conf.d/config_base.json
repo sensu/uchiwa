@@ -18,9 +18,8 @@
       {
         "username" : "admin",
         "password": "secret",
-        "role": {
-          "readonly": false
-        }
+        "readonly": false,
+        "accessToken": "foobar"
       }
     ]
   }

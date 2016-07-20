@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/sensu/uchiwa/uchiwa/auth"
+	"github.com/sensu/uchiwa/uchiwa/authentication"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
@@ -34,7 +34,7 @@ type GlobalConfig struct {
 	Refresh    int
 	Pass       string
 	User       string
-	Users      []auth.User
+	Users      []authentication.User
 	Audit      Audit
 	Auth       structs.Auth
 	Db         Db
@@ -61,7 +61,7 @@ type Db struct {
 type Github struct {
 	ClientID     string
 	ClientSecret string
-	Roles        []auth.Role
+	Roles        []authentication.Role
 	Server       string
 }
 
@@ -70,7 +70,7 @@ type Gitlab struct {
 	ApplicationID string
 	Secret        string
 	RedirectURL   string
-	Roles         []auth.Role
+	Roles         []authentication.Role
 	Server        string
 }
 
@@ -87,7 +87,7 @@ type Ldap struct {
 	GroupObjectClass     string
 	GroupMemberAttribute string
 	Insecure             bool
-	Roles                []auth.Role
+	Roles                []authentication.Role
 	Security             string
 	UserAttribute        string
 	UserBaseDN           string

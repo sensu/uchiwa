@@ -1,20 +1,32 @@
-package auth
+package authentication
 
 import (
 	"crypto/rand"
 	"crypto/rsa"
 	"errors"
 	"io/ioutil"
+	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/context"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
+
+const jwtToken = "jwtToken"
 
 var (
 	privateKey *rsa.PrivateKey
 	publicKey  *rsa.PublicKey
 )
+
+// GetJWTFromContext retrieves the JWT Token from the request
+func GetJWTFromContext(r *http.Request) *jwt.Token {
+	if value := context.Get(r, jwtToken); value != nil {
+		return value.(*jwt.Token)
+	}
+	return nil
+}
 
 // GetToken returns a string that contain the token
 func GetToken(role *Role, username string) (string, error) {
@@ -34,6 +46,16 @@ func GetToken(role *Role, username string) (string, error) {
 	return tokenString, err
 }
 
+// generateKeyPair generates an RSA keypair of 2048 bits using a random rand.Reader
+func generateKeyPair() *rsa.PrivateKey {
+	keypair, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		logger.Fatalf("Could not generate an RSA keypair: %s", err)
+	}
+
+	return keypair
+}
+
 // generateToken generates a private and public RSA keys
 // in order to be used for the JWT signature
 func generateToken() (*rsa.PrivateKey, *rsa.PublicKey) {
@@ -44,6 +66,19 @@ func generateToken() (*rsa.PrivateKey, *rsa.PublicKey) {
 	publicKey := &privateKey.PublicKey
 
 	return privateKey, publicKey
+}
+
+// initToken initializes the token by weither loading the keys from the
+// filesystem with the loadToken() function or by generating temporarily
+// ones with the generateToken() function
+func initToken(a structs.Auth) {
+	var err error
+	privateKey, publicKey, err = loadToken(a)
+	if err != nil {
+		// At this point we need to generate temporary RSA keys
+		logger.Debug(err)
+		privateKey, publicKey = generateToken()
+	}
 }
 
 // loadToken loads a private and public RSA keys from the filesystem
@@ -79,25 +114,30 @@ func loadToken(a structs.Auth) (*rsa.PrivateKey, *rsa.PublicKey, error) {
 	return privateKey, publicKey, nil
 }
 
-// initToken initializes the token by weither loading the keys from the
-// filesystem with the loadToken() function or by generating temporarily
-// ones with the generateToken() function
-func initToken(a structs.Auth) {
-	var err error
-	privateKey, publicKey, err = loadToken(a)
-	if err != nil {
-		// At this point we need to generate temporary RSA keys
-		logger.Debug(err)
-		privateKey, publicKey = generateToken()
-	}
+// setJWTIntoContext injects the JWT Token into the request for later use
+func setJWTInContext(r *http.Request, token *jwt.Token) {
+	context.Set(r, jwtToken, token)
 }
 
-// generateKeyPair generates an RSA keypair of 2048 bits using a random rand.Reader
-func generateKeyPair() *rsa.PrivateKey {
-	keypair, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		logger.Fatalf("Could not generate an RSA keypair: %s", err)
+// verifyJWT extracts and verifies the validity of the JWT
+func verifyJWT(r *http.Request) (*jwt.Token, error) {
+	token, err := jwt.ParseFromRequest(r, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodRSA); !ok {
+			logger.Debugf("Unexpected signing method: %v", t.Header["alg"])
+			return nil, errors.New("")
+		}
+		return publicKey, nil
+	})
+
+	if token == nil || err != nil {
+		logger.Debug(err)
+		return nil, errors.New("")
 	}
 
-	return keypair
+	if !token.Valid {
+		logger.Debug("Invalid JWT")
+		return nil, errors.New("")
+	}
+
+	return token, nil
 }

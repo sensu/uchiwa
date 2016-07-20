@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/palourde/mergo"
-	"github.com/sensu/uchiwa/uchiwa/auth"
+	"github.com/sensu/uchiwa/uchiwa/authentication"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
@@ -39,22 +39,26 @@ var (
 	defaultConfig = Config{
 		Uchiwa: defaultGlobalConfig,
 	}
+	// Private contains the private configuration
+	Private *Config
 )
 
-// Load retrieves a specified configuration file and return a Config struct
+// Load retrieves the Uchiwa configuration from files and directories
+// and returns the private configuration as a Config struct pointer
 func Load(file, directories string) *Config {
 	// Load the configuration file
-	conf, err := loadFile(file)
+	var err error
+	Private, err = loadFile(file)
 	if err != nil {
 		logger.Fatal(err)
 	}
 
 	// Apply default configs to the configuration file
-	if err := mergo.Merge(conf, defaultConfig); err != nil {
+	if err := mergo.Merge(Private, defaultConfig); err != nil {
 		logger.Fatal(err)
 	}
-	for i := range conf.Sensu {
-		if err := mergo.Merge(&conf.Sensu[i], defaultSensuConfig); err != nil {
+	for i := range Private.Sensu {
+		if err := mergo.Merge(&Private.Sensu[i], defaultSensuConfig); err != nil {
 			logger.Fatal(err)
 		}
 	}
@@ -62,24 +66,24 @@ func Load(file, directories string) *Config {
 	if directories != "" {
 		configDir := loadDirectories(directories)
 		// Overwrite the file config with the configs from the directories
-		if err := mergo.MergeWithOverwrite(conf, configDir); err != nil {
+		if err := mergo.MergeWithOverwrite(Private, configDir); err != nil {
 			logger.Fatal(err)
 		}
 	}
 
-	conf.Sensu = initSensu(conf.Sensu)
+	Private.Sensu = initSensu(Private.Sensu)
 
 	// Support the dashboard attribute
-	if conf.Dashboard != nil {
-		conf.Uchiwa = *conf.Dashboard
+	if Private.Dashboard != nil {
+		Private.Uchiwa = *Private.Dashboard
 		// Apply the default config to the dashboard attribute
-		if err := mergo.Merge(conf, defaultConfig); err != nil {
+		if err := mergo.Merge(Private, defaultConfig); err != nil {
 			logger.Fatal(err)
 		}
 	}
 
-	conf.Uchiwa = initUchiwa(conf.Uchiwa)
-	return conf
+	Private.Uchiwa = initUchiwa(Private.Uchiwa)
+	return Private
 }
 
 // loadDirectories loads a Config struct from one or multiple directories of configuration
@@ -183,8 +187,16 @@ func initUchiwa(global GlobalConfig) GlobalConfig {
 	// Set the proper authentication driver
 	if global.Github.Server != "" {
 		global.Auth.Driver = "github"
+
+		for i := range global.Github.Roles {
+			authentication.Roles = append(authentication.Roles, global.Github.Roles[i])
+		}
 	} else if global.Gitlab.Server != "" {
 		global.Auth.Driver = "gitlab"
+
+		for i := range global.Gitlab.Roles {
+			authentication.Roles = append(authentication.Roles, global.Gitlab.Roles[i])
+		}
 	} else if global.Ldap.Server != "" {
 		global.Auth.Driver = "ldap"
 		if global.Ldap.GroupBaseDN == "" {
@@ -193,17 +205,31 @@ func initUchiwa(global GlobalConfig) GlobalConfig {
 		if global.Ldap.UserBaseDN == "" {
 			global.Ldap.UserBaseDN = global.Ldap.BaseDN
 		}
+
+		for i := range global.Ldap.Roles {
+			authentication.Roles = append(authentication.Roles, global.Ldap.Roles[i])
+		}
 	} else if global.Db.Driver != "" && global.Db.Scheme != "" {
 		global.Auth.Driver = "sql"
 	} else if len(global.Users) != 0 {
 		logger.Debug("Loading multiple users from the config")
 		global.Auth.Driver = "simple"
+
+		for i := range global.Users {
+			if global.Users[i].AccessToken != "" {
+				global.Users[i].Role.AccessToken = global.Users[i].AccessToken
+			}
+			if global.Users[i].Readonly != false {
+				global.Users[i].Role.Readonly = global.Users[i].Readonly
+			}
+			authentication.Roles = append(authentication.Roles, global.Users[i].Role)
+		}
 	} else if global.User != "" && global.Pass != "" {
 		logger.Debug("Loading single user from the config")
 		global.Auth.Driver = "simple"
 
 		// Support multiple users
-		global.Users = append(global.Users, auth.User{Username: global.User, Password: global.Pass, FullName: global.User})
+		global.Users = append(global.Users, authentication.User{Username: global.User, Password: global.Pass, FullName: global.User})
 	}
 
 	// Set the logger level
@@ -217,16 +243,32 @@ func (c *Config) GetPublic() *Config {
 	p.Uchiwa = c.Uchiwa
 	p.Uchiwa.User = "*****"
 	p.Uchiwa.Pass = "*****"
-	p.Uchiwa.Users = []auth.User{}
+	p.Uchiwa.Users = []authentication.User{}
 	p.Uchiwa.Db.Scheme = "*****"
 	p.Uchiwa.Github.ClientID = "*****"
 	p.Uchiwa.Github.ClientSecret = "*****"
+	p.Uchiwa.Gitlab.ApplicationID = "*****"
+	p.Uchiwa.Gitlab.Secret = "*****"
 	p.Uchiwa.Ldap.BindPass = "*****"
+
+	for i := range p.Uchiwa.Github.Roles {
+		p.Uchiwa.Github.Roles[i].AccessToken = "*****"
+	}
+
+	for i := range p.Uchiwa.Gitlab.Roles {
+		p.Uchiwa.Gitlab.Roles[i].AccessToken = "*****"
+	}
+
+	for i := range p.Uchiwa.Ldap.Roles {
+		p.Uchiwa.Ldap.Roles[i].AccessToken = "*****"
+	}
+
 	p.Sensu = make([]SensuConfig, len(c.Sensu))
 	for i := range c.Sensu {
 		p.Sensu[i] = c.Sensu[i]
 		p.Sensu[i].User = "*****"
 		p.Sensu[i].Pass = "*****"
 	}
+
 	return p
 }
