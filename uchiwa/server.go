@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/sensu/uchiwa/uchiwa/auth"
+	"github.com/sensu/uchiwa/uchiwa/authentication"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
@@ -57,7 +57,7 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	name := resources[2]
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 
 	// Get the datacenter name, passed as a query string
 	dc := r.URL.Query().Get("dc")
@@ -153,7 +153,7 @@ func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 	aggregates := FilterAggregates(&u.Data.Aggregates, token)
 	if len(aggregates) == 0 {
 		aggregates = make([]interface{}, 0)
@@ -192,7 +192,7 @@ func (u *Uchiwa) checksHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 	checks := FilterChecks(&u.Data.Checks, token)
 	if len(checks) == 0 {
 		checks = make([]interface{}, 0)
@@ -231,7 +231,7 @@ func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 
 	// Get the client name
 	resources := strings.Split(r.URL.Path, "/")
@@ -356,7 +356,8 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
+	fmt.Println(token)
 	clients := FilterClients(&u.Data.Clients, token)
 	if len(clients) == 0 {
 		clients = make([]interface{}, 0)
@@ -419,7 +420,7 @@ func (u *Uchiwa) datacentersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 	datacenters := FilterDatacenters(u.Data.Dc, token)
 
 	// Create header
@@ -462,7 +463,7 @@ func (u *Uchiwa) eventHandler(w http.ResponseWriter, r *http.Request) {
 
 	check := resources[3]
 	client := resources[2]
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 
 	// Get the datacenter name, passed as a query string
 	dc := r.URL.Query().Get("dc")
@@ -542,7 +543,7 @@ func (u *Uchiwa) eventsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 	events := FilterEvents(&u.Data.Events, token)
 	if len(events) == 0 {
 		events = make([]interface{}, 0)
@@ -622,7 +623,7 @@ func (u *Uchiwa) requestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// verify that the authenticated user is authorized to access this resource
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 	unauthorized := FilterGetRequest(data.Dc, token)
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
@@ -653,7 +654,7 @@ func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
 
 	check := resources[3]
 	client := resources[2]
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 
 	// Get the datacenter name, passed as a query string
 	dc := r.URL.Query().Get("dc")
@@ -739,7 +740,7 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	path := strings.Join(resources[2:], "/")
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 
 	// Get the datacenter name, passed as a query string
 	dc := r.URL.Query().Get("dc")
@@ -814,7 +815,7 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 
 // stashesHandler serves the /stashes endpoint
 func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 
 	if r.Method == "GET" || r.Method == "HEAD" {
 		// GET on /stashes
@@ -886,7 +887,7 @@ func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := auth.GetTokenFromContext(r)
+	token := authentication.GetJWTFromContext(r)
 	subscriptions := FilterSubscriptions(&u.Data.Subscriptions, token)
 	if len(subscriptions) == 0 {
 		subscriptions = make([]string, 0)
@@ -900,7 +901,7 @@ func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // WebServer starts the web server and serves GET & POST requests
-func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
+func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	// Private endpoints
 	http.Handle("/aggregates", auth.Authenticate(http.HandlerFunc(u.aggregatesHandler)))
 	http.Handle("/aggregates/", auth.Authenticate(http.HandlerFunc(u.aggregateHandler)))
@@ -927,7 +928,7 @@ func (u *Uchiwa) WebServer(publicPath *string, auth auth.Config) {
 	http.Handle("/config/", http.HandlerFunc(u.configHandler))
 	http.Handle("/health", http.HandlerFunc(u.healthHandler))
 	http.Handle("/health/", http.HandlerFunc(u.healthHandler))
-	http.Handle("/login", auth.GetIdentification())
+	http.Handle("/login", auth.Login())
 
 	listen := fmt.Sprintf("%s:%d", u.Config.Uchiwa.Host, u.Config.Uchiwa.Port)
 	logger.Warningf("Uchiwa is now listening on %s", listen)

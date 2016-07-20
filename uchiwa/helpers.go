@@ -6,7 +6,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/mitchellh/mapstructure"
-	"github.com/sensu/uchiwa/uchiwa/auth"
+	"github.com/sensu/uchiwa/uchiwa/authentication"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/sensu"
 )
@@ -40,18 +40,17 @@ func findModel(id string, dc string, checks []interface{}) map[string]interface{
 }
 
 // GetRoleFromToken ...
-func GetRoleFromToken(token *jwt.Token) (*auth.Role, error) {
+func GetRoleFromToken(token *jwt.Token) (*authentication.Role, error) {
 	r, ok := token.Claims["Role"]
 	if !ok {
-		return &auth.Role{}, errors.New("Could not retrieve the user Role from the JWT")
+		return &authentication.Role{}, errors.New("Could not retrieve the user Role from the JWT")
 	}
-
-	var role auth.Role
+	var role authentication.Role
 	err := mapstructure.Decode(r, &role)
 	if err != nil {
-		return &auth.Role{}, err
+		fmt.Println(err)
+		return &authentication.Role{}, err
 	}
-
 	return &role, nil
 }
 

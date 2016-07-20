@@ -3,7 +3,7 @@ package config
 import (
 	"testing"
 
-	"github.com/sensu/uchiwa/uchiwa/auth"
+	"github.com/sensu/uchiwa/uchiwa/authentication"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,6 +29,11 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, "192.168.0.1", conf.Uchiwa.Host)
 	assert.Equal(t, 8000, conf.Uchiwa.Port)
 	assert.Equal(t, 2, len(conf.Uchiwa.Users))
+
+	// Test the removal of the Role object in configuration files
+	assert.Equal(t, false, conf.Uchiwa.Users[0].Role.Readonly)
+	assert.Equal(t, "foobar", conf.Uchiwa.Users[0].Role.AccessToken)
+	assert.Equal(t, true, conf.Uchiwa.Users[1].Role.Readonly)
 
 	// We should also support the dashboard attribute instead of uchiwa
 	conf = Load("../../fixtures/config_dashboard.json", "")
@@ -109,14 +114,14 @@ func TestInitUchiwa(t *testing.T) {
 	uchiwa = initUchiwa(conf)
 	assert.Equal(t, "sql", uchiwa.Auth.Driver)
 
-	conf = GlobalConfig{Users: []auth.User{auth.User{ID: 1}}}
+	conf = GlobalConfig{Users: []authentication.User{authentication.User{ID: 1}}}
 	uchiwa = initUchiwa(conf)
 	assert.Equal(t, "simple", uchiwa.Auth.Driver)
 
 	conf = GlobalConfig{User: "foo", Pass: "secret"}
 	uchiwa = initUchiwa(conf)
 	assert.Equal(t, "simple", uchiwa.Auth.Driver)
-	assert.Equal(t, []auth.User{auth.User{ID: 0, FullName: "foo", Password: "secret", Username: "foo"}}, uchiwa.Users)
+	assert.Equal(t, []authentication.User{authentication.User{ID: 0, FullName: "foo", Password: "secret", Username: "foo"}}, uchiwa.Users)
 }
 
 func TestGetPublic(t *testing.T) {
@@ -130,7 +135,7 @@ func TestGetPublic(t *testing.T) {
 		Uchiwa: GlobalConfig{
 			User:   "foo",
 			Pass:   "secret",
-			Users:  []auth.User{auth.User{ID: 1}},
+			Users:  []authentication.User{authentication.User{ID: 1}},
 			Db:     Db{Scheme: "foo"},
 			Github: Github{ClientID: "foo", ClientSecret: "secret"},
 			Ldap:   Ldap{BindPass: "secret"},
@@ -150,7 +155,7 @@ func TestGetPublic(t *testing.T) {
 	assert.Equal(t, "*****", pubConf.Sensu[0].Pass)
 	assert.Equal(t, "*****", pubConf.Uchiwa.User)
 	assert.Equal(t, "*****", pubConf.Uchiwa.Pass)
-	assert.Equal(t, []auth.User{}, pubConf.Uchiwa.Users)
+	assert.Equal(t, []authentication.User{}, pubConf.Uchiwa.Users)
 	assert.Equal(t, "*****", pubConf.Uchiwa.Db.Scheme)
 	assert.Equal(t, "*****", pubConf.Uchiwa.Github.ClientID)
 	assert.Equal(t, "*****", pubConf.Uchiwa.Github.ClientSecret)

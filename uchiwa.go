@@ -5,7 +5,7 @@ import (
 
 	"github.com/sensu/uchiwa/uchiwa"
 	"github.com/sensu/uchiwa/uchiwa/audit"
-	"github.com/sensu/uchiwa/uchiwa/auth"
+	"github.com/sensu/uchiwa/uchiwa/authentication"
 	"github.com/sensu/uchiwa/uchiwa/config"
 	"github.com/sensu/uchiwa/uchiwa/filters"
 )
@@ -20,11 +20,11 @@ func main() {
 
 	u := uchiwa.Init(config)
 
-	authentication := auth.New(config.Uchiwa.Auth)
+	auth := authentication.New(config.Uchiwa.Auth)
 	if config.Uchiwa.Auth.Driver == "simple" {
-		authentication.Simple(config.Uchiwa.Users)
+		auth.Simple(config.Uchiwa.Users)
 	} else {
-		authentication.None()
+		auth.None()
 	}
 
 	// Audit
@@ -43,5 +43,5 @@ func main() {
 	uchiwa.FilterPostRequest = filters.PostRequest
 	uchiwa.FilterSensuData = filters.SensuData
 
-	u.WebServer(publicPath, authentication)
+	u.WebServer(publicPath, auth)
 }
