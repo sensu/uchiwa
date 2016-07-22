@@ -48,7 +48,6 @@ func GetRoleFromToken(token *jwt.Token) (*authentication.Role, error) {
 	var role authentication.Role
 	err := mapstructure.Decode(r, &role)
 	if err != nil {
-		fmt.Println(err)
 		return &authentication.Role{}, err
 	}
 	return &role, nil

@@ -357,7 +357,7 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
-	fmt.Println(token)
+
 	clients := FilterClients(&u.Data.Clients, token)
 	if len(clients) == 0 {
 		clients = make([]interface{}, 0)
