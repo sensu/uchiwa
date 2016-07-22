@@ -7,41 +7,14 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/sensu/uchiwa/uchiwa/authentication"
+	"github.com/sensu/uchiwa/uchiwa/filters"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
-// FilterAggregates is a function that filters aggregates
-var FilterAggregates func(aggregates *[]interface{}, token *jwt.Token) []interface{}
-
-// FilterChecks is a function that filters checks
-var FilterChecks func(checks *[]interface{}, token *jwt.Token) []interface{}
-
-// FilterClients is a function that filters clients
-var FilterClients func(clients *[]interface{}, token *jwt.Token) []interface{}
-
-// FilterAggregates is a function that filters datacenters
-var FilterDatacenters func(datacenters []*structs.Datacenter, token *jwt.Token) []*structs.Datacenter
-
-// FilterEvents is a function that filters events
-var FilterEvents func(events *[]interface{}, token *jwt.Token) []interface{}
-
-// FilterAggregates is a function that filters aggregates
-var FilterStashes func(stashes *[]interface{}, token *jwt.Token) []interface{}
-
-// FilterAggregates is a function that filters aggregates
-var FilterSubscriptions func(subscriptions *[]string, token *jwt.Token) []string
-
-// FilterGetRequest is a function that filters GET requests.
-var FilterGetRequest func(string, *jwt.Token) bool
-
-// FilterPostRequest is a function that filters POST requests.
-var FilterPostRequest func(*jwt.Token, *interface{}) bool
-
-// FilterSensuDataData is a function that filters Sensu Data.
-var FilterSensuData func(*jwt.Token, *structs.Data) *structs.Data
+// Filters contains the available filters for the Sensu data
+var Filters filters.Filters
 
 // aggregateHandler serves the /aggregates/:check/:issued endpoint
 func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
@@ -69,7 +42,7 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		visibleChecks := FilterChecks(&checks, token)
+		visibleChecks := Filters.Checks(&checks, token)
 
 		if len(visibleChecks) > 1 {
 			// Create header
@@ -113,7 +86,7 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	unauthorized := FilterGetRequest(dc, token)
+	unauthorized := Filters.GetRequest(dc, token)
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
 		return
@@ -154,7 +127,7 @@ func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
-	aggregates := FilterAggregates(&u.Data.Aggregates, token)
+	aggregates := Filters.Aggregates(&u.Data.Aggregates, token)
 	if len(aggregates) == 0 {
 		aggregates = make([]interface{}, 0)
 	}
@@ -193,7 +166,7 @@ func (u *Uchiwa) checksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
-	checks := FilterChecks(&u.Data.Checks, token)
+	checks := Filters.Checks(&u.Data.Checks, token)
 	if len(checks) == 0 {
 		checks = make([]interface{}, 0)
 	}
@@ -251,7 +224,7 @@ func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		visibleClients := FilterClients(&clients, token)
+		visibleClients := Filters.Clients(&clients, token)
 
 		if len(visibleClients) > 1 {
 			// Create header
@@ -297,7 +270,7 @@ func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Verify that an authenticated user is authorized to access this resource
-	unauthorized := FilterGetRequest(dc, token)
+	unauthorized := Filters.GetRequest(dc, token)
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
 		return
@@ -357,8 +330,7 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
-
-	clients := FilterClients(&u.Data.Clients, token)
+	clients := Filters.Clients(&u.Data.Clients, token)
 	if len(clients) == 0 {
 		clients = make([]interface{}, 0)
 	}
@@ -421,7 +393,7 @@ func (u *Uchiwa) datacentersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
-	datacenters := FilterDatacenters(u.Data.Dc, token)
+	datacenters := Filters.Datacenters(u.Data.Dc, token)
 
 	// Create header
 	w.Header().Add("Accept-Charset", "utf-8")
@@ -475,7 +447,7 @@ func (u *Uchiwa) eventHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		visibleClients := FilterClients(&clients, token)
+		visibleClients := Filters.Clients(&clients, token)
 
 		if len(visibleClients) > 1 {
 			// Create header
@@ -519,7 +491,7 @@ func (u *Uchiwa) eventHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	unauthorized := FilterGetRequest(dc, token)
+	unauthorized := Filters.GetRequest(dc, token)
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
 		return
@@ -544,7 +516,7 @@ func (u *Uchiwa) eventsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
-	events := FilterEvents(&u.Data.Events, token)
+	events := Filters.Events(&u.Data.Events, token)
 	if len(events) == 0 {
 		events = make([]interface{}, 0)
 	}
@@ -624,7 +596,7 @@ func (u *Uchiwa) requestHandler(w http.ResponseWriter, r *http.Request) {
 
 	// verify that the authenticated user is authorized to access this resource
 	token := authentication.GetJWTFromContext(r)
-	unauthorized := FilterGetRequest(data.Dc, token)
+	unauthorized := Filters.GetRequest(data.Dc, token)
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
 		return
@@ -666,7 +638,7 @@ func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		visibleClients := FilterClients(&clients, token)
+		visibleClients := Filters.Clients(&clients, token)
 
 		if len(visibleClients) > 1 {
 			// Create header
@@ -710,7 +682,7 @@ func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	unauthorized := FilterGetRequest(dc, token)
+	unauthorized := Filters.GetRequest(dc, token)
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
 		return
@@ -752,7 +724,7 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		visibleStashes := FilterStashes(&stashes, token)
+		visibleStashes := Filters.Stashes(&stashes, token)
 
 		if len(visibleStashes) > 1 {
 			// Create header
@@ -796,7 +768,7 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	unauthorized := FilterGetRequest(dc, token)
+	unauthorized := Filters.GetRequest(dc, token)
 	if unauthorized {
 		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
 		return
@@ -819,7 +791,7 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" || r.Method == "HEAD" {
 		// GET on /stashes
-		stashes := FilterStashes(&u.Data.Stashes, token)
+		stashes := Filters.Stashes(&u.Data.Stashes, token)
 		if len(stashes) == 0 {
 			stashes = make([]interface{}, 0)
 		}
@@ -859,7 +831,7 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// verify that the authenticated user is authorized to access this resource
-		unauthorized := FilterGetRequest(data.Dc, token)
+		unauthorized := Filters.GetRequest(data.Dc, token)
 		if unauthorized {
 			http.Error(w, fmt.Sprint(""), http.StatusNotFound)
 			return
@@ -888,7 +860,7 @@ func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
-	subscriptions := FilterSubscriptions(&u.Data.Subscriptions, token)
+	subscriptions := Filters.Subscriptions(&u.Data.Subscriptions, token)
 	if len(subscriptions) == 0 {
 		subscriptions = make([]string, 0)
 	}

@@ -30,18 +30,8 @@ func main() {
 	// Audit
 	audit.Log = audit.LogMock
 
-	// filters
-	uchiwa.FilterAggregates = filters.FilterAggregates
-	uchiwa.FilterChecks = filters.FilterChecks
-	uchiwa.FilterClients = filters.FilterClients
-	uchiwa.FilterDatacenters = filters.FilterDatacenters
-	uchiwa.FilterEvents = filters.FilterEvents
-	uchiwa.FilterStashes = filters.FilterStashes
-	uchiwa.FilterSubscriptions = filters.FilterSubscriptions
-
-	uchiwa.FilterGetRequest = filters.GetRequest
-	uchiwa.FilterPostRequest = filters.PostRequest
-	uchiwa.FilterSensuData = filters.SensuData
+	// Filters
+	uchiwa.Filters = &filters.Uchiwa{}
 
 	u.WebServer(publicPath, auth)
 }
