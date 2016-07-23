@@ -44,13 +44,6 @@ func restrictedHandler(next http.Handler) http.Handler {
 			return
 		}
 
-		// Verify that the user has access to the requested resource
-		authorized := hasPermission(token, r)
-		if !authorized {
-			http.Error(w, "Request forbidden", http.StatusForbidden)
-			return
-		}
-
 		setJWTInContext(r, token)
 		next.ServeHTTP(w, r)
 		context.Clear(r)

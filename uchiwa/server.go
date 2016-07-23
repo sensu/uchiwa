@@ -8,10 +8,14 @@ import (
 	"strings"
 
 	"github.com/sensu/uchiwa/uchiwa/authentication"
+	"github.com/sensu/uchiwa/uchiwa/authorization"
 	"github.com/sensu/uchiwa/uchiwa/filters"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
+
+// Authorization contains the available authorization methods
+var Authorization authorization.Authorization
 
 // Filters contains the available filters for the Sensu data
 var Filters filters.Filters
@@ -875,22 +879,22 @@ func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 // WebServer starts the web server and serves GET & POST requests
 func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	// Private endpoints
-	http.Handle("/aggregates", auth.Authenticate(http.HandlerFunc(u.aggregatesHandler)))
-	http.Handle("/aggregates/", auth.Authenticate(http.HandlerFunc(u.aggregateHandler)))
-	http.Handle("/checks", auth.Authenticate(http.HandlerFunc(u.checksHandler)))
-	http.Handle("/clients", auth.Authenticate(http.HandlerFunc(u.clientsHandler)))
-	http.Handle("/clients/", auth.Authenticate(http.HandlerFunc(u.clientHandler)))
-	http.Handle("/config", auth.Authenticate(http.HandlerFunc(u.configHandler)))
-	http.Handle("/datacenters", auth.Authenticate(http.HandlerFunc(u.datacentersHandler)))
-	http.Handle("/events", auth.Authenticate(http.HandlerFunc(u.eventsHandler)))
-	http.Handle("/events/", auth.Authenticate(http.HandlerFunc(u.eventHandler)))
-	http.Handle("/request", auth.Authenticate(http.HandlerFunc(u.requestHandler)))
-	http.Handle("/results/", auth.Authenticate(http.HandlerFunc(u.resultsHandler)))
-	http.Handle("/stashes", auth.Authenticate(http.HandlerFunc(u.stashesHandler)))
-	http.Handle("/stashes/", auth.Authenticate(http.HandlerFunc(u.stashHandler)))
-	http.Handle("/subscriptions", auth.Authenticate(http.HandlerFunc(u.subscriptionsHandler)))
+	http.Handle("/aggregates", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.aggregatesHandler))))
+	http.Handle("/aggregates/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.aggregateHandler))))
+	http.Handle("/checks", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.checksHandler))))
+	http.Handle("/clients", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.clientsHandler))))
+	http.Handle("/clients/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.clientHandler))))
+	http.Handle("/config", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.configHandler))))
+	http.Handle("/datacenters", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.datacentersHandler))))
+	http.Handle("/events", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.eventsHandler))))
+	http.Handle("/events/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.eventHandler))))
+	http.Handle("/request", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.requestHandler))))
+	http.Handle("/results/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.resultsHandler))))
+	http.Handle("/stashes", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.stashesHandler))))
+	http.Handle("/stashes/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.stashHandler))))
+	http.Handle("/subscriptions", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.subscriptionsHandler))))
 	if u.Config.Uchiwa.Enterprise == false {
-		http.Handle("/metrics", auth.Authenticate(http.HandlerFunc(u.metricsHandler)))
+		http.Handle("/metrics", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.metricsHandler))))
 	}
 
 	// Static files
