@@ -1,4 +1,4 @@
-FROM golang:1.5.4-alpine
+FROM golang:1.6.3-alpine
 
 # golang alpine doesn't have ONBUILD, do it manually, then run npm and cleanup
 COPY . /go/src/github.com/sensu/uchiwa
