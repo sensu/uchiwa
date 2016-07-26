@@ -8,7 +8,6 @@ notifications:
 
 env:
   - secure: "MqohR2/eRky/ygs0r5hhzcBRwxWeXVqAsI9hJHhhIFosEn6Na4eCHyLthcQ79j/cpsMhF9aPfpSKpkoxuFLpEMx9iKIz1qPtJ97JORB09yFuR1M1kFaJciPj1yOy4ml8lzyyRfaVBy1uag+HorSHjeH4T6xqvs4pwrBnCkj7Y8Y="
-  - GO15VENDOREXPERIMENT=0
 
 before_install:
   - go get golang.org/x/tools/cmd/cover

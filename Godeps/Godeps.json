@@ -1,6 +1,7 @@
 {
 	"ImportPath": "github.com/sensu/uchiwa",
-	"GoVersion": "go1.6.3",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v74",
 	"Packages": [
 		"./..."
 	],
