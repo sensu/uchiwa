@@ -32,14 +32,19 @@ func restrictedHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify the JWT
 		token, err := verifyJWT(r)
+		if err != nil {
+			logger.Debug(err)
+		}
 
 		// Verify the access token if no JWT was provided
 		if err != nil {
 			token, err = verifyAccessToken(r)
+			logger.Debug(err)
 		}
 
 		// If no JWT or access token found
 		if err != nil {
+			logger.Info(err)
 			http.Error(w, "Request unauthorized", http.StatusUnauthorized)
 			return
 		}

@@ -9,6 +9,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/context"
+	"github.com/mitchellh/mapstructure"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
@@ -26,6 +27,20 @@ func GetJWTFromContext(r *http.Request) *jwt.Token {
 		return value.(*jwt.Token)
 	}
 	return nil
+}
+
+// GetRoleFromToken ...
+func GetRoleFromToken(token *jwt.Token) (*Role, error) {
+	r, ok := token.Claims["Role"]
+	if !ok {
+		return &Role{}, errors.New("Could not retrieve the user Role from the JWT")
+	}
+	var role Role
+	err := mapstructure.Decode(r, &role)
+	if err != nil {
+		return &Role{}, err
+	}
+	return &role, nil
 }
 
 // GetToken returns a string that contain the token

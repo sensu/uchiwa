@@ -4,9 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/dgrijalva/jwt-go"
-	"github.com/mitchellh/mapstructure"
-	"github.com/sensu/uchiwa/uchiwa/authentication"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/sensu"
 )
@@ -37,20 +34,6 @@ func findModel(id string, dc string, checks []interface{}) map[string]interface{
 		}
 	}
 	return nil
-}
-
-// GetRoleFromToken ...
-func GetRoleFromToken(token *jwt.Token) (*authentication.Role, error) {
-	r, ok := token.Claims["Role"]
-	if !ok {
-		return &authentication.Role{}, errors.New("Could not retrieve the user Role from the JWT")
-	}
-	var role authentication.Role
-	err := mapstructure.Decode(r, &role)
-	if err != nil {
-		return &authentication.Role{}, err
-	}
-	return &role, nil
 }
 
 // MergeStringSlices merges two slices of strings and remove duplicated values

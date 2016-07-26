@@ -1,7 +1,6 @@
 package authorization
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/sensu/uchiwa/uchiwa/authentication"
@@ -32,7 +31,7 @@ func (u *Uchiwa) Handler(next http.Handler) http.Handler {
 }
 
 func isAuthorized(isReadOnly bool, method string) bool {
-	if (method != "HEAD" && method != "GET") && isReadOnly {
+	if (method != http.MethodHead && method != http.MethodGet) && isReadOnly {
 		return false
 	}
 	return true
@@ -41,7 +40,7 @@ func isAuthorized(isReadOnly bool, method string) bool {
 // hasReadOnly verifies if the user only has read-only access.
 // Returns true if the user only have read-only access
 func isReadOnly(r *http.Request) bool {
-	var role authentication.Role
+	var role *authentication.Role
 
 	token := authentication.GetJWTFromContext(r)
 	if token == nil { // authentication is not enabled
@@ -49,20 +48,9 @@ func isReadOnly(r *http.Request) bool {
 		return false
 	}
 
-	m := token.Claims["Role"]
-
-	// use JSON representation of the interface to assert it into the uchiwa.Role struct
-	j, err := json.Marshal(&m)
+	role, err := authentication.GetRoleFromToken(token)
 	if err != nil {
-		// Unexpected error, fallback to readonly user
-		logger.Warning("Could not marshal the token claims")
-		return true
-	}
-
-	err = json.Unmarshal(j, &role)
-	if err != nil {
-		// Unexpected error, fallback to readonly user
-		logger.Warning("Could not unmarshal the token claims")
+		logger.Debug("Invalid token: %s", err)
 		return true
 	}
 
