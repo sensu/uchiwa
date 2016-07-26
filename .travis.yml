@@ -1,8 +1,7 @@
 language: go
 
 go:
-  - 1.4
-  - 1.5
+  - 1.6
 
 notifications:
     email: false
@@ -20,6 +19,7 @@ after_success:
   - go test -coverprofile=uchiwa.coverprofile ./uchiwa
   - go test -coverprofile=audit.coverprofile ./uchiwa/audit
   - go test -coverprofile=auth.coverprofile ./uchiwa/authentication
+  - go test -coverprofile=auth.coverprofile ./uchiwa/authorization
   - go test -coverprofile=config.coverprofile ./uchiwa/config
   - go test -coverprofile=daemon.coverprofile ./uchiwa/daemon
   - go test -coverprofile=filters.coverprofile ./uchiwa/filters

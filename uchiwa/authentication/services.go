@@ -1,29 +1,6 @@
 package authentication
 
-import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-
-	"github.com/dgrijalva/jwt-go"
-)
-
-func hasPermission(t *jwt.Token, r *http.Request) bool {
-	var role Role
-	m := t.Claims["Role"]
-
-	// use JSON representation of the interface to assert it into the uchiwa.Role struct
-	j, _ := json.Marshal(&m)
-	json.Unmarshal(j, &role)
-
-	if r.Method == "GET" {
-		return true
-	} else if !role.Readonly {
-		return true
-	}
-
-	return false
-}
+import "fmt"
 
 func (a *Config) login(user, pass string) (*User, error) {
 	// Authenticate the user with the authentication driver
