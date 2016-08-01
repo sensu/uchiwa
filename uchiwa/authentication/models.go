@@ -23,14 +23,14 @@ type Role struct {
 	Datacenters   []string
 	Fallback      bool
 	Members       []string
+	Methods       Methods
 	Name          string
 	Readonly      bool
-	Scope         Scope
 	Subscriptions []string
 }
 
-// Scope contains the type of access of a role
-type Scope struct {
+// Methods contains the allowed endpoints for each HTTP method
+type Methods struct {
 	Delete []string
 	Head   []string
 	Get    []string
