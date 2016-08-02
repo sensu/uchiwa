@@ -4,9 +4,7 @@ FROM golang:1.6.3-alpine
 COPY . /go/src/github.com/sensu/uchiwa
 WORKDIR /go/src/github.com/sensu/uchiwa
 RUN apk add --no-cache nodejs git && \
-    go get -v github.com/tools/godep && \
-    godep restore && \
-    godep go install -v && \
+    go install -v && \
     npm install --production --unsafe-perm && \
     npm dedupe && \
     apk del --no-cache git nodejs && \
