@@ -1,3 +1,12 @@
+### 0.17.1 (2016-08-02)
+#### Bug Fixes
+Remove various debugging traces - [Commit #d249aa4](https://github.com/sensu/uchiwa/commit/d249aa4)
+
+#### Other
+Upgrade to Go 1.6.3 with vendoring support - [PR #528](https://github.com/sensu/uchiwa/pull/528)
+The filters package now implements an interface for easier use - [PR #528](https://github.com/sensu/uchiwa/pull/528)
+Refactoring of the authorization logic - [PR #528](https://github.com/sensu/uchiwa/pull/528)
+
 ### 0.17.0 (2016-07-20)
 #### Features
 - Add API token-based authentication - [PR #525](https://github.com/sensu/uchiwa/pull/525)
