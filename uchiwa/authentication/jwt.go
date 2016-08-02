@@ -145,7 +145,6 @@ func verifyJWT(r *http.Request) (*jwt.Token, error) {
 	})
 
 	if token == nil || err != nil {
-		logger.Debug(err)
 		return nil, errors.New("")
 	}
 

@@ -70,13 +70,11 @@ func verifyAccessToken(r *http.Request) (*jwt.Token, error) {
 	locations := findAccessToken(accessTokenFromAuthHeader, accessTokenFromParameter)
 	accessToken, err := locations(r)
 	if err != nil {
-		logger.Debug(err)
 		return nil, errors.New("")
 	}
 
 	role, err := findRoleFromAccessToken(accessToken)
 	if err != nil {
-		logger.Debug(err)
 		return nil, errors.New("")
 	}
 
