@@ -14,7 +14,8 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
-const jwtToken = "jwtToken"
+// JWTToken constant
+const JWTToken = "jwtToken"
 
 var (
 	privateKey *rsa.PrivateKey
@@ -23,7 +24,7 @@ var (
 
 // GetJWTFromContext retrieves the JWT Token from the request
 func GetJWTFromContext(r *http.Request) *jwt.Token {
-	if value := context.Get(r, jwtToken); value != nil {
+	if value := context.Get(r, JWTToken); value != nil {
 		return value.(*jwt.Token)
 	}
 	return nil
@@ -131,7 +132,7 @@ func loadToken(a structs.Auth) (*rsa.PrivateKey, *rsa.PublicKey, error) {
 
 // setJWTIntoContext injects the JWT Token into the request for later use
 func setJWTInContext(r *http.Request, token *jwt.Token) {
-	context.Set(r, jwtToken, token)
+	context.Set(r, JWTToken, token)
 }
 
 // verifyJWT extracts and verifies the validity of the JWT
