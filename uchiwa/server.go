@@ -46,7 +46,9 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		u.Mu.Lock()
 		visibleChecks := Filters.Checks(&checks, token)
+		u.Mu.Unlock()
 
 		if len(visibleChecks) > 1 {
 			// Create header
@@ -131,7 +133,11 @@ func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
+
+	u.Mu.Lock()
 	aggregates := Filters.Aggregates(&u.Data.Aggregates, token)
+	u.Mu.Unlock()
+
 	if len(aggregates) == 0 {
 		aggregates = make([]interface{}, 0)
 	}
@@ -170,7 +176,11 @@ func (u *Uchiwa) checksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
+
+	u.Mu.Lock()
 	checks := Filters.Checks(&u.Data.Checks, token)
+	u.Mu.Unlock()
+
 	if len(checks) == 0 {
 		checks = make([]interface{}, 0)
 	}
@@ -228,7 +238,9 @@ func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		u.Mu.Lock()
 		visibleClients := Filters.Clients(&clients, token)
+		u.Mu.Unlock()
 
 		if len(visibleClients) > 1 {
 			// Create header
@@ -334,7 +346,11 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
+
+	u.Mu.Lock()
 	clients := Filters.Clients(&u.Data.Clients, token)
+	u.Mu.Unlock()
+
 	if len(clients) == 0 {
 		clients = make([]interface{}, 0)
 	}
@@ -451,7 +467,9 @@ func (u *Uchiwa) eventHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		u.Mu.Lock()
 		visibleClients := Filters.Clients(&clients, token)
+		u.Mu.Unlock()
 
 		if len(visibleClients) > 1 {
 			// Create header
@@ -520,7 +538,11 @@ func (u *Uchiwa) eventsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
+
+	u.Mu.Lock()
 	events := Filters.Events(&u.Data.Events, token)
+	u.Mu.Unlock()
+
 	if len(events) == 0 {
 		events = make([]interface{}, 0)
 	}
@@ -642,7 +664,9 @@ func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		u.Mu.Lock()
 		visibleClients := Filters.Clients(&clients, token)
+		u.Mu.Unlock()
 
 		if len(visibleClients) > 1 {
 			// Create header
@@ -728,7 +752,9 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		u.Mu.Lock()
 		visibleStashes := Filters.Stashes(&stashes, token)
+		u.Mu.Unlock()
 
 		if len(visibleStashes) > 1 {
 			// Create header
@@ -795,7 +821,10 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" || r.Method == "HEAD" {
 		// GET on /stashes
+		u.Mu.Lock()
 		stashes := Filters.Stashes(&u.Data.Stashes, token)
+		u.Mu.Unlock()
+
 		if len(stashes) == 0 {
 			stashes = make([]interface{}, 0)
 		}
@@ -864,7 +893,11 @@ func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
+
+	u.Mu.Lock()
 	subscriptions := Filters.Subscriptions(&u.Data.Subscriptions, token)
+	u.Mu.Unlock()
+
 	if len(subscriptions) == 0 {
 		subscriptions = make([]string, 0)
 	}
