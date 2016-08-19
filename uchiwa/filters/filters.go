@@ -23,17 +23,23 @@ type Uchiwa struct{}
 
 // Aggregates filters based on role's datacenters
 func (u *Uchiwa) Aggregates(data *[]interface{}, token *jwt.Token) []interface{} {
-	return *data
+	aggregates := make([]interface{}, len(*data))
+	copy(aggregates, *data)
+	return aggregates
 }
 
 // Checks filters based on role's datacenters and subscriptions
 func (u *Uchiwa) Checks(data *[]interface{}, token *jwt.Token) []interface{} {
-	return *data
+	checks := make([]interface{}, len(*data))
+	copy(checks, *data)
+	return checks
 }
 
 // Clients filters based on role's datacenters and subscriptions
 func (u *Uchiwa) Clients(data *[]interface{}, token *jwt.Token) []interface{} {
-	return *data
+	clients := make([]interface{}, len(*data))
+	copy(clients, *data)
+	return clients
 }
 
 // Datacenters filters based on role's datacenters
@@ -43,17 +49,23 @@ func (u *Uchiwa) Datacenters(data []*structs.Datacenter, token *jwt.Token) []*st
 
 // Events filters based on role's datacenters and subscriptions
 func (u *Uchiwa) Events(data *[]interface{}, token *jwt.Token) []interface{} {
-	return *data
+	events := make([]interface{}, len(*data))
+	copy(events, *data)
+	return events
 }
 
 // Stashes filters based on role's datacenters
 func (u *Uchiwa) Stashes(data *[]interface{}, token *jwt.Token) []interface{} {
-	return *data
+	stashes := make([]interface{}, len(*data))
+	copy(stashes, *data)
+	return stashes
 }
 
 // Subscriptions filters based on role's subscriptions
 func (u *Uchiwa) Subscriptions(data *[]string, token *jwt.Token) []string {
-	return *data
+	subscriptions := make([]string, len(*data))
+	copy(subscriptions, *data)
+	return subscriptions
 }
 
 // GetRequest is a function that filters GET requests.
