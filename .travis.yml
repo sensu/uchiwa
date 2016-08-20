@@ -18,8 +18,8 @@ before_install:
 after_success:
   - go test -coverprofile=uchiwa.coverprofile ./uchiwa
   - go test -coverprofile=audit.coverprofile ./uchiwa/audit
-  - go test -coverprofile=auth.coverprofile ./uchiwa/authentication
-  - go test -coverprofile=auth.coverprofile ./uchiwa/authorization
+  - go test -coverprofile=authentication.coverprofile ./uchiwa/authentication
+  - go test -coverprofile=authorization.coverprofile ./uchiwa/authorization
   - go test -coverprofile=config.coverprofile ./uchiwa/config
   - go test -coverprofile=daemon.coverprofile ./uchiwa/daemon
   - go test -coverprofile=filters.coverprofile ./uchiwa/filters
