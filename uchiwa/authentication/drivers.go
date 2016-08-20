@@ -1,6 +1,17 @@
 package authentication
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/kless/osutil/user/crypt"
+
+	// Supported schemas for hashed passwords
+	_ "github.com/kless/osutil/user/crypt/apr1_crypt"
+	_ "github.com/kless/osutil/user/crypt/md5_crypt"
+	_ "github.com/kless/osutil/user/crypt/sha256_crypt"
+	_ "github.com/kless/osutil/user/crypt/sha512_crypt"
+)
 
 // Advanced function allows a third party Identification driver
 func (a *Config) Advanced(driver loginFn, driverName string) {
@@ -34,7 +45,17 @@ func none(u, p string) (*User, error) {
 // simple represents the simple authentication driver
 func simple(u, p string) (*User, error) {
 	for _, user := range users {
-		if u == user.Username && p == user.Password {
+		if u != user.Username {
+			continue
+		}
+
+		if strings.HasPrefix(user.Password, "{crypt}") {
+			password := user.Password
+			password = strings.Replace(password, "{crypt}", "", 1)
+			return &user, crypt.NewFromHash(password).Verify(password, []byte(p))
+		}
+
+		if p == user.Password {
 			return &user, nil
 		}
 	}
