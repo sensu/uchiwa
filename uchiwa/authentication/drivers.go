@@ -48,6 +48,7 @@ func simple(u, p string) (*User, error) {
 		if u != user.Username {
 			continue
 		}
+
 		if strings.HasPrefix(user.Password, "{crypt}") {
 			password := user.Password
 			password = strings.Replace(password, "{crypt}", "", 1)
