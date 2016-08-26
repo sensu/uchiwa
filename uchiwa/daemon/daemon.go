@@ -58,6 +58,7 @@ func (d *Daemon) buildData() {
 	d.buildEvents()
 	d.buildClients()
 	d.buildChecks()
+	d.buildSilenced()
 	d.buildStashes()
 	d.buildAggregates()
 	d.BuildSubscriptions()
@@ -80,6 +81,11 @@ func (d *Daemon) fetchData() {
 		stashes, err := datacenter.GetStashes()
 		if err != nil {
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+			continue
+		}
+		silenced, err := datacenter.GetSilenced()
+		if err != nil {
+			logger.Warningf("Connection failed to the datacenter %s.", datacenter.Name)
 			continue
 		}
 		checks, err := datacenter.GetChecks()
@@ -126,6 +132,10 @@ func (d *Daemon) fetchData() {
 			setDc(v, datacenter.Name)
 			d.Data.Stashes = append(d.Data.Stashes, v)
 		}
+		for _, v := range silenced {
+			setDc(v, datacenter.Name)
+			d.Data.Silenced = append(d.Data.Silenced, v)
+		}
 		for _, v := range checks {
 			setDc(v, datacenter.Name)
 			d.Data.Checks = append(d.Data.Checks, v)
@@ -149,6 +159,7 @@ func (d *Daemon) fetchData() {
 		dc.Stats["checks"] = len(checks)
 		dc.Stats["clients"] = len(clients)
 		dc.Stats["events"] = len(events)
+		dc.Stats["silenced"] = len(silenced)
 		dc.Stats["stashes"] = len(stashes)
 		d.Data.Dc = append(d.Data.Dc, dc)
 	}

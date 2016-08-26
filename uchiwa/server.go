@@ -815,6 +815,86 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// silencedHandler serves the /silenced endpoint
+func (u *Uchiwa) silencedHandler(w http.ResponseWriter, r *http.Request) {
+	token := authentication.GetJWTFromContext(r)
+
+	if r.Method == "GET" || r.Method == "HEAD" {
+		// GET on /silenced
+		u.Mu.Lock()
+		silenced := Filters.Silenced(&u.Data.Silenced, token)
+		u.Mu.Unlock()
+
+		if len(silenced) == 0 {
+			silenced = make([]interface{}, 0)
+		}
+
+		// Create header
+		w.Header().Add("Accept-Charset", "utf-8")
+		w.Header().Add("Content-Type", "application/json")
+
+		// If GZIP compression is not supported by the client
+		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+			encoder := json.NewEncoder(w)
+			if err := encoder.Encode(silenced); err != nil {
+				http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+				return
+			}
+			return
+		}
+
+		w.Header().Set("Content-Encoding", "gzip")
+
+		gz := gzip.NewWriter(w)
+		defer gz.Close()
+		if err := json.NewEncoder(gz).Encode(silenced); err != nil {
+			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+			return
+		}
+
+		return
+	} else if r.Method == "POST" {
+		// POST on /silenced
+		decoder := json.NewDecoder(r.Body)
+		var data silence
+		err := decoder.Decode(&data)
+		if err != nil {
+			http.Error(w, "Could not decode body", http.StatusInternalServerError)
+			return
+		}
+
+		// verify that the authenticated user is authorized to access this resource
+		unauthorized := Filters.GetRequest(data.Dc, token)
+		if unauthorized {
+			http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+			return
+		}
+
+		if token != nil && token.Claims["Username"] != nil {
+			data.Creator = token.Claims["Username"].(string)
+		}
+
+		resources := strings.Split(r.URL.Path, "/")
+		if len(resources) > 2 && resources[2] == "clear" {
+			err = u.ClearSilenced(data)
+			if err != nil {
+				http.Error(w, "Could not clear from entry in the silenced registry", http.StatusNotFound)
+				return
+			}
+			return
+		}
+
+		err = u.PostSilence(data)
+		if err != nil {
+			http.Error(w, "Could not create the entry in the silenced registry", http.StatusNotFound)
+			return
+		}
+	} else {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+}
+
 // stashesHandler serves the /stashes endpoint
 func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 	token := authentication.GetJWTFromContext(r)
@@ -923,6 +1003,8 @@ func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	http.Handle("/events/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.eventHandler))))
 	http.Handle("/request", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.requestHandler))))
 	http.Handle("/results/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.resultsHandler))))
+	http.Handle("/silenced", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.silencedHandler))))
+	http.Handle("/silenced/clear", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.silencedHandler))))
 	http.Handle("/stashes", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.stashesHandler))))
 	http.Handle("/stashes/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.stashHandler))))
 	http.Handle("/subscriptions", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.subscriptionsHandler))))

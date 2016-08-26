@@ -40,6 +40,7 @@ type Data struct {
 	Metrics       Metrics
 	SEMetrics     SEMetrics
 	SERawMetrics  SERawMetrics `json:"-"`
+	Silenced      []interface{}
 	Stashes       []interface{}
 	Subscriptions []string
 }

@@ -29,13 +29,9 @@ func (d *Daemon) buildClients() {
 
 		client["_id"] = fmt.Sprintf("%s/%s", dc, name)
 
-		if client["version"] == nil {
-			client["version"] = "0.12.x"
-		}
-
 		client = findClientEvents(client, &d.Data.Events)
 
-		client["acknowledged"] = helpers.IsAcknowledged("", name, dc, d.Data.Stashes)
+		client["silenced"] = helpers.IsClientSilenced(name, dc, d.Data.Silenced)
 	}
 }
 
