@@ -110,6 +110,7 @@ type Metrics struct {
 	Clients     StatusMetrics `json:"clients"`
 	Datacenters StatusMetrics `json:"datacenters"`
 	Events      StatusMetrics `json:"events"`
+	Silenced    StatusMetrics `json:"silenced"`
 	Stashes     StatusMetrics `json:"stashes"`
 }
 
