@@ -273,7 +273,7 @@ func IsClientSilenced(client, dc string, silenced []interface{}) bool {
 			continue
 		}
 
-		if m["dc"] == dc && m["subscription"] == fmt.Sprintf("client:%s", client) {
+		if m["dc"] == dc && m["id"] == fmt.Sprintf("client:%s:*", client) {
 			return true
 		}
 	}

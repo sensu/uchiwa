@@ -199,12 +199,17 @@ func TestIsClientSilenced(t *testing.T) {
 	assert.False(t, isSilenced)
 
 	// Wrong datacenter
-	silenced = append(silenced, map[string]interface{}{"dc": "us-west-1", "subscription": "client:foo"})
+	silenced = append(silenced, map[string]interface{}{"dc": "us-west-1", "id": "client:foo:*"})
+	isSilenced = IsClientSilenced(client, dc, silenced)
+	assert.False(t, isSilenced)
+
+	// Only a check of the client
+	silenced = append(silenced, map[string]interface{}{"dc": "us-east-1", "id": "client:foo:check_cpu"})
 	isSilenced = IsClientSilenced(client, dc, silenced)
 	assert.False(t, isSilenced)
 
 	// Silenced client
-	silenced = append(silenced, map[string]interface{}{"dc": "us-east-1", "subscription": "client:foo"})
+	silenced = append(silenced, map[string]interface{}{"dc": "us-east-1", "id": "client:foo:*"})
 	isSilenced = IsClientSilenced(client, dc, silenced)
 	assert.True(t, isSilenced)
 }
