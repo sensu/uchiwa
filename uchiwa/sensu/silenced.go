@@ -11,7 +11,6 @@ func (s *Sensu) ClearSilenced(payload interface{}) (map[string]interface{}, erro
 	if err != nil {
 		return nil, fmt.Errorf("Silence parsing error: %q returned: %v", err, err)
 	}
-	fmt.Println(string(payloadstr))
 	return s.postPayload(fmt.Sprintf("silenced/clear"), string(payloadstr[:]))
 }
 

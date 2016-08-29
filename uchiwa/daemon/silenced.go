@@ -20,6 +20,6 @@ func (d *Daemon) buildSilenced() {
 			continue
 		}
 
-		silence["_id"] = fmt.Sprintf("%s/%s", dc, id)
+		silence["_id"] = fmt.Sprintf("%s:%s", dc, id)
 	}
 }
