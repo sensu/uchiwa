@@ -1,3 +1,14 @@
+### 0.18.0 (TBD)
+#### Bug Fixes
+Prevent race condition when using the Uchiwa filters - [Issue #543](https://github.com/sensu/uchiwa/issues/543)
+Fix styling of the uchiwa-dark theme - [PR #105](https://github.com/sensu/uchiwa-web/pull/105)
+
+#### Features
+Support built-in silencing in Sensu 0.26 - [Issue #539](https://github.com/sensu/uchiwa/issues/539)
+Filter per-client subscriptions - [Issue #534](https://github.com/sensu/uchiwa/issues/534)
+Add support for encrypted passwords - [PR #448](https://github.com/sensu/uchiwa/issues/448)
+Display last_ok attribute in events view - [PR #96](https://github.com/sensu/uchiwa-web/pull/96)
+
 ### 0.17.1 (2016-08-02)
 #### Bug Fixes
 Remove various debugging traces - [Commit #d249aa4](https://github.com/sensu/uchiwa/commit/d249aa4)
