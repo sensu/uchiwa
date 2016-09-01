@@ -94,6 +94,10 @@ func TestGetMapFromBytes(t *testing.T) {
 	m, err := GetMapFromBytes(bytes)
 	assert.NotNil(t, err)
 
+	bytes = []byte(``)
+	m, err = GetMapFromBytes(bytes)
+	assert.Nil(t, err)
+
 	bytes = []byte(`{"foo": "bar"}`)
 	expectedMap := map[string]interface{}{"foo": "bar"}
 	m, err = GetMapFromBytes(bytes)
@@ -107,40 +111,107 @@ func TestGetMapFromInterface(t *testing.T) {
 	assert.Equal(t, "vodka", m["foo"])
 }
 
-func TestIsAcknowledged(t *testing.T) {
-	var check, client, dc string
-	var stashes = []interface{}{}
+func TestIsCheckSilenced(t *testing.T) {
+	var check map[string]interface{}
+	var client, dc string
+	var silenced []interface{}
+	var isSilencedBy []string
 
-	isAcknowledged := IsAcknowledged(check, client, dc, stashes)
-	assert.Equal(t, false, isAcknowledged, "the dc string is empty")
+	isSilenced, _ := IsCheckSilenced(check, client, dc, silenced)
+	assert.False(t, isSilenced)
 
-	dc = "us-east-1"
-	isAcknowledged = IsAcknowledged(check, client, dc, stashes)
-	assert.Equal(t, false, isAcknowledged, "the client string is empty")
-
+	// Not silenced
+	check = map[string]interface{}{"name": "check_cpu", "subscribers": []interface{}{"load-balancer"}}
 	client = "foo"
-	isAcknowledged = IsAcknowledged(check, client, dc, stashes)
-	assert.Equal(t, false, isAcknowledged, "the stashes slice is empty")
+	dc = "us-east-1"
+	isSilenced, _ = IsCheckSilenced(check, client, dc, silenced)
+	assert.False(t, isSilenced)
 
-	stashes = []interface{}{map[string]interface{}{"dc": "us-west-1", "path": "silence/foo"}}
-	isAcknowledged = IsAcknowledged(check, client, dc, stashes)
-	assert.Equal(t, false, isAcknowledged, "the client's datacenter was not properly compared")
+	// Wrong datacenter
+	silenced = []interface{}{map[string]interface{}{"dc": "us-west-1", "client": "foo", "check": "check_cpu"}}
+	isSilenced, _ = IsCheckSilenced(check, client, dc, silenced)
+	assert.False(t, isSilenced)
 
-	stashes = []interface{}{map[string]interface{}{"dc": "us-east-1", "path": "silence/foo/bar"}}
-	isAcknowledged = IsAcknowledged(check, client, dc, stashes)
-	assert.Equal(t, false, isAcknowledged, "the client's check was not properly compared")
+	// Silenced check with check
+	// e.g. *:check_cpu
+	silenced = []interface{}{map[string]interface{}{"dc": "us-east-1", "id": "*:check_cpu"}}
+	isSilenced, isSilencedBy = IsCheckSilenced(check, client, dc, silenced)
+	assert.True(t, isSilenced)
+	assert.Equal(t, "*:check_cpu", isSilencedBy[0])
 
-	check = "bar"
-	isAcknowledged = IsAcknowledged(check, client, dc, stashes)
-	assert.Equal(t, true, isAcknowledged)
+	// Silenced check with client subscription
+	// e.g. client:foo:*
+	silenced = []interface{}{map[string]interface{}{"dc": "us-east-1", "id": "client:foo:*", "subscription": "client:foo"}}
+	isSilenced, isSilencedBy = IsCheckSilenced(check, client, dc, silenced)
+	assert.True(t, isSilenced)
+	assert.Equal(t, "client:foo:*", isSilencedBy[0])
 
-	stashes = []interface{}{map[string]interface{}{"dc": "us-west-1", "path": "silence/foo/bar"}, map[string]interface{}{"dc": "us-east-1", "path": "silence/foo/bar"}}
-	isAcknowledged = IsAcknowledged(check, client, dc, stashes)
-	assert.Equal(t, true, isAcknowledged)
+	// Silenced check with client and check subscription
+	// e.g. client:foo:check_cpu
+	silenced = []interface{}{map[string]interface{}{"dc": "us-east-1", "id": "client:foo:check_cpu", "check": "check_cpu", "subscription": "client:foo"}}
+	isSilenced, isSilencedBy = IsCheckSilenced(check, client, dc, silenced)
+	assert.True(t, isSilenced)
+	assert.Equal(t, "client:foo:check_cpu", isSilencedBy[0])
 
-	stashes = []interface{}{"not_a_map", map[string]interface{}{"dc": "us-east-1", "path": "silence/foo/bar"}}
-	isAcknowledged = IsAcknowledged(check, client, dc, stashes)
-	assert.Equal(t, true, isAcknowledged)
+	// Silenced check with subscription only
+	// e.g. load-balancer:*
+	silenced = []interface{}{map[string]interface{}{"dc": "us-east-1", "id": "load-balancer:*", "subscription": "load-balancer"}}
+	isSilenced, isSilencedBy = IsCheckSilenced(check, client, dc, silenced)
+	assert.True(t, isSilenced)
+	assert.Equal(t, "load-balancer:*", isSilencedBy[0])
+
+	// Silenced check with *check* and *subscription*
+	// e.g. load-balancer:check_cpu
+	silenced = []interface{}{map[string]interface{}{"dc": "us-east-1", "id": "load-balancer:check_cpu", "check": "check_cpu", "subscription": "load-balancer"}}
+	isSilenced, isSilencedBy = IsCheckSilenced(check, client, dc, silenced)
+	assert.True(t, isSilenced)
+	assert.Equal(t, "load-balancer:check_cpu", isSilencedBy[0])
+
+	// Silenced check with multiple subscriptions
+	silenced = append(silenced, map[string]interface{}{"dc": "us-east-1", "id": "load-balancer:*", "subscription": "load-balancer"})
+	silenced = append(silenced, map[string]interface{}{"dc": "us-east-1", "id": "client:foo:*", "subscription": "client:foo"})
+	isSilenced, isSilencedBy = IsCheckSilenced(check, client, dc, silenced)
+	assert.True(t, isSilenced)
+	assert.Equal(t, 3, len(isSilencedBy))
+	assert.Equal(t, "load-balancer:check_cpu", isSilencedBy[0])
+	assert.Equal(t, "load-balancer:*", isSilencedBy[1])
+	assert.Equal(t, "client:foo:*", isSilencedBy[2])
+
+	// Standalone check
+	check = map[string]interface{}{"name": "check_cpu"}
+	silenced = []interface{}{map[string]interface{}{"dc": "us-east-1", "id": "*:check_cpu"}}
+	isSilenced, isSilencedBy = IsCheckSilenced(check, client, dc, silenced)
+	assert.True(t, isSilenced)
+	assert.Equal(t, "*:check_cpu", isSilencedBy[0])
+}
+
+func TestIsClientSilenced(t *testing.T) {
+	var client, dc string
+	var silenced []interface{}
+
+	isSilenced := IsClientSilenced(client, dc, silenced)
+	assert.False(t, isSilenced)
+
+	// Not silenced
+	client = "foo"
+	dc = "us-east-1"
+	isSilenced = IsClientSilenced(client, dc, silenced)
+	assert.False(t, isSilenced)
+
+	// Wrong datacenter
+	silenced = append(silenced, map[string]interface{}{"dc": "us-west-1", "id": "client:foo:*"})
+	isSilenced = IsClientSilenced(client, dc, silenced)
+	assert.False(t, isSilenced)
+
+	// Only a check of the client
+	silenced = append(silenced, map[string]interface{}{"dc": "us-east-1", "id": "client:foo:check_cpu"})
+	isSilenced = IsClientSilenced(client, dc, silenced)
+	assert.False(t, isSilenced)
+
+	// Silenced client
+	silenced = append(silenced, map[string]interface{}{"dc": "us-east-1", "id": "client:foo:*"})
+	isSilenced = IsClientSilenced(client, dc, silenced)
+	assert.True(t, isSilenced)
 }
 
 func TestIsStringInArray(t *testing.T) {

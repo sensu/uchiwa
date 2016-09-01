@@ -14,6 +14,7 @@ type Filters interface {
 	Events(*[]interface{}, *jwt.Token) []interface{}
 	// NEED WORK
 	GetRequest(string, *jwt.Token) bool
+	Silenced(*[]interface{}, *jwt.Token) []interface{}
 	Stashes(*[]interface{}, *jwt.Token) []interface{}
 	Subscriptions(*[]string, *jwt.Token) []string
 }
@@ -52,6 +53,13 @@ func (u *Uchiwa) Events(data *[]interface{}, token *jwt.Token) []interface{} {
 	events := make([]interface{}, len(*data))
 	copy(events, *data)
 	return events
+}
+
+// Silenced filters based on role's datacenters
+func (u *Uchiwa) Silenced(data *[]interface{}, token *jwt.Token) []interface{} {
+	silenced := make([]interface{}, len(*data))
+	copy(silenced, *data)
+	return silenced
 }
 
 // Stashes filters based on role's datacenters

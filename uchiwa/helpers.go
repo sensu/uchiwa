@@ -9,6 +9,10 @@ import (
 )
 
 func getAPI(datacenters *[]sensu.Sensu, name string) (*sensu.Sensu, error) {
+	if len(*datacenters) == 1 {
+		return &(*datacenters)[0], nil
+	}
+
 	if name == "" {
 		return nil, errors.New("The datacenter name can't be empty")
 	}

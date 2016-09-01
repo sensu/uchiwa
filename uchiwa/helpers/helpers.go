@@ -152,6 +152,11 @@ func GetInterfacesFromBytes(bytes []byte) ([]interface{}, error) {
 // GetMapFromBytes returns a map from a slice of byte
 func GetMapFromBytes(bytes []byte) (map[string]interface{}, error) {
 	var m map[string]interface{}
+
+	if len(bytes) == 0 {
+		return m, nil
+	}
+
 	if err := json.Unmarshal(bytes, &m); err != nil {
 		return nil, err
 	}
@@ -178,26 +183,97 @@ func GetIP(r *http.Request) string {
 	return ip
 }
 
-// IsAcknowledged determines if a client or a check has an associated silence stash
-func IsAcknowledged(check, client, dc string, stashes []interface{}) bool {
-	if dc == "" || client == "" || len(stashes) == 0 {
+// IsCheckSilenced determines whether a check for a particular client is silenced.
+// Returns true if the check is silenced and a slice of silence entries IDs
+func IsCheckSilenced(check map[string]interface{}, client, dc string, silenced []interface{}) (bool, []string) {
+	var isSilenced bool
+	var isSilencedBy []string
+	var subscribers []interface{}
+
+	if client == "" || dc == "" || len(silenced) == 0 {
+		return false, isSilencedBy
+	}
+
+	checkName, ok := check["name"].(string)
+	if !ok {
+		return false, isSilencedBy
+	}
+
+	if check["subscribers"] != nil {
+		subscribers, ok = check["subscribers"].([]interface{})
+		if !ok {
+			return false, isSilencedBy
+		}
+	}
+
+	for _, silence := range silenced {
+		m, ok := silence.(map[string]interface{})
+		if !ok {
+			logger.Warningf("Could not assert this silence entry to a map: %+v", silence)
+			continue
+		}
+
+		if m["dc"] != dc {
+			continue
+		}
+
+		// Check (e.g. *:check_cpu)
+		if m["id"] == fmt.Sprintf("*:%s", checkName) {
+			isSilenced = true
+			isSilencedBy = append(isSilencedBy, m["id"].(string))
+			continue
+		}
+
+		// Client subscription (e.g. client:foo:* )
+		if m["id"] == fmt.Sprintf("client:%s:*", client) {
+			isSilenced = true
+			isSilencedBy = append(isSilencedBy, m["id"].(string))
+			continue
+		}
+
+		// Client's check subscription (e.g. client:foo:check_cpu )
+		if m["id"] == fmt.Sprintf("client:%s:%s", client, checkName) {
+			isSilenced = true
+			isSilencedBy = append(isSilencedBy, m["id"].(string))
+			continue
+		}
+
+		for _, s := range subscribers {
+			subscription := s.(string)
+			// Subscription (e.g. load-balancer:* )
+			if m["id"] == fmt.Sprintf("%s:*", subscription) {
+				isSilenced = true
+				isSilencedBy = append(isSilencedBy, m["id"].(string))
+				continue
+			}
+
+			// Subscription' check (e.g. load-balancer:check_cpu)
+			if m["id"] == fmt.Sprintf("%s:%s", subscription, checkName) {
+				isSilenced = true
+				isSilencedBy = append(isSilencedBy, m["id"].(string))
+				continue
+			}
+		}
+
+	}
+
+	return isSilenced, isSilencedBy
+}
+
+// IsClientSilenced determines whether a client is silenced.
+// Returns true if the client is silenced.
+func IsClientSilenced(client, dc string, silenced []interface{}) bool {
+	if client == "" || dc == "" || len(silenced) == 0 {
 		return false
 	}
 
-	// add leading slash to check name
-	if check != "" {
-		check = fmt.Sprintf("/%s", check)
-	}
-
-	path := fmt.Sprintf("silence/%s%s", client, check)
-
-	for _, stash := range stashes {
-		m, ok := stash.(map[string]interface{})
+	for _, silence := range silenced {
+		m, ok := silence.(map[string]interface{})
 		if !ok {
 			continue
 		}
 
-		if m["path"] == path && m["dc"] == dc {
+		if m["dc"] == dc && m["id"] == fmt.Sprintf("client:%s:*", client) {
 			return true
 		}
 	}

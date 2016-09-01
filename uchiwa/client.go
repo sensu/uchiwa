@@ -15,50 +15,16 @@ func (u *Uchiwa) buildClientHistory(client, dc string, history []interface{}) []
 			continue
 		}
 
-		// Set some attributes for easier frontend consumption
-		check, ok := m["check"].(string)
-		if !ok {
-			continue
-		}
 		m["client"] = client
 		m["dc"] = dc
-		m["acknowledged"] = helpers.IsAcknowledged(check, client, dc, u.Data.Stashes)
 
-		// Add missing attributes to last_result object
-		if m["last_result"] != nil {
-			if m["last_status"] == 0.0 {
-				continue
-			}
-
-			event, err := helpers.GetEvent(check, client, dc, &u.Data.Events)
-			if err != nil {
-				continue
-			}
-
-			lastResult, ok := m["last_result"].(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			if event["action"] != nil {
-				lastResult["action"] = event["action"]
-			}
-			if event["occurrences"] != nil {
-				lastResult["occurrences"] = event["occurrences"]
-			}
+		check, ok := m["last_result"].(map[string]interface{})
+		if !ok {
+			logger.Warningf("Could not assert this check to a struct: %+v", m["last_result"])
+			continue
 		}
 
-		// Maintain backward compatiblity with Sensu <= 0.17
-		// by constructing the last_result object
-		if m["last_status"] != nil && m["last_status"] != 0.0 {
-			event, err := helpers.GetEvent(check, client, dc, &u.Data.Events)
-			if err != nil {
-				continue
-			}
-			m["last_result"] = event
-		} else {
-			m["last_result"] = map[string]interface{}{"last_execution": m["last_execution"], "status": m["last_status"]}
-		}
+		m["silenced"], m["silenced_by"] = helpers.IsCheckSilenced(check, client, dc, u.Data.Silenced)
 	}
 
 	return history
@@ -163,7 +129,7 @@ func (u *Uchiwa) GetClient(dc, name string) (map[string]interface{}, error) {
 
 	client["_id"] = fmt.Sprintf("%s/%s", dc, name)
 	client["dc"] = dc
-	client["acknowledged"] = helpers.IsAcknowledged("", name, dc, u.Data.Stashes)
+	client["silenced"] = helpers.IsClientSilenced(name, dc, u.Data.Silenced)
 
 	return client, nil
 }
