@@ -1,4 +1,6 @@
-### 0.18.0 (TBD)
+### 0.18.0 (2016-09-07)
+**Requires Sensu <= 0.26**
+
 #### Bug Fixes
 Prevent race condition when using the Uchiwa filters - [Issue #543](https://github.com/sensu/uchiwa/issues/543)
 Fix styling of the uchiwa-dark theme - [PR #105](https://github.com/sensu/uchiwa-web/pull/105)
