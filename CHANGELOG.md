@@ -1,3 +1,8 @@
+### 0.18.1 (2016-09-09)
+
+#### Bug Fixes
+Fix silencing with no expiration - [PR #107](https://github.com/sensu/uchiwa-web/pull/107)
+
 ### 0.18.0 (2016-09-07)
 **Requires Sensu <= 0.26**
 
