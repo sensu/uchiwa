@@ -4,7 +4,7 @@
 Fix silencing with no expiration - [PR #107](https://github.com/sensu/uchiwa-web/pull/107)
 
 ### 0.18.0 (2016-09-07)
-**Requires Sensu <= 0.26**
+**Requires Sensu >= 0.26**
 
 #### Bug Fixes
 Prevent race condition when using the Uchiwa filters - [Issue #543](https://github.com/sensu/uchiwa/issues/543)
