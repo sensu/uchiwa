@@ -575,20 +575,44 @@ func (u *Uchiwa) eventsHandler(w http.ResponseWriter, r *http.Request) {
 
 // healthHandler serves the /health endpoint
 func (u *Uchiwa) healthHandler(w http.ResponseWriter, r *http.Request) {
-	encoder := json.NewEncoder(w)
+	var encoded []byte
 	var err error
+	returnCode := http.StatusOK
+
 	if r.URL.Path[1:] == "health/sensu" {
-		err = encoder.Encode(u.Data.Health.Sensu)
+		for _, sensu := range u.Data.Health.Sensu {
+			if sensu.Output != "ok" {
+				returnCode = http.StatusServiceUnavailable
+			}
+		}
+		encoded, err = json.Marshal(u.Data.Health.Sensu)
 	} else if r.URL.Path[1:] == "health/uchiwa" {
-		err = encoder.Encode(u.Data.Health.Uchiwa)
+		if u.Data.Health.Uchiwa != "ok" {
+			returnCode = http.StatusServiceUnavailable
+		}
+		encoded, err = json.Marshal(u.Data.Health.Uchiwa)
 	} else {
-		err = encoder.Encode(u.Data.Health)
+		for _, sensu := range u.Data.Health.Sensu {
+			if sensu.Output != "ok" {
+				returnCode = http.StatusServiceUnavailable
+			}
+		}
+
+		if u.Data.Health.Uchiwa != "ok" {
+			returnCode = http.StatusServiceUnavailable
+		}
+
+		encoded, err = json.Marshal(u.Data.Health)
 	}
 
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 		return
 	}
+
+	w.WriteHeader(returnCode)
+	w.Write(encoded)
+	return
 }
 
 // metricsHandler serves the /metrics endpoint
