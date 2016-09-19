@@ -1,5 +1,14 @@
-### 0.18.1 (2016-09-09)
+### 0.18.2 (2016-09-19)
+#### Bug Fixes
+Fix the silenced filters - [Issue #565](https://github.com/sensu/uchiwa/issues/565)  
+Do not move an image from the command attribute to its own box - [Issue  #558](https://github.com/sensu/uchiwa/issues/558)
 
+#### Other
+Allow choice of silencing entries when un-silencing an item - [PR #111](https://github.com/sensu/uchiwa-web/pull/111)  
+Allow choice of custom expiration when creating a silence entry - [Issue #570](https://github.com/sensu/uchiwa/issues/570)  
+The /health endpoint can return a 503 HTTP response code on error - [Issue #557](https://github.com/sensu/uchiwa/issues/557)
+
+### 0.18.1 (2016-09-09)
 #### Bug Fixes
 Fix silencing with no expiration - [PR #107](https://github.com/sensu/uchiwa-web/pull/107)
 
