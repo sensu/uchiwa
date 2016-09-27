@@ -16,7 +16,7 @@ type Filters interface {
 	GetRequest(string, *jwt.Token) bool
 	Silenced(*[]interface{}, *jwt.Token) []interface{}
 	Stashes(*[]interface{}, *jwt.Token) []interface{}
-	Subscriptions(*[]string, *jwt.Token) []string
+	Subscriptions(*[]structs.Subscription, *jwt.Token) []structs.Subscription
 }
 
 // Uchiwa represents an instance of the Filters interface for the community filters
@@ -70,8 +70,8 @@ func (u *Uchiwa) Stashes(data *[]interface{}, token *jwt.Token) []interface{} {
 }
 
 // Subscriptions filters based on role's subscriptions
-func (u *Uchiwa) Subscriptions(data *[]string, token *jwt.Token) []string {
-	subscriptions := make([]string, len(*data))
+func (u *Uchiwa) Subscriptions(data *[]structs.Subscription, token *jwt.Token) []structs.Subscription {
+	subscriptions := make([]structs.Subscription, len(*data))
 	copy(subscriptions, *data)
 	return subscriptions
 }

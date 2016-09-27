@@ -1003,7 +1003,7 @@ func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 	u.Mu.Unlock()
 
 	if len(subscriptions) == 0 {
-		subscriptions = make([]string, 0)
+		subscriptions = make([]structs.Subscription, 0)
 	}
 
 	encoder := json.NewEncoder(w)
