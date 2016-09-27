@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/mitchellh/mapstructure"
-	"github.com/sensu/uchiwa/uchiwa/helpers"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
@@ -19,17 +18,28 @@ func (d *Daemon) BuildSubscriptions() {
 			continue
 		}
 
-		for _, subscription := range generic.Subscriptions {
+		for _, name := range generic.Subscriptions {
 			// Do not add per-client subscriptions to the slice so we don't pollute
 			// the subscriptions filter in the frontend.
 			// See https://github.com/sensu/sensu-settings/pull/40.
-			if strings.HasPrefix(strings.ToLower(subscription), "client:") {
+			if strings.HasPrefix(strings.ToLower(name), "client:") {
 				continue
 			}
 
-			if !helpers.IsStringInArray(subscription, d.Data.Subscriptions) {
+			subscription := structs.Subscription{Dc: generic.Dc, Name: name}
+
+			if !isSubscriptionInSubscriptions(subscription, d.Data.Subscriptions) {
 				d.Data.Subscriptions = append(d.Data.Subscriptions, subscription)
 			}
 		}
 	}
+}
+
+func isSubscriptionInSubscriptions(subscription structs.Subscription, subscriptions []structs.Subscription) bool {
+	for _, s := range subscriptions {
+		if s.Dc == subscription.Dc && s.Name == subscription.Name {
+			return true
+		}
+	}
+	return false
 }

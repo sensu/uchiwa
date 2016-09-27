@@ -42,7 +42,7 @@ type Data struct {
 	SERawMetrics  SERawMetrics `json:"-"`
 	Silenced      []interface{}
 	Stashes       []interface{}
-	Subscriptions []string
+	Subscriptions []Subscription
 }
 
 // Datacenter is a structure for holding the information about a datacenter
@@ -168,6 +168,12 @@ type transport struct {
 type transportStatus struct {
 	Messages  int `json:"messages"`
 	Consumers int `json:"consumers"`
+}
+
+// Subscription is a structure for holding a single subscription
+type Subscription struct {
+	Dc   string `json:"dc"`
+	Name string `json:"name"`
 }
 
 // XPagination is a structure for holding the x-pagination HTTP header

@@ -30,3 +30,18 @@ func TestBuildSubscriptions(t *testing.T) {
 	d.BuildSubscriptions()
 	assert.Equal(t, 2, len(d.Data.Subscriptions))
 }
+
+func TestIsSubscriptionInSubscriptions(t *testing.T) {
+	subscriptions := []structs.Subscription{
+		structs.Subscription{Dc: "us-east-1", Name: "foo"},
+		structs.Subscription{Dc: "us-east-1", Name: "bar"},
+	}
+
+	subscription := structs.Subscription{Dc: "us-east-2", Name: "foo"}
+	result := isSubscriptionInSubscriptions(subscription, subscriptions)
+	assert.False(t, result)
+
+	subscription = structs.Subscription{Dc: "us-east-1", Name: "foo"}
+	result = isSubscriptionInSubscriptions(subscription, subscriptions)
+	assert.True(t, result)
+}
