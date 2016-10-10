@@ -60,7 +60,6 @@ func (d *Daemon) buildData() {
 	d.buildChecks()
 	d.buildSilenced()
 	d.buildStashes()
-	d.buildAggregates()
 	d.BuildSubscriptions()
 	d.buildMetrics()
 	d.buildSEMetrics()

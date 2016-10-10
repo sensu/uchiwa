@@ -6,15 +6,15 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
-// GetAggregate retrieves a list of issued timestamps from a specified DC
-func (u *Uchiwa) GetAggregate(check string, dc string) (*map[string]interface{}, error) {
+// GetAggregate retrieves a specific aggregate
+func (u *Uchiwa) GetAggregate(name, dc string) (*map[string]interface{}, error) {
 	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
 	}
 
-	aggregate, err := api.GetAggregate(check)
+	aggregate, err := api.GetAggregate(name)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
@@ -23,20 +23,55 @@ func (u *Uchiwa) GetAggregate(check string, dc string) (*map[string]interface{},
 	return &aggregate, nil
 }
 
-// GetAggregateByIssued retrieves aggregate check info from a specified DC
-func (u *Uchiwa) GetAggregateByIssued(check string, issued string, dc string) (*map[string]interface{}, error) {
+// GetAggregateChecks retrieves check members of an aggregate
+func (u *Uchiwa) GetAggregateChecks(name, dc string) (*[]interface{}, error) {
 	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
 	}
 
-	aggregate, err := api.GetAggregateIssued(check, issued)
+	checks, err := api.GetAggregateChecks(name)
 	if err != nil {
+		logger.Warning(err)
 		return nil, err
 	}
 
-	return &aggregate, nil
+	return &checks, nil
+}
+
+// GetAggregateClients retrieves client members of an aggregate
+func (u *Uchiwa) GetAggregateClients(name, dc string) (*[]interface{}, error) {
+	api, err := getAPI(u.Datacenters, dc)
+	if err != nil {
+		logger.Warning(err)
+		return nil, err
+	}
+
+	clients, err := api.GetAggregateClients(name)
+	if err != nil {
+		logger.Warning(err)
+		return nil, err
+	}
+
+	return &clients, nil
+}
+
+// GetAggregateResults retrieves check result members by severity of an aggregate
+func (u *Uchiwa) GetAggregateResults(name, severity, dc string) (*[]interface{}, error) {
+	api, err := getAPI(u.Datacenters, dc)
+	if err != nil {
+		logger.Warning(err)
+		return nil, err
+	}
+
+	results, err := api.GetAggregateResults(name, severity)
+	if err != nil {
+		logger.Warning(err)
+		return nil, err
+	}
+
+	return &results, nil
 }
 
 func (u *Uchiwa) findAggregate(name string) ([]interface{}, error) {

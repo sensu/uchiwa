@@ -20,7 +20,7 @@ var Authorization authorization.Authorization
 // Filters contains the available filters for the Sensu data
 var Filters filters.Filters
 
-// aggregateHandler serves the /aggregates/:check/:issued endpoint
+// aggregateHandler serves the /aggregates/:name[...] endpoint
 func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" && r.Method != "HEAD" {
 		http.Error(w, "", http.StatusBadRequest)
@@ -40,30 +40,31 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 	dc := r.URL.Query().Get("dc")
 
 	if dc == "" {
-		checks, err := u.findCheck(name)
+		aggregates, err := u.findAggregate(name)
 		if err != nil {
 			http.Error(w, fmt.Sprint(err), http.StatusNotFound)
 			return
 		}
 
 		u.Mu.Lock()
-		visibleChecks := Filters.Checks(&checks, token)
+		visibleAggregates := Filters.Aggregates(&aggregates, token)
 		u.Mu.Unlock()
 
-		if len(visibleChecks) > 1 {
+		if len(visibleAggregates) > 1 {
 			// Create header
 			w.Header().Add("Accept-Charset", "utf-8")
 			w.Header().Add("Content-Type", "application/json")
 
 			// If GZIP compression is not supported by the client
-			w.WriteHeader(http.StatusMultipleChoices)
-
 			if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+				w.WriteHeader(http.StatusMultipleChoices)
+
 				encoder := json.NewEncoder(w)
-				if err := encoder.Encode(visibleChecks); err != nil {
+				if err := encoder.Encode(visibleAggregates); err != nil {
 					http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 					return
 				}
+
 				return
 			}
 
@@ -72,7 +73,7 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 
 			gz := gzip.NewWriter(w)
 			defer gz.Close()
-			if err := json.NewEncoder(gz).Encode(visibleChecks); err != nil {
+			if err := json.NewEncoder(gz).Encode(visibleAggregates); err != nil {
 				http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 				return
 			}
@@ -80,7 +81,7 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		c, ok := checks[0].(map[string]interface{})
+		c, ok := aggregates[0].(map[string]interface{})
 		if !ok {
 			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 			return
@@ -98,26 +99,60 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var aggregate *map[string]interface{}
+	// Are we responding to a /aggregates/:name request?
+	if len(resources) == 3 {
+		aggregate, err := u.GetAggregate(name, dc)
+		if err != nil {
+			http.Error(w, fmt.Sprint(err), 500)
+			return
+		}
+
+		encoder := json.NewEncoder(w)
+		if err := encoder.Encode(aggregate); err != nil {
+			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+			return
+		}
+		return
+	}
+
+	var data *[]interface{}
 	var err error
 
-	if len(resources) == 3 {
-		aggregate, err = u.GetAggregate(name, dc)
+	if len(resources) == 4 {
+		// We are responding to a /aggregates/:name/[checks|clients] request
+
+		if resources[3] == "checks" {
+			data, err = u.GetAggregateChecks(name, dc)
+			if err != nil {
+				http.Error(w, fmt.Sprint(err), 500)
+				return
+			}
+		} else if resources[3] == "clients" {
+			data, err = u.GetAggregateClients(name, dc)
+			if err != nil {
+				http.Error(w, fmt.Sprint(err), 500)
+				return
+			}
+		} else {
+			http.Error(w, fmt.Sprint(err), http.StatusNotFound)
+			return
+		}
+
+	} else if len(resources) == 5 {
+		// We are responding to a /aggregates/:name/results/:severity request
+		severity := resources[4]
+		data, err = u.GetAggregateResults(name, severity, dc)
 		if err != nil {
 			http.Error(w, fmt.Sprint(err), 500)
 			return
 		}
 	} else {
-		issued := resources[3]
-		aggregate, err = u.GetAggregateByIssued(name, issued, dc)
-		if err != nil {
-			http.Error(w, fmt.Sprint(err), 500)
-			return
-		}
+		http.Error(w, "", http.StatusBadRequest)
+		return
 	}
 
 	encoder := json.NewEncoder(w)
-	if err := encoder.Encode(aggregate); err != nil {
+	if err := encoder.Encode(data); err != nil {
 		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 		return
 	}

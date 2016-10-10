@@ -8,17 +8,26 @@ func (s *Sensu) GetAggregates() ([]interface{}, error) {
 }
 
 // GetAggregate returns a map of a specific aggregate corresponding to the provided check name
-// Only supports Sensu >= 0.24.0
-func (s *Sensu) GetAggregate(check string) (map[string]interface{}, error) {
-	return s.getMap(fmt.Sprintf("aggregates/%s", check))
+func (s *Sensu) GetAggregate(name string) (map[string]interface{}, error) {
+	return s.getMap(fmt.Sprintf("aggregates/%s", name))
 }
 
-// GetAggregateIssued returns a map containing the history of a specific check corresponding to the provided check name and the issued timestamp
-func (s *Sensu) GetAggregateIssued(check string, issued string) (map[string]interface{}, error) {
-	return s.getMap(fmt.Sprintf("aggregates/%s/%s", check, issued))
+// GetAggregateChecks returns a slice of all checks members of an aggregate
+func (s *Sensu) GetAggregateChecks(name string) ([]interface{}, error) {
+	return s.getSlice(fmt.Sprintf("aggregates/%s/checks", name), NoLimit)
+}
+
+// GetAggregateClients returns a slice of all clients members of an aggregate
+func (s *Sensu) GetAggregateClients(name string) ([]interface{}, error) {
+	return s.getSlice(fmt.Sprintf("aggregates/%s/clients", name), NoLimit)
+}
+
+// GetAggregateResults returns a slice of all check result members by severity
+func (s *Sensu) GetAggregateResults(name, severity string) ([]interface{}, error) {
+	return s.getSlice(fmt.Sprintf("aggregates/%s/results/%s", name, severity), NoLimit)
 }
 
 // DeleteAggregate deletes an aggregate using its check name
-func (s *Sensu) DeleteAggregate(check string) error {
-	return s.delete(fmt.Sprintf("aggregates/%s", check))
+func (s *Sensu) DeleteAggregate(name string) error {
+	return s.delete(fmt.Sprintf("aggregates/%s", name))
 }
