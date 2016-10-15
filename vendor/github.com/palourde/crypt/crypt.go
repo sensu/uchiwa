@@ -12,7 +12,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/kless/osutil/user/crypt/common"
+	"github.com/palourde/crypt/common"
 )
 
 var ErrKeyMismatch = errors.New("hashed value is not the hash of the given password")
@@ -52,10 +52,10 @@ type Crypter interface {
 type Crypt uint
 
 const (
-	APR1   Crypt = iota + 1 // import "github.com/kless/osutil/user/crypt/apr1_crypt"
-	MD5                     // import "github.com/kless/osutil/user/crypt/md5_crypt"
-	SHA256                  // import "github.com/kless/osutil/user/crypt/sha256_crypt"
-	SHA512                  // import "github.com/kless/osutil/user/crypt/sha512_crypt"
+	APR1   Crypt = iota + 1 // import "github.com/palourde/crypt/apr1_crypt"
+	MD5                     // import "github.com/palourde/crypt/md5_crypt"
+	SHA256                  // import "github.com/palourde/crypt/sha256_crypt"
+	SHA512                  // import "github.com/palourde/crypt/sha512_crypt"
 	maxCrypt
 )
 
@@ -84,7 +84,7 @@ func New(c Crypt) Crypter {
 }
 
 // NewFromHash returns a new Crypter using the prefix in the given hashed key.
-func NewFromHash(hashedKey string) Crypter {
+func NewFromHash(hashedKey string) (Crypter, error) {
 	var f func() Crypter
 
 	if strings.HasPrefix(hashedKey, cryptPrefixes[SHA512]) {
@@ -95,14 +95,11 @@ func NewFromHash(hashedKey string) Crypter {
 		f = crypts[MD5]
 	} else if strings.HasPrefix(hashedKey, cryptPrefixes[APR1]) {
 		f = crypts[APR1]
-	} else {
-		toks := strings.SplitN(hashedKey, "$", 3)
-		prefix := "$" + toks[1] + "$"
-		panic("crypt: unknown cryp function from prefix: " + prefix)
 	}
 
 	if f != nil {
-		return f()
+		return f(), nil
 	}
-	panic("crypt: requested cryp function is unavailable")
+
+	return nil, errors.New("Invalid hash")
 }
