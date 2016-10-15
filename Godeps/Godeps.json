@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/sensu/uchiwa",
-	"GoVersion": "go1.6",
+	"GoVersion": "go1.7",
 	"GodepVersion": "v74",
 	"Packages": [
 		"./..."
@@ -16,32 +16,32 @@
 			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
 		},
 		{
-			"ImportPath": "github.com/kless/osutil/user/crypt",
-			"Rev": "3ac994847c4376a4b905fc0a19f450c5a4bec647"
-		},
-		{
-			"ImportPath": "github.com/kless/osutil/user/crypt/apr1_crypt",
-			"Rev": "3ac994847c4376a4b905fc0a19f450c5a4bec647"
-		},
-		{
-			"ImportPath": "github.com/kless/osutil/user/crypt/common",
-			"Rev": "3ac994847c4376a4b905fc0a19f450c5a4bec647"
-		},
-		{
-			"ImportPath": "github.com/kless/osutil/user/crypt/md5_crypt",
-			"Rev": "3ac994847c4376a4b905fc0a19f450c5a4bec647"
-		},
-		{
-			"ImportPath": "github.com/kless/osutil/user/crypt/sha256_crypt",
-			"Rev": "3ac994847c4376a4b905fc0a19f450c5a4bec647"
-		},
-		{
-			"ImportPath": "github.com/kless/osutil/user/crypt/sha512_crypt",
-			"Rev": "3ac994847c4376a4b905fc0a19f450c5a4bec647"
-		},
-		{
 			"ImportPath": "github.com/mitchellh/mapstructure",
 			"Rev": "f7d28d5aeab42b9b95d2e6d6b956f73a290077fc"
+		},
+		{
+			"ImportPath": "github.com/palourde/crypt",
+			"Rev": "93fd0857421de18f097d6eb63826a76755fc01c1"
+		},
+		{
+			"ImportPath": "github.com/palourde/crypt/apr1_crypt",
+			"Rev": "93fd0857421de18f097d6eb63826a76755fc01c1"
+		},
+		{
+			"ImportPath": "github.com/palourde/crypt/common",
+			"Rev": "93fd0857421de18f097d6eb63826a76755fc01c1"
+		},
+		{
+			"ImportPath": "github.com/palourde/crypt/md5_crypt",
+			"Rev": "93fd0857421de18f097d6eb63826a76755fc01c1"
+		},
+		{
+			"ImportPath": "github.com/palourde/crypt/sha256_crypt",
+			"Rev": "93fd0857421de18f097d6eb63826a76755fc01c1"
+		},
+		{
+			"ImportPath": "github.com/palourde/crypt/sha512_crypt",
+			"Rev": "93fd0857421de18f097d6eb63826a76755fc01c1"
 		},
 		{
 			"ImportPath": "github.com/palourde/mergo",
