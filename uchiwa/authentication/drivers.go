@@ -1,16 +1,17 @@
 package authentication
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
-	"github.com/kless/osutil/user/crypt"
+	"github.com/palourde/crypt"
 
 	// Supported schemas for hashed passwords
-	_ "github.com/kless/osutil/user/crypt/apr1_crypt"
-	_ "github.com/kless/osutil/user/crypt/md5_crypt"
-	_ "github.com/kless/osutil/user/crypt/sha256_crypt"
-	_ "github.com/kless/osutil/user/crypt/sha512_crypt"
+	_ "github.com/palourde/crypt/apr1_crypt"
+	_ "github.com/palourde/crypt/md5_crypt"
+	_ "github.com/palourde/crypt/sha256_crypt"
+	_ "github.com/palourde/crypt/sha512_crypt"
 )
 
 // Advanced function allows a third party Identification driver
@@ -52,7 +53,12 @@ func simple(u, p string) (*User, error) {
 		if strings.HasPrefix(user.Password, "{crypt}") {
 			password := user.Password
 			password = strings.Replace(password, "{crypt}", "", 1)
-			return &user, crypt.NewFromHash(password).Verify(password, []byte(p))
+			crypter, err := crypt.NewFromHash(password)
+			if err != nil {
+				return &user, errors.New("Invalid hashed password")
+			}
+
+			return &user, crypter.Verify(password, []byte(p))
 		}
 
 		if p == user.Password {
