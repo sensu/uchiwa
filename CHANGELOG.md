@@ -1,38 +1,47 @@
+### 0.19.0 (2016-10-16)
+#### Features
+- Allow silencing of checks and subscriptions across datacenters [PR #112](https://github.com/sensu/uchiwa-web/pull/112)
+- Display rich aggregates data - [PR #113](https://github.com/sensu/uchiwa-web/pull/113)
+
+#### Bug Fixes
+- The pagination counter should consider the filters applied - [Issue #431](https://github.com/sensu/uchiwa/issues/431)
+- Do not panic when an encrypted password is invalid - [Issue #549](https://github.com/sensu/uchiwa/issues/549)
+
 ### 0.18.2 (2016-09-19)
 #### Bug Fixes
-Fix the silenced filters - [Issue #565](https://github.com/sensu/uchiwa/issues/565)  
-Do not move an image from the command attribute to its own box - [Issue  #558](https://github.com/sensu/uchiwa/issues/558)
+- Fix the silenced filters - [Issue #565](https://github.com/sensu/uchiwa/issues/565)  
+- Do not move an image from the command attribute to its own box - [Issue  #558](https://github.com/sensu/uchiwa/issues/558)
 
 #### Other
-Allow choice of silencing entries when un-silencing an item - [PR #111](https://github.com/sensu/uchiwa-web/pull/111)  
-Allow choice of custom expiration when creating a silence entry - [Issue #570](https://github.com/sensu/uchiwa/issues/570)  
-The /health endpoint can return a 503 HTTP response code on error - [Issue #557](https://github.com/sensu/uchiwa/issues/557)
+- Allow choice of silencing entries when un-silencing an item - [PR #111](https://github.com/sensu/uchiwa-web/pull/111)  
+- Allow choice of custom expiration when creating a silence entry - [Issue #570](https://github.com/sensu/uchiwa/issues/570)  
+- The /health endpoint can return a 503 HTTP response code on error - [Issue #557](https://github.com/sensu/uchiwa/issues/557)
 
 ### 0.18.1 (2016-09-09)
 #### Bug Fixes
-Fix silencing with no expiration - [PR #107](https://github.com/sensu/uchiwa-web/pull/107)
+- Fix silencing with no expiration - [PR #107](https://github.com/sensu/uchiwa-web/pull/107)
 
 ### 0.18.0 (2016-09-07)
 **Requires Sensu >= 0.26**
 
 #### Bug Fixes
-Prevent race condition when using the Uchiwa filters - [Issue #543](https://github.com/sensu/uchiwa/issues/543)
-Fix styling of the uchiwa-dark theme - [PR #105](https://github.com/sensu/uchiwa-web/pull/105)
+- Prevent race condition when using the Uchiwa filters - [Issue #543](https://github.com/sensu/uchiwa/issues/543)
+- Fix styling of the uchiwa-dark theme - [PR #105](https://github.com/sensu/uchiwa-web/pull/105)
 
 #### Features
-Support built-in silencing in Sensu 0.26 - [Issue #539](https://github.com/sensu/uchiwa/issues/539)
-Filter per-client subscriptions - [Issue #534](https://github.com/sensu/uchiwa/issues/534)
-Add support for encrypted passwords - [PR #448](https://github.com/sensu/uchiwa/issues/448)
-Display last_ok attribute in events view - [PR #96](https://github.com/sensu/uchiwa-web/pull/96)
+- Support built-in silencing in Sensu 0.26 - [Issue #539](https://github.com/sensu/uchiwa/issues/539)
+- Filter per-client subscriptions - [Issue #534](https://github.com/sensu/uchiwa/issues/534)
+- Add support for encrypted passwords - [PR #448](https://github.com/sensu/uchiwa/issues/448)
+- Display last_ok attribute in events view - [PR #96](https://github.com/sensu/uchiwa-web/pull/96)
 
 ### 0.17.1 (2016-08-02)
 #### Bug Fixes
-Remove various debugging traces - [Commit #d249aa4](https://github.com/sensu/uchiwa/commit/d249aa4)
+- Remove various debugging traces - [Commit #d249aa4](https://github.com/sensu/uchiwa/commit/d249aa4)
 
 #### Other
-Upgrade to Go 1.6.3 with vendoring support - [PR #528](https://github.com/sensu/uchiwa/pull/528)
-The filters package now implements an interface for easier use - [PR #528](https://github.com/sensu/uchiwa/pull/528)
-Refactoring of the authorization logic - [PR #528](https://github.com/sensu/uchiwa/pull/528)
+- Upgrade to Go 1.6.3 with vendoring support - [PR #528](https://github.com/sensu/uchiwa/pull/528)
+- The filters package now implements an interface for easier use - [PR #528](https://github.com/sensu/uchiwa/pull/528)
+- Refactoring of the authorization logic - [PR #528](https://github.com/sensu/uchiwa/pull/528)
 
 ### 0.17.0 (2016-07-20)
 #### Features
