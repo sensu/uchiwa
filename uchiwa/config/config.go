@@ -15,10 +15,12 @@ import (
 
 var (
 	defaultGlobalConfig = GlobalConfig{
-		Host:     "0.0.0.0",
-		Port:     3000,
-		LogLevel: "info",
-		Refresh:  10,
+		Host:                   "0.0.0.0",
+		Port:                   3000,
+		LogLevel:               "info",
+		Refresh:                10,
+		DisableNoExpiration:    false,
+		ExpireOnResolveDefault: false,
 		Ldap: Ldap{
 			Port:                 389,
 			Security:             "none",
