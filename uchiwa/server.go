@@ -943,6 +943,11 @@ func (u *Uchiwa) silencedHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if u.Config.Uchiwa.UserOptions.DisableNoExpiration == true && data.Expire < 1 {
+			http.Error(w, "Open-ended silences are disallowed", http.StatusNotFound)
+			return
+		}
+
 		err = u.PostSilence(data)
 		if err != nil {
 			http.Error(w, "Could not create the entry in the silenced registry", http.StatusNotFound)
