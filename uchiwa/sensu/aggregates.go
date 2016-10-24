@@ -2,6 +2,11 @@ package sensu
 
 import "fmt"
 
+// DeleteAggregate deletes an aggregate using its check name
+func (s *Sensu) DeleteAggregate(name string) error {
+	return s.delete(fmt.Sprintf("aggregates/%s", name))
+}
+
 // GetAggregates returns a slice of all aggregates
 func (s *Sensu) GetAggregates() ([]interface{}, error) {
 	return s.getSlice("aggregates", NoLimit)
@@ -25,9 +30,4 @@ func (s *Sensu) GetAggregateClients(name string) ([]interface{}, error) {
 // GetAggregateResults returns a slice of all check result members by severity
 func (s *Sensu) GetAggregateResults(name, severity string) ([]interface{}, error) {
 	return s.getSlice(fmt.Sprintf("aggregates/%s/results/%s", name, severity), NoLimit)
-}
-
-// DeleteAggregate deletes an aggregate using its check name
-func (s *Sensu) DeleteAggregate(name string) error {
-	return s.delete(fmt.Sprintf("aggregates/%s", name))
 }

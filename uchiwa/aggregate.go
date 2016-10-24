@@ -6,6 +6,23 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
+// DeleteAggregate deletes a specific aggregate
+func (u *Uchiwa) DeleteAggregate(name, dc string) error {
+	api, err := getAPI(u.Datacenters, dc)
+	if err != nil {
+		logger.Warning(err)
+		return err
+	}
+
+	err = api.DeleteAggregate(name)
+	if err != nil {
+		logger.Warning(err)
+		return err
+	}
+
+	return nil
+}
+
 // GetAggregate retrieves a specific aggregate
 func (u *Uchiwa) GetAggregate(name, dc string) (*map[string]interface{}, error) {
 	api, err := getAPI(u.Datacenters, dc)

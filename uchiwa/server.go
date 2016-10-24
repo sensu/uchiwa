@@ -22,7 +22,7 @@ var Filters filters.Filters
 
 // aggregateHandler serves the /aggregates/:name[...] endpoint
 func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != "GET" && r.Method != "HEAD" && r.Method != "DELETE" {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -101,6 +101,15 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Are we responding to a /aggregates/:name request?
 	if len(resources) == 3 {
+		if r.Method == "DELETE" {
+			err := u.DeleteAggregate(name, dc)
+			if err != nil {
+				http.Error(w, fmt.Sprint(err), 500)
+				return
+			}
+			return
+		}
+
 		aggregate, err := u.GetAggregate(name, dc)
 		if err != nil {
 			http.Error(w, fmt.Sprint(err), 500)
