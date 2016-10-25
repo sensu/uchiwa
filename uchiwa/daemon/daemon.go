@@ -57,10 +57,11 @@ func (d *Daemon) Start(interval int, data chan *structs.Data) {
 func (d *Daemon) buildData() {
 	d.buildEvents()
 	d.buildClients()
-	d.buildChecks()
-	d.buildSilenced()
-	d.buildStashes()
+	setID(d.Data.Checks, "/")
+	setID(d.Data.Silenced, ":")
+	setID(d.Data.Stashes, ":/")
 	d.BuildSubscriptions()
+	setID(d.Data.Aggregates, "/")
 	d.buildMetrics()
 	d.buildSEMetrics()
 }
