@@ -32,6 +32,28 @@ func FindDcFromInterface(data interface{}, datacenters *[]sensu.Sensu) (*sensu.S
 	return nil, nil, fmt.Errorf("Could not find the datacenter %s", id)
 }
 
+// setID sets the _id attribute on every element of the slice from the dc and name
+func setID(elements []interface{}, separator string) {
+	for _, e := range elements {
+		element, ok := e.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		dc, ok := element["dc"].(string)
+		if !ok {
+			continue
+		}
+
+		name, ok := element["name"].(string)
+		if !ok {
+			continue
+		}
+
+		element["_id"] = fmt.Sprintf("%s%s%s", dc, separator, name)
+	}
+}
+
 func setDc(v interface{}, dc string) {
 	m, ok := v.(map[string]interface{})
 	if !ok {
