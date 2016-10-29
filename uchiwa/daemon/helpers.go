@@ -47,7 +47,10 @@ func setID(elements []interface{}, separator string) {
 
 		name, ok := element["name"].(string)
 		if !ok {
-			continue
+			name, ok = element["id"].(string)
+			if !ok {
+				continue
+			}
 		}
 
 		element["_id"] = fmt.Sprintf("%s%s%s", dc, separator, name)

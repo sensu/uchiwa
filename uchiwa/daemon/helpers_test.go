@@ -10,7 +10,7 @@ func TestSetID(t *testing.T) {
 	elements := []interface{}{
 		map[string]interface{}{"dc": "us-east-1", "name": "foo"},
 		map[string]interface{}{"dc": "us-east-1", "name": "bar"},
-		map[string]interface{}{"dc": "us-west-1", "name": "foo"},
+		map[string]interface{}{"dc": "us-west-1", "id": "foo"},
 	}
 
 	setID(elements, "/")
