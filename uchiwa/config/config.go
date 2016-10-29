@@ -31,6 +31,10 @@ var (
 			Level:   "default",
 			Logfile: "/var/log/sensu/sensu-enterprise-dashboard-audit.log",
 		},
+		UserOptions: UserOptions{
+			DisableNoExpiration:    false,
+			ExpireOnResolveDefault: false,
+		},
 	}
 	defaultSensuConfig = SensuConfig{
 		Port:    4567,
