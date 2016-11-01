@@ -16,13 +16,20 @@ func BuildClientsMetrics(clients *[]interface{}) *structs.StatusMetrics {
 	metrics := structs.StatusMetrics{}
 
 	metrics.Total = len(*clients)
-
 	for _, c := range *clients {
 		client := c.(map[string]interface{})
 
+		silenced, ok := client["silenced"].(bool)
+		if ok { // Do not ignore the client if we don't have a silenced attribute
+			if silenced {
+				metrics.Silenced++
+				continue
+			}
+		}
+
 		status, ok := client["status"].(int)
 		if !ok {
-			logger.Warningf("Could not assert this status to an int: %+v", client["status"])
+			logger.Warningf("Could not assert the status to an int: %+v", client["status"])
 			continue
 		}
 
@@ -49,6 +56,14 @@ func BuildEventsMetrics(events *[]interface{}) *structs.StatusMetrics {
 
 	for _, e := range *events {
 		event := e.(map[string]interface{})
+
+		silenced, ok := event["silenced"].(bool)
+		if ok { // Do not ignore the event if we don't have a silenced attribute
+			if silenced {
+				metrics.Silenced++
+				continue
+			}
+		}
 
 		check, ok := event["check"].(map[string]interface{})
 		if !ok {
