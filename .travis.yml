@@ -2,12 +2,13 @@ language: go
 
 go:
   - 1.7
+  - tip
 
 notifications:
   email: false
 
 script:
-  - go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+  - ./travis.sh
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) || echo "Codecov fails"
