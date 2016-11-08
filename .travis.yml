@@ -1,31 +1,13 @@
 language: go
 
 go:
-  - 1.6
+  - 1.7
 
 notifications:
-    email: false
+  email: false
 
-env:
-  - secure: "MqohR2/eRky/ygs0r5hhzcBRwxWeXVqAsI9hJHhhIFosEn6Na4eCHyLthcQ79j/cpsMhF9aPfpSKpkoxuFLpEMx9iKIz1qPtJ97JORB09yFuR1M1kFaJciPj1yOy4ml8lzyyRfaVBy1uag+HorSHjeH4T6xqvs4pwrBnCkj7Y8Y="
-
-before_install:
-  - go get golang.org/x/tools/cmd/cover
-  - go get github.com/axw/gocov/gocov
-  - go get github.com/modocache/gover
-  - go get github.com/mattn/goveralls
+script:
+  - go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 after_success:
-  - go test -coverprofile=uchiwa.coverprofile ./uchiwa
-  - go test -coverprofile=audit.coverprofile ./uchiwa/audit
-  - go test -coverprofile=authentication.coverprofile ./uchiwa/authentication
-  - go test -coverprofile=authorization.coverprofile ./uchiwa/authorization
-  - go test -coverprofile=config.coverprofile ./uchiwa/config
-  - go test -coverprofile=daemon.coverprofile ./uchiwa/daemon
-  - go test -coverprofile=filters.coverprofile ./uchiwa/filters
-  - go test -coverprofile=helpers.coverprofile ./uchiwa/helpers
-  - go test -coverprofile=logger.coverprofile ./uchiwa/logger
-  - go test -coverprofile=sensu.coverprofile ./uchiwa/sensu
-  - go test -coverprofile=structs.coverprofile ./uchiwa/structs
-  - $HOME/gopath/bin/gover
-  - $HOME/gopath/bin/goveralls -coverprofile=gover.coverprofile -service=travis-ci -repotoken=$COVERALLS_TOKEN
+  - bash <(curl -s https://codecov.io/bash)
