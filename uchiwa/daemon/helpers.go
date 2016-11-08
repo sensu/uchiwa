@@ -47,9 +47,14 @@ func setID(elements []interface{}, separator string) {
 
 		name, ok := element["name"].(string)
 		if !ok {
+			// Support silence entries
 			name, ok = element["id"].(string)
 			if !ok {
-				continue
+				// Support stashes
+				name, ok = element["path"].(string)
+				if !ok {
+					continue
+				}
 			}
 		}
 

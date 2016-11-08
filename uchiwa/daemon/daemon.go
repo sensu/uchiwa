@@ -59,7 +59,7 @@ func (d *Daemon) buildData() {
 	d.buildClients()
 	setID(d.Data.Checks, "/")
 	setID(d.Data.Silenced, ":")
-	setID(d.Data.Stashes, ":/")
+	setID(d.Data.Stashes, "/")
 	d.BuildSubscriptions()
 	setID(d.Data.Aggregates, "/")
 	d.buildMetrics()
