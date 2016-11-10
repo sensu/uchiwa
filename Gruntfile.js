@@ -15,10 +15,10 @@ module.exports = function (grunt) {
             'directives.js',
             'factories.js',
             'filters.js',
-            'providers.js',
             'services.js',
             'angular.min.js',
             'angular-cookies.min.js',
+            'angular-resource.min.js',
             'angular-route.min.js',
             'angular-sanitize.min.js',
             'async.js',
@@ -26,6 +26,7 @@ module.exports = function (grunt) {
             'angular-toastr.tpls.min.js',
             'ui-bootstrap-tpls.min.js',
             'highlight.pack.js',
+            'massautocomplete.min.js',
             'moment.min.js',
             'angular-moment.min.js',
             'angular-gravatar.min.js',
@@ -33,6 +34,7 @@ module.exports = function (grunt) {
             'font-awesome.min.css',
             'angular-toastr.min.css',
             'tomorrow.css',
+            'massautocomplete.theme.css',
             'uchiwa-default.css'
           ],
           replacement: 'time'
