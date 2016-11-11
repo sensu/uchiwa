@@ -85,8 +85,8 @@ func (d *Daemon) fetchData() {
 		}
 		silenced, err := datacenter.GetSilenced()
 		if err != nil {
-			logger.Warningf("Connection failed to the datacenter %s.", datacenter.Name)
-			continue
+			logger.Warningf("Impossible to retrieve silenced entries from the "+
+				"datacenter %s. Silencing might not be possible, please update Sensu", datacenter.Name)
 		}
 		checks, err := datacenter.GetChecks()
 		if err != nil {
