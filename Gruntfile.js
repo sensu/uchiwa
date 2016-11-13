@@ -9,6 +9,7 @@ module.exports = function (grunt) {
         options: {
           match: [
             'app.js',
+            'bootstrap.js',
             'common.js',
             'constants.js',
             'controllers.js',

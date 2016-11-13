@@ -442,6 +442,12 @@ func (u *Uchiwa) configHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		if resources[2] == "auth" {
 			fmt.Fprintf(w, "%s", u.PublicConfig.Uchiwa.Auth.Driver)
+		} else if resources[2] == "users" {
+			encoder := json.NewEncoder(w)
+			if err := encoder.Encode(u.PublicConfig.Uchiwa.UsersOptions); err != nil {
+				http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+				return
+			}
 		} else {
 			http.Error(w, "", http.StatusNotFound)
 			return
@@ -952,8 +958,13 @@ func (u *Uchiwa) silencedHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if u.Config.Uchiwa.UserOptions.DisableNoExpiration == true && data.Expire < 1 {
-			http.Error(w, "Open-ended silences are disallowed", http.StatusNotFound)
+		if u.Config.Uchiwa.UsersOptions.DisableNoExpiration && data.Expire < 1 {
+			http.Error(w, "Open-ended silence entries are disallowed", http.StatusNotFound)
+			return
+		}
+
+		if u.Config.Uchiwa.UsersOptions.RequireSilencingReason && data.Reason == "" {
+			http.Error(w, "A reason must be provided for every silence entry", http.StatusNotFound)
 			return
 		}
 
