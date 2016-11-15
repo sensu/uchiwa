@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="uchiwa">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,18 @@
   <link href="bower_components/uchiwa-web/css/uchiwa-default/uchiwa-default.css?rel=1476657523785" rel="stylesheet" site-theme>
 </head>
 
-<body ng-cloak>
+<body>
+
+  <div id="error">
+    <div class="error-code mb15 mt25">Oops!</div>
+    <h3 class="font-bold">We couldn't load Uchiwa configuration.</h3>
+
+    <div class="error-desc">
+      Try refreshing the page and check your Internet connection.<br/>
+      If the issue persists, please refer to this
+      <a href="https://docs.uchiwa.io/guides/troubleshooting/#errors">documentation</a> page.
+    </div>
+  </div>
 
 <ng-view></ng-view>
 
@@ -33,7 +44,6 @@
 <script src="bower_components/angular-resource/angular-resource.min.js?rel=1476657523783"></script>
 <script src="bower_components/angular-route/angular-route.min.js?rel=1476657523783"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.min.js?rel=1476657523783"></script>
-<script src="bower_components/underscore/underscore.js?rel=1476657523784"></script>
 <script src="bower_components/angular-toastr/dist/angular-toastr.tpls.min.js?rel=1476657523784"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js?rel=1476657523784"></script>
 <script src="bower_components/highlightjs/highlight.pack.js?rel=1476657523784"></script>
@@ -43,6 +53,7 @@
 <script src="bower_components/angular-gravatar/build/angular-gravatar.min.js?rel=1476657523784"></script>
 
 <!-- Uchiwa JS -->
+<script src="bower_components/uchiwa-web/js/bootstrap.js?rel=1476657523782"></script>
 <script src="bower_components/uchiwa-web/js/app.js?rel=1476657523782"></script>
 <script src="bower_components/uchiwa-web/js/common.js?rel=1476657523783"></script>
 <script src="bower_components/uchiwa-web/js/constants.js?rel=1476657523783"></script>

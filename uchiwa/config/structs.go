@@ -28,22 +28,22 @@ type SensuConfig struct {
 
 // GlobalConfig struct contains conf about Uchiwa
 type GlobalConfig struct {
-	Host        string
-	Port        int
-	LogLevel    string
-	Refresh     int
-	Pass        string
-	User        string
-	Users       []authentication.User
-	Audit       Audit
-	Auth        structs.Auth
-	Db          Db
-	Enterprise  bool
-	Github      Github
-	Gitlab      Gitlab
-	Ldap        Ldap
-	SSL         SSL
-	UserOptions UserOptions
+	Host         string
+	Port         int
+	LogLevel     string
+	Refresh      int
+	Pass         string
+	User         string
+	Users        []authentication.User
+	Audit        Audit
+	Auth         structs.Auth
+	Db           Db
+	Enterprise   bool
+	Github       Github
+	Gitlab       Gitlab
+	Ldap         Ldap
+	SSL          SSL
+	UsersOptions UsersOptions
 }
 
 // Audit struct contains the config of the Audit logger
@@ -101,8 +101,13 @@ type SSL struct {
 	KeyFile  string
 }
 
-// UserOptions struct contains various config tweaks
-type UserOptions struct {
+// UsersOptions struct contains various config tweaks
+type UsersOptions struct {
+	DateFormat             string
+	DefaultExpireOnResolve bool
+	DefaultTheme           string
 	DisableNoExpiration    bool
-	ExpireOnResolveDefault bool
+	LogoURL                string
+	Refresh                int
+	RequireSilencingReason bool
 }

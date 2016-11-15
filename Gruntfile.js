@@ -9,6 +9,7 @@ module.exports = function (grunt) {
         options: {
           match: [
             'app.js',
+            'bootstrap.js',
             'common.js',
             'constants.js',
             'controllers.js',
@@ -22,7 +23,6 @@ module.exports = function (grunt) {
             'angular-route.min.js',
             'angular-sanitize.min.js',
             'async.js',
-            'underscore.js',
             'angular-toastr.tpls.min.js',
             'ui-bootstrap-tpls.min.js',
             'highlight.pack.js',
