@@ -1,6 +1,23 @@
+### 0.20.0 (2016-11-14)
+#### Features
+- Added various users-level configuration attributes to customize Uchiwa - [PR #125](https://github.com/sensu/uchiwa-web/pull/125)
+- Support regex and key:value search queries - [PR #122](https://github.com/sensu/uchiwa-web/pull/122)
+- Sidebar popovers redesign - [PR #119](https://github.com/sensu/uchiwa-web/pull/119)
+- Aggregates can now be deleted - [PR #118](https://github.com/sensu/uchiwa-web/pull/118)
+- Show the reason in the silenced view - [PR #116](https://github.com/sensu/uchiwa-web/pull/116)
+
+#### Other
+- Refactoring of the Angular services - [PR #120](https://github.com/sensu/uchiwa-web/pull/120)
+- The checks and subscriptions filters now only show values associated with a datacenter if one is selected in the datacenters filter - [PR #123](https://github.com/sensu/uchiwa-web/pull/123)
+- Improve notification messages - [Issue #467](https://github.com/sensu/uchiwa/issues/467)
+- Move iframes to their own panels in the client view - [Issue #360](https://github.com/sensu/uchiwa/issues/360)
+- Pre-0.26 Sensu APIs are now marked as deprecated in the logs - [Issue #590](https://github.com/sensu/uchiwa/issues/590)
+- Refactoring of the Angular bootstrapping - [PR #125](https://github.com/sensu/uchiwa-web/pull/125)
+- Remove underscore.js dependency - [PR #125](https://github.com/sensu/uchiwa-web/pull/125)
+
 ### 0.19.0 (2016-10-16)
 #### Features
-- Allow silencing of checks and subscriptions across datacenters [PR #112](https://github.com/sensu/uchiwa-web/pull/112)
+- Allow silencing of checks and subscriptions across datacenters - [PR #112](https://github.com/sensu/uchiwa-web/pull/112)
 - Display rich aggregates data - [PR #113](https://github.com/sensu/uchiwa-web/pull/113)
 
 #### Bug Fixes
