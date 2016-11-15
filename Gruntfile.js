@@ -23,7 +23,6 @@ module.exports = function (grunt) {
             'angular-route.min.js',
             'angular-sanitize.min.js',
             'async.js',
-            'underscore.js',
             'angular-toastr.tpls.min.js',
             'ui-bootstrap-tpls.min.js',
             'highlight.pack.js',
