@@ -1073,6 +1073,19 @@ func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// noCacheHandler sets the proper headers to prevent any sort of caching for the
+// index.html file, served as /
+func noCacheHandler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/" {
+			w.Header().Set("cache-control", "no-cache, no-store, must-revalidate")
+			w.Header().Set("pragma", "no-cache")
+			w.Header().Set("expires", "0")
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 // WebServer starts the web server and serves GET & POST requests
 func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	// Private endpoints
@@ -1097,7 +1110,7 @@ func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	}
 
 	// Static files
-	http.Handle("/", http.FileServer(http.Dir(*publicPath)))
+	http.Handle("/", noCacheHandler(http.FileServer(http.Dir(*publicPath))))
 
 	// Public endpoints
 	http.Handle("/config/", http.HandlerFunc(u.configHandler))
