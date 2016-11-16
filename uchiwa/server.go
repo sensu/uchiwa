@@ -60,7 +60,7 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusMultipleChoices)
 
 				encoder := json.NewEncoder(w)
-				if err := encoder.Encode(visibleAggregates); err != nil {
+				if err = encoder.Encode(visibleAggregates); err != nil {
 					http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 					return
 				}
@@ -73,7 +73,7 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 
 			gz := gzip.NewWriter(w)
 			defer gz.Close()
-			if err := json.NewEncoder(gz).Encode(visibleAggregates); err != nil {
+			if err = json.NewEncoder(gz).Encode(visibleAggregates); err != nil {
 				http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 				return
 			}
@@ -296,7 +296,7 @@ func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusMultipleChoices)
 
 				encoder := json.NewEncoder(w)
-				if err := encoder.Encode(visibleClients); err != nil {
+				if err = encoder.Encode(visibleClients); err != nil {
 					http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 					return
 				}
@@ -309,7 +309,7 @@ func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 
 			gz := gzip.NewWriter(w)
 			defer gz.Close()
-			if err := json.NewEncoder(gz).Encode(visibleClients); err != nil {
+			if err = json.NewEncoder(gz).Encode(visibleClients); err != nil {
 				http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 				return
 			}
@@ -531,7 +531,7 @@ func (u *Uchiwa) eventHandler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusMultipleChoices)
 
 				encoder := json.NewEncoder(w)
-				if err := encoder.Encode(visibleClients); err != nil {
+				if err = encoder.Encode(visibleClients); err != nil {
 					http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 					return
 				}
@@ -543,7 +543,7 @@ func (u *Uchiwa) eventHandler(w http.ResponseWriter, r *http.Request) {
 
 			gz := gzip.NewWriter(w)
 			defer gz.Close()
-			if err := json.NewEncoder(gz).Encode(visibleClients); err != nil {
+			if err = json.NewEncoder(gz).Encode(visibleClients); err != nil {
 				http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 				return
 			}
@@ -752,7 +752,7 @@ func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusMultipleChoices)
 
 				encoder := json.NewEncoder(w)
-				if err := encoder.Encode(visibleClients); err != nil {
+				if err = encoder.Encode(visibleClients); err != nil {
 					http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 					return
 				}
@@ -764,7 +764,7 @@ func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
 
 			gz := gzip.NewWriter(w)
 			defer gz.Close()
-			if err := json.NewEncoder(gz).Encode(visibleClients); err != nil {
+			if err = json.NewEncoder(gz).Encode(visibleClients); err != nil {
 				http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 				return
 			}
@@ -840,7 +840,7 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusMultipleChoices)
 
 				encoder := json.NewEncoder(w)
-				if err := encoder.Encode(visibleStashes); err != nil {
+				if err = encoder.Encode(visibleStashes); err != nil {
 					http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 					return
 				}
@@ -852,7 +852,7 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 
 			gz := gzip.NewWriter(w)
 			defer gz.Close()
-			if err := json.NewEncoder(gz).Encode(visibleStashes); err != nil {
+			if err = json.NewEncoder(gz).Encode(visibleStashes); err != nil {
 				http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 				return
 			}
