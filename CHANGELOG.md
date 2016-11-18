@@ -1,3 +1,12 @@
+### 0.20.1 (2016-11-17)
+#### Bug Fixes
+- Prevent any caching of the index.html file in order to facilitate the upgrade
+process - [PR #597](https://github.com/sensu/uchiwa/pull/597)
+- Do not apply a filter on the status attribute in the client view -
+[PR #127](https://github.com/sensu/uchiwa-web/pull/127)
+- Fix a typographical error in the clients popover of the sidebar -
+[PR #126](https://github.com/sensu/uchiwa-web/pull/126)
+
 ### 0.20.0 (2016-11-14)
 #### Features
 - Added various users-level configuration attributes to customize Uchiwa - [PR #125](https://github.com/sensu/uchiwa-web/pull/125)
