@@ -1,3 +1,16 @@
+### 0.20.2 (2016-11-21)
+#### Bug Fixes
+- Use the ngSrc directive to prevent failed requests when loading the logo URL -
+[Issue #599](https://github.com/sensu/uchiwa/issues/599)
+- Also display the custom logo on the login page -
+[PR #128](https://github.com/sensu/uchiwa-web/pull/128)
+- Fix the user dropdown when authenticated -
+[PR #128](https://github.com/sensu/uchiwa-web/pull/128)
+- Fix the theme selection on the settings view -
+[PR #128](https://github.com/sensu/uchiwa-web/pull/128)
+- Adjust the error description if the Uchiwa backend config is unavailable -
+[Commit 5de458a](https://github.com/sensu/uchiwa/commit/5de458a)
+
 ### 0.20.1 (2016-11-17)
 #### Bug Fixes
 - Prevent any caching of the index.html file in order to facilitate the upgrade
