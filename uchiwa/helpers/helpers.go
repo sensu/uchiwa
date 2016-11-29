@@ -40,6 +40,7 @@ func BuildClientsMetrics(clients *[]interface{}) *structs.StatusMetrics {
 			metrics.Warning++
 			continue
 		} else if status == 0.0 {
+			metrics.Healthy++
 			continue
 		}
 		metrics.Unknown++

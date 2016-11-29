@@ -9,7 +9,7 @@ import (
 
 func TestBuildClientsMetrics(t *testing.T) {
 	clients := []interface{}{map[string]interface{}{"status": 0}, map[string]interface{}{"status": 1}, map[string]interface{}{"status": 2}, map[string]interface{}{"status": 3}}
-	expectedMetrics := structs.StatusMetrics{Critical: 1, Total: 4, Unknown: 1, Warning: 1}
+	expectedMetrics := structs.StatusMetrics{Critical: 1, Healthy: 1, Total: 4, Unknown: 1, Warning: 1}
 	metrics := BuildClientsMetrics(&clients)
 	assert.Equal(t, expectedMetrics, *metrics)
 
