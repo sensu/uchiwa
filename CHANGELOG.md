@@ -1,3 +1,14 @@
+### 0.21.0 (2016-12-08)
+#### Features
+- Increase accuracy of the silenced attribute for Sensu events - [Issue #602](https://github.com/sensu/uchiwa/issues/602)
+- Add the TTL attribute to the checks view - [Issue #496](https://github.com/sensu/uchiwa/issues/496)
+
+#### Bug Fixes
+- Use relative URLs for Uchiwa API resources - [Issue #600](https://github.com/sensu/uchiwa/issues/600)
+- Fix silencing from the client view - [Issue #601](https://github.com/sensu/uchiwa/issues/601)
+- Prevent an empty popover when all clients are healthy - [Issue #607](https://github.com/sensu/uchiwa/issues/607)
+- Display the output of all checks on the client view - [Issue #612](https://github.com/sensu/uchiwa/issues/612)
+
 ### 0.20.2 (2016-11-21)
 #### Bug Fixes
 - Use the ngSrc directive to prevent failed requests when loading the logo URL -
