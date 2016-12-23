@@ -85,7 +85,7 @@ func (l *Logger) print(level string, format string, args ...interface{}) {
 
 	data, err := json.Marshal(l)
 	if err != nil {
-		fmt.Println(html.EscapeString(err))
+		fmt.Println(html.EscapeString(err.Error()))
 		return
 	}
 	fmt.Println(string(data))
