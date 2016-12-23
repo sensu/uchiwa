@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"strings"
 	"time"
+	"html"
 )
 
 // Logging Levels
@@ -84,7 +85,7 @@ func (l *Logger) print(level string, format string, args ...interface{}) {
 
 	data, err := json.Marshal(l)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(html.EscapeString(err))
 		return
 	}
 	fmt.Println(string(data))
