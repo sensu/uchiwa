@@ -3,11 +3,11 @@ package logger
 import (
 	"encoding/json"
 	"fmt"
-  "html"
+	"html"
 	"os"
 	"runtime"
 	"strings"
-  "sync"
+	"sync"
 	"time"
 )
 
