@@ -3,11 +3,12 @@ package logger
 import (
 	"encoding/json"
 	"fmt"
+  "html"
 	"os"
 	"runtime"
 	"strings"
+  "sync"
 	"time"
-	"sync"
 )
 
 // Logging Levels
@@ -91,7 +92,7 @@ func (l *Logger) print(level string, format string, args ...interface{}) {
 
 	data, err := json.Marshal(l)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(html.EscapeString(err.Error()))
 		return
 	}
 	fmt.Println(string(data))
