@@ -35,7 +35,8 @@ module.exports = function (grunt) {
             'angular-toastr.min.css',
             'tomorrow.css',
             'massautocomplete.theme.css',
-            'uchiwa-default.css'
+            'uchiwa-default.css',
+            'ua-parser.min.js'
           ],
           replacement: 'time'
         },
