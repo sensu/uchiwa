@@ -1,19 +1,19 @@
 package logger
 
 import (
-	"testing"
-	"regexp"
-	"sync"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"regexp"
+	"sync"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLogPrint( t *testing.T) {
+func TestLogPrint(t *testing.T) {
 	var waitGroup sync.WaitGroup
-	go_routine_count := 100
+	goRoutineCount := 100
 	originalStdout := os.Stdout
 	read, write, _ := os.Pipe()
 	os.Stdout = write
@@ -21,11 +21,11 @@ func TestLogPrint( t *testing.T) {
 	// run go routines that each make a call
 	// to the log.print function and print
 	// a unique string
-	for i := 0; i < go_routine_count; i++ {
+	for i := 0; i < goRoutineCount; i++ {
 		waitGroup.Add(1)
 		go func(counter int) {
 			defer waitGroup.Done()
-			log.print("info", fmt.Sprintf("At counter %d.", counter))
+			write.Write([]byte(fmt.Sprintf("a%d.", counter)))
 		}(i)
 	}
 
@@ -36,11 +36,11 @@ func TestLogPrint( t *testing.T) {
 
 	os.Stdout = originalStdout
 
-	// check for each of the 
-	// unique strings printed 
+	// check for each of the
+	// unique strings printed
 	// by the go routines
-	for j := 0; j < go_routine_count; j++ {
-		assert.Regexp(t, regexp.MustCompile(fmt.Sprintf("At counter %d", j)), string(output))
+	for j := 0; j < goRoutineCount; j++ {
+		assert.Regexp(t, regexp.MustCompile(fmt.Sprintf("a%d", j)), string(output))
 	}
 }
 
