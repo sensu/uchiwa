@@ -1,3 +1,13 @@
+### 0.22.0 (2017-01-25)
+#### Features
+- Responsive web design - [Issue #616](https://github.com/sensu/uchiwa/issues/616)
+
+#### Bug Fixes
+- Prevent reflected cross-site scripting (XSS) attacks - [Issue #618](https://github.com/sensu/uchiwa/issues/618)
+- Prevent race conditions in the logger package - [Issue #621](https://github.com/sensu/uchiwa/issues/621)
+- Fix recursive searches while using key-value queries - [Issue #624](https://github.com/sensu/uchiwa/issues/624)
+
+
 ### 0.21.0 (2016-12-08)
 #### Features
 - Increase accuracy of the silenced attribute for Sensu events - [Issue #602](https://github.com/sensu/uchiwa/issues/602)
