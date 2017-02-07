@@ -1,3 +1,10 @@
+### 0.22.1 (2017-02-06)
+#### Bug Fixes
+- The bulk actions menu should be shown when at least one element is selected - [Issue #138](https://github.com/sensu/uchiwa-web/pull/138)
+
+#### Other
+- Default to the new option _On resolve_ when silencing an element - [Issue #631](https://github.com/sensu/uchiwa/issues/631)
+
 ### 0.22.0 (2017-01-25)
 #### Features
 - Responsive web design - [Issue #616](https://github.com/sensu/uchiwa/issues/616)
