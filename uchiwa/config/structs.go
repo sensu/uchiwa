@@ -84,6 +84,7 @@ type Ldap struct {
 	BindPass             string
 	Debug                bool
 	Dialect              string
+	DisableNestedGroups  bool
 	GroupBaseDN          string
 	GroupObjectClass     string
 	GroupMemberAttribute string
