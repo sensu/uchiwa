@@ -34,15 +34,9 @@ func (d *Daemon) buildSEMetrics() {
 	d.Data.SEMetrics.KeepalivesAVG60.Name = "Keepalives"
 
 	d.Data.SEMetrics.Requests = rawMetricsToAggregatedCoordinates(d.Data.SERawMetrics.Requests)
-	if len(d.Data.SEMetrics.Requests.Data) > 181 {
-		d.Data.SEMetrics.Requests.Data = d.Data.SEMetrics.Requests.Data[len(d.Data.SEMetrics.Requests.Data)-181:]
-	}
 	d.Data.SEMetrics.Requests.Name = "Requests"
 
 	d.Data.SEMetrics.Results = rawMetricsToAggregatedCoordinates(d.Data.SERawMetrics.Results)
-	if len(d.Data.SEMetrics.Results.Data) > 181 {
-		d.Data.SEMetrics.Results.Data = d.Data.SEMetrics.Results.Data[len(d.Data.SEMetrics.Results.Data)-181:]
-	}
 	d.Data.SEMetrics.Results.Name = "Results"
 }
 
