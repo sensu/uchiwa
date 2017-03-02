@@ -13,6 +13,8 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
+const obfuscatedValue = "*****"
+
 var (
 	defaultGlobalConfig = GlobalConfig{
 		Host:     "0.0.0.0",
@@ -216,6 +218,12 @@ func initUchiwa(global GlobalConfig) GlobalConfig {
 		for i := range global.Ldap.Roles {
 			authentication.Roles = append(authentication.Roles, global.Ldap.Roles[i])
 		}
+	} else if global.OIDC.Server != "" {
+		global.Auth.Driver = "oidc"
+
+		for i := range global.OIDC.Roles {
+			authentication.Roles = append(authentication.Roles, global.OIDC.Roles[i])
+		}
 	} else if global.Db.Driver != "" && global.Db.Scheme != "" {
 		global.Auth.Driver = "sql"
 	} else if len(global.Users) != 0 {
@@ -252,33 +260,39 @@ func initUchiwa(global GlobalConfig) GlobalConfig {
 func (c *Config) GetPublic() *Config {
 	p := new(Config)
 	p.Uchiwa = c.Uchiwa
-	p.Uchiwa.User = "*****"
-	p.Uchiwa.Pass = "*****"
+	p.Uchiwa.User = obfuscatedValue
+	p.Uchiwa.Pass = obfuscatedValue
 	p.Uchiwa.Users = []authentication.User{}
-	p.Uchiwa.Db.Scheme = "*****"
-	p.Uchiwa.Github.ClientID = "*****"
-	p.Uchiwa.Github.ClientSecret = "*****"
-	p.Uchiwa.Gitlab.ApplicationID = "*****"
-	p.Uchiwa.Gitlab.Secret = "*****"
-	p.Uchiwa.Ldap.BindPass = "*****"
+	p.Uchiwa.Db.Scheme = obfuscatedValue
+	p.Uchiwa.Github.ClientID = obfuscatedValue
+	p.Uchiwa.Github.ClientSecret = obfuscatedValue
+	p.Uchiwa.Gitlab.ClientID = obfuscatedValue
+	p.Uchiwa.Gitlab.ClientSecret = obfuscatedValue
+	p.Uchiwa.Ldap.BindPass = obfuscatedValue
+	p.Uchiwa.OIDC.ClientID = obfuscatedValue
+	p.Uchiwa.OIDC.ClientSecret = obfuscatedValue
 
 	for i := range p.Uchiwa.Github.Roles {
-		p.Uchiwa.Github.Roles[i].AccessToken = "*****"
+		p.Uchiwa.Github.Roles[i].AccessToken = obfuscatedValue
 	}
 
 	for i := range p.Uchiwa.Gitlab.Roles {
-		p.Uchiwa.Gitlab.Roles[i].AccessToken = "*****"
+		p.Uchiwa.Gitlab.Roles[i].AccessToken = obfuscatedValue
 	}
 
 	for i := range p.Uchiwa.Ldap.Roles {
-		p.Uchiwa.Ldap.Roles[i].AccessToken = "*****"
+		p.Uchiwa.Ldap.Roles[i].AccessToken = obfuscatedValue
+	}
+
+	for i := range p.Uchiwa.OIDC.Roles {
+		p.Uchiwa.OIDC.Roles[i].AccessToken = obfuscatedValue
 	}
 
 	p.Sensu = make([]SensuConfig, len(c.Sensu))
 	for i := range c.Sensu {
 		p.Sensu[i] = c.Sensu[i]
-		p.Sensu[i].User = "*****"
-		p.Sensu[i].Pass = "*****"
+		p.Sensu[i].User = obfuscatedValue
+		p.Sensu[i].Pass = obfuscatedValue
 	}
 
 	return p

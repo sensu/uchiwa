@@ -42,6 +42,7 @@ type GlobalConfig struct {
 	Github       Github
 	Gitlab       Gitlab
 	Ldap         Ldap
+	OIDC         OIDC
 	SSL          SSL
 	UsersOptions UsersOptions
 }
@@ -68,11 +69,11 @@ type Github struct {
 
 // Gitlab struct contains the Gitlab driver configuration
 type Gitlab struct {
-	ApplicationID string
-	Secret        string
-	RedirectURL   string
-	Roles         []authentication.Role
-	Server        string
+	ClientID     string `json:"applicationid"`
+	ClientSecret string `json:"secret"`
+	RedirectURL  string
+	Roles        []authentication.Role
+	Server       string
 }
 
 // Ldap struct contains the LDAP driver configuration
@@ -94,6 +95,15 @@ type Ldap struct {
 	UserAttribute        string
 	UserBaseDN           string
 	UserObjectClass      string
+}
+
+// OIDC struct contains the OIDC driver configuration
+type OIDC struct {
+	ClientID     string
+	ClientSecret string
+	Insecure     bool
+	Roles        []authentication.Role
+	Server       string
 }
 
 // SSL struct contains the path the SSL certificate and key

@@ -193,6 +193,29 @@ func TestIsCheckSilenced(t *testing.T) {
 	assert.Equal(t, "*:check_cpu", isSilencedBy[0])
 }
 
+func TestInterfaceToSlice(t *testing.T) {
+	var i interface{}
+	i = "foo"
+
+	_, err := InterfaceToSlice(i)
+	assert.NotNil(t, err)
+
+	slice := []interface{}{[]string{"foo", "bar"}}
+	i = slice
+
+	result, err := InterfaceToSlice(i)
+	assert.Nil(t, err)
+	assert.Equal(t, slice, result)
+}
+
+func TestInterfaceToString(t *testing.T) {
+	i := []interface{}{[]string{"foo"}}
+	assert.Equal(t, []string(nil), InterfaceToString(i))
+
+	i = []interface{}{"foo", "bar"}
+	assert.Equal(t, []string{"foo", "bar"}, InterfaceToString(i))
+}
+
 func TestIsClientSilenced(t *testing.T) {
 	var client, dc string
 	var silenced []interface{}

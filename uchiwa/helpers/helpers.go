@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"reflect"
 
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
@@ -197,6 +198,36 @@ func GetIP(r *http.Request) string {
 	}
 	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
 	return ip
+}
+
+// InterfaceToSlice takes a slice of type interface{} and returns a slice of interface
+func InterfaceToSlice(slice interface{}) ([]interface{}, error) {
+	value := reflect.ValueOf(slice)
+	if value.Kind() != reflect.Slice {
+		return nil, fmt.Errorf("The interface provided is not a slice: %+v", slice)
+	}
+
+	result := make([]interface{}, value.Len())
+
+	for i := 0; i < value.Len(); i++ {
+		result[i] = value.Index(i).Interface()
+	}
+
+	return result, nil
+}
+
+// InterfaceToString takes a slice of interface{} a slice of string
+func InterfaceToString(i []interface{}) []string {
+	var result []string
+
+	for _, value := range i {
+		v, ok := value.(string)
+		if ok {
+			result = append(result, v)
+		}
+	}
+
+	return result
 }
 
 // IsCheckSilenced determines whether a check for a particular client is silenced.
