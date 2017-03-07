@@ -79,8 +79,8 @@ func verifyAccessToken(r *http.Request) (*jwt.Token, error) {
 	}
 
 	token := jwt.New(jwt.GetSigningMethod("RS256"))
-	token.Claims["Role"] = role
-	token.Claims["Username"] = role.Name
+	token.Claims["role"] = role
+	token.Claims["username"] = role.Name
 
 	return token, nil
 }

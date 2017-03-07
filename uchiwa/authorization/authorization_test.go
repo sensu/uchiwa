@@ -16,7 +16,7 @@ type HandleTester func(method string, params url.Values) *httptest.ResponseRecor
 
 func generateToken(role authentication.Role) *jwt.Token {
 	token := jwt.New(jwt.GetSigningMethod("RS256"))
-	token.Claims["Role"] = role
+	token.Claims["role"] = role
 
 	return token
 }

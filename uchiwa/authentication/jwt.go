@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -32,7 +33,7 @@ func GetJWTFromContext(r *http.Request) *jwt.Token {
 
 // GetRoleFromToken ...
 func GetRoleFromToken(token *jwt.Token) (*Role, error) {
-	r, ok := token.Claims["Role"]
+	r, ok := token.Claims["role"]
 	if !ok {
 		return &Role{}, errors.New("Could not retrieve the user Role from the JWT")
 	}
@@ -45,14 +46,16 @@ func GetRoleFromToken(token *jwt.Token) (*Role, error) {
 }
 
 // GetToken returns a string that contain the token
-func GetToken(role *Role, username string) (string, error) {
-	if username == "" {
+func GetToken(user *User, xsfrToken string) (string, error) {
+	if user.Username == "" {
 		return "", errors.New("Could not generate a token for the user. Invalid username")
 	}
 
 	t := jwt.New(jwt.GetSigningMethod("RS256"))
-	t.Claims["Role"] = role
-	t.Claims["Username"] = username
+	t.Claims["email"] = user.Email
+	t.Claims["role"] = user.Role
+	t.Claims["username"] = user.Username
+	t.Claims["xsrfToken"] = xsfrToken
 
 	if privateKey == nil {
 		return "", errors.New("Could not generate a token for the user. Invalid private key")
@@ -136,16 +139,18 @@ func setJWTInContext(r *http.Request, token *jwt.Token) {
 }
 
 // verifyJWT extracts and verifies the validity of the JWT
-func verifyJWT(r *http.Request) (*jwt.Token, error) {
-	token, err := jwt.ParseFromRequest(r, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodRSA); !ok {
-			logger.Debugf("Unexpected signing method: %v", t.Header["alg"])
-			return nil, errors.New("")
+func verifyJWT(tokenString string) (*jwt.Token, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+			logger.Debugf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("")
 		}
 		return publicKey, nil
 	})
 
 	if token == nil || err != nil {
+		logger.Debug(err)
 		return nil, errors.New("")
 	}
 

@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"net"
 	"net/http"
 	"reflect"
+	"time"
 
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
@@ -342,4 +344,19 @@ func IsStringInArray(item string, array []string) bool {
 	}
 
 	return false
+}
+
+// RandomString generates a random string of the provided length
+func RandomString(length int) string {
+	if length == 0 {
+		length = 32
+	}
+
+	char := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	rand.Seed(time.Now().UTC().UnixNano())
+	buf := make([]byte, length)
+	for i := 0; i < length; i++ {
+		buf[i] = char[rand.Intn(len(char)-1)]
+	}
+	return string(buf)
 }

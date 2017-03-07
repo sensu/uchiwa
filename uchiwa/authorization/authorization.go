@@ -50,7 +50,7 @@ func isReadOnly(r *http.Request) bool {
 
 	role, err := authentication.GetRoleFromToken(token)
 	if err != nil {
-		logger.Debug("Invalid token: %s", err)
+		logger.Debugf("Invalid token: %s", err.Error())
 		return true
 	}
 
