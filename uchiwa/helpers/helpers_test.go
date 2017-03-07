@@ -264,3 +264,12 @@ func TestIsStringInArray(t *testing.T) {
 	found = IsStringInArray(item, array)
 	assert.Equal(t, true, found, "it should return true if the item is found in the array")
 }
+
+func TestRandomString(t *testing.T) {
+	// A random string can't be empty
+	assert.Equal(t, 32, len(RandomString(0)))
+
+	returned1 := RandomString(32)
+	returned2 := RandomString(32)
+	assert.NotEqual(t, returned1, returned2)
+}
