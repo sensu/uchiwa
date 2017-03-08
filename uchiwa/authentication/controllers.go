@@ -70,6 +70,31 @@ func restrictedHandler(next http.Handler) http.Handler {
 			return
 		}
 
+		// Determine the audit level of the request
+		var level string
+		if r.Method == "GET" || r.Method == "HEAD" {
+			level = "verbose"
+		} else {
+			level = "default"
+		}
+
+		// Determine the user of the request
+		var username string
+		username, ok := token.Claims["username"].(string)
+		if !ok {
+			username = "Unknown"
+		}
+
+		// Add the request to the audit log
+		log := structs.AuditLog{
+			Action:     r.Method,
+			Level:      level,
+			RemoteAddr: helpers.GetIP(r),
+			URL:        r.URL.String(),
+			User:       username,
+		}
+		audit.Log(log)
+
 		setJWTInContext(r, token)
 		next.ServeHTTP(w, r)
 		context.Clear(r)
@@ -117,9 +142,14 @@ func (c *Config) Login() http.Handler {
 			if err != nil {
 				logger.Info(err)
 
-				// Output to audit log
-				log := structs.AuditLog{Action: "loginfailure", Level: "default", Output: err.Error()}
-				log.RemoteAddr = helpers.GetIP(r)
+				// Add the login failure to the audit log
+				log := structs.AuditLog{
+					Action:     "loginfailure",
+					Level:      "default",
+					Output:     err.Error(),
+					RemoteAddr: helpers.GetIP(r),
+					User:       u,
+				}
 				audit.Log(log)
 
 				http.Error(w, "", http.StatusUnauthorized)
@@ -136,6 +166,16 @@ func (c *Config) Login() http.Handler {
 
 			// Set the required cookies
 			SetCookies(w, authenticationToken, xsrfToken)
+
+			// Add the successful login to the audit log
+			log := structs.AuditLog{
+				Action:     "loginsuccess",
+				Level:      "default",
+				RemoteAddr: helpers.GetIP(r),
+				User:       u,
+			}
+			audit.Log(log)
+
 			return
 		}
 
