@@ -7,9 +7,11 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/sensu/uchiwa/uchiwa/audit"
 	"github.com/sensu/uchiwa/uchiwa/authentication"
 	"github.com/sensu/uchiwa/uchiwa/authorization"
 	"github.com/sensu/uchiwa/uchiwa/filters"
+	"github.com/sensu/uchiwa/uchiwa/helpers"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
@@ -671,6 +673,22 @@ func (u *Uchiwa) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
+
+	token := authentication.GetJWTFromContext(r)
+	var username string
+	username, ok := token.Claims["username"].(string)
+	if !ok {
+		username = "Unknown"
+	}
+
+	// Add the logout to the audit log
+	log := structs.AuditLog{
+		Action:     "logout",
+		Level:      "default",
+		RemoteAddr: helpers.GetIP(r),
+		User:       username,
+	}
+	audit.Log(log)
 
 	authentication.DeleteCookies(w)
 	http.Redirect(w, r, "/login", 302)
