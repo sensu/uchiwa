@@ -1111,12 +1111,17 @@ func (u *Uchiwa) userHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := authentication.GetJWTFromContext(r)
+	if token == nil {
+		http.Error(w, "", http.StatusUnauthorized)
+		return
+	}
 
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(token.Claims); err != nil {
 		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 		return
 	}
+	return
 }
 
 // noCacheHandler sets the proper headers to prevent any sort of caching for the
