@@ -1,3 +1,10 @@
+### 0.22.2 (2017-03-10)
+#### Bug Fixes
+- Add Cross Site Request Forgery (XSRF) protection - [Issue #638](https://github.com/sensu/uchiwa/issues/638)
+
+#### Other
+- Use Travis CI for the build pipeline - [Issue #633](https://github.com/sensu/uchiwa/issues/633)
+
 ### 0.22.1 (2017-02-06)
 #### Bug Fixes
 - The bulk actions menu should be shown when at least one element is selected - [Issue #138](https://github.com/sensu/uchiwa-web/pull/138)
