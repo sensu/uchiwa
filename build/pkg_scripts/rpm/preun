@@ -1,0 +1,8 @@
+# Uninstall package - stop services
+if [ $1 -eq 0 ]; then
+    chkconfig uchiwa off
+    chkconfig --del uchiwa
+    if [ -f "/etc/init.d/uchiwa" ]; then
+        /etc/init.d/uchiwa stop || true
+    fi
+fi

@@ -1,0 +1,160 @@
+require "fileutils"
+
+ASSET_DIR = ENV.fetch("ASSET_DIR", "/tmp/assets")
+PKG_DIR = File.join(ASSET_DIR, "pkg")
+S3_DIR = File.join(PKG_DIR, "s3")
+#PKG_DIR = "pkg"
+#S3_DIR = "tmp"
+
+FileUtils.mkdir_p(PKG_DIR) unless File.exists?(PKG_DIR)
+FileUtils.mkdir_p(S3_DIR) unless File.exists?(S3_DIR)
+
+name = "uchiwa"
+license = "https://github.com/sensu/uchiwa/blob/master/LICENSE"
+version = ENV["PACKAGE_VERSION"]
+iteration = ENV["BUILD_NUMBER"]
+vendor = "Simon Plourde"
+maintainer = "Simon Plourde simon.plourde@gmail.com"
+category = "Monitoring"
+url = "https://uchiwa.io"
+description = "Uchiwa is a simple dashboard for the Sensu monitoring framework."
+user = "uchiwa"
+group = "uchiwa"
+
+install_dir = "/tmp/install"
+dashboard_dir = File.join(install_dir, "opt", name)
+
+platform = ENV["GOARCH"]
+if ENV["GOARCH"] == "386"
+  platform = "i386"
+elsif ENV["GOARCH"] == "amd64"
+  platform = "amd64"
+else
+  abort("Unknown GOARCH '#{ENV["GOARCH"]}'")
+end
+
+def run_command(cmd)
+  output = `#{cmd}`
+  puts output
+  abort "The last command failed" unless $?.success?
+end
+
+task :install_deps do
+  run_command("npm install --production")
+  run_command("npm run postinstall")
+  run_command("rm -rf node_modules")
+end
+
+task :build do
+  puts "Building Uchiwa binary..."
+  output_path = "#{ASSET_DIR}/#{name}"
+  run_command("go build -v -o #{output_path}")
+end
+
+task :package do
+  puts "Creating Uchiwa packages with FPM ..."
+
+  run_command("cp -rf build/assets #{install_dir}")
+  run_command("cp -rf public #{dashboard_dir}/src/")
+
+  deb_scripts = "-t deb --after-install build/pkg_scripts/deb/postinst " +
+    "--before-remove build/pkg_scripts/deb/prerm " +
+    "--after-remove build/pkg_scripts/deb/postrm"
+
+  rpm_scripts = "-t rpm --rpm-os linux --rpm-user #{user} " +
+    "--rpm-group #{group} --before-install build/pkg_scripts/rpm/pre " +
+    "--after-install build/pkg_scripts/rpm/post " +
+    "--before-remove build/pkg_scripts/rpm/preun " +
+    "--after-remove build/pkg_scripts/rpm/postun --epoch 1"
+
+  puts "Building packages..."
+  puts "Copying Uchiwa binary to bin directory ..."
+  run_command("cp -f #{ASSET_DIR}/#{name} #{dashboard_dir}/bin/uchiwa")
+
+  [deb_scripts, rpm_scripts].each do |package_scripts|
+    fpm_cmd = "fpm -s dir #{package_scripts} -n '#{name}' -C #{install_dir} " +
+      "-v #{version} --iteration '#{iteration}' " +
+      "--license '#{license}' --vendor '#{vendor}' " +
+      "--maintainer '#{maintainer}' " +
+      "--category '#{category}' --url #{url} " +
+      "--description '#{description}' -a #{platform} " +
+      "--config-files /etc/sensu/uchiwa.json opt etc"
+
+    puts "Running FPM command: #{fpm_cmd} ..."
+    run_command(fpm_cmd)
+  end
+
+  puts "Moving packages to the package directory ..."
+  FileUtils.mv(Dir.glob("*.{deb,rpm}"), PKG_DIR)
+  run_command("ls -la #{PKG_DIR}/")
+
+  puts "*****************************************************"
+  puts "DING!"
+  puts "*****************************************************"
+end
+
+task :organize do
+  puts "Creating the proper directory structure before uploading..."
+
+  arch = ['i686', 'x86_64']
+  distributions = {
+    'debian': {
+      arch: arch,
+      releases: [7, 8]
+    },
+    'el': {
+      arch: arch,
+      releases: [5, 6, 7]
+    },
+    'ubuntu': {
+      arch: arch,
+      releases: [12.04, 14.04, 16.04]
+    }
+  }
+
+  # Create the directory for each OS (e.g. ubuntu/)
+  distributions.each do |os, value|
+    os_path = File.join(S3_DIR, os.to_s)
+    FileUtils.mkdir_p(os_path) unless File.exists?(os_path)
+
+    # Create the directory for each version of an OS (e.g. ubuntu/16.04/)
+    distributions[os][:releases].each do |release|
+      release_path = File.join(os_path, release.to_s)
+      FileUtils.mkdir_p(release_path) unless File.exists?(release_path)
+
+      # Create the directory for each arch of an OS (e.g. ubuntu/16.04/amd64/)
+      distributions[os][:arch].each do |arch|
+        if arch.to_s == 'i686' && platform != 'i386'
+          next
+        elsif arch.to_s == 'x86_64' && platform != 'amd64'
+          next
+        end
+
+        arch_path = File.join(release_path, arch.to_s)
+        FileUtils.mkdir_p(arch_path) unless File.exists?(arch_path)
+
+        # Create the directory for this release
+        pkg_name = ''
+        if os.to_s == 'el'
+          if platform == 'amd64'
+            pkg_platform = 'x86_64'
+          else
+            pkg_platform = platform
+          end
+          pkg_name = "#{name}-#{version}-#{iteration}.#{pkg_platform}.rpm"
+        else
+          pkg_name = "#{name}_#{version}-#{iteration}_#{platform}.deb"
+        end
+        pkg_path = File.join(arch_path, pkg_name)
+        FileUtils.mkdir_p(pkg_path) unless File.exists?(pkg_path)
+
+        # Copy the proper package to the release directory
+        FileUtils.cp(File.join(PKG_DIR, pkg_name), pkg_path)
+      end
+    end
+  end
+
+  run_command("find #{S3_DIR} -type f -print")
+end
+
+task :default => [:install_deps, :build, :package, :organize]

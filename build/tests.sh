@@ -1,6 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -e
+
 echo "" > coverage.txt
 
 for d in $(go list ./... | grep -v vendor); do
@@ -10,3 +11,5 @@ for d in $(go list ./... | grep -v vendor); do
     rm profile.out
   fi
 done
+
+exit 0

@@ -1,0 +1,21 @@
+# Uninstall package - delete files and user
+if [ $1 -eq 0 ]; then
+    if [ -f "/etc/init.d/uchiwa" ]; then
+        rm /etc/init.d/uchiwa
+    fi
+
+    # Delete uchiwa files
+    if [ -d "/opt/uchiwa" ]; then
+        rm -r /opt/uchiwa
+    fi
+
+    # Delete uchiwa user
+    if getent passwd uchiwa >/dev/null; then
+        userdel -f uchiwa
+    fi
+
+    # Delete uchiwa group
+    if getent group uchiwa >/dev/null; then
+        groupdel uchiwa
+    fi
+fi
