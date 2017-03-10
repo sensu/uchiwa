@@ -13,6 +13,11 @@ if [ "$(git describe --tags --exact-match "$COMMIT")" ]; then
   PACKAGE_VERSION=$(echo "$TAG" | awk -F'-' '{print $1}')
   BUILD_NUMBER=$(echo "$TAG" | awk -F'-' '{print $2}')
 
+  if [ ! -z $PACKAGE_VERSION ] || [ ! -z $BUILD_NUMBER  ]; then
+    echo "The tag '$TAG' does not contain any valid version (x.y.z-a)"
+    exit 2
+  fi
+
   echo "======================== Running tests"
   GOARCH=$GOARCH ./build/tests.sh
 
