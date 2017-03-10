@@ -14,7 +14,7 @@ if [ "$(git describe --tags --exact-match "$COMMIT")" ]; then
   BUILD_NUMBER=$(echo "$TAG" | awk -F'-' '{print $2}')
 
   echo "======================== Running tests"
-  ./build/tests.sh
+  GOARCH=$GOARCH ./build/tests.sh
 
   echo "======================== Building the packages"
   PACKAGE_VERSION=$PACKAGE_VERSION BUILD_NUMBER=$BUILD_NUMBER \
@@ -24,5 +24,5 @@ if [ "$(git describe --tags --exact-match "$COMMIT")" ]; then
   exit
 else
   echo "Commit ${COMMIT} is not tagged, running tests"
-  ./build/tests.sh
+  GOARCH=$GOARCH ./build/tests.sh
 fi
