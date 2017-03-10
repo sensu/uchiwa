@@ -12,7 +12,6 @@ config.json.*
 public/bower_components
 .sass-cache
 npm-debug.log
-build
 .idea/
 coverage.out
 *.swp

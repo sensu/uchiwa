@@ -1,14 +1,30 @@
+sudo: true
 language: go
-
 go:
-  - 1.7
-  - tip
-
-notifications:
-  email: false
-
+  - 1.8
+env:
+  matrix:
+    - TRAVIS_GOOS=linux TRAVIS_GOARCH=386
+    - TRAVIS_GOOS=linux TRAVIS_GOARCH=amd64
+before_install:
+  - gem install rake -v "10.5.0"
+  - gem install fpm -v "1.8.1"
+  - sudo apt-get install -y rpm
+  # Workaround for https://github.com/travis-ci/travis-ci/issues/6126
+  - export GOOS=$TRAVIS_GOOS
+  - export GOARCH=$TRAVIS_GOARCH
 script:
-  - ./travis.sh
-
+  - "./build/travis.sh"
+deploy:
+  provider: s3
+  access_key_id:
+    secure: PBosX0nFAqv/Drhny3JenSau63KZQjVMJzRN47ZGqJMUeCsi1B7sxj5STVeM/HSr1oz+00+CzdYKguqO96EaZ26iqc9e2tB2ko/xYuWP720k1aDsu+6LMaexkDew8PNRcop0pGO+MQufyE4Ofn5JcuQRvfDYZiZVe3m69s8Jb50=
+  secret_access_key:
+    secure: bOY5ZMu3VK1X+ZRk/wSdal7s+wCuey/V1B7pWftfaIBDXvRJE4JY6Klvl2vL7qpBa/IxgJBJjry8b0GHfw7KmQPxisM8O9zXGa2rNlgrI6t5o8BYnyrHLQ9av/LbCH+2ln5HX8/fulyyGUpQl7gSMoHI5DLalq3/v1k+DN5pLuQ=
+  bucket: "sensu-omnibus-artifacts"
+  skip_cleanup: true
+  local_dir: "/tmp/assets/pkg/s3/"
 after_success:
   - bash <(curl -s https://codecov.io/bash) || echo "Codecov fails"
+notifications:
+  email: false

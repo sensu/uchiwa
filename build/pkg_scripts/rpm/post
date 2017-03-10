@@ -1,0 +1,7 @@
+# Install package - add services and change permissions
+# On first install, register the init scripts but disable services.
+# User should choose the services they want to run after install
+if [ $1 -eq 1 ]; then
+    chkconfig --add uchiwa
+    chkconfig uchiwa off
+fi
