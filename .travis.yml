@@ -24,6 +24,8 @@ deploy:
   bucket: "sensu-omnibus-artifacts"
   skip_cleanup: true
   local_dir: "/tmp/assets/pkg/s3/"
+  on:
+    tags: true
 after_success:
   - bash <(curl -s https://codecov.io/bash) || echo "Codecov fails"
 notifications:
