@@ -7,7 +7,6 @@ echo "" > coverage.txt
 for d in $(go list ./... | grep -v vendor); do
   race=""
   if [ $GOARCH == "amd64" ]; then
-    echo "RACE"
     race="-race"
   fi
 
