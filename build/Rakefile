@@ -3,8 +3,6 @@ require "fileutils"
 ASSET_DIR = ENV.fetch("ASSET_DIR", "/tmp/assets")
 PKG_DIR = File.join(ASSET_DIR, "pkg")
 S3_DIR = File.join(PKG_DIR, "s3")
-#PKG_DIR = "pkg"
-#S3_DIR = "tmp"
 
 FileUtils.mkdir_p(PKG_DIR) unless File.exists?(PKG_DIR)
 FileUtils.mkdir_p(S3_DIR) unless File.exists?(S3_DIR)
@@ -141,7 +139,7 @@ task :organize do
           else
             pkg_platform = platform
           end
-          pkg_name = "#{name}-#{version}-#{iteration}.#{pkg_platform}.rpm"
+          pkg_name = "#{name}-#{version}-#{iteration}.el#{release}.#{pkg_platform}.rpm"
         else
           pkg_name = "#{name}_#{version}-#{iteration}_#{platform}.deb"
         end
