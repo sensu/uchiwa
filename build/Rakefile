@@ -139,15 +139,17 @@ task :organize do
           else
             pkg_platform = platform
           end
-          pkg_name = "#{name}-#{version}-#{iteration}.el#{release}.#{pkg_platform}.rpm"
+          pkg_src = "#{name}-#{version}-#{iteration}.#{pkg_platform}.rpm"
+          pkg_dst = "#{name}-#{version}-#{iteration}.el#{release}.#{pkg_platform}.rpm"
         else
-          pkg_name = "#{name}_#{version}-#{iteration}_#{platform}.deb"
+          pkg_src = "#{name}_#{version}-#{iteration}_#{platform}.deb"
+          pkg_dst= "#{name}_#{version}-#{iteration}_#{platform}.deb"
         end
-        pkg_path = File.join(arch_path, pkg_name)
+        pkg_path = File.join(arch_path, pkg_dst)
         FileUtils.mkdir_p(pkg_path) unless File.exists?(pkg_path)
 
         # Copy the proper package to the release directory
-        FileUtils.cp(File.join(PKG_DIR, pkg_name), pkg_path)
+        FileUtils.cp(File.join(PKG_DIR, pkg_src), File.join(pkg_path, pkg_dst))
       end
     end
   end

@@ -22,6 +22,7 @@ deploy:
   secret_access_key:
     secure: bOY5ZMu3VK1X+ZRk/wSdal7s+wCuey/V1B7pWftfaIBDXvRJE4JY6Klvl2vL7qpBa/IxgJBJjry8b0GHfw7KmQPxisM8O9zXGa2rNlgrI6t5o8BYnyrHLQ9av/LbCH+2ln5HX8/fulyyGUpQl7gSMoHI5DLalq3/v1k+DN5pLuQ=
   bucket: "sensu-omnibus-artifacts"
+  region: us-west-2
   skip_cleanup: true
   local_dir: "/tmp/assets/pkg/s3/"
   on:
