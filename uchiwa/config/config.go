@@ -35,10 +35,10 @@ var (
 		},
 		UsersOptions: UsersOptions{
 			DateFormat:             "YYYY-MM-DD HH:mm:ss",
-			DefaultExpireOnResolve: false,
 			DefaultTheme:           "uchiwa-default",
 			DisableNoExpiration:    false,
 			RequireSilencingReason: false,
+			SilenceDurations:       []float32{0.25, 1, 24},
 		},
 	}
 	defaultSensuConfig = SensuConfig{
@@ -250,6 +250,7 @@ func initUchiwa(global GlobalConfig) GlobalConfig {
 	// Set the logger level
 	logger.SetLogLevel(global.LogLevel)
 
+	// Initialize the users options
 	// Set the refresh rate for frontend
 	global.UsersOptions.Refresh = global.Refresh * 1000
 

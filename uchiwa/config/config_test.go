@@ -14,11 +14,9 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, 10, conf.Sensu[0].Timeout)
 	assert.Equal(t, 10, conf.Uchiwa.Refresh)
 	assert.Equal(t, "YYYY-MM-DD HH:mm:ss", conf.Uchiwa.UsersOptions.DateFormat)
-	assert.Equal(t, false, conf.Uchiwa.UsersOptions.DefaultExpireOnResolve)
 	assert.Equal(t, "uchiwa-default", conf.Uchiwa.UsersOptions.DefaultTheme)
 	assert.Equal(t, false, conf.Uchiwa.UsersOptions.DisableNoExpiration)
 	assert.Equal(t, "", conf.Uchiwa.UsersOptions.LogoURL)
-	assert.Equal(t, 10000, conf.Uchiwa.UsersOptions.Refresh)
 	assert.Equal(t, false, conf.Uchiwa.UsersOptions.RequireSilencingReason)
 	assert.Equal(t, 389, conf.Uchiwa.Ldap.Port)
 	assert.Equal(t, "person", conf.Uchiwa.Ldap.UserObjectClass)
@@ -167,4 +165,10 @@ func TestGetPublic(t *testing.T) {
 	assert.Equal(t, "*****", pubConf.Uchiwa.Github.ClientID)
 	assert.Equal(t, "*****", pubConf.Uchiwa.Github.ClientSecret)
 	assert.Equal(t, "*****", pubConf.Uchiwa.Ldap.BindPass)
+}
+
+func TestUsersOptions(t *testing.T) {
+	// The SilenceDurations default value should be overwritten
+	conf := Load("../../fixtures/config_test.json", "../../fixtures/users")
+	assert.Equal(t, 4, len(conf.Uchiwa.UsersOptions.SilenceDurations))
 }

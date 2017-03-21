@@ -988,7 +988,7 @@ func (u *Uchiwa) silencedHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if u.Config.Uchiwa.UsersOptions.DisableNoExpiration && data.Expire < 1 {
+		if u.Config.Uchiwa.UsersOptions.DisableNoExpiration && (data.Expire < 1 && !data.ExpireOnResolve) {
 			http.Error(w, "Open-ended silence entries are disallowed", http.StatusNotFound)
 			return
 		}

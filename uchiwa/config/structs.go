@@ -115,10 +115,10 @@ type SSL struct {
 // UsersOptions struct contains various config tweaks
 type UsersOptions struct {
 	DateFormat             string
-	DefaultExpireOnResolve bool
 	DefaultTheme           string
 	DisableNoExpiration    bool
 	LogoURL                string
 	Refresh                int
 	RequireSilencingReason bool
+	SilenceDurations       []float32
 }
