@@ -9,6 +9,7 @@ import (
 type Filters interface {
 	Aggregates(*[]interface{}, *jwt.Token) []interface{}
 	Checks(*[]interface{}, *jwt.Token) []interface{}
+	Client(interface{}, *jwt.Token) bool
 	Clients(*[]interface{}, *jwt.Token) []interface{}
 	Datacenters([]*structs.Datacenter, *jwt.Token) []*structs.Datacenter
 	Events(*[]interface{}, *jwt.Token) []interface{}
@@ -34,6 +35,11 @@ func (u *Uchiwa) Checks(data *[]interface{}, token *jwt.Token) []interface{} {
 	checks := make([]interface{}, len(*data))
 	copy(checks, *data)
 	return checks
+}
+
+// Client is a function that filters GET requests.
+func (u *Uchiwa) Client(data interface{}, token *jwt.Token) bool {
+	return true
 }
 
 // Clients filters based on role's datacenters and subscriptions
