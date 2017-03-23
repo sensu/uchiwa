@@ -483,6 +483,47 @@ func (u *Uchiwa) configHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// datacentersHandler serves the /datacenters/:name endpoint
+func (u *Uchiwa) datacenterHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" && r.Method != "HEAD" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	resources := strings.Split(r.URL.Path, "/")
+	if len(resources) < 3 || resources[2] == "" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	name := resources[2]
+
+	token := authentication.GetJWTFromContext(r)
+	unauthorized := Filters.GetRequest(name, token)
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
+	}
+
+	// Create header
+	w.Header().Add("Accept-Charset", "utf-8")
+	w.Header().Add("Content-Type", "application/json")
+
+	datacenter, err := u.Datacenter(name)
+	if err != nil {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
+	}
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(datacenter); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	return
+}
+
 // datacentersHandler serves the /datacenters endpoint
 func (u *Uchiwa) datacentersHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" && r.Method != "HEAD" {
@@ -1173,6 +1214,7 @@ func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	http.Handle("/clients/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.clientHandler))))
 	http.Handle("/config", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.configHandler))))
 	http.Handle("/datacenters", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.datacentersHandler))))
+	http.Handle("/datacenters/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.datacenterHandler))))
 	http.Handle("/events", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.eventsHandler))))
 	http.Handle("/events/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.eventHandler))))
 	http.Handle("/logout", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.logoutHandler))))

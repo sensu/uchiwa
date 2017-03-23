@@ -80,36 +80,43 @@ func (d *Daemon) fetchData() {
 		// fetch sensu data from the datacenter
 		stashes, err := datacenter.GetStashes()
 		if err != nil {
+			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 		silenced, err := datacenter.GetSilenced()
 		if err != nil {
+			logger.Debug(err)
 			logger.Warningf("Impossible to retrieve silenced entries from the "+
 				"datacenter %s. Silencing might not be possible, please update Sensu", datacenter.Name)
 		}
 		checks, err := datacenter.GetChecks()
 		if err != nil {
+			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 		clients, err := datacenter.GetClients()
 		if err != nil {
+			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 		events, err := datacenter.GetEvents()
 		if err != nil {
+			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 		info, err := datacenter.GetInfo()
 		if err != nil {
+			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
 		aggregates, err := datacenter.GetAggregates()
 		if err != nil {
+			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
 			continue
 		}
@@ -155,12 +162,12 @@ func (d *Daemon) fetchData() {
 
 		// build datacenter
 		dc := d.buildDatacenter(&datacenter.Name, info)
-		dc.Stats["aggregates"] = len(aggregates)
-		dc.Stats["checks"] = len(checks)
-		dc.Stats["clients"] = len(clients)
-		dc.Stats["events"] = len(events)
-		dc.Stats["silenced"] = len(silenced)
-		dc.Stats["stashes"] = len(stashes)
+		dc.Metrics["aggregates"] = len(aggregates)
+		dc.Metrics["checks"] = len(checks)
+		dc.Metrics["clients"] = len(clients)
+		dc.Metrics["events"] = len(events)
+		dc.Metrics["silenced"] = len(silenced)
+		dc.Metrics["stashes"] = len(stashes)
 		d.Data.Dc = append(d.Data.Dc, dc)
 	}
 }

@@ -47,9 +47,9 @@ type Data struct {
 
 // Datacenter is a structure for holding the information about a datacenter
 type Datacenter struct {
-	Name  string         `json:"name"`
-	Info  Info           `json:"info"`
-	Stats map[string]int `json:"stats"`
+	Name    string         `json:"name"`
+	Info    Info           `json:"info"`
+	Metrics map[string]int `json:"metrics"`
 }
 
 // Generic is a structure for holding a generic element
@@ -93,9 +93,19 @@ type SensuHealth struct {
 
 // Info is a structure for holding the /info API information
 type Info struct {
-	Redis     Redis     `json:"redis"`
-	Sensu     Sensu     `json:"sensu"`
-	Transport transport `json:"transport"`
+	Redis     Redis        `json:"redis"`
+	Sensu     Sensu        `json:"sensu"`
+	Servers   []InfoServer `json:"servers"`
+	Transport transport    `json:"transport"`
+}
+
+type InfoServer struct {
+	ID        string                        `json:"id"`
+	Hostname  string                        `json:"hostname"`
+	Address   string                        `json:"address"`
+	IsLeader  bool                          `json:"is_leader"`
+	Metrics   map[string]map[string]float32 `json:"metrics"`
+	Timestamp int                           `json:"timestamp"`
 }
 
 // Redis is a structure for holding the redis status
