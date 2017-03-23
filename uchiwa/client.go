@@ -156,3 +156,28 @@ func (u *Uchiwa) GetClientHistory(dc, name string) ([]interface{}, error) {
 
 	return history, nil
 }
+
+func (u *Uchiwa) UpdateClient(payload interface{}) error {
+	client, ok := payload.(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("Unable to decode the payload")
+	}
+
+	dc, ok := client["dc"].(string)
+	if !ok {
+		return fmt.Errorf("Unable to identify the datacenter")
+	}
+
+	api, err := getAPI(u.Datacenters, dc)
+	if err != nil {
+		logger.Warning(err)
+		return err
+	}
+
+	_, err = api.UpdateClient(payload)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

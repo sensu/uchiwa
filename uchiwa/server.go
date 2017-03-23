@@ -385,44 +385,70 @@ func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 
 // clientsHandler serves the /clients endpoint
 func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
-	// We only support GET requests
-	if r.Method != "GET" && r.Method != "HEAD" {
-		http.Error(w, "", http.StatusBadRequest)
-		return
-	}
+	// Support GET & HEAD requests
+	if r.Method == "GET" || r.Method == "HEAD" {
+		token := authentication.GetJWTFromContext(r)
 
-	token := authentication.GetJWTFromContext(r)
+		u.Mu.Lock()
+		clients := Filters.Clients(&u.Data.Clients, token)
+		u.Mu.Unlock()
 
-	u.Mu.Lock()
-	clients := Filters.Clients(&u.Data.Clients, token)
-	u.Mu.Unlock()
+		if len(clients) == 0 {
+			clients = make([]interface{}, 0)
+		}
 
-	if len(clients) == 0 {
-		clients = make([]interface{}, 0)
-	}
+		// Create header
+		w.Header().Add("Accept-Charset", "utf-8")
+		w.Header().Add("Content-Type", "application/json")
 
-	// Create header
-	w.Header().Add("Accept-Charset", "utf-8")
-	w.Header().Add("Content-Type", "application/json")
+		// If GZIP compression is not supported by the client
+		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+			encoder := json.NewEncoder(w)
+			if err := encoder.Encode(clients); err != nil {
+				http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+				return
+			}
+			return
+		}
 
-	// If GZIP compression is not supported by the client
-	if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
-		encoder := json.NewEncoder(w)
-		if err := encoder.Encode(clients); err != nil {
+		w.Header().Set("Content-Encoding", "gzip")
+		gz := gzip.NewWriter(w)
+		defer gz.Close()
+		if err := json.NewEncoder(gz).Encode(clients); err != nil {
 			http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
 			return
 		}
 		return
-	}
+	} else if r.Method == "POST" {
+		// Support POST requests
+		decoder := json.NewDecoder(r.Body)
+		var payload interface{}
+		err := decoder.Decode(&payload)
+		if err != nil {
+			http.Error(w, "Could not decode body", http.StatusInternalServerError)
+			return
+		}
 
-	w.Header().Set("Content-Encoding", "gzip")
-	gz := gzip.NewWriter(w)
-	defer gz.Close()
-	if err := json.NewEncoder(gz).Encode(clients); err != nil {
-		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		// verify that the authenticated user is authorized to access this resource
+		token := authentication.GetJWTFromContext(r)
+
+		authorized := Filters.Client(payload, token)
+		if !authorized {
+			http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+			return
+		}
+
+		err = u.UpdateClient(payload)
+		if err != nil {
+			http.Error(w, "", http.StatusNotFound)
+			return
+		}
+
+		w.WriteHeader(http.StatusCreated)
 		return
 	}
 
+	http.Error(w, "", http.StatusBadRequest)
 	return
 }
 
