@@ -165,7 +165,7 @@ func (c *Config) Login() http.Handler {
 			}
 
 			// Set the required cookies
-			SetCookies(w, authenticationToken, xsrfToken)
+			SetCookies(w, r, authenticationToken, xsrfToken)
 
 			// Add the successful login to the audit log
 			log := structs.AuditLog{
