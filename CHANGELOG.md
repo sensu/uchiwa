@@ -1,3 +1,21 @@
+### 0.23.0 (2017-03-24)
+#### Bug Fixes
+- Fix a visual glitch when refreshing a page on Firefox -
+[Issue #654](https://github.com/sensu/uchiwa/issues/654)
+
+#### Features
+- Refactoring of the silencing modal window -
+[Issue #644](https://github.com/sensu/uchiwa/issues/644)
+- Support edition of proxy clients in the Sensu client registry -
+[Issue #651](https://github.com/sensu/uchiwa/issues/651)
+- Display new information about Sensu servers, available since Sensu 0.28, in a new
+datacenter view - [Issue #652](https://github.com/sensu/uchiwa/issues/652)
+- Support custom favicons - [Issue #606](https://github.com/sensu/uchiwa/issues/606)
+
+#### Other
+- Set the Secure flag on authentication cookies when serving over HTTPS -
+[Issue #656](https://github.com/sensu/uchiwa/issues/656)
+
 ### 0.22.2 (2017-03-10)
 #### Bug Fixes
 - Add Cross Site Request Forgery (XSRF) protection - [Issue #638](https://github.com/sensu/uchiwa/issues/638)
