@@ -46,19 +46,26 @@ func DeleteCookies(w http.ResponseWriter) {
 }
 
 // SetCookies set the proper cookies for the JWT and XSFR tokens
-func SetCookies(w http.ResponseWriter, authenticationToken, xsrfToken string) {
+func SetCookies(w http.ResponseWriter, r *http.Request, authenticationToken, xsrfToken string) {
+	var isSecure bool
+	if r.TLS != nil {
+		isSecure = true
+	}
+
 	authenticationCookie := http.Cookie{
 		Name:     authenticationCookieName,
 		Value:    authenticationToken,
 		HttpOnly: true,
 		Path:     "/",
+		Secure:   isSecure,
 	}
 	http.SetCookie(w, &authenticationCookie)
 
 	xsrfCookie := http.Cookie{
-		Name:  xsrfCookieName,
-		Value: xsrfToken,
-		Path:  "/",
+		Name:   xsrfCookieName,
+		Value:  xsrfToken,
+		Path:   "/",
+		Secure: isSecure,
 	}
 	http.SetCookie(w, &xsrfCookie)
 }
