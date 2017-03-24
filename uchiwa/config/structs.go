@@ -117,6 +117,7 @@ type UsersOptions struct {
 	DateFormat             string
 	DefaultTheme           string
 	DisableNoExpiration    bool
+	Favicon                string
 	LogoURL                string
 	Refresh                int
 	RequireSilencingReason bool
