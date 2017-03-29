@@ -1,3 +1,19 @@
+### 0.23.1 (2017-03-29)
+#### Bug Fixes
+- Prevent caching of deprecated assets when upgrading
+[Issue #666](https://github.com/sensu/uchiwa/issues/666)
+- Fix bulk silencing when choosing a duration and/or a reason
+[Issue #667](https://github.com/sensu/uchiwa/issues/667)
+- Support negative lookahead for search queries
+[Issue #664](https://github.com/sensu/uchiwa/issues/664)
+
+#### Other
+- Increase verbosity for datacenters connection errors
+[Issue #663](https://github.com/sensu/uchiwa/issues/663)
+- Upgrade to Angular 1.6 [Issue #653](https://github.com/sensu/uchiwa/issues/653)
+- Improve responsive design with long text
+[Issue #641](https://github.com/sensu/uchiwa/issues/641)
+
 ### 0.23.0 (2017-03-24)
 #### Bug Fixes
 - Fix a visual glitch when refreshing a page on Firefox -
