@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 // ...
@@ -14,7 +15,11 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 
 	res, err := api.Client.Do(req)
 	if err != nil {
-		return nil, nil, fmt.Errorf("%v", err)
+		status, ok := err.(*url.Error)
+		if !ok {
+			return nil, nil, fmt.Errorf("Unexpected error, got %T, wanted *url.Error", err)
+		}
+		return nil, nil, status.Err
 	}
 
 	defer res.Body.Close()
