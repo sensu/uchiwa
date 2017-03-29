@@ -82,6 +82,7 @@ func (d *Daemon) fetchData() {
 		if err != nil {
 			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+			d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: err.Error(), Status: 2}
 			continue
 		}
 		silenced, err := datacenter.GetSilenced()
@@ -94,30 +95,35 @@ func (d *Daemon) fetchData() {
 		if err != nil {
 			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+			d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: err.Error(), Status: 2}
 			continue
 		}
 		clients, err := datacenter.GetClients()
 		if err != nil {
 			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+			d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: err.Error(), Status: 2}
 			continue
 		}
 		events, err := datacenter.GetEvents()
 		if err != nil {
 			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+			d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: err.Error(), Status: 2}
 			continue
 		}
 		info, err := datacenter.GetInfo()
 		if err != nil {
 			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+			d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: err.Error(), Status: 2}
 			continue
 		}
 		aggregates, err := datacenter.GetAggregates()
 		if err != nil {
 			logger.Debug(err)
 			logger.Warningf("Connection failed to the datacenter %s", datacenter.Name)
+			d.Data.Health.Sensu[datacenter.Name] = structs.SensuHealth{Output: err.Error(), Status: 2}
 			continue
 		}
 

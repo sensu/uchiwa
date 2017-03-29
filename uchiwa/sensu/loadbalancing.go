@@ -1,7 +1,6 @@
 package sensu
 
 import (
-	"errors"
 	"math/rand"
 	"net/http"
 	"time"
@@ -29,63 +28,72 @@ func (s *Sensu) delete(endpoint string) error {
 }
 
 func (s *Sensu) getBytes(endpoint string) ([]byte, *http.Response, error) {
+	var bytes []byte
+	var err error
+	var res *http.Response
 	apis := shuffle(s.APIs)
 
 	for i := 0; i < len(apis); i++ {
 		logger.Debugf("GET %s/%s", s.APIs[i].URL, endpoint)
-		bytes, res, err := apis[i].getBytes(endpoint)
+		bytes, res, err = apis[i].getBytes(endpoint)
 		if err == nil {
 			return bytes, res, err
 		}
 		logger.Warningf("GET %s/%s returned: %v", s.APIs[i].URL, endpoint, err)
 	}
 
-	return nil, nil, errors.New("")
+	return nil, nil, err
 }
 
 func (s *Sensu) getSlice(endpoint string, limit int) ([]interface{}, error) {
+	var err error
+	var slice []interface{}
 	apis := shuffle(s.APIs)
 
 	for i := 0; i < len(apis); i++ {
 		logger.Debugf("GET %s/%s", s.APIs[i].URL, endpoint)
-		slice, err := apis[i].getSlice(endpoint, limit)
+		slice, err = apis[i].getSlice(endpoint, limit)
 		if err == nil {
 			return slice, err
 		}
 		logger.Warningf("GET %s/%s returned: %v", s.APIs[i].URL, endpoint, err)
 	}
 
-	return nil, errors.New("")
+	return nil, err
 }
 
 func (s *Sensu) getMap(endpoint string) (map[string]interface{}, error) {
+	var err error
+	var m map[string]interface{}
 	apis := shuffle(s.APIs)
 
 	for i := 0; i < len(apis); i++ {
 		logger.Debugf("GET %s/%s", s.APIs[i].URL, endpoint)
-		m, err := apis[i].getMap(endpoint)
+		m, err = apis[i].getMap(endpoint)
 		if err == nil {
 			return m, err
 		}
 		logger.Warningf("GET %s/%s returned: %v", s.APIs[i].URL, endpoint, err)
 	}
 
-	return nil, errors.New("")
+	return nil, err
 }
 
 func (s *Sensu) postPayload(endpoint string, payload string) (map[string]interface{}, error) {
+	var err error
+	var m map[string]interface{}
 	apis := shuffle(s.APIs)
 
 	for i := 0; i < len(apis); i++ {
 		logger.Debugf("POST %s/%s", s.APIs[i].URL, endpoint)
-		m, err := apis[i].postPayload(endpoint, payload)
+		m, err = apis[i].postPayload(endpoint, payload)
 		if err == nil {
 			return m, err
 		}
 		logger.Warningf("POST %s/%s returned: %v", s.APIs[i].URL, endpoint, err)
 	}
 
-	return nil, errors.New("")
+	return nil, err
 }
 
 // shuffle the provided []API
