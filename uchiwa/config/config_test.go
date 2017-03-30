@@ -110,10 +110,26 @@ func TestInitUchiwa(t *testing.T) {
 	uchiwa = initUchiwa(conf)
 	assert.Equal(t, "gitlab", uchiwa.Auth.Driver)
 
-	conf = GlobalConfig{Ldap: Ldap{BaseDN: "cn=foo", Server: "127.0.0.1"}}
+	conf = GlobalConfig{
+		Ldap: Ldap{
+			LdapServer: LdapServer{
+				BaseDN: "cn=foo",
+				Server: "127.0.0.1",
+			},
+		},
+	}
+	expectedConf := Ldap{
+		LdapServer: LdapServer{
+			BaseDN:      "cn=foo",
+			GroupBaseDN: "cn=foo",
+			UserBaseDN:  "cn=foo",
+			Server:      "127.0.0.1",
+		},
+	}
+
 	uchiwa = initUchiwa(conf)
 	assert.Equal(t, "ldap", uchiwa.Auth.Driver)
-	assert.Equal(t, Ldap{BaseDN: "cn=foo", GroupBaseDN: "cn=foo", UserBaseDN: "cn=foo", Server: "127.0.0.1"}, uchiwa.Ldap)
+	assert.Equal(t, expectedConf, uchiwa.Ldap)
 
 	conf = GlobalConfig{Db: Db{Driver: "mysql", Scheme: "foo"}}
 	uchiwa = initUchiwa(conf)
@@ -143,7 +159,11 @@ func TestGetPublic(t *testing.T) {
 			Users:  []authentication.User{authentication.User{ID: 1}},
 			Db:     Db{Scheme: "foo"},
 			Github: Github{ClientID: "foo", ClientSecret: "secret"},
-			Ldap:   Ldap{BindPass: "secret"},
+			Ldap: Ldap{
+				LdapServer: LdapServer{
+					BindPass: "secret",
+				},
+			},
 		},
 	}
 

@@ -22,12 +22,14 @@ var (
 		LogLevel: "info",
 		Refresh:  10,
 		Ldap: Ldap{
-			Port:                 389,
-			Security:             "none",
-			UserAttribute:        "sAMAccountName",
-			UserObjectClass:      "person",
-			GroupMemberAttribute: "member",
-			GroupObjectClass:     "groupOfNames",
+			LdapServer: LdapServer{
+				Port:                 389,
+				Security:             "none",
+				UserAttribute:        "sAMAccountName",
+				UserObjectClass:      "person",
+				GroupMemberAttribute: "member",
+				GroupObjectClass:     "groupOfNames",
+			},
 		},
 		Audit: Audit{
 			Level:   "default",
