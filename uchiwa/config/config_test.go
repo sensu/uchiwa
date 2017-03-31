@@ -163,6 +163,9 @@ func TestGetPublic(t *testing.T) {
 				LdapServer: LdapServer{
 					BindPass: "secret",
 				},
+				Servers: []LdapServer{
+					LdapServer{BindPass: "secret"},
+				},
 			},
 		},
 	}
@@ -185,6 +188,36 @@ func TestGetPublic(t *testing.T) {
 	assert.Equal(t, "*****", pubConf.Uchiwa.Github.ClientID)
 	assert.Equal(t, "*****", pubConf.Uchiwa.Github.ClientSecret)
 	assert.Equal(t, "*****", pubConf.Uchiwa.Ldap.BindPass)
+	assert.Equal(t, "*****", pubConf.Uchiwa.Ldap.Servers[0].BindPass)
+}
+
+func TestInitLdap(t *testing.T) {
+	// The default values should be applied to every LDAP server
+	conf := Config{
+		Uchiwa: GlobalConfig{
+			Ldap: Ldap{
+				Servers: []LdapServer{
+					LdapServer{Server: "10.0.0.1"},
+				},
+			},
+		},
+	}
+	initLdap(&conf.Uchiwa.Ldap)
+	assert.Equal(t, 1, len(conf.Uchiwa.Ldap.Servers))
+	assert.Equal(t, 389, conf.Uchiwa.Ldap.Servers[0].Port)
+
+	// A single LDAP server in Ldap struct should be moved to Servers struct
+	conf = Config{
+		Uchiwa: GlobalConfig{
+			Ldap: Ldap{
+				LdapServer: LdapServer{
+					Server: "10.0.0.1",
+				},
+			},
+		},
+	}
+	initLdap(&conf.Uchiwa.Ldap)
+	assert.Equal(t, 1, len(conf.Uchiwa.Ldap.Servers))
 }
 
 func TestUsersOptions(t *testing.T) {

@@ -259,6 +259,25 @@ func initUchiwa(global GlobalConfig) GlobalConfig {
 	return global
 }
 
+func initLdap(conf *Ldap) {
+	// If we have a server defined directly in the Ldap struct, move it to the
+	// Servers slice
+	if conf.Server != "" {
+		conf.Servers = append(conf.Servers, conf.LdapServer)
+	}
+
+	// Apply the default config to every LDAP server
+	for i := range conf.Servers {
+		if conf.Servers[i].Server == "" {
+			logger.Fatal("Every LDAP server must have an address configured with the server attribute")
+		}
+
+		if err := mergo.Merge(&conf.Servers[i], defaultGlobalConfig.Ldap.LdapServer); err != nil {
+			logger.Fatal(err)
+		}
+	}
+}
+
 // GetPublic generates the public configuration
 func (c *Config) GetPublic() *Config {
 	p := new(Config)
@@ -285,6 +304,10 @@ func (c *Config) GetPublic() *Config {
 
 	for i := range p.Uchiwa.Ldap.Roles {
 		p.Uchiwa.Ldap.Roles[i].AccessToken = obfuscatedValue
+	}
+
+	for i := range p.Uchiwa.Ldap.Servers {
+		p.Uchiwa.Ldap.Servers[i].BindPass = obfuscatedValue
 	}
 
 	for i := range p.Uchiwa.OIDC.Roles {

@@ -79,8 +79,9 @@ type Gitlab struct {
 // Ldap struct contains the LDAP driver configuration
 type Ldap struct {
 	LdapServer
-	Debug bool
-	Roles []authentication.Role
+	Debug   bool
+	Roles   []authentication.Role
+	Servers []LdapServer
 }
 
 type LdapServer struct {
