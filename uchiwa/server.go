@@ -214,6 +214,103 @@ func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// checkHandler serves the /checks/ endpoint
+func (u *Uchiwa) checkHandler(w http.ResponseWriter, r *http.Request) {
+	// We only support DELETE & GET requests
+	if r.Method != "GET" && r.Method != "HEAD" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	token := authentication.GetJWTFromContext(r)
+
+	// Get the client name
+	resources := strings.Split(r.URL.Path, "/")
+	if len(resources) < 3 || resources[2] == "" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+	name := resources[2]
+
+	// Get the datacenter name, passed as a query string
+	dc := r.URL.Query().Get("dc")
+
+	if dc == "" {
+		checks, err := u.findCheck(name)
+		if err != nil {
+			http.Error(w, fmt.Sprint(err), http.StatusNotFound)
+			return
+		}
+
+		u.Mu.Lock()
+		visibleChecks := Filters.Checks(&checks, token)
+		u.Mu.Unlock()
+
+		if len(visibleChecks) > 1 {
+			// Create header
+			w.Header().Add("Accept-Charset", "utf-8")
+			w.Header().Add("Content-Type", "application/json")
+
+			// If GZIP compression is not supported by the client
+			if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+				w.WriteHeader(http.StatusMultipleChoices)
+
+				encoder := json.NewEncoder(w)
+				if err = encoder.Encode(visibleChecks); err != nil {
+					http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+					return
+				}
+
+				return
+			}
+
+			w.Header().Add("Content-Encoding", "gzip")
+			w.WriteHeader(http.StatusMultipleChoices)
+
+			gz := gzip.NewWriter(w)
+			defer gz.Close()
+			if err = json.NewEncoder(gz).Encode(visibleChecks); err != nil {
+				http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+				return
+			}
+
+			return
+		}
+
+		c, ok := checks[0].(map[string]interface{})
+		if !ok {
+			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+			return
+		}
+		dc, ok = c["dc"].(string)
+		if !ok {
+			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	// Verify that an authenticated user is authorized to access this resource
+	unauthorized := Filters.GetRequest(dc, token)
+	if unauthorized {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
+	}
+
+	data, err := u.GetCheck(dc, name)
+	if err != nil {
+		http.Error(w, fmt.Sprint(err), http.StatusNotFound)
+		return
+	}
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(data); err != nil {
+		http.Error(w, fmt.Sprintf("Cannot encode response data: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	return
+}
+
 // checksHandler serves the /checks endpoint
 func (u *Uchiwa) checksHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" && r.Method != "HEAD" {
@@ -1210,6 +1307,7 @@ func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	http.Handle("/aggregates", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.aggregatesHandler))))
 	http.Handle("/aggregates/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.aggregateHandler))))
 	http.Handle("/checks", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.checksHandler))))
+	http.Handle("/checks/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.checkHandler))))
 	http.Handle("/clients", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.clientsHandler))))
 	http.Handle("/clients/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.clientHandler))))
 	http.Handle("/config", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.configHandler))))

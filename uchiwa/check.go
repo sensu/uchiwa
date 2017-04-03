@@ -7,6 +7,30 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
+// GetCheck retrieves a specific check
+func (u *Uchiwa) GetCheck(dc, name string) (map[string]interface{}, error) {
+	api, err := getAPI(u.Datacenters, dc)
+	if err != nil {
+		logger.Warning(err)
+		return nil, err
+	}
+
+	check, err := api.GetCheck(name)
+	if err != nil {
+		logger.Warning(err)
+		return nil, err
+	}
+
+	// lock results
+	//u.Mu.Lock()
+	//defer u.Mu.Unlock()
+	// client["_id"] = fmt.Sprintf("%s/%s", dc, name)
+	// client["dc"] = dc
+	// client["silenced"] = helpers.IsClientSilenced(name, dc, u.Data.Silenced)
+
+	return check, nil
+}
+
 // IssueCheckExecution sends a POST request to the /stashes endpoint in order to create a stash
 func (u *Uchiwa) IssueCheckExecution(data structs.CheckExecution) error {
 	api, err := getAPI(u.Datacenters, data.Dc)
