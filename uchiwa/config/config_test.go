@@ -118,18 +118,24 @@ func TestInitUchiwa(t *testing.T) {
 			},
 		},
 	}
-	expectedConf := Ldap{
-		LdapServer: LdapServer{
-			BaseDN:      "cn=foo",
-			GroupBaseDN: "cn=foo",
-			UserBaseDN:  "cn=foo",
-			Server:      "127.0.0.1",
+	expectedLdapServers := []LdapServer{
+		LdapServer{
+			BaseDN:               "cn=foo",
+			Server:               "127.0.0.1",
+			Port:                 389,
+			GroupBaseDN:          "cn=foo",
+			GroupObjectClass:     "groupOfNames",
+			GroupMemberAttribute: "member",
+			Security:             "none",
+			UserAttribute:        "sAMAccountName",
+			UserBaseDN:           "cn=foo",
+			UserObjectClass:      "person",
 		},
 	}
 
 	uchiwa = initUchiwa(conf)
 	assert.Equal(t, "ldap", uchiwa.Auth.Driver)
-	assert.Equal(t, expectedConf, uchiwa.Ldap)
+	assert.Equal(t, expectedLdapServers, uchiwa.Ldap.Servers)
 
 	conf = GlobalConfig{Db: Db{Driver: "mysql", Scheme: "foo"}}
 	uchiwa = initUchiwa(conf)

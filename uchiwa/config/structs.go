@@ -1,6 +1,8 @@
 package config
 
 import (
+	"crypto/tls"
+
 	"github.com/sensu/uchiwa/uchiwa/authentication"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
@@ -97,6 +99,7 @@ type LdapServer struct {
 	GroupMemberAttribute string
 	Insecure             bool
 	Security             string
+	TLSConfig            *tls.Config
 	UserAttribute        string
 	UserBaseDN           string
 	UserObjectClass      string
