@@ -239,7 +239,7 @@ func IsCheckSilenced(check map[string]interface{}, client, dc string, silenced [
 	var isSilencedBy []string
 	var subscribers []interface{}
 
-	if client == "" || dc == "" || len(silenced) == 0 {
+	if dc == "" || len(silenced) == 0 {
 		return false, isSilencedBy
 	}
 

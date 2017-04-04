@@ -3,9 +3,33 @@ package uchiwa
 import (
 	"fmt"
 
+	"github.com/sensu/uchiwa/uchiwa/helpers"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
+
+// GetCheck retrieves a specific check
+func (u *Uchiwa) GetCheck(dc, name string) (map[string]interface{}, error) {
+	api, err := getAPI(u.Datacenters, dc)
+	if err != nil {
+		logger.Warning(err)
+		return nil, err
+	}
+
+	check, err := api.GetCheck(name)
+	if err != nil {
+		logger.Warning(err)
+		return nil, err
+	}
+
+	// lock results
+	u.Mu.Lock()
+	defer u.Mu.Unlock()
+	check["dc"] = dc
+	check["silenced"], check["silenced_by"] = helpers.IsCheckSilenced(check, "", dc, u.Data.Silenced)
+
+	return check, nil
+}
 
 // IssueCheckExecution sends a POST request to the /stashes endpoint in order to create a stash
 func (u *Uchiwa) IssueCheckExecution(data structs.CheckExecution) error {
