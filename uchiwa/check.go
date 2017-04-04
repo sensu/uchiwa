@@ -3,6 +3,7 @@ package uchiwa
 import (
 	"fmt"
 
+	"github.com/sensu/uchiwa/uchiwa/helpers"
 	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
@@ -22,11 +23,10 @@ func (u *Uchiwa) GetCheck(dc, name string) (map[string]interface{}, error) {
 	}
 
 	// lock results
-	//u.Mu.Lock()
-	//defer u.Mu.Unlock()
-	// client["_id"] = fmt.Sprintf("%s/%s", dc, name)
-	// client["dc"] = dc
-	// client["silenced"] = helpers.IsClientSilenced(name, dc, u.Data.Silenced)
+	u.Mu.Lock()
+	defer u.Mu.Unlock()
+	check["dc"] = dc
+	check["silenced"], check["silenced_by"] = helpers.IsCheckSilenced(check, "", dc, u.Data.Silenced)
 
 	return check, nil
 }

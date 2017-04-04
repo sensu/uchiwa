@@ -143,7 +143,7 @@ func TestIsCheckSilenced(t *testing.T) {
 	// Silenced check with check
 	// e.g. *:check_cpu
 	silenced = []interface{}{map[string]interface{}{"dc": "us-east-1", "id": "*:check_cpu"}}
-	isSilenced, isSilencedBy = IsCheckSilenced(check, client, dc, silenced)
+	isSilenced, isSilencedBy = IsCheckSilenced(check, "", dc, silenced)
 	assert.True(t, isSilenced)
 	assert.Equal(t, "*:check_cpu", isSilencedBy[0])
 
