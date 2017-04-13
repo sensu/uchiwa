@@ -1,0 +1,85 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "E4LnI8/8FGoNOUlbbzeEE7MQ5Xs=",
+			"path": "github.com/dgrijalva/jwt-go",
+			"revision": "61124b62ad244d655f87d944aefaa2ae5a0d2f16",
+			"revisionTime": "2015-01-26T21:04:01Z"
+		},
+		{
+			"checksumSHA1": "iIUYZyoanCQQTUaWsu8b+iOSPt4=",
+			"path": "github.com/gorilla/context",
+			"revision": "215affda49addc4c8ef7e2534915df2c8c35c6cd",
+			"revisionTime": "2014-12-17T16:02:51Z"
+		},
+		{
+			"checksumSHA1": "GR7o8ecHCpf7wVBtOuW+n14QHZY=",
+			"path": "github.com/mitchellh/mapstructure",
+			"revision": "f7d28d5aeab42b9b95d2e6d6b956f73a290077fc",
+			"revisionTime": "2015-05-18T05:19:36Z"
+		},
+		{
+			"checksumSHA1": "uHhDKhepn/qWXYAZoDqCN+a77DU=",
+			"path": "github.com/palourde/crypt",
+			"revision": "93fd0857421de18f097d6eb63826a76755fc01c1",
+			"revisionTime": "2016-10-15T23:29:14Z"
+		},
+		{
+			"checksumSHA1": "ABtER4okix4uH2p7PaU4j4BTpts=",
+			"path": "github.com/palourde/crypt/apr1_crypt",
+			"revision": "93fd0857421de18f097d6eb63826a76755fc01c1",
+			"revisionTime": "2016-10-15T23:29:14Z"
+		},
+		{
+			"checksumSHA1": "LdyuxHasQJDBgMmdvQwYId1da8E=",
+			"path": "github.com/palourde/crypt/common",
+			"revision": "93fd0857421de18f097d6eb63826a76755fc01c1",
+			"revisionTime": "2016-10-15T23:29:14Z"
+		},
+		{
+			"checksumSHA1": "T836u6LqH/0tPPMaFIsZrw96MTg=",
+			"path": "github.com/palourde/crypt/md5_crypt",
+			"revision": "93fd0857421de18f097d6eb63826a76755fc01c1",
+			"revisionTime": "2016-10-15T23:29:14Z"
+		},
+		{
+			"checksumSHA1": "sftmaUmx+vMFufeXZESEhvXjZWk=",
+			"path": "github.com/palourde/crypt/sha256_crypt",
+			"revision": "93fd0857421de18f097d6eb63826a76755fc01c1",
+			"revisionTime": "2016-10-15T23:29:14Z"
+		},
+		{
+			"checksumSHA1": "sZNeiO/ggjHQ6a1xT+s4vMVCbq0=",
+			"path": "github.com/palourde/crypt/sha512_crypt",
+			"revision": "93fd0857421de18f097d6eb63826a76755fc01c1",
+			"revisionTime": "2016-10-15T23:29:14Z"
+		},
+		{
+			"checksumSHA1": "bR/pTh4LRyXCrNmS80hzPQgF5q0=",
+			"path": "github.com/palourde/mergo",
+			"revision": "d931ffd2c07cb4caf7194e0f6af9ac6771c26d54",
+			"revisionTime": "2015-12-01T01:58:49Z"
+		},
+		{
+			"checksumSHA1": "EO+jcRet/AJ6IY3lBO8l8BLsZWg=",
+			"path": "github.com/stretchr/objx",
+			"revision": "cbeaeb16a013161a98496fad62933b1d21786672",
+			"revisionTime": "2014-05-26T18:09:21Z"
+		},
+		{
+			"checksumSHA1": "9XoGmW4qFUnEekGyyTGSzhmB2PI=",
+			"path": "github.com/stretchr/testify/assert",
+			"revision": "e4ec8152c15fc46bd5056ce65997a07c7d415325",
+			"revisionTime": "2015-02-18T22:18:46Z"
+		},
+		{
+			"checksumSHA1": "4hMgjamcgCvKHPp8pOKxMsAKSGI=",
+			"path": "github.com/stretchr/testify/mock",
+			"revision": "e4ec8152c15fc46bd5056ce65997a07c7d415325",
+			"revisionTime": "2015-02-18T22:18:46Z"
+		}
+	],
+	"rootPath": "github.com/sensu/uchiwa"
+}
