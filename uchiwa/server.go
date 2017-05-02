@@ -537,7 +537,7 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 
 		err = u.UpdateClient(payload)
 		if err != nil {
-			http.Error(w, "", http.StatusNotFound)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
