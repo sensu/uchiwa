@@ -24,7 +24,7 @@ var Filters filters.Filters
 
 // aggregateHandler serves the /aggregates/:name[...] endpoint
 func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" && r.Method != "DELETE" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead && r.Method != http.MethodDelete {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -103,7 +103,7 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Are we responding to a /aggregates/:name request?
 	if len(resources) == 3 {
-		if r.Method == "DELETE" {
+		if r.Method == http.MethodDelete {
 			err := u.DeleteAggregate(name, dc)
 			if err != nil {
 				http.Error(w, fmt.Sprint(err), 500)
@@ -173,7 +173,7 @@ func (u *Uchiwa) aggregateHandler(w http.ResponseWriter, r *http.Request) {
 
 // aggregatesHandler serves the /aggregates endpoint
 func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -217,7 +217,7 @@ func (u *Uchiwa) aggregatesHandler(w http.ResponseWriter, r *http.Request) {
 // checkHandler serves the /checks/ endpoint
 func (u *Uchiwa) checkHandler(w http.ResponseWriter, r *http.Request) {
 	// We only support DELETE & GET requests
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -313,7 +313,7 @@ func (u *Uchiwa) checkHandler(w http.ResponseWriter, r *http.Request) {
 
 // checksHandler serves the /checks endpoint
 func (u *Uchiwa) checksHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -356,7 +356,7 @@ func (u *Uchiwa) checksHandler(w http.ResponseWriter, r *http.Request) {
 // clientHandler serves the /clients/:client(/history) endpoint
 func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 	// We only support DELETE & GET requests
-	if r.Method != "DELETE" && r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodDelete && r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -436,7 +436,7 @@ func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// DELETE on /clients/:client
-	if r.Method == "DELETE" {
+	if r.Method == http.MethodDelete {
 		err := u.DeleteClient(dc, name)
 		if err != nil {
 			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
@@ -483,7 +483,7 @@ func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 // clientsHandler serves the /clients endpoint
 func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 	// Support GET & HEAD requests
-	if r.Method == "GET" || r.Method == "HEAD" {
+	if r.Method == http.MethodGet || r.Method == http.MethodHead {
 		token := authentication.GetJWTFromContext(r)
 
 		u.Mu.Lock()
@@ -516,7 +516,7 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		return
-	} else if r.Method == "POST" {
+	} else if r.Method == http.MethodPost {
 		// Support POST requests
 		decoder := json.NewDecoder(r.Body)
 		var payload interface{}
@@ -551,7 +551,7 @@ func (u *Uchiwa) clientsHandler(w http.ResponseWriter, r *http.Request) {
 
 // configHandler serves the /config endpoint
 func (u *Uchiwa) configHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -582,7 +582,7 @@ func (u *Uchiwa) configHandler(w http.ResponseWriter, r *http.Request) {
 
 // datacentersHandler serves the /datacenters/:name endpoint
 func (u *Uchiwa) datacenterHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -623,7 +623,7 @@ func (u *Uchiwa) datacenterHandler(w http.ResponseWriter, r *http.Request) {
 
 // datacentersHandler serves the /datacenters endpoint
 func (u *Uchiwa) datacentersHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -658,7 +658,7 @@ func (u *Uchiwa) datacentersHandler(w http.ResponseWriter, r *http.Request) {
 
 // eventHandler serves the /events/:client/:check endpoint
 func (u *Uchiwa) eventHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "DELETE" {
+	if r.Method != http.MethodDelete {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -748,7 +748,7 @@ func (u *Uchiwa) eventHandler(w http.ResponseWriter, r *http.Request) {
 
 // eventsHandler serves the /events endpoint
 func (u *Uchiwa) eventsHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -833,7 +833,7 @@ func (u *Uchiwa) healthHandler(w http.ResponseWriter, r *http.Request) {
 
 // logoutHandler serves the /logout endpoint
 func (u *Uchiwa) logoutHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != http.MethodGet {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -861,7 +861,7 @@ func (u *Uchiwa) logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 // metricsHandler serves the /metrics endpoint
 func (u *Uchiwa) metricsHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -875,7 +875,7 @@ func (u *Uchiwa) metricsHandler(w http.ResponseWriter, r *http.Request) {
 
 // requestHandler serves the /request endpoint
 func (u *Uchiwa) requestHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
+	if r.Method != http.MethodPost {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -907,7 +907,7 @@ func (u *Uchiwa) requestHandler(w http.ResponseWriter, r *http.Request) {
 
 // resultsHandler serves the /results/:client/:check endpoint
 func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "DELETE" {
+	if r.Method != http.MethodDelete {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -996,7 +996,7 @@ func (u *Uchiwa) resultsHandler(w http.ResponseWriter, r *http.Request) {
 
 // stashHandler serves the /stashes/:path endpoint
 func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "DELETE" {
+	if r.Method != http.MethodDelete {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -1087,7 +1087,7 @@ func (u *Uchiwa) stashHandler(w http.ResponseWriter, r *http.Request) {
 func (u *Uchiwa) silencedHandler(w http.ResponseWriter, r *http.Request) {
 	token := authentication.GetJWTFromContext(r)
 
-	if r.Method == "GET" || r.Method == "HEAD" {
+	if r.Method == http.MethodGet || r.Method == http.MethodHead {
 		// GET on /silenced
 		u.Mu.Lock()
 		silenced := Filters.Silenced(&u.Data.Silenced, token)
@@ -1121,7 +1121,7 @@ func (u *Uchiwa) silencedHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		return
-	} else if r.Method == "POST" {
+	} else if r.Method == http.MethodPost {
 		// POST on /silenced
 		decoder := json.NewDecoder(r.Body)
 		var data silence
@@ -1177,7 +1177,7 @@ func (u *Uchiwa) silencedHandler(w http.ResponseWriter, r *http.Request) {
 func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 	token := authentication.GetJWTFromContext(r)
 
-	if r.Method == "GET" || r.Method == "HEAD" {
+	if r.Method == http.MethodGet || r.Method == http.MethodHead {
 		// GET on /stashes
 		u.Mu.Lock()
 		stashes := Filters.Stashes(&u.Data.Stashes, token)
@@ -1211,7 +1211,7 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		return
-	} else if r.Method == "POST" {
+	} else if r.Method == http.MethodPost {
 		// POST on /stashes
 		decoder := json.NewDecoder(r.Body)
 		var data stash
@@ -1243,9 +1243,39 @@ func (u *Uchiwa) stashesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// subscriptionHandler serves the /subscriptions/:subscription endpoint
+func (u *Uchiwa) subscriptionHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	resources := strings.Split(r.URL.Path, "/")
+	if len(resources) < 2 || resources[2] == "" {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
+	name := strings.Join(resources[2:], "/")
+	subscriptions := []structs.Subscription{
+		structs.Subscription{Name: name},
+	}
+
+	token := authentication.GetJWTFromContext(r)
+
+	result := Filters.Subscriptions(&subscriptions, token)
+	if len(result) == 0 {
+		http.Error(w, fmt.Sprint(""), http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	return
+}
+
 // subscriptionsHandler serves the /subscriptions endpoint
 func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -1269,7 +1299,7 @@ func (u *Uchiwa) subscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 
 // userHandler serves the /user endpoint
 func (u *Uchiwa) userHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -1323,6 +1353,7 @@ func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	http.Handle("/stashes", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.stashesHandler))))
 	http.Handle("/stashes/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.stashHandler))))
 	http.Handle("/subscriptions", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.subscriptionsHandler))))
+	http.Handle("/subscriptions/", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.subscriptionHandler))))
 	http.Handle("/user", auth.Authenticate(Authorization.Handler(http.HandlerFunc(u.userHandler))))
 
 	if u.Config.Uchiwa.Enterprise == false {
