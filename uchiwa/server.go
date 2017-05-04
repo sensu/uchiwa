@@ -1301,6 +1301,14 @@ func noCacheHandler(next http.Handler) http.Handler {
 	})
 }
 
+func securityHandler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("X-Frame-Options", "DENY")
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 // WebServer starts the web server and serves GET & POST requests
 func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	// Private endpoints
@@ -1330,7 +1338,7 @@ func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	}
 
 	// Static files
-	http.Handle("/", noCacheHandler(http.FileServer(http.Dir(*publicPath))))
+	http.Handle("/", noCacheHandler(securityHandler(http.FileServer(http.Dir(*publicPath)))))
 
 	// Public endpoints
 	http.Handle("/config/", http.HandlerFunc(u.configHandler))
