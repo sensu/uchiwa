@@ -67,48 +67,6 @@ func (u *Uchiwa) findClient(name string) ([]interface{}, error) {
 	return clients, nil
 }
 
-func (u *Uchiwa) findOutput(id *string, h map[string]interface{}, dc *string) string {
-	if h["last_status"] == 0 {
-		return ""
-	}
-
-	for _, e := range u.Data.Events {
-		// does the dc match?
-		m, ok := e.(map[string]interface{})
-		if !ok {
-			logger.Warningf("Could not assert this event to an interface %+v", e)
-			continue
-		}
-		if m["dc"] != *dc {
-			continue
-		}
-
-		// does the client match?
-		c, ok := m["client"].(map[string]interface{})
-		if !ok {
-			logger.Warningf("Could not assert this client to an interface: %+v", c)
-			continue
-		}
-
-		if c["name"] != *id {
-			continue
-		}
-
-		// does the check match?
-		k := m["check"].(map[string]interface{})
-		if !ok {
-			logger.Warningf("Could not assert this check to an interface: %+v", k)
-			continue
-		}
-		if k["name"] != h["check"] {
-			continue
-		}
-		return k["output"].(string)
-	}
-
-	return ""
-}
-
 // GetClient retrieves a specific client
 func (u *Uchiwa) GetClient(dc, name string) (map[string]interface{}, error) {
 	api, err := getAPI(u.Datacenters, dc)
