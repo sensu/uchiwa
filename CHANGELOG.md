@@ -1,3 +1,22 @@
+### 0.25.0 (2017-05-05)
+#### Features
+- Client creation is now possible from the clients view -
+[PR #678](https://github.com/sensu/uchiwa/pull/678)
+- Client edition is now possible for all clients -
+[PR #678](https://github.com/sensu/uchiwa/pull/678)
+- Identify flapping checks in the events view -
+[Issue #673](https://github.com/sensu/uchiwa/issues/673)
+
+#### Bug Fixes
+- Properly wrap text with URLs in the client view -
+[Issue #679](https://github.com/sensu/uchiwa/issues/679)
+- Fix bulk silencing for clients with similar names -
+[Issue #677](https://github.com/sensu/uchiwa/issues/677)
+
+#### Other
+- Add protection against Clickjack/UI Redress attacks -
+[PR #680](https://github.com/sensu/uchiwa/pull/680)
+
 ### 0.24.0 (2017-04-13)
 #### Features
 - Add a check view - [Issue #672](https://github.com/sensu/uchiwa/issues/672)
