@@ -1,3 +1,8 @@
+### 0.25.1 (2017-05-10)
+#### Bug Fixes
+- Fix checkboxes in the checks view -
+[Issue #681](https://github.com/sensu/uchiwa/issues/681)
+
 ### 0.25.0 (2017-05-05)
 #### Features
 - Client creation is now possible from the clients view -
