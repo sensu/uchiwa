@@ -1,3 +1,10 @@
+### 0.25.2 (2017-05-16)
+#### Bug Fixes
+- Prevent empty events view upon login -
+[PR #167](https://github.com/sensu/uchiwa-web/pull/167)
+- Events output must be truncated with ellipsis -
+[PR #168](https://github.com/sensu/uchiwa-web/pull/168)
+
 ### 0.25.1 (2017-05-10)
 #### Bug Fixes
 - Fix checkboxes in the checks view -
