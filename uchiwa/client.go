@@ -18,13 +18,14 @@ func (u *Uchiwa) buildClientHistory(client, dc string, history []interface{}) []
 		m["client"] = client
 		m["dc"] = dc
 
-		check, ok := m["last_result"].(map[string]interface{})
+		checkMap, ok := m["last_result"].(map[string]interface{})
 		if !ok {
 			logger.Warningf("Could not assert this check to a struct: %+v", m["last_result"])
 			continue
 		}
 
-		m["silenced"], m["silenced_by"] = helpers.IsCheckSilenced(check, client, dc, u.Data.Silenced)
+		clientMap := map[string]interface{}{"name": client}
+		m["silenced"], m["silenced_by"] = helpers.IsCheckSilenced(checkMap, clientMap, dc, u.Data.Silenced)
 	}
 
 	return history

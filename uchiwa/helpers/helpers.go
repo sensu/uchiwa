@@ -234,7 +234,7 @@ func InterfaceToString(i []interface{}) []string {
 
 // IsCheckSilenced determines whether a check for a particular client is silenced.
 // Returns true if the check is silenced and a slice of silence entries IDs
-func IsCheckSilenced(check map[string]interface{}, client, dc string, silenced []interface{}) (bool, []string) {
+func IsCheckSilenced(check, client map[string]interface{}, dc string, silenced []interface{}) (bool, []string) {
 	var isSilenced bool
 	var isSilencedBy []string
 	var subscribers []interface{}
@@ -248,10 +248,23 @@ func IsCheckSilenced(check map[string]interface{}, client, dc string, silenced [
 		return false, isSilencedBy
 	}
 
+	clientName, ok := client["name"].(string)
+	if !ok {
+		clientName = ""
+	}
+
 	if check["subscribers"] != nil {
 		subscribers, ok = check["subscribers"].([]interface{})
 		if !ok {
 			return false, isSilencedBy
+		}
+	}
+
+	if client["subscriptions"] != nil {
+		subscriptions, ok := client["subscriptions"].([]interface{})
+		if ok {
+			// Add the client subscriptions to the subscribers slice
+			subscribers = append(subscribers, subscriptions...)
 		}
 	}
 
@@ -274,14 +287,14 @@ func IsCheckSilenced(check map[string]interface{}, client, dc string, silenced [
 		}
 
 		// Client subscription (e.g. client:foo:* )
-		if m["id"] == fmt.Sprintf("client:%s:*", client) {
+		if m["id"] == fmt.Sprintf("client:%s:*", clientName) {
 			isSilenced = true
 			isSilencedBy = append(isSilencedBy, m["id"].(string))
 			continue
 		}
 
 		// Client's check subscription (e.g. client:foo:check_cpu )
-		if m["id"] == fmt.Sprintf("client:%s:%s", client, checkName) {
+		if m["id"] == fmt.Sprintf("client:%s:%s", clientName, checkName) {
 			isSilenced = true
 			isSilencedBy = append(isSilencedBy, m["id"].(string))
 			continue

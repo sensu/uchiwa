@@ -53,6 +53,6 @@ func (d *Daemon) buildEvents() {
 
 		// Determine if the check is silenced.
 		// See https://github.com/sensu/uchiwa/issues/602
-		m["silenced"], m["silenced_by"] = helpers.IsCheckSilenced(checkMap, client, dc, d.Data.Silenced)
+		m["silenced"], m["silenced_by"] = helpers.IsCheckSilenced(checkMap, clientMap, dc, d.Data.Silenced)
 	}
 }
