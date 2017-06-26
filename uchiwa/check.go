@@ -26,7 +26,7 @@ func (u *Uchiwa) GetCheck(dc, name string) (map[string]interface{}, error) {
 	u.Mu.Lock()
 	defer u.Mu.Unlock()
 	check["dc"] = dc
-	check["silenced"], check["silenced_by"] = helpers.IsCheckSilenced(check, "", dc, u.Data.Silenced)
+	check["silenced"], check["silenced_by"] = helpers.IsCheckSilenced(check, nil, dc, u.Data.Silenced)
 
 	return check, nil
 }
