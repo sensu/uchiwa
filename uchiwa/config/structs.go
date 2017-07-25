@@ -110,6 +110,7 @@ type OIDC struct {
 	ClientID     string
 	ClientSecret string
 	Insecure     bool
+	RedirectURL  string
 	Roles        []authentication.Role
 	Server       string
 }
