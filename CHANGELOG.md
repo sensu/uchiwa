@@ -1,3 +1,16 @@
+### 0.25.3 (2017-07-25)
+#### Bug Fixes
+- Consider clients subscriptions when determining if a check is silenced -
+[Issue #689](https://github.com/sensu/uchiwa/issues/689)
+- Fix URL shortening with special characters -
+[Issue #690](https://github.com/sensu/uchiwa/issues/690)
+- Fix the client status filter -
+[Commit 0a66d72](https://github.com/sensu/uchiwa-web/commit/0a66d72930560b2050f573dab783100f4661cfb4)
+
+#### Other
+- Display the silenced creation timestamp -
+[Commit 47db92f](https://github.com/sensu/uchiwa-web/commit/47db92f00102a500c0e26bb52d21460b94ff4414)
+
 ### 0.25.2 (2017-05-16)
 #### Bug Fixes
 - Prevent empty events view upon login -

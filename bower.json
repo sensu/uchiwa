@@ -1,6 +1,6 @@
 {
   "name": "uchiwa",
   "dependencies": {
-    "uchiwa-web": "0.25.2"
+    "uchiwa-web": "0.25.3"
   }
 }
