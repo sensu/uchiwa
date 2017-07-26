@@ -107,11 +107,13 @@ type LdapServer struct {
 
 // OIDC struct contains the OIDC driver configuration
 type OIDC struct {
-	ClientID     string
-	ClientSecret string
-	Insecure     bool
-	Roles        []authentication.Role
-	Server       string
+	AdditionalScopes []string
+	ClientID         string
+	ClientSecret     string
+	Insecure         bool
+	RedirectURL      string
+	Roles            []authentication.Role
+	Server           string
 }
 
 // SSL struct contains the path the SSL certificate and key

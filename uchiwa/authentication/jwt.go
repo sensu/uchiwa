@@ -53,6 +53,7 @@ func GetToken(user *User, xsfrToken string) (string, error) {
 
 	t := jwt.New(jwt.GetSigningMethod("RS256"))
 	t.Claims["email"] = user.Email
+	t.Claims["fullname"] = user.FullName
 	t.Claims["role"] = user.Role
 	t.Claims["username"] = user.Username
 	t.Claims["xsrfToken"] = xsfrToken
