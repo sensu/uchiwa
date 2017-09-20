@@ -103,8 +103,10 @@ type InfoServer struct {
 	ID        string                        `json:"id"`
 	Hostname  string                        `json:"hostname"`
 	Address   string                        `json:"address"`
-	IsLeader  bool                          `json:"is_leader"`
+	IsLeader  bool                          `json:"is_leader,omitempty"`
 	Metrics   map[string]map[string]float32 `json:"metrics"`
+	Sensu     map[string]interface{}        `json:"sensu,omitempty"`
+	Tasks     []string                      `json:"tasks,omitempty"`
 	Timestamp int                           `json:"timestamp"`
 }
 
