@@ -168,7 +168,9 @@ type SERawMetric struct {
 
 // Sensu is a structure for holding the sensu version
 type Sensu struct {
-	Version string `json:"version"`
+	EnterpriseVersion string            `json:"enterprise_version,omitempty"`
+	Settings          map[string]string `json:"settings,omitempty"`
+	Version           string            `json:"version"`
 }
 
 type transport struct {
