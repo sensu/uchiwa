@@ -13,6 +13,8 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 		req.SetBasicAuth(api.User, api.Pass)
 	}
 
+	req.Close = api.CloseRequest
+
 	res, err := api.Client.Do(req)
 	if err != nil {
 		status, ok := err.(*url.Error)

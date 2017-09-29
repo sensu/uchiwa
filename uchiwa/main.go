@@ -59,11 +59,23 @@ func initDatacenters(c *config.Config) *[]sensu.Sensu {
 
 OUTER:
 	for _, api := range c.Sensu {
+		// Initialize the API
+		dc := sensu.API{
+			CloseRequest:      api.Advanced.CloseRequest,
+			DisableKeepAlives: api.Advanced.DisableKeepAlives,
+			Insecure:          api.Insecure,
+			Pass:              api.Pass,
+			Path:              api.Path,
+			Timeout:           api.Timeout,
+			URL:               api.URL,
+			User:              api.User,
+		}
+
 		// Do we already have a datacenter with the same name as this API?
 		for i, datacenter := range datacenters {
 			if datacenter.Name == api.Name {
 				// Add this API to the corresponding datacenter
-				datacenter.APIs = append(datacenter.APIs, sensu.NewAPI(api.Path, api.URL, api.Timeout, api.User, api.Pass, api.Insecure))
+				datacenter.APIs = append(datacenter.APIs, dc)
 				datacenters[i] = datacenter
 
 				continue OUTER
@@ -72,7 +84,7 @@ OUTER:
 		// At this point we didn't find any datacenter with the same name
 		// so we will create a new one and add it to the datacenters slice
 		datacenter := sensu.Sensu{Name: api.Name}
-		datacenter.APIs = append(datacenter.APIs, sensu.NewAPI(api.Path, api.URL, api.Timeout, api.User, api.Pass, api.Insecure))
+		datacenter.APIs = append(datacenter.APIs, dc)
 		datacenters = append(datacenters, datacenter)
 	}
 
