@@ -1,3 +1,8 @@
+### 0.26.1 (2017-09-29)
+#### Other
+- Optimize the HTTP client used with Sensu APIs -
+[PR #719](https://github.com/sensu/uchiwa/pull/719)
+
 ### 0.26.0 (2017-09-22)
 #### Features
 - Additional Sensu server metadata in datacenters view -
