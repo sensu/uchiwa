@@ -98,7 +98,7 @@ task :organize do
   distributions = {
     'debian': {
       arch: arch,
-      releases: [7, 8]
+      releases: [7, 8, 9]
     },
     'el': {
       arch: arch,
