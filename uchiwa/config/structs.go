@@ -16,6 +16,7 @@ type Config struct {
 
 // SensuConfig struct contains conf about a Sensu API
 type SensuConfig struct {
+	Advanced Advanced
 	Name     string
 	Host     string
 	Port     int
@@ -53,6 +54,12 @@ type GlobalConfig struct {
 type Audit struct {
 	Level   string
 	Logfile string
+}
+
+// Advanced contains advanced configuration for Sensu datacenters HTTP client
+type Advanced struct {
+	CloseRequest      bool
+	DisableKeepAlives bool
 }
 
 // Db struct contains the SQL driver configuration

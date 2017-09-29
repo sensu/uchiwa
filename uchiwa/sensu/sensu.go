@@ -24,23 +24,28 @@ type Sensu struct {
 
 // API struct contains the details of a specific Sensu API
 type API struct {
-	Path    string
-	URL     string
-	Timeout int
-	User    string
-	Pass    string
-	Client  http.Client
+	CloseRequest      bool
+	DisableKeepAlives bool
+	Insecure          bool
+	Pass              string
+	Path              string
+	Timeout           int
+	URL               string
+	User              string
+
+	Client http.Client
 }
 
-// NewAPI initializes a new Sensu API struct
-func NewAPI(path string, url string, timeout int, username string, password string, insecure bool) API {
+// Init initializes a new Sensu API HTTP client
+func (a *API) Init() {
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: insecure},
+		DisableKeepAlives: a.DisableKeepAlives,
+		TLSClientConfig:   &tls.Config{InsecureSkipVerify: a.Insecure},
 	}
 
-	client := http.Client{Timeout: time.Duration(timeout) * time.Second, Transport: tr}
+	client := http.Client{Timeout: time.Duration(a.Timeout) * time.Second, Transport: tr}
 
-	return API{path, url, timeout, username, password, client}
+	a.Client = client
 }
 
 // GetName returns the Name attribute
