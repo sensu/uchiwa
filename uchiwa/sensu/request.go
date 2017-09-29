@@ -2,7 +2,7 @@ package sensu
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 )
@@ -28,7 +28,8 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 		return nil, nil, fmt.Errorf("%v", res.Status)
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body := make([]byte, res.ContentLength)
+	_, err = io.ReadFull(res.Body, body)
 	if err != nil {
 		return nil, nil, fmt.Errorf("Parsing response body returned: %v", err)
 	}
