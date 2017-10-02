@@ -70,6 +70,7 @@ OUTER:
 			URL:               api.URL,
 			User:              api.User,
 		}
+		dc.Init()
 
 		// Do we already have a datacenter with the same name as this API?
 		for i, datacenter := range datacenters {
