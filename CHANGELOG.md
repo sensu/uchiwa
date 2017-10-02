@@ -1,3 +1,7 @@
+### 0.26.2 (2017-10-02)
+#### Bug Fixes
+- Properly initialize Sensu APIs HTTP clients
+
 ### 0.26.1 (2017-09-29)
 #### Other
 - Optimize the HTTP client used with Sensu APIs -
