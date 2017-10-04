@@ -30,6 +30,7 @@ type API struct {
 	Pass              string
 	Path              string
 	Timeout           int
+	Tracing           bool
 	URL               string
 	User              string
 

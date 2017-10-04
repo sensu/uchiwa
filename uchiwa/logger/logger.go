@@ -39,8 +39,8 @@ type Source struct {
 }
 
 var (
-		log = new(Logger)
-		logMutex = &sync.Mutex{}
+	log      = new(Logger)
+	logMutex = &sync.Mutex{}
 )
 
 func init() {
@@ -158,6 +158,18 @@ func Warning(args ...interface{}) {
 func Warningf(format string, args ...interface{}) {
 	s := fmt.Sprintf(format, args...)
 	log.print("warn", s)
+}
+
+// Custom logs a message using provided level as log level
+func Custom(level string, args ...interface{}) {
+	s := fmt.Sprint(args...)
+	log.print(level, s)
+}
+
+// Customf logs a message with arguments using provided level as log level
+func Customf(level string, format string, args ...interface{}) {
+	s := fmt.Sprintf(format, args...)
+	log.print(level, s)
 }
 
 // getLevelInt returns the integer representation of a logging level
