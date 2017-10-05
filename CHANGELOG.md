@@ -1,3 +1,11 @@
+### 0.26.3 (2017-10-05)
+#### Other
+- Use pagination on Sensu API events endpoint -
+[Commit 2ba0508b](https://github.com/sensu/uchiwa/commit/2ba0508b3bb95426274d982d03949c5c551d2fcc)
+- Add tracing attribute to enable HTTP client tracing -
+[PR #720](https://github.com/sensu/uchiwa/pull/720)
+
+
 ### 0.26.2 (2017-10-02)
 #### Bug Fixes
 - Properly initialize Sensu APIs HTTP clients
