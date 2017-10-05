@@ -67,6 +67,7 @@ OUTER:
 			Pass:              api.Pass,
 			Path:              api.Path,
 			Timeout:           api.Timeout,
+			Tracing:           api.Advanced.Tracing,
 			URL:               api.URL,
 			User:              api.User,
 		}

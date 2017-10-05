@@ -4,7 +4,7 @@ import "fmt"
 
 // GetEvents returns a slice of all clients
 func (s *Sensu) GetEvents() ([]interface{}, error) {
-	return s.getSlice("events", NoLimit)
+	return s.getSlice("events", DefaultLimit)
 }
 
 // DeleteEvent delete an event

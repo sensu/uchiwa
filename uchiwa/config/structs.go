@@ -60,6 +60,7 @@ type Audit struct {
 type Advanced struct {
 	CloseRequest      bool
 	DisableKeepAlives bool
+	Tracing           bool
 }
 
 // Db struct contains the SQL driver configuration

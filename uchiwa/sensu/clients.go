@@ -25,6 +25,7 @@ func (s *Sensu) GetClientHistory(client string) ([]interface{}, error) {
 	return s.getSlice(fmt.Sprintf("clients/%s/history", client), NoLimit)
 }
 
+// UpdateClient updates a client with the provided payload
 func (s *Sensu) UpdateClient(payload interface{}) (map[string]interface{}, error) {
 	payloadstr, err := json.Marshal(payload)
 	if err != nil {
