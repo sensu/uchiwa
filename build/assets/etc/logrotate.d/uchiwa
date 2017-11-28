@@ -1,0 +1,9 @@
+/var/log/uchiwa.log /var/log/uchiwa.err {
+    rotate 7
+    daily
+    missingok
+    notifempty
+    sharedscripts
+    copytruncate
+    compress
+}
