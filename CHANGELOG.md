@@ -1,10 +1,22 @@
+### 1.0.0 (2017-11-30)
+#### Bug Fixes
+- Docker images now use Go 1.9.2 -
+[Issue #731](https://github.com/sensu/uchiwa/issues/731)
+- Respect line breaks of results output -
+[Issue #708](https://github.com/sensu/uchiwa/issues/708)
+- Prevent a panic when the response content length is unknown -
+[Issue #725](https://github.com/sensu/uchiwa/issues/725)
+
+#### Other
+- Packages now provide a logrotate configuration -
+[Issue #703](https://github.com/sensu/uchiwa/issues/703)
+
 ### 0.26.3 (2017-10-05)
 #### Other
 - Use pagination on Sensu API events endpoint -
 [Commit 2ba0508b](https://github.com/sensu/uchiwa/commit/2ba0508b3bb95426274d982d03949c5c551d2fcc)
 - Add tracing attribute to enable HTTP client tracing -
 [PR #720](https://github.com/sensu/uchiwa/pull/720)
-
 
 ### 0.26.2 (2017-10-02)
 #### Bug Fixes
