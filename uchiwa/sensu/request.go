@@ -65,6 +65,10 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 		return nil, nil, fmt.Errorf("%v", res.Status)
 	}
 
+	if res.ContentLength < 0 {
+		return nil, nil, fmt.Errorf("unknown content length of %d", res.ContentLength)
+	}
+
 	body := make([]byte, res.ContentLength)
 	n, err := io.ReadFull(res.Body, body)
 	if err != nil {
