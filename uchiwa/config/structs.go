@@ -94,6 +94,7 @@ type Ldap struct {
 	Servers []LdapServer
 }
 
+// LdapServer contains the configuration of a specific LDAP server
 type LdapServer struct {
 	Server               string
 	Port                 int
@@ -126,8 +127,11 @@ type OIDC struct {
 
 // SSL struct contains the path the SSL certificate and key
 type SSL struct {
-	CertFile string
-	KeyFile  string
+	CertFile      string
+	KeyFile       string
+	CipherSuite   []string
+	TLSMinVersion string
+	TLSConfig     *tls.Config
 }
 
 // UsersOptions struct contains various config tweaks
