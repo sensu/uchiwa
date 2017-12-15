@@ -2,6 +2,7 @@ package uchiwa
 
 import (
 	"compress/gzip"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -1381,7 +1382,12 @@ func (u *Uchiwa) WebServer(publicPath *string, auth authentication.Config) {
 	logger.Warningf("Uchiwa is now listening on %s", listen)
 
 	if u.Config.Uchiwa.SSL.CertFile != "" && u.Config.Uchiwa.SSL.KeyFile != "" {
-		logger.Fatal(http.ListenAndServeTLS(listen, u.Config.Uchiwa.SSL.CertFile, u.Config.Uchiwa.SSL.KeyFile, nil))
+		server := http.Server{
+			Addr:         listen,
+			TLSConfig:    u.Config.Uchiwa.SSL.TLSConfig,
+			TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler), 0),
+		}
+		logger.Fatal(server.ListenAndServeTLS(u.Config.Uchiwa.SSL.CertFile, u.Config.Uchiwa.SSL.KeyFile))
 	}
 
 	logger.Fatal(http.ListenAndServe(listen, nil))

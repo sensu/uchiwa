@@ -1,6 +1,7 @@
 package config
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -17,10 +18,11 @@ const obfuscatedValue = "*****"
 
 var (
 	defaultGlobalConfig = GlobalConfig{
-		Host:     "0.0.0.0",
-		Port:     3000,
-		LogLevel: "info",
-		Refresh:  10,
+		Audit: Audit{
+			Level:   "default",
+			Logfile: "/var/log/sensu/sensu-enterprise-dashboard-audit.log",
+		},
+		Host: "0.0.0.0",
 		Ldap: Ldap{
 			LdapServer: LdapServer{
 				Port:                 389,
@@ -31,9 +33,11 @@ var (
 				GroupObjectClass:     "groupOfNames",
 			},
 		},
-		Audit: Audit{
-			Level:   "default",
-			Logfile: "/var/log/sensu/sensu-enterprise-dashboard-audit.log",
+		LogLevel: "info",
+		Port:     3000,
+		Refresh:  10,
+		SSL: SSL{
+			TLSMinVersion: "tls10",
 		},
 		UsersOptions: UsersOptions{
 			DateFormat:             "YYYY-MM-DD HH:mm:ss",
@@ -242,6 +246,21 @@ func initUchiwa(global GlobalConfig) GlobalConfig {
 
 		// Support multiple users
 		global.Users = append(global.Users, authentication.User{Username: global.User, Password: global.Pass, FullName: global.User})
+	}
+
+	// TLS configuration
+	var cipherSuite []uint16
+	if len(global.SSL.CipherSuite) == 0 {
+		cipherSuite = defaultCipherSuite()
+	} else {
+		cipherSuite = parseCipherSuite(global.SSL.CipherSuite)
+	}
+
+	global.SSL.TLSConfig = &tls.Config{
+		MinVersion:               TLSVersions[global.SSL.TLSMinVersion],
+		MaxVersion:               tls.VersionTLS12,
+		CipherSuites:             cipherSuite,
+		PreferServerCipherSuites: true,
 	}
 
 	// Set the logger level
