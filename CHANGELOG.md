@@ -1,3 +1,14 @@
+### 1.1.0 (2017-12-15)
+#### Features
+- Removed 3DES cipher algorithms from default suite -
+[Issue #688](https://github.com/sensu/uchiwa/issues/688)
+- The TLS config is now configurable for HTTPS server -
+[Issue #688](https://github.com/sensu/uchiwa/issues/688)
+
+### Bug Fixes
+- Fixed the automated Docker images build process -
+[Issue #742](https://github.com/sensu/uchiwa/issues/742)
+
 ### 1.0.0 (2017-11-30)
 #### Bug Fixes
 - Docker images now use Go 1.9.2 -
