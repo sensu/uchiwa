@@ -82,6 +82,9 @@ task :package do
     run_command(fpm_cmd)
   end
 
+  puts "Signing the RPM package ..."
+  run_command("build/sign-rpm rpm --addsign *.rpm")
+
   puts "Moving packages to the package directory ..."
   FileUtils.mv(Dir.glob("*.{deb,rpm}"), PKG_DIR)
   run_command("ls -la #{PKG_DIR}/")
