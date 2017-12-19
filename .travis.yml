@@ -6,6 +6,11 @@ env:
   matrix:
     - TRAVIS_GOOS=linux TRAVIS_GOARCH=386
     - TRAVIS_GOOS=linux TRAVIS_GOARCH=amd64
+  global:
+    - AWS_REGION=us-west-2
+    - secure: "AbBK9m/ERyL2RzTd2+IwYkPxW+gnQSXB83AlcvgRNfGF+Y+zaDDZ4PaKDdl0hfKmsIwzvxpTn/t3pwN/UXYCdcKVzQFHmqhpgL1Vb6D6GV0tzSE87L9jod+5H5zFo4MufxIV2WpiV2yErJh+pl24l3kBuoJc7Ot3D3gj3tjLSCU="
+    - secure: "dfwJP2lOpCJxQ23ZiLOlDvuCvpwQOATE+U3Xgwwor7gqyoCMxqEdtSlVyt3PLx+LV1kWasJWuJ6pmrPplhk6CYXk/bQP9DNIJgnKiJdorg1/sxz/w2/KtuzizT+Kru+ZJVVgBcD8T1dTNFnFsPYtTrS/UdFyJ1M7gD+U7+QpuhI="
+
 before_install:
   - gem install rake -v "10.5.0"
   - gem install fpm -v "1.8.1"
@@ -13,6 +18,10 @@ before_install:
   # Workaround for https://github.com/travis-ci/travis-ci/issues/6126
   - export GOOS=$TRAVIS_GOOS
   - export GOARCH=$TRAVIS_GOARCH
+  # RPM signing
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+  - ./build/setup-gpg
 script:
   - "./build/travis.sh"
 deploy:
