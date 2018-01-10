@@ -108,7 +108,7 @@ type LdapServer struct {
 	GroupMemberAttribute string
 	Insecure             bool
 	Security             string
-	TLSConfig            *tls.Config
+	TLSConfig            *tls.Config `json:"-"`
 	UserAttribute        string
 	UserBaseDN           string
 	UserObjectClass      string
@@ -131,7 +131,7 @@ type SSL struct {
 	KeyFile       string
 	CipherSuite   []string
 	TLSMinVersion string
-	TLSConfig     *tls.Config
+	TLSConfig     *tls.Config `json:"-"`
 }
 
 // UsersOptions struct contains various config tweaks
