@@ -26,9 +26,14 @@ create_uchiwa_user_group() {
     fi
 }
 
+fix_logrotate_permissions() {
+    chmod 644 /etc/logrotate.d/uchiwa
+}
+
 case "$1" in
     configure)
         create_uchiwa_user_group
+        fix_logrotate_permissions
         ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

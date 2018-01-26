@@ -4,4 +4,6 @@
 if [ $1 -eq 1 ]; then
     chkconfig --add uchiwa
     chkconfig uchiwa off
+    chmod 644 /etc/logrotate.d/uchiwa
+}
 fi
