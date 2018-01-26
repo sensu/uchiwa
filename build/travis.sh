@@ -22,9 +22,9 @@ if [ "$(git describe --tags --exact-match "$COMMIT")" ]; then
   GOARCH=$GOARCH ./build/tests.sh
 
   echo "======================== Prepare RPM signing"
-   pip install --user awscli
+  pip install --user awscli
   export PATH=$PATH:$HOME/.local/bin
-  build/setup-gpg
+  ./build/setup-gpg
 
   echo "======================== Building the packages"
   PACKAGE_VERSION=$PACKAGE_VERSION BUILD_NUMBER=$BUILD_NUMBER \
