@@ -1,3 +1,12 @@
+### 1.1.2 (2018-01-26)
+#### Bug Fixes
+- Validate both check & client subscriptions when determing if a check is
+silenced - [Issue #755](https://github.com/sensu/uchiwa/issues/755)
+- Fix logrotate configuration file permission - 
+[Issue #757](https://github.com/sensu/uchiwa/issues/757)
+- Fix Travis CI builds for both uchiwa & uchiwa-web projects
+- Upgrade `istanbul` & `grunt-contrib-watch` dependencies
+
 ### 1.1.1 (2018-01-10)
 #### Bug Fixes
 - Fix the display of Uchiwa configuration in info view  -
