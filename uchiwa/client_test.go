@@ -8,7 +8,7 @@ import (
 )
 
 func TestBuildClientHistory(t *testing.T) {
-	var client, dc string
+	var dc string
 	var status float64
 	const Critical float64 = 2.0
 	const Warning float64 = 1.0
@@ -25,14 +25,13 @@ func TestBuildClientHistory(t *testing.T) {
 		map[string]interface{}{"check": "cpu", "client": "qux", "dc": "us-west-1", "occurrences": 10, "output": "CRITICAL", "status": Critical},
 	}
 
-	client = "qux"
+	client := map[string]interface{}{"name": "qux"}
 	dc = "us-east-1"
 	status = Success
 	history = []interface{}{map[string]interface{}{"check": "cpu", "last_result": map[string]interface{}{"command": "cpu.rb", "status": status}, "last_status": status}}
 	expectedHistory = []interface{}{map[string]interface{}{"check": "cpu", "client": "qux", "dc": "us-east-1", "last_result": map[string]interface{}{"command": "cpu.rb", "status": status}, "last_status": status, "silenced": false, "silenced_by": []string(nil)}}
 	result := u.buildClientHistory(client, dc, history)
 	assert.Equal(t, expectedHistory, result)
-
 }
 
 func TestFindClient(t *testing.T) {
