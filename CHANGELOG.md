@@ -1,3 +1,8 @@
+### 1.1.3 (2018-01-30)
+#### Bug Fixes
+- Fix typo in TLS cipher list - 
+[PR #759](https://github.com/sensu/uchiwa/pull/759)
+
 ### 1.1.2 (2018-01-26)
 #### Bug Fixes
 - Validate both check & client subscriptions when determing if a check is
