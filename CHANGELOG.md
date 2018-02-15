@@ -1,3 +1,8 @@
+### 1.1.3-2 (2018-02-15)
+#### Bug Fixes
+- Fix syntax error in RPM post script - 
+[Issue #760](https://github.com/sensu/uchiwa/issues/760)
+
 ### 1.1.3 (2018-01-30)
 #### Bug Fixes
 - Fix typo in TLS cipher list - 
