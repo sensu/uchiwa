@@ -247,8 +247,7 @@ func InterfaceToString(i []interface{}) []string {
 // Returns true if the check is silenced and a slice of silence entries IDs
 func IsCheckSilenced(check, client map[string]interface{}, dc string, silenced []interface{}) (bool, []string) {
 	var isSilenced bool
-	var isSilencedBy []string
-	var subscribers []interface{}
+	var commonSubscriptions, isSilencedBy, subscribers, subscriptions []string
 
 	if dc == "" || len(silenced) == 0 {
 		return false, isSilencedBy
@@ -264,18 +263,28 @@ func IsCheckSilenced(check, client map[string]interface{}, dc string, silenced [
 		clientName = ""
 	}
 
+	// Retrieve the check subscribers
 	if check["subscribers"] != nil {
-		subscribers, ok = check["subscribers"].([]interface{})
+		s, ok := check["subscribers"].([]interface{})
 		if !ok {
 			return false, isSilencedBy
 		}
+		subscribers = InterfaceToString(s)
 	}
 
+	// Retrieve the client subscriptions
 	if client["subscriptions"] != nil {
-		subscriptions, ok := client["subscriptions"].([]interface{})
-		if ok {
-			// Add the client subscriptions to the subscribers slice
-			subscribers = append(subscribers, subscriptions...)
+		s, ok := client["subscriptions"].([]interface{})
+		if !ok {
+			return false, isSilencedBy
+		}
+		subscriptions = InterfaceToString(s)
+	}
+
+	// Get the subscriptions both check and client have in common
+	for _, subscriber := range subscribers {
+		if IsStringInArray(subscriber, subscriptions) {
+			commonSubscriptions = append(commonSubscriptions, subscriber)
 		}
 	}
 
@@ -311,8 +320,7 @@ func IsCheckSilenced(check, client map[string]interface{}, dc string, silenced [
 			continue
 		}
 
-		for _, s := range subscribers {
-			subscription := s.(string)
+		for _, subscription := range commonSubscriptions {
 			// Subscription (e.g. load-balancer:* )
 			if m["id"] == fmt.Sprintf("%s:*", subscription) {
 				isSilenced = true

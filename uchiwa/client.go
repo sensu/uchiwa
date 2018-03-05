@@ -7,7 +7,7 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
-func (u *Uchiwa) buildClientHistory(client, dc string, history []interface{}) []interface{} {
+func (u *Uchiwa) buildClientHistory(client map[string]interface{}, dc string, history []interface{}) []interface{} {
 	for _, h := range history {
 		m, ok := h.(map[string]interface{})
 		if !ok {
@@ -15,7 +15,7 @@ func (u *Uchiwa) buildClientHistory(client, dc string, history []interface{}) []
 			continue
 		}
 
-		m["client"] = client
+		m["client"] = client["name"].(string)
 		m["dc"] = dc
 
 		checkMap, ok := m["last_result"].(map[string]interface{})
@@ -24,8 +24,7 @@ func (u *Uchiwa) buildClientHistory(client, dc string, history []interface{}) []
 			continue
 		}
 
-		clientMap := map[string]interface{}{"name": client}
-		m["silenced"], m["silenced_by"] = helpers.IsCheckSilenced(checkMap, clientMap, dc, u.Data.Silenced)
+		m["silenced"], m["silenced_by"] = helpers.IsCheckSilenced(checkMap, client, dc, u.Data.Silenced)
 	}
 
 	return history
@@ -107,11 +106,18 @@ func (u *Uchiwa) GetClientHistory(dc, name string) ([]interface{}, error) {
 		return nil, err
 	}
 
+	// Get the client
+	client, err := u.GetClient(dc, name)
+	if err != nil {
+		// The error would already have been logged at this point
+		return nil, err
+	}
+
 	// lock results
 	u.Mu.Lock()
 	defer u.Mu.Unlock()
 
-	history := u.buildClientHistory(name, dc, h)
+	history := u.buildClientHistory(client, dc, h)
 
 	return history, nil
 }

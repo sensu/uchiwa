@@ -1,3 +1,33 @@
+### 1.1.3-2 (2018-02-15)
+#### Bug Fixes
+- Fix syntax error in RPM post script - 
+[Issue #760](https://github.com/sensu/uchiwa/issues/760)
+
+### 1.1.3 (2018-01-30)
+#### Bug Fixes
+- Fix typo in TLS cipher list - 
+[PR #759](https://github.com/sensu/uchiwa/pull/759)
+
+### 1.1.2 (2018-01-26)
+#### Bug Fixes
+- Validate both check & client subscriptions when determing if a check is
+silenced - [Issue #755](https://github.com/sensu/uchiwa/issues/755)
+- Fix logrotate configuration file permission - 
+[Issue #757](https://github.com/sensu/uchiwa/issues/757)
+- Fix Travis CI builds for both uchiwa & uchiwa-web projects
+- Upgrade `istanbul` & `grunt-contrib-watch` dependencies
+
+### 1.1.1 (2018-01-10)
+#### Bug Fixes
+- Fix the display of Uchiwa configuration in info view  -
+[PR #753](https://github.com/sensu/uchiwa/pull/753)
+- Fix the Uchiwa logo in Firefox -
+[Issue #749](https://github.com/sensu/uchiwa/issues/749)
+
+#### Other
+- Allow custom build of packages with Docker -
+[PR #718](https://github.com/sensu/uchiwa/pull/718)
+
 ### 1.1.0 (2017-12-15)
 #### Features
 - Removed 3DES cipher algorithms from default suite -
