@@ -2,6 +2,7 @@ package config
 
 import (
 	"testing"
+	"os"
 
 	"github.com/sensu/uchiwa/uchiwa/authentication"
 	"github.com/stretchr/testify/assert"
@@ -149,6 +150,12 @@ func TestInitUchiwa(t *testing.T) {
 	uchiwa = initUchiwa(conf)
 	assert.Equal(t, "simple", uchiwa.Auth.Driver)
 	assert.Equal(t, []authentication.User{authentication.User{ID: 0, FullName: "foo", Password: "secret", Username: "foo"}}, uchiwa.Users)
+
+	conf = GlobalConfig{Port: 3000}
+	os.Setenv("PORT", "8080")
+	uchiwa = initUchiwa(conf)
+	os.Unsetenv("PORT")
+	assert.Equal(t, 8080, uchiwa.Port)
 }
 
 func TestGetPublic(t *testing.T) {

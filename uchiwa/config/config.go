@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"strconv"
 
 	"github.com/palourde/mergo"
 	"github.com/sensu/uchiwa/uchiwa/authentication"
@@ -265,6 +266,19 @@ func initUchiwa(global GlobalConfig) GlobalConfig {
 
 	// Set the logger level
 	logger.SetLogLevel(global.LogLevel)
+
+	// Set the port from the environment if available
+	port, ok := os.LookupEnv("PORT")
+	
+	if ok {
+		p, err := strconv.Atoi(port)
+
+		if err != nil {
+			logger.Warning(err)
+		} else {
+			global.Port = p
+		}
+	}
 
 	// Initialize the users options
 	// Set the refresh rate for frontend
