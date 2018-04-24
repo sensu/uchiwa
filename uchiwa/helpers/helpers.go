@@ -14,6 +14,17 @@ import (
 	"github.com/sensu/uchiwa/uchiwa/structs"
 )
 
+// return true if String in Slice, false otherwise
+func StringInSlice(a string, list []string) bool {
+    for _, b := range list {
+        if b == a {
+            return true
+        }
+    }
+    return false
+}
+
+
 // BuildClientsMetrics builds the metrics for the events
 func BuildClientsMetrics(clients *[]interface{}) *structs.StatusMetrics {
 	metrics := structs.StatusMetrics{}
