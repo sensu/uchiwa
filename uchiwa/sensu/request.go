@@ -4,14 +4,13 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
-        "io/ioutil"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptrace"
-	"net/http/httputil"
 	"net/url"
 
-	"github.com/sensu/uchiwa/uchiwa/logger"
 	"github.com/sensu/uchiwa/uchiwa/helpers"
+	"github.com/sensu/uchiwa/uchiwa/logger"
 )
 
 // ...
@@ -60,9 +59,6 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 
 	defer res.Body.Close()
 
-        dump, err := httputil.DumpResponse(res, true)
-        logger.Customf("httptrace", "Dump http %s", dump)
-
 	if api.Tracing {
 		logger.Customf("httptrace", "Length of response body: %d bytes", res.ContentLength)
 	}
@@ -73,28 +69,28 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 
 	if res.ContentLength < 0 {
 
-            if helpers.StringInSlice("chunked",res.TransferEncoding) {
-                body, err := ioutil.ReadAll(res.Body)
-                if err != nil {
-                    return nil, nil, fmt.Errorf("Parsing response body returned: %v", err)
-                }
-	        return body, res, nil
-            } else {
-                return nil, nil, fmt.Errorf("unknown content length of %d and not TransferEncoding == \"chunked\"", res.ContentLength)
-            }
-        }
-        body := make([]byte, res.ContentLength)
-        n, err := io.ReadFull(res.Body, body)
+		if helpers.StringInSlice("chunked", res.TransferEncoding) {
+			body, err := ioutil.ReadAll(res.Body)
+			if err != nil {
+				return nil, nil, fmt.Errorf("Parsing response body returned: %v", err)
+			}
+			return body, res, nil
+		} else {
+			return nil, nil, fmt.Errorf("unknown content length of %d and not TransferEncoding == \"chunked\"", res.ContentLength)
+		}
+	}
+	body := make([]byte, res.ContentLength)
+	n, err := io.ReadFull(res.Body, body)
 
-        if err != nil {
-                if err == io.ErrUnexpectedEOF {
-                        logger.Warningf("Tried to read %d bytes, got %d", res.ContentLength, n)
-                        if api.Tracing {
-                                logger.Infof("Got %s", string(body[0:n]))
-                        }
-                }
-                return nil, nil, fmt.Errorf("Parsing response body returned: %v", err)
-        }
+	if err != nil {
+		if err == io.ErrUnexpectedEOF {
+			logger.Warningf("Tried to read %d bytes, got %d", res.ContentLength, n)
+			if api.Tracing {
+				logger.Infof("Got %s", string(body[0:n]))
+			}
+		}
+		return nil, nil, fmt.Errorf("Parsing response body returned: %v", err)
+	}
 
 	if api.Tracing {
 		logger.Customf("httptrace", "Closing connection")
