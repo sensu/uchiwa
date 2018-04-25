@@ -16,14 +16,13 @@ import (
 
 // return true if String in Slice, false otherwise
 func StringInSlice(a string, list []string) bool {
-    for _, b := range list {
-        if b == a {
-            return true
-        }
-    }
-    return false
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }
-
 
 // BuildClientsMetrics builds the metrics for the events
 func BuildClientsMetrics(clients *[]interface{}) *structs.StatusMetrics {
@@ -297,6 +296,15 @@ func IsCheckSilenced(check, client map[string]interface{}, dc string, silenced [
 
 		if m["dc"] != dc {
 			continue
+		}
+
+		// Ignore silenced entries that have not begun yet
+		if m["begin"] != nil {
+			begin := time.Unix(int64(m["begin"].(float64)), 0)
+			now := time.Now()
+			if now.Before(begin) {
+				continue
+			}
 		}
 
 		// Check (e.g. *:check_cpu)
