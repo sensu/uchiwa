@@ -9,6 +9,7 @@ type silence struct {
 	Check           string `json:"check,omitempty"`
 	Reason          string `json:"reason,omitempty"`
 	Creator         string `json:"creator,omitempty"`
+	Begin           int32  `json:"begin,omitempty"`
 	Expire          int32  `json:"expire,omitempty"`
 	ExpireOnResolve bool   `json:"expire_on_resolve,omitempty"`
 }
