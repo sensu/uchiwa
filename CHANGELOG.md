@@ -1,3 +1,28 @@
+### 1.2.0 (2018-04-27)
+#### Features
+- Add confirmation prompt when deleting silenced entry that could affect
+  mulitple clients - [Issue #767](https://github.com/sensu/uchiwa/issues/767)
+- Silenced entries can now be scheduled (requires Sensu server 1.2.0) - [Issue
+  #769](https://github.com/sensu/uchiwa/issues/769)
+- Use `PORT` environment variable if available - [Issue
+  #772](https://github.com/sensu/uchiwa/issues/772)
+- Both `expire_on_resolve` and `expire` can be configured when creating a
+  silenced entry - [Issue #776](https://github.com/sensu/uchiwa/issues/776)
+
+#### Bug Fixes
+- Properly handle chunked transfer encoding from Sensu API -
+[Issue #751](https://github.com/sensu/uchiwa/issues/751)
+- Fix select element background color with uchiwa-dark theme - 
+[Issue #763](https://github.com/sensu/uchiwa/issues/763)
+- Fix dropdown menus height - [PR
+  #17](https://github.com/sensu/uchiwa-web/pull/17)
+
+#### Other
+- Hide 'Issue Request' button for standalone checks -
+[Issue #754](https://github.com/sensu/uchiwa/issues/754)
+- Replace 'never' expiration with 'on resolve', if applicable, on silenced view -
+[Issue #764](https://github.com/sensu/uchiwa/issues/764)
+
 ### 1.1.3-2 (2018-02-15)
 #### Bug Fixes
 - Fix syntax error in RPM post script - 
