@@ -36,7 +36,7 @@ func TestGetEnterpriseMetrics(t *testing.T) {
 	datacenter.On("Metric", "results").Return(&structs.SERawMetric{}, nil)
 	metrics := structs.SERawMetrics{}
 
-	metrics = *getEnterpriseMetrics(datacenter, &metrics)
+	metrics = getEnterpriseMetrics(datacenter)
 
 	assert.Equal(t, 2, len(metrics.Clients[0].Points))
 	assert.Equal(t, 0, len(metrics.Events[0].Points))
