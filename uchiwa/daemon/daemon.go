@@ -205,6 +205,8 @@ func (d *DatacenterSnapshotFetcher) determineHealth() structs.SensuHealth {
 }
 
 func (d *DatacenterSnapshotFetcher) fetchStashes() {
+	defer d.wg.Done()
+
 	stashes, err := d.datacenter.GetStashes()
 	d.mutex.Lock()
 	if err != nil {
@@ -219,10 +221,11 @@ func (d *DatacenterSnapshotFetcher) fetchStashes() {
 	}
 
 	d.mutex.Unlock()
-	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchSilenced() {
+	defer d.wg.Done()
+
 	silenced, err := d.datacenter.GetSilenced()
 	d.mutex.Lock()
 	if err != nil {
@@ -237,10 +240,11 @@ func (d *DatacenterSnapshotFetcher) fetchSilenced() {
 	}
 
 	d.mutex.Unlock()
-	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchChecks() {
+	defer d.wg.Done()
+
 	checks, err := d.datacenter.GetChecks()
 	d.mutex.Lock()
 	if err != nil {
@@ -255,10 +259,11 @@ func (d *DatacenterSnapshotFetcher) fetchChecks() {
 	}
 
 	d.mutex.Unlock()
-	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchClients() {
+	defer d.wg.Done()
+
 	clients, err := d.datacenter.GetClients()
 	d.mutex.Lock()
 	if err != nil {
@@ -273,17 +278,17 @@ func (d *DatacenterSnapshotFetcher) fetchClients() {
 	}
 
 	d.mutex.Unlock()
-	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchEvents() {
+	defer d.wg.Done()
+
 	events, err := d.datacenter.GetEvents()
+	d.mutex.Lock()
 	if err != nil {
 		logger.Debug(err)
 		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.mutex.Lock()
 		d.snapshot.Error = err.Error()
-		d.mutex.Unlock()
 	}
 
 	for _, v := range events {
@@ -291,10 +296,12 @@ func (d *DatacenterSnapshotFetcher) fetchEvents() {
 		d.snapshot.Events = append(d.snapshot.Events, v)
 	}
 
-	d.wg.Done()
+	d.mutex.Unlock()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchInfo() {
+	defer d.wg.Done()
+
 	info, err := d.datacenter.GetInfo()
 	d.mutex.Lock()
 	if err != nil {
@@ -305,10 +312,11 @@ func (d *DatacenterSnapshotFetcher) fetchInfo() {
 
 	d.snapshot.Info = *info
 	d.mutex.Unlock()
-	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchAggregates() {
+	defer d.wg.Done()
+
 	aggregates, err := d.datacenter.GetAggregates()
 	d.mutex.Lock()
 	if err != nil {
@@ -323,14 +331,14 @@ func (d *DatacenterSnapshotFetcher) fetchAggregates() {
 	}
 
 	d.mutex.Unlock()
-	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchEnterpriseMetrics() {
+	defer d.wg.Done()
+
 	d.mutex.Lock()
 	d.metrics = getEnterpriseMetrics(&d.datacenter)
 	d.mutex.Unlock()
-	d.wg.Done()
 }
 
 func (d *Daemon) resetData() {
