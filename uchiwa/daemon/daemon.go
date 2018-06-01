@@ -141,7 +141,7 @@ func (f *DatacenterFetcher) Fetch() {
 	}
 
 	// fetch sensu data from the datacenter
-	wg.Add(7)
+	wg.Add(8)
 	go d.fetchStashes()
 	go d.fetchSilenced()
 	go d.fetchChecks()
@@ -328,6 +328,7 @@ func (d *DatacenterSnapshotFetcher) fetchAggregates() {
 
 func (d *DatacenterSnapshotFetcher) fetchEnterpriseMetrics() {
 	d.metrics = getEnterpriseMetrics(&d.datacenter)
+	d.wg.Done()
 }
 
 func (d *Daemon) resetData() {
