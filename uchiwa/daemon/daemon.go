@@ -141,7 +141,7 @@ func (f *DatacenterFetcher) Fetch() {
 	}
 
 	// fetch sensu data from the datacenter
-	wg.Add(8)
+	wg.Add(7)
 	go d.fetchStashes()
 	go d.fetchSilenced()
 	go d.fetchChecks()
@@ -151,6 +151,7 @@ func (f *DatacenterFetcher) Fetch() {
 	go d.fetchAggregates()
 
 	if f.enterprise {
+		wg.Add(1)
 		go d.fetchEnterpriseMetrics()
 	}
 
