@@ -205,12 +205,11 @@ func (d *DatacenterSnapshotFetcher) determineHealth() structs.SensuHealth {
 
 func (d *DatacenterSnapshotFetcher) fetchStashes() {
 	stashes, err := d.datacenter.GetStashes()
+	d.mutex.Lock()
 	if err != nil {
 		logger.Debug(err)
 		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.mutex.Lock()
 		d.snapshot.Error = err.Error()
-		d.mutex.Unlock()
 	}
 
 	for _, v := range stashes {
@@ -218,11 +217,13 @@ func (d *DatacenterSnapshotFetcher) fetchStashes() {
 		d.snapshot.Stashes = append(d.snapshot.Stashes, v)
 	}
 
+	d.mutex.Unlock()
 	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchSilenced() {
 	silenced, err := d.datacenter.GetSilenced()
+	d.mutex.Lock()
 	if err != nil {
 		logger.Debug(err)
 		logger.Warningf("Impossible to retrieve silenced entries from the "+
@@ -234,17 +235,17 @@ func (d *DatacenterSnapshotFetcher) fetchSilenced() {
 		d.snapshot.Silenced = append(d.snapshot.Stashes, v)
 	}
 
+	d.mutex.Unlock()
 	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchChecks() {
 	checks, err := d.datacenter.GetChecks()
+	d.mutex.Lock()
 	if err != nil {
 		logger.Debug(err)
 		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.mutex.Lock()
 		d.snapshot.Error = err.Error()
-		d.mutex.Unlock()
 	}
 
 	for _, v := range checks {
@@ -252,17 +253,17 @@ func (d *DatacenterSnapshotFetcher) fetchChecks() {
 		d.snapshot.Checks = append(d.snapshot.Checks, v)
 	}
 
+	d.mutex.Unlock()
 	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchClients() {
 	clients, err := d.datacenter.GetClients()
+	d.mutex.Lock()
 	if err != nil {
 		logger.Debug(err)
 		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.mutex.Lock()
 		d.snapshot.Error = err.Error()
-		d.mutex.Unlock()
 	}
 
 	for _, v := range clients {
@@ -270,6 +271,7 @@ func (d *DatacenterSnapshotFetcher) fetchClients() {
 		d.snapshot.Clients = append(d.snapshot.Clients, v)
 	}
 
+	d.mutex.Unlock()
 	d.wg.Done()
 }
 
@@ -293,29 +295,25 @@ func (d *DatacenterSnapshotFetcher) fetchEvents() {
 
 func (d *DatacenterSnapshotFetcher) fetchInfo() {
 	info, err := d.datacenter.GetInfo()
+	d.mutex.Lock()
 	if err != nil {
 		logger.Debug(err)
 		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.mutex.Lock()
 		d.snapshot.Error = err.Error()
-		d.mutex.Unlock()
 	}
 
-	d.mutex.Lock()
 	d.snapshot.Info = *info
 	d.mutex.Unlock()
-
 	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchAggregates() {
 	aggregates, err := d.datacenter.GetAggregates()
+	d.mutex.Lock()
 	if err != nil {
 		logger.Debug(err)
 		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.mutex.Lock()
 		d.snapshot.Error = err.Error()
-		d.mutex.Unlock()
 	}
 
 	for _, v := range aggregates {
@@ -323,11 +321,14 @@ func (d *DatacenterSnapshotFetcher) fetchAggregates() {
 		d.snapshot.Aggregates = append(d.snapshot.Aggregates, v)
 	}
 
+	d.mutex.Unlock()
 	d.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) fetchEnterpriseMetrics() {
+	d.mutex.Lock()
 	d.metrics = getEnterpriseMetrics(&d.datacenter)
+	d.mutex.Unlock()
 	d.wg.Done()
 }
 
