@@ -2,6 +2,7 @@ package daemon
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/sensu/uchiwa/uchiwa/helpers"
@@ -11,28 +12,38 @@ import (
 
 // buildClients constructs clients objects for frontend consumption
 func (d *Daemon) buildClients() {
+	wg := &sync.WaitGroup{}
+
 	for _, c := range d.Data.Clients {
-		client, ok := c.(map[string]interface{})
-		if !ok {
-			continue
-		}
+		wg.Add(1)
 
-		dc, ok := client["dc"].(string)
-		if !ok {
-			continue
-		}
-
-		name, ok := client["name"].(string)
-		if !ok {
-			continue
-		}
-
-		client["_id"] = fmt.Sprintf("%s/%s", dc, name)
-
-		client = findClientEvents(client, &d.Data.Events)
-
-		client["silenced"] = helpers.IsClientSilenced(name, dc, d.Data.Silenced)
+		go d.buildClient(c, wg)
 	}
+
+	wg.Wait()
+}
+
+func (d *Daemon) buildClient(c interface{}, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	client, ok := c.(map[string]interface{})
+	if !ok {
+		return
+	}
+
+	dc, ok := client["dc"].(string)
+	if !ok {
+		return
+	}
+
+	name, ok := client["name"].(string)
+	if !ok {
+		return
+	}
+
+	client["_id"] = fmt.Sprintf("%s/%s", dc, name)
+	client = findClientEvents(client, &d.Data.Events)
+	client["silenced"] = helpers.IsClientSilenced(name, dc, d.Data.Silenced)
 }
 
 // findClientEvents searches for all events related to a particular client
