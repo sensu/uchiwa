@@ -109,7 +109,7 @@ task :organize do
     },
     'ubuntu': {
       arch: arch,
-      releases: [12.04, 14.04, 16.04]
+      releases: [12.04, 14.04, 16.04, 18.04]
     }
   }
 
