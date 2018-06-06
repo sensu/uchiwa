@@ -1,3 +1,9 @@
+### 1.3.0 (2018-06-06)
+#### Features
+- The fetching and building of data from multiple Datacenters will now happen
+  concurrently - [PR #781](https://github.com/sensu/uchiwa/pull/781)
+  [PR #784](https://github.com/sensu/uchiwa/pull/784)
+
 ### 1.2.0 (2018-04-27)
 #### Features
 - Add confirmation prompt when deleting silenced entry that could affect
