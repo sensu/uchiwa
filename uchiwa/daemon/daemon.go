@@ -42,7 +42,7 @@ type DatacenterSnapshot struct {
 	Checks     []interface{}
 	Clients    []interface{}
 	Events     []interface{}
-	Info       structs.Info
+	Info       *structs.Info
 	Silenced   []interface{}
 	Stashes    []interface{}
 	Error      string
@@ -122,6 +122,8 @@ func (d *Daemon) fetchData() {
 
 // fetch retrieves all data for a given datacenter
 func (f *DatacenterFetcher) Fetch() {
+	defer f.wg.Done()
+
 	logger.Infof("Updating the datacenter %s", f.datacenter.Name)
 
 	// set default health status
@@ -157,8 +159,18 @@ func (f *DatacenterFetcher) Fetch() {
 
 	wg.Wait()
 
+	// update health
+	f.mutex.Lock()
+	f.data.Health.Sensu[f.datacenter.Name] = d.determineHealth()
+	f.mutex.Unlock()
+
+	if d.snapshot.Error != "" {
+		logger.Warningf("Failed to update datacenter %s", f.datacenter.Name)
+		return
+	}
+
 	// build datacenter
-	dc := f.buildDatacenter(&d.datacenter.Name, &d.snapshot.Info)
+	dc := f.buildDatacenter(&d.datacenter.Name, d.snapshot.Info)
 	dc.Metrics["aggregates"] = len(d.snapshot.Aggregates)
 	dc.Metrics["checks"] = len(d.snapshot.Checks)
 	dc.Metrics["clients"] = len(d.snapshot.Clients)
@@ -169,7 +181,6 @@ func (f *DatacenterFetcher) Fetch() {
 	// update datacenter in the Daemon scope
 	f.mutex.Lock()
 	f.data.Dc = append(f.data.Dc, dc)
-	f.data.Health.Sensu[f.datacenter.Name] = d.determineHealth()
 	f.data.Stashes = append(f.data.Stashes, d.snapshot.Stashes...)
 	f.data.Silenced = append(f.data.Silenced, d.snapshot.Silenced...)
 	f.data.Checks = append(f.data.Checks, d.snapshot.Checks...)
@@ -188,16 +199,19 @@ func (f *DatacenterFetcher) Fetch() {
 	f.mutex.Unlock()
 
 	logger.Infof("Updated the datacenter %s", f.datacenter.Name)
-
-	f.wg.Done()
 }
 
 func (d *DatacenterSnapshotFetcher) determineHealth() structs.SensuHealth {
-	if !d.snapshot.Info.Redis.Connected {
-		return structs.SensuHealth{Output: "Not connected to Redis", Status: 1}
-	} else if !d.snapshot.Info.Transport.Connected {
-		return structs.SensuHealth{Output: "Not connected to the transport", Status: 1}
-	} else if d.snapshot.Error != "" {
+	if d.snapshot.Info != nil {
+		if !d.snapshot.Info.Redis.Connected {
+			return structs.SensuHealth{Output: "Not connected to Redis", Status: 1}
+		}
+		if !d.snapshot.Info.Transport.Connected && d.snapshot.Info != nil {
+			return structs.SensuHealth{Output: "Not connected to the transport", Status: 1}
+		}
+	}
+
+	if d.snapshot.Error != "" {
 		return structs.SensuHealth{Output: d.snapshot.Error, Status: 2}
 	}
 
@@ -310,7 +324,7 @@ func (d *DatacenterSnapshotFetcher) fetchInfo() {
 		d.snapshot.Error = err.Error()
 	}
 
-	d.snapshot.Info = *info
+	d.snapshot.Info = info
 	d.mutex.Unlock()
 }
 
