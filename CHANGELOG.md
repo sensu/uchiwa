@@ -1,3 +1,8 @@
+### 1.3.1 (2018-06-11)
+#### Bug Fixes
+- Fix segfault on unresponsive APIs - [PR #787](https://github.com/sensu/uchiwa/pull/787)
+- Fix only one silenced entry appearing - [PR #788](https://github.com/sensu/uchiwa/pull/788)
+
 ### 1.3.0 (2018-06-06)
 #### Features
 - The fetching and building of data from multiple Datacenters will now happen
