@@ -236,7 +236,7 @@ func (d *DatacenterSnapshotFetcher) fetchSilenced() {
 
 	for _, v := range silenced {
 		setDc(v, d.datacenter.Name)
-		d.snapshot.Silenced = append(d.snapshot.Stashes, v)
+		d.snapshot.Silenced = append(d.snapshot.Silenced, v)
 	}
 
 	d.mutex.Unlock()
