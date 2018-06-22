@@ -13,13 +13,13 @@ See [uchiwa-web](https://github.com/sensu/uchiwa-web) for the AngularJS web fron
 ![Uchiwa UI](docs/uchiwa-ui.png)
 
 ## Installation
-See [Uchiwa Docs](https://docs.uchiwa.io/getting-started/installation/).
+See [Uchiwa Docs](https://docs.sensu.io/uchiwa/latest/getting-started/installation/).
 
 ## Configuration
-See [Uchiwa Docs](https://docs.uchiwa.io/getting-started/configuration/).
+See [Uchiwa Docs](https://docs.sensu.io/uchiwa/latest/getting-started/configuration/).
 
 ## Contributing
-See [Uchiwa Docs](https://docs.uchiwa.io/contributing/).
+See [Uchiwa Docs](https://docs.sensu.io/uchiwa/latest/contributing/).
 
 ## Credits
 * Author & Maintainer: [Simon Plourde][author]
