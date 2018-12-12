@@ -31,14 +31,14 @@ func (u *Uchiwa) buildClientHistory(client map[string]interface{}, dc string, hi
 }
 
 // DeleteClient send a DELETE request to the /clients/*client* endpoint in order to delete a client
-func (u *Uchiwa) DeleteClient(dc, name string) error {
+func (u *Uchiwa) DeleteClient(dc, name, invalidate, expire string) error {
 	api, err := getAPI(u.Datacenters, dc)
 	if err != nil {
 		logger.Warning(err)
 		return err
 	}
 
-	err = api.DeleteClient(name)
+	err = api.DeleteClient(name, invalidate, expire)
 	if err != nil {
 		logger.Warning(err)
 		return err
