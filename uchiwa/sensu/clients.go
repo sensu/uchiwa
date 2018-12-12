@@ -6,8 +6,15 @@ import (
 )
 
 // DeleteClient deletes a client using its name
-func (s *Sensu) DeleteClient(client string) error {
-	return s.delete(fmt.Sprintf("clients/%s", client))
+func (s *Sensu) DeleteClient(client, invalidate, expire string) error {
+	url := fmt.Sprintf("clients/%s", client)
+	if invalidate == "true" {
+		url = fmt.Sprintf("%s?invalidate=true", url)
+		if expire != "" {
+			url = fmt.Sprintf("%s&invalidate_expire=%s", url, expire)
+		}
+	}
+	return s.delete(url)
 }
 
 // GetClients returns a slice of all clients

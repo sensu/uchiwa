@@ -1,3 +1,7 @@
+### 1.4.0 (TBD)
+#### Features
+- Add support for client invalidation - [PR #]()
+
 ### 1.3.1 (2018-06-11)
 #### Bug Fixes
 - Fix segfault on unresponsive APIs - [PR #787](https://github.com/sensu/uchiwa/pull/787)

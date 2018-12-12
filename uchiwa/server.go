@@ -438,7 +438,10 @@ func (u *Uchiwa) clientHandler(w http.ResponseWriter, r *http.Request) {
 
 	// DELETE on /clients/:client
 	if r.Method == http.MethodDelete {
-		err := u.DeleteClient(dc, name)
+		invalidate := r.URL.Query().Get("invalidate")
+		expire := r.URL.Query().Get("invalidate_expire")
+
+		err := u.DeleteClient(dc, name, invalidate, expire)
 		if err != nil {
 			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 			return
