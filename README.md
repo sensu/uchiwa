@@ -4,6 +4,8 @@
 This repository contains the backend, written in Go.
 See [uchiwa-web](https://github.com/sensu/uchiwa-web) for the AngularJS web frontend.
 
+:warning: Going forward, with the release of [Sensu Go](https://github.com/sensu/sensu-go), Uchiwa development efforts will be focused on minor features, bug fixes, and security patches.
+
 [![Build Status](https://travis-ci.org/sensu/uchiwa.svg?branch=master)](https://travis-ci.org/sensu/uchiwa)
 [![codecov](https://codecov.io/gh/sensu/uchiwa/branch/master/graph/badge.svg)](https://codecov.io/gh/sensu/uchiwa)
 [![Go Report](https://goreportcard.com/badge/github.com/sensu/uchiwa)](https://goreportcard.com/report/github.com/sensu/uchiwa)
