@@ -1,3 +1,8 @@
+### 1.4.1 (2018-12-14)
+
+#### Bug Fixes
+- Properly close the modal window when deleting multiple clients
+
 ### 1.4.0 (2018-12-14)
 #### Features
 - Add support for client invalidation - [PR #24](https://github.com/sensu/uchiwa-web/pull/24)
