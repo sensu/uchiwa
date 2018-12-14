@@ -1,6 +1,12 @@
-### 1.4.0 (TBD)
+### 1.4.0 (2018-12-14)
 #### Features
-- Add support for client invalidation - [PR #]()
+- Add support for client invalidation - [PR #24](https://github.com/sensu/uchiwa-web/pull/24)
+
+#### Bug Fixes
+- Update `mapstructure` dependency to prevent race conditions and segfaults - [Issue #799](https://github.com/sensu/uchiwa/issues/798)
+
+#### Other
+- Upgrade dev dependencies
 
 ### 1.3.1 (2018-06-11)
 #### Bug Fixes
