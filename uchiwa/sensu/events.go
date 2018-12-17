@@ -1,10 +1,13 @@
 package sensu
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+)
 
 // GetEvents returns a slice of all clients
-func (s *Sensu) GetEvents() ([]interface{}, error) {
-	return s.getSlice("events", DefaultLimit)
+func (s *Sensu) GetEvents(ctx context.Context) ([]interface{}, error) {
+	return s.getSlice(ctx, "events", DefaultLimit)
 }
 
 // DeleteEvent delete an event

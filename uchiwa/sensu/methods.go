@@ -1,6 +1,7 @@
 package sensu
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -19,11 +20,11 @@ import (
 
 // getBytes returns the body of a GET request as []byte
 func (api *API) getBytes(endpoint string) ([]byte, *http.Response, error) {
-	return api.get(fmt.Sprintf("%s/%s", api.URL, endpoint))
+	return api.get(context.Background(), fmt.Sprintf("%s/%s", api.URL, endpoint))
 }
 
 // getSlice returns the body of a GET request as []interface{}
-func (api *API) getSlice(endpoint string, limit int) ([]interface{}, error) {
+func (api *API) getSlice(ctx context.Context, endpoint string, limit int) ([]interface{}, error) {
 	var offset int
 
 	u, err := url.Parse(fmt.Sprintf("%s/%s", api.URL, endpoint))
@@ -39,7 +40,7 @@ func (api *API) getSlice(endpoint string, limit int) ([]interface{}, error) {
 		u.RawQuery = params.Encode()
 	}
 
-	body, res, err := api.get(u.String())
+	body, res, err := api.get(ctx, u.String())
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +64,7 @@ func (api *API) getSlice(endpoint string, limit int) ([]interface{}, error) {
 			params.Set("offset", strconv.Itoa(offset))
 			u.RawQuery = params.Encode()
 
-			body, _, err := api.get(u.String())
+			body, _, err := api.get(ctx, u.String())
 			if err != nil {
 				return nil, err
 			}
@@ -90,7 +91,7 @@ func (api *API) getSlice(endpoint string, limit int) ([]interface{}, error) {
 // getSlice returns the body of a GET request as map[string]inteface{}
 func (api *API) getMap(endpoint string) (map[string]interface{}, error) {
 
-	body, _, err := api.get(fmt.Sprintf("%s/%s", api.URL, endpoint))
+	body, _, err := api.get(context.Background(), fmt.Sprintf("%s/%s", api.URL, endpoint))
 	if err != nil {
 		return nil, err
 	}
@@ -149,11 +150,12 @@ func (api *API) delete(endpoint string) error {
 }
 
 // get returns the body of a GET HTTP request to a provided URL as []byte
-func (api *API) get(u string) ([]byte, *http.Response, error) {
+func (api *API) get(ctx context.Context, u string) ([]byte, *http.Response, error) {
 	req, err := http.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("Parsing error: %q returned: %v", err, err)
 	}
+	req = req.WithContext(ctx)
 
 	body, res, err := api.doRequest(req)
 	if err != nil {

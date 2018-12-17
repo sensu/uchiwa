@@ -1,6 +1,7 @@
 package sensu
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
@@ -18,8 +19,8 @@ func (s *Sensu) DeleteClient(client, invalidate, expire string) error {
 }
 
 // GetClients returns a slice of all clients
-func (s *Sensu) GetClients() ([]interface{}, error) {
-	return s.getSlice("clients", DefaultLimit)
+func (s *Sensu) GetClients(ctx context.Context) ([]interface{}, error) {
+	return s.getSlice(ctx, "clients", DefaultLimit)
 }
 
 // GetClient returns a map of a specific client corresponding to the provided client name
@@ -29,7 +30,7 @@ func (s *Sensu) GetClient(client string) (map[string]interface{}, error) {
 
 // GetClientHistory returns a slice containing the history of a specific check corresponding to the provided client name
 func (s *Sensu) GetClientHistory(client string) ([]interface{}, error) {
-	return s.getSlice(fmt.Sprintf("clients/%s/history", client), NoLimit)
+	return s.getSlice(context.Background(), fmt.Sprintf("clients/%s/history", client), NoLimit)
 }
 
 // UpdateClient updates a client with the provided payload
