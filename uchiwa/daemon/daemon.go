@@ -146,7 +146,6 @@ func (f *DatacenterFetcher) Fetch() {
 	start := time.Now()
 	errCh := make(chan error, 1)
 	ctx, cancel := context.WithCancel(context.Background())
-	// ctx.Done() := make(chan bool, 1)
 
 	// fetch sensu data from the datacenter
 	wg.Add(7)
