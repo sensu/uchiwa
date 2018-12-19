@@ -1,13 +1,14 @@
 package sensu
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
 
 // GetStashes returns a slice of all stashes
-func (s *Sensu) GetStashes() ([]interface{}, error) {
-	return s.getSlice(fmt.Sprintf("stashes"), NoLimit)
+func (s *Sensu) GetStashes(ctx context.Context) ([]interface{}, error) {
+	return s.getSlice(ctx, fmt.Sprintf("stashes"), NoLimit)
 }
 
 // GetStash returns a map of a specific stash corresponding to the provided path

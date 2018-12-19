@@ -17,7 +17,7 @@ type Uchiwa struct {
 	Daemon       *daemon.Daemon
 	Data         *structs.Data
 	Datacenters  *[]sensu.Sensu
-	Mu           *sync.Mutex
+	Mu           *sync.RWMutex
 	PublicConfig *config.Config
 }
 
@@ -38,7 +38,7 @@ func Init(c *config.Config) *Uchiwa {
 		Daemon:       d,
 		Data:         &structs.Data{},
 		Datacenters:  datacenters,
-		Mu:           &sync.Mutex{},
+		Mu:           &sync.RWMutex{},
 		PublicConfig: c.GetPublic(),
 	}
 
@@ -100,7 +100,6 @@ func (u *Uchiwa) listener(interval int, data chan *structs.Data) {
 		select {
 		case result := <-data:
 			logger.Trace("Received results on the 'data' channel")
-
 			u.Mu.Lock()
 			u.Data = result
 			u.Mu.Unlock()

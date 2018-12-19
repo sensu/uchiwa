@@ -13,13 +13,13 @@ func FindDcFromInterface(data interface{}, datacenters *[]sensu.Sensu) (*sensu.S
 	m, ok := data.(map[string]interface{})
 	if !ok {
 		logger.Warningf("Type assertion failed. Could not assert the given interface into a map: %+v", data)
-		return nil, nil, errors.New("Could not determine the datacenter.")
+		return nil, nil, errors.New("could not determine the datacenter")
 	}
 
 	id := m["dc"].(string)
 	if id == "" {
 		logger.Warningf("The received interface does not contain any datacenter information: ", data)
-		return nil, nil, errors.New("Could not determine the datacenter.")
+		return nil, nil, errors.New("could not determine the datacenter")
 	}
 
 	for _, dc := range *datacenters {

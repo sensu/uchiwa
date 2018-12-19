@@ -1,13 +1,14 @@
 package sensu
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
 
 // GetChecks returns a slice of all checks
-func (s *Sensu) GetChecks() ([]interface{}, error) {
-	return s.getSlice("checks", NoLimit)
+func (s *Sensu) GetChecks(ctx context.Context) ([]interface{}, error) {
+	return s.getSlice(ctx, "checks", NoLimit)
 }
 
 // GetCheck returns a map of a specific check corresponding to the provided check name

@@ -1,6 +1,8 @@
 package daemon
 
 import (
+	"context"
+	"fmt"
 	"sync"
 	"time"
 
@@ -45,7 +47,6 @@ type DatacenterSnapshot struct {
 	Info       *structs.Info
 	Silenced   []interface{}
 	Stashes    []interface{}
-	Error      string
 }
 
 // SensuDatacenter represents the sensu.Sensu struct
@@ -120,11 +121,11 @@ func (d *Daemon) fetchData() {
 	wg.Wait()
 }
 
-// fetch retrieves all data for a given datacenter
+// Fetch retrieves all data for a given datacenter
 func (f *DatacenterFetcher) Fetch() {
 	defer f.wg.Done()
 
-	logger.Infof("Updating the datacenter %s", f.datacenter.Name)
+	logger.Infof("updating the datacenter %s", f.datacenter.Name)
 
 	// set default health status
 	f.mutex.Lock()
@@ -142,32 +143,58 @@ func (f *DatacenterFetcher) Fetch() {
 		wg:         wg,
 	}
 
+	start := time.Now()
+	errCh := make(chan error, 1)
+	ctx, cancel := context.WithCancel(context.Background())
+
 	// fetch sensu data from the datacenter
 	wg.Add(7)
-	go d.fetchStashes()
-	go d.fetchSilenced()
-	go d.fetchChecks()
-	go d.fetchClients()
-	go d.fetchEvents()
-	go d.fetchInfo()
-	go d.fetchAggregates()
+	go d.fetchStashes(ctx, errCh)
+	go d.fetchSilenced(ctx, errCh)
+	go d.fetchChecks(ctx, errCh)
+	go d.fetchClients(ctx, errCh)
+	go d.fetchEvents(ctx, errCh)
+	go d.fetchInfo(ctx, errCh)
+	go d.fetchAggregates(ctx, errCh)
 
 	if f.enterprise {
 		wg.Add(1)
-		go d.fetchEnterpriseMetrics()
+		go d.fetchEnterpriseMetrics(ctx, errCh)
 	}
 
-	wg.Wait()
+	// Wait for all goroutines to complete. Close the ctx.Done() once all
+	// goroutines have properly returned.
+	go func() {
+		wg.Wait()
+		cancel()
+	}()
+
+	select {
+	case <-ctx.Done():
+	case err := <-errCh:
+		if err != nil {
+			// Stop all goroutines
+			cancel()
+
+			// Log the error
+			logger.Warning(err)
+			elapsed := time.Since(start)
+			logger.Warningf("failed to update the datacenter %s in %s", d.datacenter.Name, elapsed)
+
+			// Mark the datacenter as down
+			f.mutex.Lock()
+			f.data.Health.Sensu[f.datacenter.Name] = structs.SensuHealth{
+				Output: err.Error(), Status: 2,
+			}
+			f.mutex.Unlock()
+			return
+		}
+	}
 
 	// update health
 	f.mutex.Lock()
 	f.data.Health.Sensu[f.datacenter.Name] = d.determineHealth()
 	f.mutex.Unlock()
-
-	if d.snapshot.Error != "" {
-		logger.Warningf("Failed to update datacenter %s", f.datacenter.Name)
-		return
-	}
 
 	// build datacenter
 	dc := f.buildDatacenter(&d.datacenter.Name, d.snapshot.Info)
@@ -198,7 +225,8 @@ func (f *DatacenterFetcher) Fetch() {
 
 	f.mutex.Unlock()
 
-	logger.Infof("Updated the datacenter %s", f.datacenter.Name)
+	elapsed := time.Since(start)
+	logger.Infof("updated the datacenter %s in %s", f.datacenter.Name, elapsed)
 }
 
 func (d *DatacenterSnapshotFetcher) determineHealth() structs.SensuHealth {
@@ -211,143 +239,193 @@ func (d *DatacenterSnapshotFetcher) determineHealth() structs.SensuHealth {
 		}
 	}
 
-	if d.snapshot.Error != "" {
-		return structs.SensuHealth{Output: d.snapshot.Error, Status: 2}
-	}
-
 	return structs.SensuHealth{Output: "ok", Status: 0}
 }
 
-func (d *DatacenterSnapshotFetcher) fetchStashes() {
+func (d *DatacenterSnapshotFetcher) fetchStashes(ctx context.Context, errCh chan error) {
 	defer d.wg.Done()
 
-	stashes, err := d.datacenter.GetStashes()
-	d.mutex.Lock()
-	if err != nil {
-		logger.Debug(err)
-		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.snapshot.Error = err.Error()
-	}
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			stashes, err := d.datacenter.GetStashes(ctx)
+			if err != nil {
+				errCh <- fmt.Errorf(
+					"could not retrieve stashes from datacenter %s: %s",
+					d.datacenter.Name, err)
+			}
 
-	for _, v := range stashes {
-		setDc(v, d.datacenter.Name)
-		d.snapshot.Stashes = append(d.snapshot.Stashes, v)
+			d.mutex.Lock()
+			for _, v := range stashes {
+				setDc(v, d.datacenter.Name)
+				d.snapshot.Stashes = append(d.snapshot.Stashes, v)
+			}
+			d.mutex.Unlock()
+			return
+		}
 	}
-
-	d.mutex.Unlock()
 }
 
-func (d *DatacenterSnapshotFetcher) fetchSilenced() {
+func (d *DatacenterSnapshotFetcher) fetchSilenced(ctx context.Context, errCh chan error) {
 	defer d.wg.Done()
 
-	silenced, err := d.datacenter.GetSilenced()
-	d.mutex.Lock()
-	if err != nil {
-		logger.Debug(err)
-		logger.Warningf("Impossible to retrieve silenced entries from the "+
-			"datacenter %s. Silencing might not be possible, please update Sensu", d.datacenter.Name)
+	for {
+		select {
+		case _ = <-ctx.Done():
+			return
+		default:
+			silenced, err := d.datacenter.GetSilenced(ctx)
+			if err != nil {
+				errCh <- fmt.Errorf(
+					"could not retrieve silenced entries from datacenter %s: %s",
+					d.datacenter.Name, err)
+			}
+			d.mutex.Lock()
+			for _, v := range silenced {
+				setDc(v, d.datacenter.Name)
+				d.snapshot.Silenced = append(d.snapshot.Silenced, v)
+			}
+			d.mutex.Unlock()
+			return
+		}
 	}
-
-	for _, v := range silenced {
-		setDc(v, d.datacenter.Name)
-		d.snapshot.Silenced = append(d.snapshot.Silenced, v)
-	}
-
-	d.mutex.Unlock()
 }
 
-func (d *DatacenterSnapshotFetcher) fetchChecks() {
+func (d *DatacenterSnapshotFetcher) fetchChecks(ctx context.Context, errCh chan error) {
 	defer d.wg.Done()
 
-	checks, err := d.datacenter.GetChecks()
-	d.mutex.Lock()
-	if err != nil {
-		logger.Debug(err)
-		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.snapshot.Error = err.Error()
+	for {
+		select {
+		case _ = <-ctx.Done():
+			return
+		default:
+			checks, err := d.datacenter.GetChecks(ctx)
+			if err != nil {
+				errCh <- fmt.Errorf(
+					"could not retrieve checks from datacenter %s: %s",
+					d.datacenter.Name, err)
+			}
+			d.mutex.Lock()
+
+			for _, v := range checks {
+				setDc(v, d.datacenter.Name)
+				d.snapshot.Checks = append(d.snapshot.Checks, v)
+			}
+
+			d.mutex.Unlock()
+			return
+		}
 	}
 
-	for _, v := range checks {
-		setDc(v, d.datacenter.Name)
-		d.snapshot.Checks = append(d.snapshot.Checks, v)
-	}
-
-	d.mutex.Unlock()
 }
 
-func (d *DatacenterSnapshotFetcher) fetchClients() {
+func (d *DatacenterSnapshotFetcher) fetchClients(ctx context.Context, errCh chan error) {
 	defer d.wg.Done()
 
-	clients, err := d.datacenter.GetClients()
-	d.mutex.Lock()
-	if err != nil {
-		logger.Debug(err)
-		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.snapshot.Error = err.Error()
+	for {
+		select {
+		case _ = <-ctx.Done():
+			return
+		default:
+			clients, err := d.datacenter.GetClients(ctx)
+			if err != nil {
+				errCh <- fmt.Errorf(
+					"could not retrieve clients entries from datacenter %s: %s",
+					d.datacenter.Name, err)
+			}
+			d.mutex.Lock()
+
+			for _, v := range clients {
+				setDc(v, d.datacenter.Name)
+				d.snapshot.Clients = append(d.snapshot.Clients, v)
+			}
+
+			d.mutex.Unlock()
+			return
+		}
 	}
 
-	for _, v := range clients {
-		setDc(v, d.datacenter.Name)
-		d.snapshot.Clients = append(d.snapshot.Clients, v)
-	}
-
-	d.mutex.Unlock()
 }
 
-func (d *DatacenterSnapshotFetcher) fetchEvents() {
+func (d *DatacenterSnapshotFetcher) fetchEvents(ctx context.Context, errCh chan error) {
 	defer d.wg.Done()
 
-	events, err := d.datacenter.GetEvents()
-	d.mutex.Lock()
-	if err != nil {
-		logger.Debug(err)
-		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.snapshot.Error = err.Error()
-	}
+	for {
+		select {
+		case _ = <-ctx.Done():
+			return
+		default:
+			events, err := d.datacenter.GetEvents(ctx)
+			if err != nil {
+				errCh <- fmt.Errorf(
+					"could not retrieve events from datacenter %s: %s",
+					d.datacenter.Name, err)
+			}
+			d.mutex.Lock()
+			for _, v := range events {
+				setDc(v, d.datacenter.Name)
+				d.snapshot.Events = append(d.snapshot.Events, v)
+			}
 
-	for _, v := range events {
-		setDc(v, d.datacenter.Name)
-		d.snapshot.Events = append(d.snapshot.Events, v)
+			d.mutex.Unlock()
+			return
+		}
 	}
-
-	d.mutex.Unlock()
 }
 
-func (d *DatacenterSnapshotFetcher) fetchInfo() {
+func (d *DatacenterSnapshotFetcher) fetchInfo(ctx context.Context, errCh chan error) {
 	defer d.wg.Done()
 
-	info, err := d.datacenter.GetInfo()
-	d.mutex.Lock()
-	if err != nil {
-		logger.Debug(err)
-		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.snapshot.Error = err.Error()
+	for {
+		select {
+		case _ = <-ctx.Done():
+			return
+		default:
+			info, err := d.datacenter.GetInfo()
+			if err != nil {
+				errCh <- fmt.Errorf(
+					"could not retrieve info about datacenter %s: %s",
+					d.datacenter.Name, err)
+			}
+			d.mutex.Lock()
+			d.snapshot.Info = info
+			d.mutex.Unlock()
+			return
+		}
 	}
-
-	d.snapshot.Info = info
-	d.mutex.Unlock()
 }
 
-func (d *DatacenterSnapshotFetcher) fetchAggregates() {
+func (d *DatacenterSnapshotFetcher) fetchAggregates(ctx context.Context, errCh chan error) {
 	defer d.wg.Done()
 
-	aggregates, err := d.datacenter.GetAggregates()
-	d.mutex.Lock()
-	if err != nil {
-		logger.Debug(err)
-		logger.Warningf("Connection failed to the datacenter %s", d.datacenter.Name)
-		d.snapshot.Error = err.Error()
-	}
+	for {
+		select {
+		case _ = <-ctx.Done():
+			logger.Warning("stopping aggregates")
+			return
+		default:
+			aggregates, err := d.datacenter.GetAggregates(ctx)
+			if err != nil {
+				errCh <- fmt.Errorf(
+					"could not retrieve aggregates from datacenter %s: %s",
+					d.datacenter.Name, err)
+			}
+			d.mutex.Lock()
 
-	for _, v := range aggregates {
-		setDc(v, d.datacenter.Name)
-		d.snapshot.Aggregates = append(d.snapshot.Aggregates, v)
-	}
+			for _, v := range aggregates {
+				setDc(v, d.datacenter.Name)
+				d.snapshot.Aggregates = append(d.snapshot.Aggregates, v)
+			}
 
-	d.mutex.Unlock()
+			d.mutex.Unlock()
+			return
+		}
+	}
 }
 
-func (d *DatacenterSnapshotFetcher) fetchEnterpriseMetrics() {
+func (d *DatacenterSnapshotFetcher) fetchEnterpriseMetrics(ctx context.Context, errCh chan error) {
 	defer d.wg.Done()
 
 	d.mutex.Lock()

@@ -1,6 +1,7 @@
 package sensu
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
@@ -15,8 +16,8 @@ func (s *Sensu) ClearSilenced(payload interface{}) (map[string]interface{}, erro
 }
 
 // GetSilenced returns the complete silenced registry
-func (s *Sensu) GetSilenced() ([]interface{}, error) {
-	return s.getSlice(fmt.Sprintf("silenced"), NoLimit)
+func (s *Sensu) GetSilenced(ctx context.Context) ([]interface{}, error) {
+	return s.getSlice(ctx, fmt.Sprintf("silenced"), NoLimit)
 }
 
 // Silence updates the silenced registry with a new entry
