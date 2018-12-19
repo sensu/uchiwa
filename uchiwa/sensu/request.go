@@ -58,7 +58,6 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 	}
 
 	defer res.Body.Close()
-	defer io.Copy(ioutil.Discard, res.Body)
 
 	if api.Tracing {
 		logger.Customf("httptrace", "Length of response body: %d bytes", res.ContentLength)
