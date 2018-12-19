@@ -15,7 +15,6 @@ import (
 
 // ...
 func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
-	fmt.Println(api.Client.Transport)
 	if api.User != "" && api.Pass != "" {
 		req.SetBasicAuth(api.User, api.Pass)
 	}

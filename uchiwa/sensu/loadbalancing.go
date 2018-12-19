@@ -99,10 +99,12 @@ func (s *Sensu) postPayload(endpoint string, payload string) (map[string]interfa
 
 // shuffle the provided []API
 func shuffle(apis []API) []API {
+	shuffledAPIs := make([]API, len(apis))
+	copy(shuffledAPIs, apis)
 	rand.Seed(time.Now().UnixNano())
-	for i := range apis {
+	for i := range shuffledAPIs {
 		j := rand.Intn(i + 1)
-		apis[i], apis[j] = apis[j], apis[i]
+		shuffledAPIs[i], shuffledAPIs[j] = shuffledAPIs[j], shuffledAPIs[i]
 	}
-	return apis
+	return shuffledAPIs
 }
