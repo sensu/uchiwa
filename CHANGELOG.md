@@ -1,3 +1,12 @@
+### 1.5.0 (2018-12-20)
+#### Bug Fixes
+- Prevent multiple data races around APIs loadbalancing and the Sensu data - [PR #802](https://github.com/sensu/uchiwa/pull/802)
+
+#### Other
+- Use a RWMutex to optimize read access to the Sensu data - [PR #802](https://github.com/sensu/uchiwa/pull/802)
+- Refactoring of the fetcher's goroutine coordination - [PR #802](https://github.com/sensu/uchiwa/pull/802)
+- Decrease log verbosity of the `warn` level - [PR #802](https://github.com/sensu/uchiwa/pull/802)
+
 ### 1.4.1 (2018-12-14)
 
 #### Bug Fixes
