@@ -70,6 +70,7 @@ OUTER:
 			Tracing:           api.Advanced.Tracing,
 			URL:               api.URL,
 			User:              api.User,
+			Healthy:           true,
 		}
 		dc.Init()
 
