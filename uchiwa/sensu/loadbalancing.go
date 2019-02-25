@@ -45,16 +45,25 @@ func (s *Sensu) getBytes(endpoint string) ([]byte, *http.Response, error) {
 	shuffledRange := shuffle(makeRange(len(apis)))
 
 	for _, i := range shuffledRange {
-		logger.Debugf("GET %s/%s (%s)", s.APIs[i].URL, endpoint, s.Name)
-		bytes, res, err = apis[i].getBytes(endpoint)
+		bytes, res, err = s.getBytesFromAPI(apis[i], endpoint)
 		if err == nil {
-			return bytes, res, err
+			return bytes, res, nil
 		}
-		s.APIs[i].Healthy = false
-		logger.Debugf("GET %s/%s (%s) returned: %v", s.APIs[i].URL, endpoint, s.Name, err)
 	}
 
 	return nil, nil, err
+}
+
+func (s *Sensu) getBytesFromAPI(api *API, endpoint string) ([]byte, *http.Response, error) {
+	logger.Debugf("GET %s/%s (%s)", api.URL, endpoint, s.Name)
+	bytes, res, err := api.getBytes(endpoint)
+	if err != nil {
+		api.Healthy = false
+		return bytes, res, err
+	}
+	api.Healthy = true
+	logger.Debugf("GET %s/%s (%s) returned: %v", api.URL, endpoint, s.Name, err)
+	return bytes, res, err
 }
 
 func (s *Sensu) getSlice(ctx context.Context, endpoint string, limit int) ([]interface{}, error) {
@@ -89,16 +98,26 @@ func (s *Sensu) getMap(endpoint string) (map[string]interface{}, error) {
 	shuffledRange := shuffle(makeRange(len(apis)))
 
 	for _, i := range shuffledRange {
-		logger.Debugf("GET %s/%s (%s)", s.APIs[i].URL, endpoint, s.Name)
+		logger.Debugf("GET %s/%s (%s)", apis[i].URL, endpoint, s.Name)
 		m, err = apis[i].getMap(endpoint)
 		if err == nil {
 			return m, err
 		}
-		s.APIs[i].Healthy = false
-		logger.Debugf("GET %s/%s (%s) returned: %v", s.APIs[i].URL, endpoint, s.Name, err)
+		apis[i].Healthy = false
+		logger.Debugf("GET %s/%s (%s) returned: %v", apis[i].URL, endpoint, s.Name, err)
 	}
 
 	return nil, err
+}
+
+func (s *Sensu) getMapFromAPI(api *API, endpoint string) (map[string]interface{}, error) {
+
+	m, err := api.getMap(endpoint)
+	if err != nil {
+		api.Healthy = false
+
+	}
+	return m, err
 }
 
 func (s *Sensu) postPayload(endpoint string, payload string) (map[string]interface{}, error) {
@@ -125,10 +144,10 @@ func (s *Sensu) postPayload(endpoint string, payload string) (map[string]interfa
 
 // healthyAPIs returns a list of APIs with Healthy set to true or returns an error when there are
 // no healthy APIs
-func (s *Sensu) healthyAPIs() ([]API, error) {
-	var healthyAPIs []API
-	for _, api := range s.APIs {
-		logger.Debugf("API %s is healthy? %t", api.URL, api.Healthy)
+func (s *Sensu) healthyAPIs() ([]*API, error) {
+	var healthyAPIs []*API
+	for i := range s.APIs {
+		api := &s.APIs[i]
 		if api.Healthy {
 			healthyAPIs = append(healthyAPIs, api)
 		}

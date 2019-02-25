@@ -34,6 +34,7 @@ type API struct {
 	URL               string
 	User              string
 	Healthy           bool
+	CheckingHealth    bool
 
 	Client http.Client
 }
