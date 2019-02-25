@@ -14,7 +14,7 @@ func (d *Daemon) BuildSubscriptions() {
 		var generic structs.GenericClient
 		err := mapstructure.Decode(client, &generic)
 		if err != nil {
-			logger.Debug("%s", err)
+			logger.Debugf("%s", err)
 			continue
 		}
 

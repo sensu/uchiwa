@@ -18,7 +18,7 @@ func FindDcFromInterface(data interface{}, datacenters *[]sensu.Sensu) (*sensu.S
 
 	id := m["dc"].(string)
 	if id == "" {
-		logger.Warningf("The received interface does not contain any datacenter information: ", data)
+		logger.Warningf("The received interface does not contain any datacenter information: %+v", data)
 		return nil, nil, errors.New("could not determine the datacenter")
 	}
 
