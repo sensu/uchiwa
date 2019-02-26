@@ -33,6 +33,8 @@ type API struct {
 	Tracing           bool
 	URL               string
 	User              string
+	Healthy           bool
+	CheckingHealth    bool
 
 	Client http.Client
 }

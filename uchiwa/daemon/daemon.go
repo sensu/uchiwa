@@ -166,6 +166,7 @@ func (f *DatacenterFetcher) Fetch() {
 	// goroutines have properly returned.
 	go func() {
 		wg.Wait()
+		d.checkAPIHealth()
 		cancel()
 	}()
 
@@ -240,6 +241,36 @@ func (d *DatacenterSnapshotFetcher) determineHealth() structs.SensuHealth {
 	}
 
 	return structs.SensuHealth{Output: "ok", Status: 0}
+}
+
+// checkAPIHealth will find unhealthy APIs and spawn a goroutine to check their
+// health if not already checking
+func (d *DatacenterSnapshotFetcher) checkAPIHealth() {
+	for i, api := range d.datacenter.APIs {
+		if !api.Healthy && !api.CheckingHealth {
+			go d.startAPIHealthChecker(i)
+		}
+	}
+}
+
+func (d *DatacenterSnapshotFetcher) startAPIHealthChecker(i int) {
+	d.datacenter.APIs[i].CheckingHealth = true
+	api := d.datacenter.APIs[i]
+	logger.Warningf("sensu api is unhealthy: %s (datacenter: %s)", api.URL, d.datacenter.Name)
+	for {
+		timer := time.NewTimer(time.Second * 10)
+		select {
+		case <-timer.C:
+			logger.Warningf("checking health of sensu api %s (datacenter: %s)", api.URL, d.datacenter.Name)
+			_, err := d.datacenter.GetInfoFromAPI(i)
+			if err == nil {
+				logger.Warningf("sensu api is healthy again: %s (datacenter: %s)", api.URL, d.datacenter.Name)
+				d.datacenter.APIs[i].CheckingHealth = false
+				return
+			}
+			logger.Warningf("sensu api is still unhealthy: %s (datacenter: %s)", api.URL, d.datacenter.Name)
+		}
+	}
 }
 
 func (d *DatacenterSnapshotFetcher) fetchStashes(ctx context.Context, errCh chan error) {
