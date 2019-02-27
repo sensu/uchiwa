@@ -1,3 +1,7 @@
+### 1.6.0 (2019-02-27)
+#### Features
+- Support marking APIs as healthy/unhealthy - [PR #812](https://github.com/sensu/uchiwa/pull/812)
+
 ### 1.5.0 (2018-12-20)
 #### Bug Fixes
 - Prevent multiple data races around APIs loadbalancing and the Sensu data - [PR #802](https://github.com/sensu/uchiwa/pull/802)
