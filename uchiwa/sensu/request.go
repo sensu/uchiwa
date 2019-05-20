@@ -52,9 +52,9 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 	if err != nil {
 		status, ok := err.(*url.Error)
 		if !ok {
-			return nil, nil, fmt.Errorf("Unexpected error, got %T, wanted *url.Error", err)
+			return nil, res, fmt.Errorf("Unexpected error, got %T, wanted *url.Error", err)
 		}
-		return nil, nil, status.Err
+		return nil, res, status.Err
 	}
 
 	defer res.Body.Close()
@@ -64,7 +64,7 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 	}
 
 	if res.StatusCode >= 400 {
-		return nil, nil, fmt.Errorf("%v", res.Status)
+		return nil, res, fmt.Errorf("%v", res.Status)
 	}
 
 	if res.ContentLength < 0 {
@@ -72,11 +72,11 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 		if helpers.StringInSlice("chunked", res.TransferEncoding) {
 			body, err := ioutil.ReadAll(res.Body)
 			if err != nil {
-				return nil, nil, fmt.Errorf("Parsing response body returned: %v", err)
+				return nil, res, fmt.Errorf("Parsing response body returned: %v", err)
 			}
 			return body, res, nil
 		} else {
-			return nil, nil, fmt.Errorf("unknown content length of %d and not TransferEncoding == \"chunked\"", res.ContentLength)
+			return nil, res, fmt.Errorf("unknown content length of %d and not TransferEncoding == \"chunked\"", res.ContentLength)
 		}
 	}
 	body := make([]byte, res.ContentLength)
@@ -89,7 +89,7 @@ func (api *API) doRequest(req *http.Request) ([]byte, *http.Response, error) {
 				logger.Infof("Got %s", string(body[0:n]))
 			}
 		}
-		return nil, nil, fmt.Errorf("Parsing response body returned: %v", err)
+		return nil, res, fmt.Errorf("Parsing response body returned: %v", err)
 	}
 
 	if api.Tracing {
