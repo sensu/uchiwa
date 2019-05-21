@@ -20,16 +20,20 @@ import (
 
 // getBytes returns the body of a GET request as []byte
 func (api *API) getBytes(endpoint string) ([]byte, *http.Response, error) {
-	return api.get(context.Background(), fmt.Sprintf("%s/%s", api.URL, endpoint))
+	body, res, err := api.get(context.Background(), fmt.Sprintf("%s/%s", api.URL, endpoint))
+	if err != nil && body == nil {
+		return nil, res, err
+	}
+	return body, res, err
 }
 
 // getSlice returns the body of a GET request as []interface{}
-func (api *API) getSlice(ctx context.Context, endpoint string, limit int) ([]interface{}, error) {
+func (api *API) getSlice(ctx context.Context, endpoint string, limit int) ([]interface{}, *http.Response, error) {
 	var offset int
 
 	u, err := url.Parse(fmt.Sprintf("%s/%s", api.URL, endpoint))
 	if err != nil {
-		return nil, fmt.Errorf("Could not parse the URL '%s': %v", u.String(), err)
+		return nil, nil, fmt.Errorf("Could not parse the URL '%s': %v", u.String(), err)
 	}
 
 	// Add limit & offset parameters when required
@@ -41,13 +45,13 @@ func (api *API) getSlice(ctx context.Context, endpoint string, limit int) ([]int
 	}
 
 	body, res, err := api.get(ctx, u.String())
-	if err != nil {
-		return nil, err
+	if err != nil && res == nil {
+		return nil, nil, err
 	}
 
 	list, err := helpers.GetInterfacesFromBytes(body)
 	if err != nil {
-		return nil, fmt.Errorf("Could not parse the JSON-encoded response body: %v", err)
+		return nil, res, fmt.Errorf("Could not parse the JSON-encoded response body: %v", err)
 	}
 	// Verify if the endpoint supports pagination
 	if limit != -1 && res.Header.Get("X-Pagination") != "" {
@@ -66,12 +70,12 @@ func (api *API) getSlice(ctx context.Context, endpoint string, limit int) ([]int
 
 			body, _, err := api.get(ctx, u.String())
 			if err != nil {
-				return nil, err
+				return nil, res, err
 			}
 
 			partialList, err := helpers.GetInterfacesFromBytes(body)
 			if err != nil {
-				return nil, fmt.Errorf("Could not parse the JSON-encoded response body: %v", err)
+				return nil, res, fmt.Errorf("Could not parse the JSON-encoded response body: %v", err)
 			}
 
 			if len(partialList) == 0 {
@@ -85,22 +89,21 @@ func (api *API) getSlice(ctx context.Context, endpoint string, limit int) ([]int
 		}
 	}
 
-	return list, nil
+	return list, res, nil
 }
 
-// getSlice returns the body of a GET request as map[string]inteface{}
-func (api *API) getMap(endpoint string) (map[string]interface{}, error) {
-
-	body, _, err := api.get(context.Background(), fmt.Sprintf("%s/%s", api.URL, endpoint))
-	if err != nil {
-		return nil, err
+// getMap returns the body of a GET request as map[string]inteface{}
+func (api *API) getMap(endpoint string) (map[string]interface{}, *http.Response, error) {
+	body, res, err := api.get(context.Background(), fmt.Sprintf("%s/%s", api.URL, endpoint))
+	if err != nil && body == nil {
+		return nil, res, err
 	}
-	return helpers.GetMapFromBytes(body)
+	mbody, err := helpers.GetMapFromBytes(body)
+	return mbody, res, err
 }
 
 // postPayload sends a POST request to a provided enpoint with the provided payload
 func (api *API) postPayload(endpoint string, payload string) (map[string]interface{}, error) {
-
 	url := fmt.Sprintf("%s/%s", api.URL, endpoint)
 
 	req, err := http.NewRequest("POST", url, strings.NewReader(fmt.Sprintf("%s\n\n", payload)))
@@ -123,30 +126,19 @@ func (api *API) postPayload(endpoint string, payload string) (map[string]interfa
 // their equivalent HTTP method (DELETE, GET and POST).
 
 // delete performs a DELETE HTTP request to the provided endpoint
-func (api *API) delete(endpoint string) error {
+func (api *API) delete(endpoint string) (*http.Response, error) {
 	url := fmt.Sprintf("%s/%s", api.URL, endpoint)
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
-		return fmt.Errorf("Parsing error: %q returned: %v", err, err)
+		return nil, fmt.Errorf("Parsing error: %q returned: %v", err, err)
 	}
 
 	if api.User != "" && api.Pass != "" {
 		req.SetBasicAuth(api.User, api.Pass)
 	}
 
-	res, err := api.Client.Do(req)
-	if err != nil {
-		return err
-	}
-
-	defer res.Body.Close()
-
-	if res.StatusCode >= 400 {
-		return fmt.Errorf("%v", res.Status)
-	}
-
-	return nil
+	return api.Client.Do(req)
 }
 
 // get returns the body of a GET HTTP request to a provided URL as []byte
@@ -157,27 +149,23 @@ func (api *API) get(ctx context.Context, u string) ([]byte, *http.Response, erro
 	}
 	req = req.WithContext(ctx)
 
-	body, res, err := api.doRequest(req)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return body, res, nil
+	return api.doRequest(req)
 }
 
 // post performs a POST HTTP request to a provided endpoint
-func (api *API) post(endpoint string) (map[string]interface{}, error) {
+func (api *API) post(endpoint string) (map[string]interface{}, *http.Response, error) {
 	url := fmt.Sprintf("%s/%s", api.URL, endpoint)
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	body, _, err := api.doRequest(req)
+	body, res, err := api.doRequest(req)
 	if err != nil {
-		return nil, err
+		return nil, res, err
 	}
 
-	return helpers.GetMapFromBytes(body)
+	bodyMap, err := helpers.GetMapFromBytes(body)
+	return bodyMap, res, err
 }

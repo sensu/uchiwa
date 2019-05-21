@@ -23,9 +23,9 @@ func (s *Sensu) delete(endpoint string) error {
 
 	for _, i := range shuffledRange {
 		logger.Debugf("DELETE %s/%s (%s)", s.APIs[i].URL, endpoint, s.Name)
-		err = apis[i].delete(endpoint)
-		if err == nil {
-			return err
+		res, err := apis[i].delete(endpoint)
+		if err == nil || res.StatusCode < 500 {
+			return nil
 		}
 		s.APIs[i].Healthy = false
 		logger.Debugf("DELETE %s/%s (%s) returned: %v", s.APIs[i].URL, endpoint, s.Name, err)
@@ -57,11 +57,14 @@ func (s *Sensu) getBytes(endpoint string) ([]byte, *http.Response, error) {
 func (s *Sensu) getBytesFromAPI(api *API, endpoint string) ([]byte, *http.Response, error) {
 	logger.Debugf("GET %s/%s (%s)", api.URL, endpoint, s.Name)
 	bytes, res, err := api.getBytes(endpoint)
-	if err != nil {
+	if res == nil || res.StatusCode >= 500 {
 		api.Healthy = false
+	} else {
+		api.Healthy = true
+	}
+	if err == nil && res.StatusCode < 400 {
 		return bytes, res, err
 	}
-	api.Healthy = true
 	logger.Debugf("GET %s/%s (%s) returned: %v", api.URL, endpoint, s.Name, err)
 	return bytes, res, err
 }
@@ -69,6 +72,7 @@ func (s *Sensu) getBytesFromAPI(api *API, endpoint string) ([]byte, *http.Respon
 func (s *Sensu) getSlice(ctx context.Context, endpoint string, limit int) ([]interface{}, error) {
 	var err error
 	var slice []interface{}
+	var res *http.Response
 	apis, err := s.healthyAPIs()
 	if err != nil {
 		return nil, err
@@ -77,8 +81,8 @@ func (s *Sensu) getSlice(ctx context.Context, endpoint string, limit int) ([]int
 
 	for _, i := range shuffledRange {
 		logger.Debugf("GET %s/%s (%s)", s.APIs[i].URL, endpoint, s.Name)
-		slice, err = apis[i].getSlice(ctx, endpoint, limit)
-		if err == nil {
+		slice, res, err = apis[i].getSlice(ctx, endpoint, limit)
+		if err == nil || res != nil && res.StatusCode >= 400 && res.StatusCode < 500 {
 			return slice, err
 		}
 		s.APIs[i].Healthy = false
@@ -91,6 +95,7 @@ func (s *Sensu) getSlice(ctx context.Context, endpoint string, limit int) ([]int
 func (s *Sensu) getMap(endpoint string) (map[string]interface{}, error) {
 	var err error
 	var m map[string]interface{}
+	var res *http.Response
 	apis, err := s.healthyAPIs()
 	if err != nil {
 		return nil, err
@@ -99,11 +104,15 @@ func (s *Sensu) getMap(endpoint string) (map[string]interface{}, error) {
 
 	for _, i := range shuffledRange {
 		logger.Debugf("GET %s/%s (%s)", apis[i].URL, endpoint, s.Name)
-		m, err = apis[i].getMap(endpoint)
-		if err == nil {
+		m, res, err = apis[i].getMap(endpoint)
+		if res == nil || res.StatusCode >= 500 {
+			apis[i].Healthy = false
+		} else {
+			apis[i].Healthy = true
+		}
+		if err == nil && res.StatusCode < 400 {
 			return m, err
 		}
-		apis[i].Healthy = false
 		logger.Debugf("GET %s/%s (%s) returned: %v", apis[i].URL, endpoint, s.Name, err)
 	}
 
@@ -111,11 +120,9 @@ func (s *Sensu) getMap(endpoint string) (map[string]interface{}, error) {
 }
 
 func (s *Sensu) getMapFromAPI(api *API, endpoint string) (map[string]interface{}, error) {
-
-	m, err := api.getMap(endpoint)
-	if err != nil {
+	m, res, err := api.getMap(endpoint)
+	if err != nil || res != nil && res.StatusCode >= 500 {
 		api.Healthy = false
-
 	}
 	return m, err
 }
