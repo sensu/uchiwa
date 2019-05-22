@@ -1,3 +1,7 @@
+### 1.7.0 (2019-05-22)
+#### Bug fixes
+- HTTP 4xx statuses should not mark an API as unhealthy - [PR #817](https://github.com/sensu/uchiwa/pull/817)
+
 ### 1.6.0 (2019-02-27)
 #### Features
 - Support marking APIs as healthy/unhealthy - [PR #812](https://github.com/sensu/uchiwa/pull/812)
